@@ -1,34 +1,31 @@
 import os
-from schematic_extractor.xschem import Schematic
-from schematic_extractor.cell_builder import getLayoutCellFromXSch
-from layout_creator.cell import Cell
-from layout_creator.design import Design
+import schematic_extractor.xschem
+import schematic_extractor.cell_builder
+import layout_creator.cell
+import layout_creator.design
+import layout_creator.rect
+import layout_creator.printer.magicprinter
 
-def mag(ctx, lib, cell, libdir):
-    """Translate a Xschem file to Magic"""
+def sch_to_mag(lib, lib_dir, cell):
 
-    xs = Schematic()
+    # Create schematic object and read schematic file
+    sch = schematic_extractor.xschem.Schematic()
+    sch.readFromFile(lib_dir + lib + os.path.sep + cell + ".sch")
 
-    xs.readFromFile(libdir + lib + os.path.sep + cell + ".sch")
+    # Build cell
+    cell = schematic_extractor.cell_builder.getLayoutCellFromXSch(lib_dir, sch)
 
-    cell1 = getLayoutCellFromXSch(libdir, xs)
+    # Test manipulation
+    layout_creator.cell.Cell.moveTo(cell.children[0], 20000, 20000)
 
-    # cell2 = cic.eda.cellfactory.getLayoutCellFromXSch(libdir,xs)
-    Cell.moveTo(cell1.children[0], 10000, 20000)
-    print(cell1.children[0])
-    # cic.core.Cell.moveTo(cell2, 3, 4)
+    # Add cell to Magic design
+    design = layout_creator.design.Design()
+    design.add(cell)
 
-    # cic.core.Cell.moveTo(cell, 2, 3)
-    # print(cic.core.Cell.moveTo(cell, 2, 3))
-
-    design1 = Design()
-    design1.add(cell1)
-
-    # design1.add(cell2)
-    print(f"Writing to {libdir + lib}")
-    #obj = cic.MagicPrinter(libdir + lib, cell1)
-    #obj.print(design1)
+    # Print design to Magic
+    obj = layout_creator.printer.magicprinter.MagicPrinter(lib_dir + lib, cell)
+    obj.print(design)
 
 
 if __name__ == '__main__':
-    mag(ctx=None, lib="JNW_BKLE_SKY130A", libdir="../aicex/ip/jnw_bkle_sky130A/design/", cell="JNW_BKLE")
+    sch_to_mag(lib="JNW_BKLE_SKY130A", lib_dir="../aicex/ip/jnw_bkle_sky130A/design/", cell="JNW_BKLE")
