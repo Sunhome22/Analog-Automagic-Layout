@@ -1,17 +1,20 @@
 import pulp
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
+
+from Main import Width
+
 # Define grid size and objects
 
 grid_size = 20
 
-objects = ['A', 'B', 'C', 'D', 'E', 'F']
-connections = [('A','B'), ('A','C'), ('B', 'C'), ('A', 'E'), ('D', 'A'), ('E', 'D'), ('F', 'B')]
+objects = ['N1', 'N2', 'P1', 'P2', 'VDD', 'GND']
+connections = [('N1','N2'), ('N1','VDD'), ('N1', 'GND'), ('P1', 'VDD'), ('P1', 'GND'), ('P1', 'P2'), ('P2', 'VDD'), ('P2', 'N2'), ('N2', 'GND')]
 
 #Object parameters
 
-Height = {'A': 3, 'B': 3, 'C': 3, 'D': 3, 'E': 3, 'F':3 }
-Width = {'A': 3, 'B': 3, 'C': 3, 'D':3, 'E': 3, 'F': 3 }
+Height = {'N1': 3, 'N2': 3, 'P1': 3, 'P2': 3, 'VDD': 1, 'GND':1 }
+Width = {'N1': 3, 'N2': 3, 'P1': 3, 'P2':3, 'VDD': 10, 'GND': 10 }
 
 #space between objects
 
@@ -38,6 +41,11 @@ for o1,o2 in connections:
     prob += d_y[(o1, o2)] >= y[o1] - y[o2]
     prob += d_y[(o1, o2)] >= y[o2] - y[o1]
 
+
+
+
+
+
 prob+= pulp.lpSum([d_x[(o1,o2)] + d_y[(o1,o2)] for o1,o2 in connections]), "totalWireLength"
 #Add constraints, e.g. no overlap
 M = grid_size
@@ -61,8 +69,15 @@ for o1 in objects:
             prob += y[o1] + Height[o1] <= grid_size
             prob += y[o2] + Height[o2] <= grid_size
 
+
+
+
+
+
 prob.solve()
 
+print(d_x)
+print(d_y)
 # Display results
 
 print(f"Status: {pulp.LpStatus[prob.status]}")
