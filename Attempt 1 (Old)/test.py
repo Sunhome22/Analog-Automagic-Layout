@@ -15,7 +15,7 @@ def sch_to_mag(lib, lib_dir, cell):
     # Build cell
     cell = schematic_extractor.cell_builder.getLayoutCellFromXSch(lib_dir, sch)
 
-    # Test manipulation
+    # Try som moving of child in the cell
     layout_creator.cell.Cell.moveTo(cell.children[0], 20000, 20000)
 
     # Add cell to Magic design

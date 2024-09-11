@@ -18,7 +18,7 @@ class XSchem:
         d = buff[0]
         obj = None
 
-        # Maps characters to their corresponding descriptors
+        # Maps SPICE characters to their corresponding descriptors
 
         type_map = {
             "v": Version,
@@ -39,7 +39,7 @@ class XSchem:
 
         if d in type_map:
             obj = type_map[d]()
-            # print(list(type_map.keys()).index(d) + 1)
+            print(list(type_map.keys()).index(d) + 1)
 
         if obj is not None:
             obj.parse(buff)
@@ -95,9 +95,8 @@ class Schematic(XSchem):
 
 
 class Object:
-    def __init__(self, obj_type=None):
+    def __init__(self,):
         self.properties = dict()
-        self.obj_type = obj_type
 
     def parse(self,ss):
         self.ss = ss
