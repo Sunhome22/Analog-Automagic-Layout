@@ -1,0 +1,15 @@
+magic
+tech sky130A
+magscale 1 1
+timestamp 1725487200
+<< checkpaint >>
+rect 0 0 0 0
+use JNWATR_NCH_12C1F2 x1 ../JNW_ATR_SKY130A
+transform 1 0 0 0 1 0
+box 0 0 0 0
+use JNWATR_NCH_2C1F2 x2 ../JNW_ATR_SKY130A
+transform 1 0 832 0 1 0
+box 832 0 832 0
+<< labels >>
+<< properties >>
+<< end >>

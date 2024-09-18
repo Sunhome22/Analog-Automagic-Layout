@@ -1,15 +1,63 @@
+# TODO: Add copyright/license notice
+
+# ==== Personal Notes ====:
+# CMOS Transistors need to be from Carsten's generated transistor library (JNWATR)
+# BJT Transistors not handled yet
+# Capacitors need to be of the standard library type or from Carsten's generated library (JNWTR)
+# Resistors need to be of the standard  library type or from Carsten's generated library (JNWTR)
+
+# Remember to pip install external libraries to the server if used
+
+# Libraries
 import os
-import time
 import subprocess
 import re
-from typing import NamedTuple
-# Remember to pip install on the server if you add external libraries
+from dataclasses import dataclass
+from typing import List
 
 
-class CircuitComponent(NamedTuple):
+# Constants
+TRANSISTOR_PARAMS = 6
+RESISTOR_PARAMS = 5
+CAPACITOR_PARAMS = 4
+STD_CAPACITOR_PARAMS = 8
+STD_RESISTOR_PARAMS = 8
+
+# Circuit component classes
+@dataclass
+class CircuitComponent:
     name: str
-    connections: list
+    connections: List[str]
     layout: str
+
+@dataclass
+class Transistor(CircuitComponent):
+    pass
+
+@dataclass
+class Resistor(CircuitComponent):
+    pass
+
+@dataclass
+class Capacitor(CircuitComponent):
+    pass
+
+@dataclass
+class STDCapacitor(CircuitComponent):
+    width : int
+    length: int
+    multiplier_factor: int
+    instance_multiplier: int
+
+@dataclass
+class STDResistor(CircuitComponent):
+    pass
+
+@dataclass
+class Pin:
+    type: str
+    name: str
+
 
 class SPICEparser:
 
@@ -49,51 +97,101 @@ class SPICEparser:
     def _rebuild_spice_lines_with_plus_symbol(self):
         # Removes added "+" symbols to long lines in the SPICE file
 
-        updated_spice_file = []
+        updated_spice_lines = []
         previous_line = ""
 
         for line in self.spice_file_content:
 
             if re.match(r'^\+', line):
                 # Removes "+", any trailing/leading space and '\n' from previous line
-                previous_line = previous_line.strip() + " " + line[1:].strip()
+                previous_line = previous_line.strip() +" "+ line[1:].strip()
 
             else:
                 # Append when previous line has content
                 if previous_line:
-                    updated_spice_file.append(previous_line.strip())
+                    updated_spice_lines.append(previous_line.strip())
 
                 previous_line = line
 
         if previous_line:
-            updated_spice_file.append(previous_line.strip())
+            updated_spice_lines.append(previous_line.strip())
 
-        self.spice_file_content = updated_spice_file
+        self.spice_file_content = updated_spice_lines
+
+    def _remove_expanded_spice_file_symbols(self):
+        in_expanded_symbol = False
+        updated_spice_lines = []
+
+        for line in self.spice_file_content:
+
+            if re.match(r'^\* expanding', line.strip()):
+                in_expanded_symbol = True
+
+            elif re.match(r'^\.ends', line.strip()) and in_expanded_symbol:
+                in_expanded_symbol = False
+
+            elif not in_expanded_symbol and line.strip():
+                updated_spice_lines.append(line.strip())
+
+        self.spice_file_content = updated_spice_lines
+
 
     def parse(self):
         self._generate_spice_file_for_schematic()
         self._read_spice_file()
         self._rebuild_spice_lines_with_plus_symbol()
+        self._remove_expanded_spice_file_symbols()
 
-        for index, line in enumerate(self.spice_file_content):
-            # self.spice_file_content[index] = line
+        for line in self.spice_file_content:
 
-            # Check if the line does not have '*' or '.' as first character.
+            # Check for components
             if re.match(r'^[^*.]', line):
                 line_words = line.split()
 
-                # TODO: fix the magic 6 number
-
                 # Transistor
-                if len(line_words) == 6:
-                    circuit_component = CircuitComponent(name=line_words[0], connections=line_words[1:5], layout=line_words[5])
-                    self.components.append(circuit_component)
+                if len(line_words) == TRANSISTOR_PARAMS:
+                    transistor = Transistor(name=line_words[0], connections=line_words[1:5], layout=line_words[5])
+                    self.components.append(transistor)
 
+                # Resistor
+                if len(line_words) == RESISTOR_PARAMS:
+                    resistor = Resistor(name=line_words[0], connections=line_words[1:4], layout=line_words[4])
+                    self.components.append(resistor)
+
+                # Capacitor
+                if len(line_words) == CAPACITOR_PARAMS:
+                    capacitor = Capacitor(name=line_words[0], connections=line_words[1:3], layout=line_words[3])
+                    self.components.append(capacitor)
+
+                # Standard capacitor
+                if len(line_words) == STD_CAPACITOR_PARAMS:
+                    capacitor = STDCapacitor(name=line_words[0],
+                                          connections=line_words[1:3],
+                                          layout=line_words[3],
+                                          width=int(''.join(re.findall(r'\d+', line_words[4]))),
+                                          length=int(''.join(re.findall(r'\d+', line_words[5]))),
+                                          multiplier_factor=int(''.join(re.findall(r'\d+', line_words[6]))),
+                                          instance_multiplier=int(''.join(re.findall(r'\d+', line_words[7]))))
+
+                    self.components.append(capacitor)
+
+                # Standard resistor
+                # TBD
+
+            # Check for pins
             if re.match(r'^\*\.', line):
-                print(line)
+                line_words = line.split()
 
-        print(self.components[0])
-        print(self.components[1])
+                # Minimum length for self-defined pins is 2 chars
+                if len(line_words[1]) > 1:
+                    pin_type = ''.join(re.findall(r'[a-zA-Z]+', line_words[0]))
+                    pin = Pin(type=pin_type, name=line_words[1])
+                    self.components.append(pin)
+
+        print(f"[INFO]: {len(self.components)} components extracted from SPICE file")
+
+    def get(self):
+        return self.components
 
 
 
