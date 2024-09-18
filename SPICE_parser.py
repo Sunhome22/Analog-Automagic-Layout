@@ -8,8 +8,8 @@ from typing import NamedTuple
 
 class CircuitComponent(NamedTuple):
     name: str
-    ports: list
-    type: str
+    connections: list
+    layout: str
 
 class SPICEparser:
 
@@ -75,22 +75,22 @@ class SPICEparser:
         self._read_spice_file()
         self._rebuild_spice_lines_with_plus_symbol()
 
-
         for index, line in enumerate(self.spice_file_content):
             # self.spice_file_content[index] = line
 
             # Check if the line does not have '*' or '.' as first character.
             if re.match(r'^[^*.]', line):
-                line = line.split()
+                line_words = line.split()
 
                 # TODO: fix the magic 6 number
 
                 # Transistor
-                if len(line) == 6:
-                    circuit_component = CircuitComponent(name=line[0], ports=line[1:5], type=line[5])
+                if len(line_words) == 6:
+                    circuit_component = CircuitComponent(name=line_words[0], connections=line_words[1:5], layout=line_words[5])
                     self.components.append(circuit_component)
 
-
+            if re.match(r'^\*\.', line):
+                print(line)
 
         print(self.components[0])
         print(self.components[1])
