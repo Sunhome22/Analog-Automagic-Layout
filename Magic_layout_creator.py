@@ -1,10 +1,8 @@
 import os
 import re
 import time
-from email.policy import default
-
 import SPICE_parser
-
+from utilities import TextColor
 
 class MagicLayoutCreator:
 
@@ -22,7 +20,7 @@ class MagicLayoutCreator:
         with open(magic_file_path, "w") as file:
             file.write("\n".join(self.magic_file_lines))
 
-        print("[INFO]: Magic file created and written")
+        print(f"{TextColor.INFO} Magic file created and written")
 
     def place_metal(self, layer):
         pass
@@ -37,18 +35,20 @@ class MagicLayoutCreator:
         ]
         for component in self.components:
 
-            # terrible solution
-            if str(type(component)) == "<class 'SPICE_parser.Transistor'>":
+            if isinstance(component, SPICE_parser.Transistor):
                 self.magic_file_lines.append("rect 0 0 0 0")
                 self.magic_file_lines.append(f"use {component.layout} {component.name} ../JNW_ATR_SKY130A")
                 self.magic_file_lines.append("transform 1 0 0 0 1 0")
                 self.magic_file_lines.append("box 0 0 0 0")
-                print(component)
 
         self.magic_file_lines.append("<< labels >>")
         self.magic_file_lines.append("<< properties >>")
         self.magic_file_lines.append("<< end >>")
 
-
         self.write_magic_file()
-        print(self.components)
+
+        # Temporary debugging
+        print(f"\n{TextColor.DEBUG} Components registered:")
+        for item in self.components:
+            print(f"- {item}")
+
