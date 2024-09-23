@@ -1,10 +1,10 @@
 # TODO: Add copyright/license notice
 
 # ==== Temporary personal notes ====:
-# CMOS Transistors need to be from Carsten's generated transistor library
+# CMOS Transistors need to be from Carsten's generated transistor library ATR
 # BJT Transistors not handled yet
-# Capacitors need to be from the standard technology library or from Carsten's generated library
-# Resistors need to be from the standard technology library or from Carsten's generated library
+# Capacitors need to be from the standard technology library or from Carsten's generated TR library
+# Resistors need to be from the standard technology library or from Carsten's generated TR library
 # Remember to pip install external libraries to the server if used
 
 # =================================================== Libraries ========================================================
@@ -16,13 +16,10 @@ from typing import List
 from utilities import TextColor
 
 # ==================================================== Constants =======================================================
-# "GEN" referes to the generated transistors/capacitors/resistors from Carsten's library
-# "SKY130" refers to the standard transistors/capacitors/resistors from the technology.
+# "STD" refers to the generated transistors/capacitors/resistors from Carsten's ATR/TR libraries.
 STD_LIB_TRANSISTOR_PARAMS = 6
 STD_LIB_RESISTOR_PARAMS = 5
 STD_LIB_CAPACITOR_PARAMS = 4
-SKY130_PDK_CAPACITOR_PARAMS = 8
-SKY130_PDK_RESISTOR_PARAMS = 8
 
 
 # ============================================= Circuit component classes ==============================================
@@ -31,7 +28,7 @@ class CircuitComponent:
     name: str
     connections: List[str]
     layout: str
-
+    library: str
 
 @dataclass
 class Transistor(CircuitComponent):
@@ -49,7 +46,7 @@ class Capacitor(CircuitComponent):
 
 
 @dataclass
-class STDCapacitor(CircuitComponent):
+class SKY130Capacitor(CircuitComponent):
     width: int
     length: int
     multiplier_factor: int
@@ -57,8 +54,11 @@ class STDCapacitor(CircuitComponent):
 
 
 @dataclass
-class STDResistor(CircuitComponent):
-    pass
+class SKY130Resistor(CircuitComponent):
+    width: float
+    length: float
+    multiplier_factor: int
+    instance_multiplier: int
 
 
 @dataclass
@@ -71,10 +71,10 @@ class Pin:
 
 class SPICEparser:
 
-    def __init__(self, project_name: str, project_directory: str, standard_libraries: list):
-        self.project_name = project_name
-        self.project_directory = project_directory
-        self.standard_libraries = standard_libraries
+    def __init__(self, project_properties):
+        self.project_name = project_properties.name
+        self.project_directory = project_properties.directory
+        self.standard_libraries = project_properties.standard_libraries
         self.spice_file_content = list()
         self.components = list()
         self.parse()
@@ -132,11 +132,15 @@ class SPICEparser:
     def _remove_expanded_subcircuits_for_standard_libraries(self):
         in_expanded_symbol = False
         updated_spice_lines = []
+        library_names = []
+
+        # Create list of library names
+        for item in self.standard_libraries:
+            library_names.append(item.name)
 
         for line in self.spice_file_content:
-
-            # Itterate over multiple possible standrd libraries
-            if any(re.match(rf'^\.subckt {library}', line.strip()) for library in self.standard_libraries):
+            # Iterate over library names and remove specific sub-circuit contents
+            if any(re.match(rf'^\.subckt {library_name}', line.strip()) for library_name in library_names):
                 in_expanded_symbol = True
 
             elif re.match(r'^\.ends', line.strip()) and in_expanded_symbol:
@@ -147,38 +151,68 @@ class SPICEparser:
 
         self.spice_file_content = updated_spice_lines
 
+    def current_component_library(self, spice_file_line_words):
+        library_names = []
+
+        # Create list of library names
+        for item in self.standard_libraries:
+            library_names.append(item.name)
+
+        for index, library in enumerate(library_names):
+
+            # Check for match between library name and layout name
+            if re.search(rf"{library}", spice_file_line_words[-1]):
+
+                # Return library name from path name
+                return re.search(r'[^/]+$', self.standard_libraries[index].path).group()
+
     def parse(self):
         self._generate_spice_file_for_schematic()
         self._read_spice_file()
         self._rebuild_spice_lines_with_plus_symbol()
         self._remove_expanded_subcircuits_for_standard_libraries()
 
+
         for line in self.spice_file_content:
 
             # Check for components
             if re.match(r'^[^*.]', line):
                 line_words = line.split()
+                current_library = self.current_component_library(line_words)
 
-                # Transistor
+                # CMOS transistor
                 if len(line_words) == STD_LIB_TRANSISTOR_PARAMS:
-                    transistor = Transistor(name=line_words[0], connections=line_words[1:5], layout=line_words[5])
+                    transistor = Transistor(name=line_words[0],
+                                            connections=line_words[1:5],
+                                            layout=line_words[5],
+                                            library=current_library)
+
                     self.components.append(transistor)
 
                 # Resistor
                 if len(line_words) == STD_LIB_RESISTOR_PARAMS:
-                    resistor = Resistor(name=line_words[0], connections=line_words[1:4], layout=line_words[4])
+                    resistor = Resistor(name=line_words[0],
+                                        connections=line_words[1:4],
+                                        layout=line_words[4],
+                                        library=current_library)
+
                     self.components.append(resistor)
 
                 # Capacitor
                 if len(line_words) == STD_LIB_CAPACITOR_PARAMS:
-                    capacitor = Capacitor(name=line_words[0], connections=line_words[1:3], layout=line_words[3])
+                    capacitor = Capacitor(name=line_words[0],
+                                          connections=line_words[1:3],
+                                          layout=line_words[3],
+                                          library=current_library)
+
                     self.components.append(capacitor)
 
-                # SKY130 PDK capacitor
-                if len(line_words) == SKY130_PDK_CAPACITOR_PARAMS:
-                    capacitor = STDCapacitor(name=line_words[0],
+                # SKY130_FD_PR_MIM capacitor
+                if re.search(r'sky130_fd_pr__cap_mim', line):
+                    capacitor = SKY130Capacitor(name=line_words[0],
                                              connections=line_words[1:3],
                                              layout=line_words[3],
+                                             library='',
                                              width=int(''.join(re.findall(r'\d+', line_words[4]))),
                                              length=int(''.join(re.findall(r'\d+', line_words[5]))),
                                              multiplier_factor=int(''.join(re.findall(r'\d+', line_words[6]))),
@@ -186,8 +220,19 @@ class SPICEparser:
 
                     self.components.append(capacitor)
 
-                # SKY130 PDK resistor
-                # TBD
+                # SKY130_FD_PR_HIGH_PO resistor
+                if re.search(r'sky130_fd_pr__res_high_po', line):
+                    resistor = SKY130Resistor(name=line_words[0],
+                                           connections=line_words[1:4],
+                                           layout=line_words[4],
+                                           library='',
+                                           width=-1,
+                                           length=float(''.join(re.findall(r'\d.', line_words[5]))),
+                                           multiplier_factor=int(''.join(re.findall(r'\d+', line_words[6]))),
+                                           instance_multiplier=int(''.join(re.findall(r'\d+', line_words[7]))))
+
+                    self.components.append(resistor)
+
 
             # Check for pins
             if re.match(r'^\*\.', line):
@@ -199,7 +244,7 @@ class SPICEparser:
 
         print(f"{TextColor.INFO} {len(self.components)} components extracted from SPICE file")
 
-    def get(self):
+    def get(self) -> list:
         return self.components
 
 
