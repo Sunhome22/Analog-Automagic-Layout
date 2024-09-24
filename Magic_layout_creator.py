@@ -5,6 +5,7 @@ import SPICE_parser
 
 from utilities import TextColor
 
+
 class MagicLayoutCreator:
 
     def __init__(self, project_properties, components):
@@ -48,14 +49,14 @@ class MagicLayoutCreator:
         for component in self.components:
 
             if isinstance(component, SPICE_parser.Transistor):
-                i += 500
+                i += 1500
                 self.magic_file_lines.append(f"use {component.layout} {component.name} ../{component.library}")
-                self.magic_file_lines.append(f"transform 1 1000 {i} 0 1 0")
+                self.magic_file_lines.append(f"transform 1 0 {i} 0 1 0")
                 self.magic_file_lines.append(f"box 0 0 0 0")
 
             if isinstance(component, SPICE_parser.Capacitor):
                 self.magic_file_lines.append(f"use {component.layout} {component.name} ../{component.library}")
-                self.magic_file_lines.append(f"transform 1 0 0 0 1 0")
+                self.magic_file_lines.append(f"transform 1 0 500 0 1 0")
                 self.magic_file_lines.append(f"box 0 0 0 0")
 
         # Bottom of file template
