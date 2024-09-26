@@ -30,8 +30,10 @@ class MagicLayoutCreator:
     def _get_bounding_box_info_for_component(self, component):
         print(component.library)
         layout_file_path = os.path.expanduser(f"{self.project_directory}design/"
-                                            f"{component.library}/{component.layout_name}.mag")
+                                              f"{component.library}/{component.layout_name}.mag")
 
+    def _get_port_info_from_component(self):
+        pass
         #with open(layout_file_path, "r") as file:
         #    file.read()
 
@@ -56,7 +58,7 @@ class MagicLayoutCreator:
             "magscale 1 1",
             f"timestamp {int(time.time())}",
             "<< checkpaint >>",
-            "rect 0 0 0 0" # Rectangle completely covering everything in the cell. TBD!
+            "rect 0 0 0 0"  # Rectangle completely covering everything in the cell. TBD!
         ])
 
         i = 0
@@ -66,10 +68,9 @@ class MagicLayoutCreator:
 
             if isinstance(component, SPICE_parser.Transistor):
                 self._get_bounding_box_info_for_component(component)
-                component.t_matrix = [1, 0, i, 0, 1, 0] # test
+                component.t_matrix = [1, 0, i, 0, 1, 0]  # test
                 component.b_box = [0, 0, 0, 0]
                 self.cell_creator(component=component)
-
 
             if isinstance(component, SPICE_parser.Capacitor):
                 self.magic_file_lines.append(f"use {component.layout_name} {component.name} ../{component.library}")

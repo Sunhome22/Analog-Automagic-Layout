@@ -33,6 +33,7 @@ class SPICEparser:
         self.spice_file_content = list()
         self.components = list()
         self.subcircuits = list()
+
         self.parse()
 
     def _generate_spice_file_for_schematic(self):
@@ -118,7 +119,7 @@ class SPICEparser:
 
         self.spice_file_content = updated_spice_lines
 
-    def current_component_library(self, spice_file_line_words):
+    def _get_current_component_library(self, spice_file_line_words):
         library_names = []
 
         # Create list of library names
@@ -133,10 +134,9 @@ class SPICEparser:
                 # Return library name from path name
                 return re.search(r'[^/]+$', self.standard_libraries[index].path).group()
 
-
-    def _get_layout_port_definitions(self, line_words, subcircuits):
+    def _get_layout_port_definitions(self, line_word: str, subcircuits: list):
         for circuit in subcircuits:
-            if re.match(line_words, circuit.layout):
+            if re.match(line_word, circuit.layout):
                 return circuit.ports
 
     def parse(self):
@@ -145,20 +145,20 @@ class SPICEparser:
         self._rebuild_spice_lines_with_plus_symbol()
         self._remove_expanded_subcircuits_for_standard_libraries()
 
-
         for line in self.spice_file_content:
 
             # Check for components
             if re.match(r'^[^*.]', line):
                 line_words = line.split()
-                current_library = self.current_component_library(line_words)
+                current_library = self._get_current_component_library(line_words)
 
-                # CMOS transistor
+                # Transistor
                 if len(line_words) == STD_LIB_TRANSISTOR_PARAMS:
 
                     # Get port definitions for component
                     port_definitions = self._get_layout_port_definitions(line_words[5], self.subcircuits)
 
+                    # Create transistor component and add extracted parameters
                     transistor = Transistor(name=line_words[0],
                                             connections={port_definitions[i]: line_words[i+1] for i in
                                                          range(min(len(port_definitions), len(line_words), 4))},
@@ -173,6 +173,7 @@ class SPICEparser:
                     # Get port definitions for component
                     port_definitions = self._get_layout_port_definitions(line_words[4], self.subcircuits)
 
+                    # Create resistor component and add extracted parameters
                     resistor = Resistor(name=line_words[0],
                                         connections={port_definitions[i]: line_words[i+1] for i in
                                                      range(min(len(port_definitions), len(line_words), 3))},
@@ -187,6 +188,7 @@ class SPICEparser:
                     # Get port definitions for component
                     port_definitions = self._get_layout_port_definitions(line_words[3], self.subcircuits)
 
+                    # Create capacitor component and add extracted parameters
                     capacitor = Capacitor(name=line_words[0],
                                           connections={port_definitions[i]: line_words[i+1] for i in
                                                        range(min(len(port_definitions), len(line_words), 2))},
@@ -197,28 +199,31 @@ class SPICEparser:
 
                 # SKY130_FD_PR_MIM capacitor
                 if re.search(r'sky130_fd_pr__cap_mim', line):
+
+                    # Create capacitor component and add extracted parameters
                     capacitor = SKY130Capacitor(name=line_words[0],
-                                             connections=line_words[1:3],
-                                             layout_name=line_words[3],
-                                             width=int(''.join(re.findall(r'\d+', line_words[4]))),
-                                             length=int(''.join(re.findall(r'\d+', line_words[5]))),
-                                             multiplier_factor=int(''.join(re.findall(r'\d+', line_words[6]))),
-                                             instance_multiplier=int(''.join(re.findall(r'\d+', line_words[7]))))
+                                                connections=line_words[1:3],
+                                                layout_name=line_words[3],
+                                                width=int(''.join(re.findall(r'\d+', line_words[4]))),
+                                                length=int(''.join(re.findall(r'\d+', line_words[5]))),
+                                                multiplier_factor=int(''.join(re.findall(r'\d+', line_words[6]))),
+                                                instance_multiplier=int(''.join(re.findall(r'\d+', line_words[7]))))
 
                     self.components.append(capacitor)
 
                 # SKY130_FD_PR_HIGH_PO resistor
                 if re.search(r'sky130_fd_pr__res_high_po', line):
+
+                    # Create resistor component and add extracted parameters
                     resistor = SKY130Resistor(name=line_words[0],
-                                           connections=line_words[1:4],
-                                           layout_name=line_words[4],
-                                           width=-1,
-                                           length=float(''.join(re.findall(r'\d.', line_words[5]))),
-                                           multiplier_factor=int(''.join(re.findall(r'\d+', line_words[6]))),
-                                           instance_multiplier=int(''.join(re.findall(r'\d+', line_words[7]))))
+                                              connections=line_words[1:4],
+                                              layout_name=line_words[4],
+                                              width=-1,
+                                              length=float(''.join(re.findall(r'\d.', line_words[5]))),
+                                              multiplier_factor=int(''.join(re.findall(r'\d+', line_words[6]))),
+                                              instance_multiplier=int(''.join(re.findall(r'\d+', line_words[7]))))
 
                     self.components.append(resistor)
-
 
             # Check for pins
             if re.match(r'^\*\.', line):

@@ -2,6 +2,8 @@ from dataclasses import dataclass, field
 from typing import List, Dict
 
 # ============================================= Circuit component classes ==============================================
+
+
 @dataclass
 class CircuitComponent:
     name: str
@@ -18,7 +20,6 @@ class Transistor(CircuitComponent):
     library: str
     t_matrix: List[int] = field(default_factory=list)
     b_box: List[int] = field(default_factory=list)
-
 
 
 @dataclass
