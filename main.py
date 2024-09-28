@@ -1,6 +1,6 @@
 from SPICE_parser import SPICEparser
 from Magic_layout_creator import MagicLayoutCreator
-from utilities import TextColor
+from utilities import Text
 from dataclasses import dataclass
 
 
@@ -27,7 +27,7 @@ project_properties = ProjectProperties(directory="~/aicex/ip/jnw_bkle_sky130A/",
                                        standard_libraries=[atr_lib, tr_lib])
 
 if __name__ == '__main__':
-    print(f"{TextColor.INFO} Starting layout generation")
+    print(f"{Text.INFO} Starting layout generation")
     components = SPICEparser(project_properties=project_properties)
     MagicLayoutCreator(project_properties=project_properties, components=components.get())
 

@@ -12,7 +12,7 @@ import os
 import subprocess
 import re
 
-from utilities import TextColor
+from utilities import Text
 from circuit_components import *
 
 # ==================================================== Constants =======================================================
@@ -43,10 +43,10 @@ class SPICEparser:
         try:
             subprocess.run(['make xsch'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True,
                                     check=True, shell=True, cwd=work_directory)
-            print(f"{TextColor.INFO} SPICE file generated from schematic")
+            print(f"{Text.INFO} SPICE file generated from schematic")
 
         except subprocess.CalledProcessError as e:
-            print(f"{TextColor.ERROR}: 'make xsch' command failed with: {e.stderr}")
+            print(f"{Text.ERROR}: 'make xsch' command failed with: {e.stderr}")
 
     def _read_spice_file(self):
 
@@ -59,7 +59,7 @@ class SPICEparser:
                     self.spice_file_content.append(line)
 
         except FileNotFoundError:
-            print(f"{TextColor.ERROR} The file '"
+            print(f"{Text.ERROR} The file '"
                   f"{self.project_directory}work/xsch/{self.project_name}.spice' was not found.")
 
     def _rebuild_spice_lines_with_plus_symbol(self):
@@ -233,7 +233,7 @@ class SPICEparser:
                 pin = Pin(type=pin_type, name=line_words[1])
                 self.components.append(pin)
 
-        print(f"{TextColor.INFO} {len(self.components)} components extracted from SPICE file")
+        print(f"{Text.INFO} {len(self.components)} components extracted from SPICE file")
 
     def get(self) -> list:
         return self.components

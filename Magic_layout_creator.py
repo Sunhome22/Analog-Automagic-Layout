@@ -2,13 +2,14 @@ import os
 import re
 import time
 import SPICE_parser
+import Magic_component_parser
 
-from utilities import TextColor
-
+from utilities import Text
 
 class MagicLayoutCreator:
 
     def __init__(self, project_properties, components):
+        self.project_properties = project_properties
         self.project_name = project_properties.name
         self.project_name_long = project_properties.name_long
         self.project_directory = project_properties.directory
@@ -25,17 +26,9 @@ class MagicLayoutCreator:
         with open(magic_file_path, "w") as file:
             file.write("\n".join(self.magic_file_lines))
 
-        print(f"{TextColor.INFO} Magic file created and written")
+        print(f"{Text.INFO} Magic file created and written")
 
-    def _get_bounding_box_info_for_component(self, component):
-        print(component.library)
-        layout_file_path = os.path.expanduser(f"{self.project_directory}design/"
-                                              f"{component.library}/{component.layout_name}.mag")
 
-    def _get_port_info_from_component(self):
-        pass
-        #with open(layout_file_path, "r") as file:
-        #    file.read()
 
     def place_metal(self, layer):
         pass
@@ -67,9 +60,13 @@ class MagicLayoutCreator:
             i += 500
 
             if isinstance(component, SPICE_parser.Transistor):
-                self._get_bounding_box_info_for_component(component)
-                component.t_matrix = [1, 0, i, 0, 1, 0]  # test
-                component.b_box = [0, 0, 0, 0]
+
+                # Test transformation matrix
+                component.t_matrix = [1, 0, i, 0, 1, 0]
+
+                # Update component attributes with information from it's assosiated magic file
+                component = Magic_component_parser.MagicComponentParser(self.project_properties, component).get_info()
+
                 self.cell_creator(component=component)
 
             if isinstance(component, SPICE_parser.Capacitor):
@@ -90,7 +87,7 @@ class MagicLayoutCreator:
         self.write_magic_file()
 
         # Temporary debugging
-        print(f"\n{TextColor.DEBUG} Components registered:")
+        print(f"\n{Text.DEBUG} Components registered:")
         for item in self.components:
             print(f"- {item}")
 
