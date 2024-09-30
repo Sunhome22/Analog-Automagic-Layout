@@ -7,7 +7,7 @@ from typing import List, Dict
 @dataclass
 class CircuitComponent:
     name: str
-    connections: Dict[str, str]
+    schematic_connections: Dict[str, str]
     layout_name: str
 
 @dataclass
@@ -20,7 +20,7 @@ class Transistor(CircuitComponent):
     library: str
     t_matrix: List[int] = field(default_factory=list)
     b_box: List[int] = field(default_factory=list)
-
+    layout_port_info = List[str | int]
 
 @dataclass
 class Resistor(CircuitComponent):
@@ -28,13 +28,11 @@ class Resistor(CircuitComponent):
     t_matrix: List[int] = field(default_factory=list)
     b_box: List[int] = field(default_factory=list)
 
-
 @dataclass
 class Capacitor(CircuitComponent):
     library: str
     t_matrix: List[int] = field(default_factory=list)
     b_box: List[int] = field(default_factory=list)
-
 
 @dataclass
 class SKY130Capacitor(CircuitComponent):
@@ -45,7 +43,6 @@ class SKY130Capacitor(CircuitComponent):
     t_matrix: List[int] = field(default_factory=list)
     b_box: List[int] = field(default_factory=list)
 
-
 @dataclass
 class SKY130Resistor(CircuitComponent):
     width: float
@@ -54,7 +51,6 @@ class SKY130Resistor(CircuitComponent):
     instance_multiplier: int
     t_matrix: List[int] = field(default_factory=list)
     b_box: List[int] = field(default_factory=list)
-
 
 @dataclass
 class Pin:

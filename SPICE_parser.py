@@ -160,7 +160,7 @@ class SPICEparser:
 
                     # Create transistor component and add extracted parameters
                     transistor = Transistor(name=line_words[0],
-                                            connections={port_definitions[i]: line_words[i+1] for i in
+                                            schematic_connections={port_definitions[i]: line_words[i+1] for i in
                                                          range(min(len(port_definitions), len(line_words), 4))},
                                             layout_name=line_words[5],
                                             library=current_library)
@@ -175,7 +175,7 @@ class SPICEparser:
 
                     # Create resistor component and add extracted parameters
                     resistor = Resistor(name=line_words[0],
-                                        connections={port_definitions[i]: line_words[i+1] for i in
+                                        schematic_connections={port_definitions[i]: line_words[i+1] for i in
                                                      range(min(len(port_definitions), len(line_words), 3))},
                                         layout_name=line_words[4],
                                         library=current_library)
@@ -190,7 +190,7 @@ class SPICEparser:
 
                     # Create capacitor component and add extracted parameters
                     capacitor = Capacitor(name=line_words[0],
-                                          connections={port_definitions[i]: line_words[i+1] for i in
+                                          schematic_connections={port_definitions[i]: line_words[i+1] for i in
                                                        range(min(len(port_definitions), len(line_words), 2))},
                                           layout_name=line_words[3],
                                           library=current_library)
@@ -202,7 +202,7 @@ class SPICEparser:
 
                     # Create capacitor component and add extracted parameters
                     capacitor = SKY130Capacitor(name=line_words[0],
-                                                connections=line_words[1:3],
+                                                schematic_connections=line_words[1:3],
                                                 layout_name=line_words[3],
                                                 width=int(''.join(re.findall(r'\d+', line_words[4]))),
                                                 length=int(''.join(re.findall(r'\d+', line_words[5]))),
@@ -216,7 +216,7 @@ class SPICEparser:
 
                     # Create resistor component and add extracted parameters
                     resistor = SKY130Resistor(name=line_words[0],
-                                              connections=line_words[1:4],
+                                              schematic_connections=line_words[1:4],
                                               layout_name=line_words[4],
                                               width=-1,
                                               length=float(''.join(re.findall(r'\d.', line_words[5]))),

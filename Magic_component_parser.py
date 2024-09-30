@@ -19,26 +19,25 @@ class MagicComponentParser:
                                               f"{self.component.library}/{self.component.layout_name}.mag")
         try:
             with open(layout_file_path, "r") as magic_file:
-                self._get_component_bounding_box_info(magic_file)
-                self._get_component_port_info(magic_file)
+                for line in magic_file:
+                    self._get_component_bounding_box_info(line)
+                    self._get_component_port_info(line)
                 return self.component
 
         except FileNotFoundError:
             print(f"{Text.ERROR} The file {layout_file_path} was not found.")
 
-    def _get_component_bounding_box_info(self, magic_file) -> list:
+    def _get_component_bounding_box_info(self, line) -> list:
 
-        for line in magic_file:
-            if re.search(r'string FIXED_BBOX', line):
-                line_words = line.split()
-                self.component.b_box = line_words[2:6]
+        if re.search(r'string FIXED_BBOX', line):
+            line_words = line.split()
+            self.component.b_box = line_words[2:6]
 
-    def _get_component_port_info(self, magic_file) -> list:
+    def _get_component_port_info(self, line) -> list:
 
-        for line in magic_file:
-            if re.search(r'flabel', line):
-                line_words = line.split()
-                print(line_words)
+        if re.search(r'flabel', line):
+            line_words = line.split()
+            print(line)
 
 
 
