@@ -3,57 +3,56 @@ from typing import List, Dict
 
 # ============================================= Circuit component classes ==============================================
 
+@dataclass
+class LayoutPorts:
+    type: str
+    layer: str
+    size_cords: List[int] # x1, x2, y1, y2
 
 @dataclass
 class CircuitComponent:
-    name: str
-    schematic_connections: Dict[str, str]
-    layout_name: str
-
-@dataclass
-class SubCircuit:
-    layout: str
-    ports: List[str]
+    name: str = field(default_factory=str)
+    schematic_connections: Dict[str, str] = field(default_factory=Dict[str, str])
+    layout_name: str = field(default_factory=str)
+    layout_library: str = field(default_factory=str)
+    layout_ports: List[LayoutPorts] = field(default_factory=list)
+    t_matrix: List[int] = field(default_factory=list[int])
+    b_box: List[int] = field(default_factory=list[int])
 
 @dataclass
 class Transistor(CircuitComponent):
-    library: str
-    t_matrix: List[int] = field(default_factory=list)
-    b_box: List[int] = field(default_factory=list)
-    layout_port_info = List[str | int]
+    pass
 
 @dataclass
 class Resistor(CircuitComponent):
-    library: str
-    t_matrix: List[int] = field(default_factory=list)
-    b_box: List[int] = field(default_factory=list)
+    pass
 
 @dataclass
 class Capacitor(CircuitComponent):
-    library: str
-    t_matrix: List[int] = field(default_factory=list)
-    b_box: List[int] = field(default_factory=list)
+    pass
 
 @dataclass
 class SKY130Capacitor(CircuitComponent):
-    width: int
-    length: int
-    multiplier_factor: int
-    instance_multiplier: int
-    t_matrix: List[int] = field(default_factory=list)
-    b_box: List[int] = field(default_factory=list)
+    width: int = field(default_factory=int)
+    length: int = field(default_factory=int)
+    multiplier_factor: int = field(default_factory=int)
+    instance_multiplier: int = field(default_factory=int)
 
 @dataclass
 class SKY130Resistor(CircuitComponent):
-    width: float
-    length: float
-    multiplier_factor: int
-    instance_multiplier: int
-    t_matrix: List[int] = field(default_factory=list)
-    b_box: List[int] = field(default_factory=list)
+    length: float = field(default_factory=float)
+    multiplier_factor: int = field(default_factory=int)
+    instance_multiplier: int = field(default_factory=int)
 
 @dataclass
 class Pin:
     type: str
     name: str
+
+@dataclass
+class SubCircuit:
+    layout_name: str
+    ports: List[str]
+
+
 

@@ -88,9 +88,7 @@ class SPICEparser:
 
     def _get_subcircuit_port_info_for_standard_libraries(self, line):
         line_words = line.split()
-        subcircuit = SubCircuit(layout=line_words[1],
-                   ports=line_words[2:])
-
+        subcircuit = SubCircuit(layout_name=line_words[1], ports=line_words[2:])
         self.subcircuits.append(subcircuit)
 
     def _remove_expanded_subcircuits_for_standard_libraries(self):
@@ -136,7 +134,7 @@ class SPICEparser:
 
     def _get_layout_port_definitions(self, line_word: str, subcircuits: list):
         for circuit in subcircuits:
-            if re.match(line_word, circuit.layout):
+            if re.match(line_word, circuit.layout_name):
                 return circuit.ports
 
     def parse(self):
@@ -163,7 +161,7 @@ class SPICEparser:
                                             schematic_connections={port_definitions[i]: line_words[i+1] for i in
                                                          range(min(len(port_definitions), len(line_words), 4))},
                                             layout_name=line_words[5],
-                                            library=current_library)
+                                            layout_library=current_library)
 
                     self.components.append(transistor)
 
@@ -178,7 +176,7 @@ class SPICEparser:
                                         schematic_connections={port_definitions[i]: line_words[i+1] for i in
                                                      range(min(len(port_definitions), len(line_words), 3))},
                                         layout_name=line_words[4],
-                                        library=current_library)
+                                        layout_library=current_library)
 
                     self.components.append(resistor)
 
@@ -193,7 +191,7 @@ class SPICEparser:
                                           schematic_connections={port_definitions[i]: line_words[i+1] for i in
                                                        range(min(len(port_definitions), len(line_words), 2))},
                                           layout_name=line_words[3],
-                                          library=current_library)
+                                          layout_library=current_library)
 
                     self.components.append(capacitor)
 
@@ -203,7 +201,8 @@ class SPICEparser:
                     # Create capacitor component and add extracted parameters
                     capacitor = SKY130Capacitor(name=line_words[0],
                                                 schematic_connections=line_words[1:3],
-                                                layout_name=line_words[3],
+                                                layout_name=re.split(r"__", line_words[3])[-1],
+                                                layout_library=re.split(r"__", line_words[3])[0],
                                                 width=int(''.join(re.findall(r'\d+', line_words[4]))),
                                                 length=int(''.join(re.findall(r'\d+', line_words[5]))),
                                                 multiplier_factor=int(''.join(re.findall(r'\d+', line_words[6]))),
@@ -217,8 +216,8 @@ class SPICEparser:
                     # Create resistor component and add extracted parameters
                     resistor = SKY130Resistor(name=line_words[0],
                                               schematic_connections=line_words[1:4],
-                                              layout_name=line_words[4],
-                                              width=-1,
+                                              layout_name=re.split(r"__", line_words[4])[-1],
+                                              layout_library=re.split(r"__", line_words[4])[0],
                                               length=float(''.join(re.findall(r'\d.', line_words[5]))),
                                               multiplier_factor=int(''.join(re.findall(r'\d+', line_words[6]))),
                                               instance_multiplier=int(''.join(re.findall(r'\d+', line_words[7]))))

@@ -36,7 +36,7 @@ class MagicLayoutCreator:
     def cell_creator(self, component):
 
         self.magic_file_lines.extend([
-            f"use {component.layout_name} {component.name} ../{component.library}",
+            f"use {component.layout_name} {component.name} ../{component.layout_library}",
             f"transform {component.t_matrix[0]} {component.t_matrix[1]} {component.t_matrix[2]}"
             f" {component.t_matrix[3]} {component.t_matrix[4]} {component.t_matrix[5]}",
             f"box {component.b_box[0]} {component.b_box[1]} {component.b_box[2]} {component.b_box[3]}"
@@ -64,13 +64,13 @@ class MagicLayoutCreator:
                 # Test transformation matrix
                 component.t_matrix = [1, 0, i, 0, 1, 0]
 
-                # Update component attributes with information from it's assosiated magic file
+                # Update component attributes with information from it's associated magic file
                 component = Magic_component_parser.MagicComponentParser(self.project_properties, component).get_info()
 
                 self.cell_creator(component=component)
 
             if isinstance(component, SPICE_parser.Capacitor):
-                self.magic_file_lines.append(f"use {component.layout_name} {component.name} ../{component.library}")
+                self.magic_file_lines.append(f"use {component.layout_name} {component.name} ../{component.layout_library}")
                 self.magic_file_lines.append(f"transform 1 0 0 0 1 0")
                 self.magic_file_lines.append(f"box 0 0 0 0")
 
