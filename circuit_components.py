@@ -16,6 +16,7 @@ class TransformMatrix:
     def set(self, params: list):
         self.a, self.b, self.c, self.d, self.e, self.f = params
 
+
 @dataclass
 class RectArea:
     x1: int = field(default_factory=int)
@@ -26,15 +27,18 @@ class RectArea:
     def set(self, params: list):
         self.x1, self.y1, self.x2, self.y2 = params
 
+
 @dataclass
 class SubCircuit:
     layout_name: str
     ports: List[str]
 
+
 @dataclass
 class Pin:
     type: str
     name: str
+
 
 @dataclass
 class LayoutPort:
@@ -61,17 +65,21 @@ class CircuitComponent:
     transform_matrix: TransformMatrix = field(default_factory=TransformMatrix)
     bounding_box: RectArea = field(default_factory=RectArea)
 
+
 @dataclass
 class Transistor(CircuitComponent):
     pass
+
 
 @dataclass
 class Resistor(CircuitComponent):
     pass
 
+
 @dataclass
 class Capacitor(CircuitComponent):
     pass
+
 
 @dataclass
 class SKY130Capacitor(CircuitComponent):
@@ -79,6 +87,7 @@ class SKY130Capacitor(CircuitComponent):
     length: int = field(default_factory=int)
     multiplier_factor: int = field(default_factory=int)
     instance_multiplier: int = field(default_factory=int)
+
 
 @dataclass
 class SKY130Resistor(CircuitComponent):

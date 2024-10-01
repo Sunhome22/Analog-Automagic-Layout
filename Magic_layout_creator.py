@@ -6,6 +6,9 @@ import Magic_component_parser
 from circuit_components import RectArea
 from utilities import Text
 from typing import List
+from text_string_to_pixel_boxes import get_text_pixel_boxes
+
+
 class MagicLayoutCreator:
 
     def __init__(self, project_properties, components):
@@ -28,16 +31,20 @@ class MagicLayoutCreator:
 
         print(f"{Text.INFO} Magic file created and written")
 
+    def place_text(self, layer: str, text: str):
+        pixel_boxes = get_text_pixel_boxes(text)
 
-    def place_metal_box(self, layer: str, area_params: List[int]):
+        for box in pixel_boxes:
+            self.place_box(layer, [box[0], box[1], box[2], box[3]])
+
+    def place_box(self, layer: str, area: List[int]):
         rect_area = RectArea()
-        rect_area.set(area_params)
+        rect_area.set(area)
 
         self.magic_file_lines.extend([
             f"<< {layer} >>",
             f"rect {rect_area.x1} {rect_area.y1} {rect_area.x2} {rect_area.y2}"
         ])
-
 
     def cell_creator(self, component):
 
@@ -62,24 +69,26 @@ class MagicLayoutCreator:
             "rect 0 0 0 0"  # Rectangle completely covering everything in the cell. TBD!
         ])
 
-        i = 0
+        i = 1000
         for component in self.components:
 
             # Test placing
             if isinstance(component, (SPICE_parser.Transistor, SPICE_parser.Capacitor, SPICE_parser.Resistor)):
-                i += 1200
+                i += 1500
 
                 # Update component attributes with information from it's associated magic file
                 component = Magic_component_parser.MagicComponentParser(self.project_properties, component).get_info()
 
                 # Test transformation matrix
-                component.transform_matrix.set([1, 0, i, 0, 1, 0])
-
+                component.transform_matrix.set([1, 0, i, 0, 1, 1000])
                 self.cell_creator(component=component)
 
-        # Test placing
-        self.place_metal_box('m2', [100, 100, 200, 1500])
+        self.place_text("m2", "SOLHEIM OG TONNESLAND")
 
+        # Test placing
+        # self.place_box('m2', [0, 0, 100, 1500])
+        # self.place_box('m1', [0, 1400, 1500, 1500])
+        # self.place_box('viali', [10, 1410, 90, 1490])  # viali
 
         # Labels and properties
         self.magic_file_lines.extend([

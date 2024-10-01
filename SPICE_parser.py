@@ -11,7 +11,7 @@
 import os
 import subprocess
 import re
-
+import circuit_components
 from utilities import Text
 from circuit_components import *
 
@@ -57,6 +57,7 @@ class SPICEparser:
             with open(spice_file_path, "r") as spice_file:
                 for line in spice_file:
                     self.spice_file_content.append(line)
+                print(f"{Text.INFO} SPICE content copied into memory")
 
         except FileNotFoundError:
             print(f"{Text.ERROR} The file '"
@@ -64,7 +65,6 @@ class SPICEparser:
 
     def _rebuild_spice_lines_with_plus_symbol(self):
         # Removes added "+" symbols to long lines in the SPICE file
-
         updated_spice_lines = []
         previous_line = ""
 
@@ -72,7 +72,7 @@ class SPICEparser:
 
             if re.match(r'^\+', line):
                 # Removes "+", any trailing/leading space and '\n' from previous line
-                previous_line = previous_line.strip() +" "+ line[1:].strip()
+                previous_line = previous_line.strip() + " " + line[1:].strip()
 
             else:
                 # Append when previous line has content
@@ -86,10 +86,14 @@ class SPICEparser:
 
         self.spice_file_content = updated_spice_lines
 
+        print(f"{Text.INFO} SPICE lines with '+' symbols rebuilt")
+
     def _get_subcircuit_port_info_for_standard_libraries(self, line):
         line_words = line.split()
         subcircuit = SubCircuit(layout_name=line_words[1], ports=line_words[2:])
         self.subcircuits.append(subcircuit)
+
+        print(f"{Text.INFO} SPICE subcircuit port info extracted for {subcircuit.layout_name}")
 
     def _remove_expanded_subcircuits_for_standard_libraries(self):
         in_expanded_symbol = False
@@ -106,7 +110,6 @@ class SPICEparser:
 
                 # Retrieve specific subcircuit port information before deletion
                 self._get_subcircuit_port_info_for_standard_libraries(line)
-
                 in_expanded_symbol = True
 
             elif re.match(r'^\.ends', line.strip()) and in_expanded_symbol:
@@ -116,6 +119,8 @@ class SPICEparser:
                 updated_spice_lines.append(line.strip())
 
         self.spice_file_content = updated_spice_lines
+
+        print(f"{Text.INFO} SPICE expanded subcircuits for standard libraries removed")
 
     def _get_current_component_library(self, spice_file_line_words):
         library_names = []
@@ -136,6 +141,8 @@ class SPICEparser:
         for circuit in subcircuits:
             if re.match(line_word, circuit.layout_name):
                 return circuit.ports
+
+        print(f"{Text.ERROR} Port definition not found for {line_word}")
 
     def parse(self):
         self._generate_spice_file_for_schematic()
@@ -232,7 +239,10 @@ class SPICEparser:
                 pin = Pin(type=pin_type, name=line_words[1])
                 self.components.append(pin)
 
-        print(f"{Text.INFO} {len(self.components)} components extracted from SPICE file")
+        for component in self.components:
+            print(f"{Text.INFO} Component '{component.__class__.__name__}' named '{component.name}' found")
+
+        print(f"{Text.INFO} Components extracted from SPICE file: {len(self.components)}")
 
     def get(self) -> list:
         return self.components

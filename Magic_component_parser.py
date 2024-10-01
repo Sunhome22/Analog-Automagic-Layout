@@ -24,6 +24,11 @@ class MagicComponentParser:
                 for line in magic_file:
                     self._get_component_bounding_box_info(line)
                     self._get_component_port_info(line)
+
+                print(f"{Text.INFO} Magic layout port and bouding box info extracted for "
+                      f"'{self.component.__class__.__name__}' named '{self.component.name}' with "
+                      f"layout '{self.component.layout_name}'")
+
                 return self.component
 
         except FileNotFoundError:
