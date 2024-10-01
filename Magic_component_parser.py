@@ -1,6 +1,9 @@
 import os
 import re
+
+from circuit_components import LayoutPort
 from utilities import Text
+
 
 class MagicComponentParser:
     def __init__(self, project_properties, component):
@@ -30,17 +33,14 @@ class MagicComponentParser:
 
         if re.search(r'string FIXED_BBOX', line):
             line_words = line.split()
-            self.component.b_box = list(map(int, line_words[2:6]))
+            self.component.bounding_box.set(map(int, line_words[2:6]))
 
     def _get_component_port_info(self, line: str):
 
         if re.search(r'flabel', line):
-            self.component.layout_ports[0].type = "to"
             line_words = line.split()
-            print(line)
 
+            layout_port = LayoutPort(type=line_words[-1], layer=line_words[1], area_params=[
+                int(line_words[3]), int(line_words[4]), int(line_words[5]), int(line_words[6])])
 
-
-
-        # with open(layout_file_path, "r") as file:
-        #    file.read()
+            self.component.layout_ports.append(layout_port)

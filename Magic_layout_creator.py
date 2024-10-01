@@ -3,9 +3,9 @@ import re
 import time
 import SPICE_parser
 import Magic_component_parser
-
+from circuit_components import RectArea
 from utilities import Text
-
+from typing import List
 class MagicLayoutCreator:
 
     def __init__(self, project_properties, components):
@@ -29,17 +29,25 @@ class MagicLayoutCreator:
         print(f"{Text.INFO} Magic file created and written")
 
 
+    def place_metal_box(self, layer: str, area_params: List[int]):
+        rect_area = RectArea()
+        rect_area.set(area_params)
 
-    def place_metal(self, layer):
-        pass
+        self.magic_file_lines.extend([
+            f"<< {layer} >>",
+            f"rect {rect_area.x1} {rect_area.y1} {rect_area.x2} {rect_area.y2}"
+        ])
+
 
     def cell_creator(self, component):
 
         self.magic_file_lines.extend([
             f"use {component.layout_name} {component.name} ../{component.layout_library}",
-            f"transform {component.t_matrix[0]} {component.t_matrix[1]} {component.t_matrix[2]}"
-            f" {component.t_matrix[3]} {component.t_matrix[4]} {component.t_matrix[5]}",
-            f"box {component.b_box[0]} {component.b_box[1]} {component.b_box[2]} {component.b_box[3]}"
+            f"transform {component.transform_matrix.a} {component.transform_matrix.b}"
+            f" {component.transform_matrix.c} {component.transform_matrix.d}"
+            f" {component.transform_matrix.e} {component.transform_matrix.f}",
+            f"box {component.bounding_box.x1} {component.bounding_box.y1} {component.bounding_box.x2}"
+            f" {component.bounding_box.y2}"
         ])
 
     def file_creator(self):
@@ -55,24 +63,22 @@ class MagicLayoutCreator:
         ])
 
         i = 0
-
         for component in self.components:
-            i += 500
 
-            if isinstance(component, SPICE_parser.Transistor):
-
-                # Test transformation matrix
-                component.t_matrix = [1, 0, i, 0, 1, 0]
+            # Test placing
+            if isinstance(component, (SPICE_parser.Transistor, SPICE_parser.Capacitor, SPICE_parser.Resistor)):
+                i += 1200
 
                 # Update component attributes with information from it's associated magic file
                 component = Magic_component_parser.MagicComponentParser(self.project_properties, component).get_info()
 
+                # Test transformation matrix
+                component.transform_matrix.set([1, 0, i, 0, 1, 0])
+
                 self.cell_creator(component=component)
 
-            if isinstance(component, SPICE_parser.Capacitor):
-                self.magic_file_lines.append(f"use {component.layout_name} {component.name} ../{component.layout_library}")
-                self.magic_file_lines.append(f"transform 1 0 0 0 1 0")
-                self.magic_file_lines.append(f"box 0 0 0 0")
+        # Test placing
+        self.place_metal_box('m2', [100, 100, 200, 1500])
 
 
         # Labels and properties
@@ -84,6 +90,7 @@ class MagicLayoutCreator:
         # Bottom of magic file template
         self.magic_file_lines.append("<< end >>")
 
+        # Write everything
         self.write_magic_file()
 
         # Temporary debugging

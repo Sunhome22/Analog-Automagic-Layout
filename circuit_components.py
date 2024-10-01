@@ -1,13 +1,55 @@
 from dataclasses import dataclass, field
 from typing import List, Dict
 
-# ============================================= Circuit component classes ==============================================
+
+# ================================================ Misc. classes =======================================================
 
 @dataclass
-class LayoutPorts:
+class TransformMatrix:
+    a: int = field(default_factory=int)
+    b: int = field(default_factory=int)
+    c: int = field(default_factory=int)
+    d: int = field(default_factory=int)
+    e: int = field(default_factory=int)
+    f: int = field(default_factory=int)
+
+    def set(self, params: list):
+        self.a, self.b, self.c, self.d, self.e, self.f = params
+
+@dataclass
+class RectArea:
+    x1: int = field(default_factory=int)
+    y1: int = field(default_factory=int)
+    x2: int = field(default_factory=int)
+    y2: int = field(default_factory=int)
+
+    def set(self, params: list):
+        self.x1, self.y1, self.x2, self.y2 = params
+
+@dataclass
+class SubCircuit:
+    layout_name: str
+    ports: List[str]
+
+@dataclass
+class Pin:
+    type: str
+    name: str
+
+@dataclass
+class LayoutPort:
     type: str
     layer: str
-    size_cords: List[int] # x1, x2, y1, y2
+    area: RectArea
+
+    def __init__(self, type: str, layer: str, area_params: List[int]):
+        self.type = type
+        self.layer = layer
+        self.area = RectArea()  # Initialize area as a new RectArea instance
+        self.area.set(area_params)
+
+
+# ============================================= Circuit component classes ==============================================
 
 @dataclass
 class CircuitComponent:
@@ -15,9 +57,9 @@ class CircuitComponent:
     schematic_connections: Dict[str, str] = field(default_factory=Dict[str, str])
     layout_name: str = field(default_factory=str)
     layout_library: str = field(default_factory=str)
-    layout_ports: List[LayoutPorts] = field(default_factory=list)
-    t_matrix: List[int] = field(default_factory=list[int])
-    b_box: List[int] = field(default_factory=list[int])
+    layout_ports: List[LayoutPort] = field(default_factory=list)
+    transform_matrix: TransformMatrix = field(default_factory=TransformMatrix)
+    bounding_box: RectArea = field(default_factory=RectArea)
 
 @dataclass
 class Transistor(CircuitComponent):
@@ -44,15 +86,7 @@ class SKY130Resistor(CircuitComponent):
     multiplier_factor: int = field(default_factory=int)
     instance_multiplier: int = field(default_factory=int)
 
-@dataclass
-class Pin:
-    type: str
-    name: str
 
-@dataclass
-class SubCircuit:
-    layout_name: str
-    ports: List[str]
 
 
 
