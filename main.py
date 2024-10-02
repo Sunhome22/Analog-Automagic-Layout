@@ -1,8 +1,8 @@
-from SPICE_parser import SPICEparser
+from SPICE_parser import SPICEparser, Transistor, Capacitor, Resistor
 from Magic_layout_creator import MagicLayoutCreator
 from utilities import Text
 from dataclasses import dataclass
-
+from Magic_component_parser import MagicComponentsParser
 
 @dataclass
 class ProjectProperties:
@@ -26,10 +26,23 @@ project_properties = ProjectProperties(directory="~/aicex/ip/jnw_bkle_sky130A/",
                                        name_long="JNW_BKLE_SKY130A",
                                        standard_libraries=[atr_lib, tr_lib])
 
+
 if __name__ == '__main__':
     print(f"{Text.INFO} Starting layout generation")
+
+    # Extracts component information from SPICE file
     components = SPICEparser(project_properties=project_properties)
-    MagicLayoutCreator(project_properties=project_properties, components=components.get())
+
+    # Update component attributes with information from it's associated Magic files
+    components = MagicComponentsParser(project_properties=project_properties, components=components.get_info()).get_info()
+
+    # Create layout
+    MagicLayoutCreator(project_properties=project_properties, components=components)
+
+    # Temporary debugging
+    print(f"\n{Text.DEBUG} Components registered:")
+    for component in components:
+        print(f"- {component}")
 
 
 

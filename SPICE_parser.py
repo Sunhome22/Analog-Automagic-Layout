@@ -244,7 +244,7 @@ class SPICEparser:
 
         print(f"{Text.INFO} Components extracted from SPICE file: {len(self.components)}")
 
-    def get(self) -> list:
+    def get_info(self) -> list:
         return self.components
 
 

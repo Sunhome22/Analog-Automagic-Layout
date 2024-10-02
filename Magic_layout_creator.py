@@ -1,13 +1,9 @@
 import os
-import re
 import time
-import SPICE_parser
-import Magic_component_parser
-from circuit_components import RectArea
+from circuit_components import RectArea, Transistor, Capacitor, Resistor
 from utilities import Text
 from typing import List
-from text_string_to_pixel_boxes import get_text_pixel_boxes
-
+from Magic_drawer import get_pixel_boxes_from_text, get_black_white_pixel_boxes_from_image
 
 class MagicLayoutCreator:
 
@@ -31,11 +27,30 @@ class MagicLayoutCreator:
 
         print(f"{Text.INFO} Magic file created and written")
 
+    def place_black_white_picture(self, image_path: str):
+        black_pixels, white_pixels = get_black_white_pixel_boxes_from_image(image_path)
+
+        self.magic_file_lines.append(f"<< m1 >>")
+        for box in black_pixels:
+            rect_area = RectArea()
+            rect_area.set(box)
+            self.magic_file_lines.append(f"rect {rect_area.x1} {rect_area.y1} {rect_area.x2} {rect_area.y2}")
+
+        self.magic_file_lines.append(f"<< m2 >>")
+        for box in white_pixels:
+            rect_area = RectArea()
+            rect_area.set(box)
+            self.magic_file_lines.append(f"rect {rect_area.x1} {rect_area.y1} {rect_area.x2} {rect_area.y2}")
+
     def place_text(self, layer: str, text: str):
-        pixel_boxes = get_text_pixel_boxes(text)
+        pixel_boxes = get_pixel_boxes_from_text(text)
+
+        self.magic_file_lines.append(f"<< {layer} >>")
 
         for box in pixel_boxes:
-            self.place_box(layer, [box[0], box[1], box[2], box[3]])
+            rect_area = RectArea()
+            rect_area.set(box)
+            self.magic_file_lines.append(f"rect {rect_area.x1} {rect_area.y1} {rect_area.x2} {rect_area.y2}")
 
     def place_box(self, layer: str, area: List[int]):
         rect_area = RectArea()
@@ -57,9 +72,7 @@ class MagicLayoutCreator:
             f" {component.bounding_box.y2}"
         ])
 
-    def file_creator(self):
-
-        # Top of magic file template
+    def magic_file_top_template(self):
         self.magic_file_lines.extend([
             "magic",
             "tech sky130A",
@@ -69,26 +82,33 @@ class MagicLayoutCreator:
             "rect 0 0 0 0"  # Rectangle completely covering everything in the cell. TBD!
         ])
 
+    def file_creator(self):
+        self.magic_file_top_template()
+
+        # Just for testing from here:
         i = 1000
+
         for component in self.components:
 
-            # Test placing
-            if isinstance(component, (SPICE_parser.Transistor, SPICE_parser.Capacitor, SPICE_parser.Resistor)):
+            if isinstance(component, (Transistor, Capacitor, Resistor)):
+                # Test placing
                 i += 1500
 
-                # Update component attributes with information from it's associated magic file
-                component = Magic_component_parser.MagicComponentParser(self.project_properties, component).get_info()
-
                 # Test transformation matrix
-                component.transform_matrix.set([1, 0, i, 0, 1, 1000])
+                component.transform_matrix.set([1, 0, i, 0, 1, 1500])
                 self.cell_creator(component=component)
 
-        self.place_text("m2", "SOLHEIM OG TONNESLAND")
+        #self.place_text("m2", "(╯°□°)╯︵ ┻━┻")
+        #self.place_black_white_picture("Carsten Wulff Picture.jpg")
 
-        # Test placing
-        # self.place_box('m2', [0, 0, 100, 1500])
-        # self.place_box('m1', [0, 1400, 1500, 1500])
-        # self.place_box('viali', [10, 1410, 90, 1490])  # viali
+        #self.place_box('m2', [0, 0, 100, 1500])
+        #self.place_box('m1', [0, 1400, 1500, 1500])
+        #self.place_box('viali', [10, 1500, 100, 1500])
+
+        # Spørre Carsten om JSON format og teknologi avhengige komponenter sann som SKY130 transistorane osv.
+        # Gir det meining å ha i det heile?
+
+        # To here!
 
         # Labels and properties
         self.magic_file_lines.extend([
@@ -99,11 +119,7 @@ class MagicLayoutCreator:
         # Bottom of magic file template
         self.magic_file_lines.append("<< end >>")
 
-        # Write everything
+        # Write everything to file
         self.write_magic_file()
 
-        # Temporary debugging
-        print(f"\n{Text.DEBUG} Components registered:")
-        for item in self.components:
-            print(f"- {item}")
 
