@@ -1,3 +1,5 @@
+import pulp
+
 class Node():
     """A node class for A* Pathfinding"""
 
@@ -55,7 +57,6 @@ def astar(maze, start, end):
 
         # Generate children
         children = []
-       # for new_position in [(0, -1), (0, 1), (-1, 0), (1, 0), (-1, -1), (-1, 1), (1, -1), (1, 1)]:
         for new_position in [(0, -1), (0, 1), (-1, 0), (1, 0)]: # Adjacent squares
 
             # Get node position
@@ -98,3 +99,20 @@ def astar(maze, start, end):
             open_list.append(child)
 
 
+def initiate_astar(grid, x, y, width, height, connections, center):
+    path = []
+
+    for connect in connections:
+        if center:
+            start = (int(pulp.value(x[connect[0]]) + pulp.value(width[connect[0]]) // 2),
+                     int(pulp.value(y[connect[0]]) + pulp.value(height[connect[0]]) // 2))
+            end = (int(pulp.value(x[connect[1]]) + pulp.value(width[connect[1]]) // 2),
+                   int(pulp.value(y[connect[1]]) + pulp.value(height[connect[1]]) // 2))
+            print(start, end)
+        else:
+            start = (int(pulp.value(x[connect[0]])), int(pulp.value(y[connect[0]])))
+            end = (int(pulp.value(x[connect[1]])), int(pulp.value(y[connect[1]])))
+
+        path.append(astar(grid, start, end))
+
+    return path
