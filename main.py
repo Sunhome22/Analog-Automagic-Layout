@@ -26,7 +26,9 @@ project_properties = ProjectProperties(directory="~/aicex/ip/jnw_bkle_sky130A/",
                                        name_long="JNW_BKLE_SKY130A",
                                        standard_libraries=[atr_lib, tr_lib])
 
+
 def main():
+
     print(f"{Text.INFO} Starting layout generation")
 
     # Extracts component information from SPICE file
@@ -39,8 +41,8 @@ def main():
     # Save found components to JSON file
     save_to_json(objects=components, file_name="components")
 
-    # Read JSON data
-    load_from_json(file_name="components")
+    # Read JSON file
+    # load_from_json(file_name="components")
 
     # Create layout
     MagicLayoutCreator(project_properties=project_properties, components=components)

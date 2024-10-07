@@ -98,7 +98,7 @@ class MagicLayoutCreator:
                 component.transform_matrix.set([1, 0, i, 0, 1, 1500])
                 self.cell_creator(component=component)
 
-        #self.place_black_white_picture("Carsten Wulff Picture.jpg")
+        self.place_black_white_picture("Carsten Wulff Picture.jpg")
 
         #self.place_box('m2', [0, 0, 100, 1500])
         #self.place_box('m1', [0, 1400, 1500, 1500])
