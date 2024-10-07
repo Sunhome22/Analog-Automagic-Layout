@@ -6,6 +6,21 @@ from SimplifyPath import *
 from LPplacement import *
 from circuit_components import *
 
+@dataclass
+class Connection:
+    starting_comp: str
+    starting_area: str
+    end_comp: str
+    end_area: str
+    net: str
+
+    def __init__(self, starting_comp: str, starting_area: str, end_comp: str, end_area: str, net: str):
+        self.starting_comp = starting_comp
+        self.starting_area = starting_area
+        self.end_comp = end_comp
+        self.end_area = end_area
+        self.net = net
+
 def draw_result(grid_size, objects, paths, height, width, x, y):
     # set up plot
     fix, ax = plt.subplots(figsize=(10, 10))
@@ -80,12 +95,30 @@ def get_key(val, dict):
 
     return "key doesn't exist"
 
+def remove_duplicates_from_list(dict):
+    temp = {}
+
+    for key, value in dict.items():
+        if value not in temp.values():
+            temp[key] = value
+
+    return temp
+
+def local_nets(local_connection_list):
+    local_connection_nets = {}
+
+    for local_conn in local_connection_list:
+
+        local_connection_nets[local_connection_list[local_conn].starting_comp]={ local_connection_list[local_conn].starting_area + local_connection_list[local_conn].end_area}
+    return local_connection_nets
 
 def connection_list(objects):
-    con = []
+
     object_list = objects
-
-
+    connections = {}
+    local_connections = {}
+    local_connection_area = {}
+    i = 0
     for  obj in object_list:
         ports = obj.schematic_connections
 
@@ -93,25 +126,59 @@ def connection_list(objects):
             for key2 in ports:
 
                 if key != key2:
-                    if ports[key] == ports[key2]:
-                        con.append([obj.name, key, obj.name, key2, ports[key]])
-
-
-
+                    entry = [{'starting_comp':obj.name,  'starting_area':key, 'end_comp':obj.name, 'end_area':key2, 'net':ports[key]}, {'starting_comp': obj.name,  'starting_area':key2, 'end_comp':obj.name, 'end_area':key, 'net':ports[key]}]
+                    if ports[key] == ports[key2] and not any(isinstance(obj, Connection) and obj.__dict__ == target for target in entry for obj in local_connections.values()):
+                        local_connections[i]= Connection(obj.name, key, obj.name, key2, ports[key])
+                        i+=1
+        local_connection_area = local_nets(local_connections)
+    i=0
+    for obj in object_list:
         for obj2 in object_list:
-            ports2 = obj2.schematic_connections
             ports = obj.schematic_connections
+            ports2 = obj2.schematic_connections
+
 
             if obj != obj2:
 
                 for key in ports:
+                    element_appended = False
                     for key2 in ports2:
+                        key_u1 = key
+                        key_u2 = key2
+                        if ports[key] == ports2[key2]:
 
-                        if ports[key] == ports2[key]:
+                            for local_con in local_connections:
 
-                            con.append([obj.name,key,obj2.name, key2, ports[key]])
-                            print(con)
-        object_list.pop(0)
+                                area = local_connections[local_con].starting_area + local_connections[local_con].end_area
+
+                                if obj.name == local_connections[local_con].starting_comp and (key == area[0] or key == area[1]):
+                                    key_u1 = area
+
+
+                                if obj2.name == local_connections[local_con].starting_comp and (key2 == area[0] or key2 == area[1]):
+                                    key_u2 = area
+
+
+                            entry = [{'starting_comp': obj.name, 'starting_area': key_u1, 'end_comp': obj2.name,
+                                      'end_area': key_u2, 'net': ports[key]},
+                                     {'starting_comp': obj2.name, 'starting_area': key_u2, 'end_comp': obj.name,
+                                      'end_area': key_u1, 'net': ports[key]}]
+
+                            if not any(isinstance(obj, Connection) and obj.__dict__ == target for target in entry for obj in connections.values()):
+
+                                connections[i] = Connection(obj.name,key_u1,obj2.name, key_u2, ports[key])
+                                i+=1
+                            element_appended = True
+
+
+                    if not element_appended:
+                        connections[i] =  Connection(obj.name, key, "", "", ports[key])
+                        i += 1
+
+    connections = remove_duplicates_from_list(connections)
+
+
+    return local_connections, connections
 
 
 
@@ -143,19 +210,18 @@ bounding_box=RectArea(0, 0, 512, 400))
 
 
     objects = [M1, M2]
-    connection_list(objects)
-    connections = [('A', 'B'), ('B', 'C'), ('C','D'), ('E','F'), ('F','G'), ('G','H'), ('H','I'), ('D','B'), ('A','I'), ('F','C')]
+    local_connections, connections = connection_list(objects)
+
     center = True
     clean_path = True
     # Object parameters
 
-    height = {'A': 10, 'B': 10, 'C': 10, 'D': 10, 'E': 10, 'F': 10, 'G': 10, 'H': 10, 'I': 10}
-    width = {'A': 10, 'B': 10, 'C': 10, 'D': 10, 'E': 10, 'F': 10, 'G': 10, 'H': 10, 'I': 10}
+
 
     # space between objects
     print("[INFO]: Starting Linear Optimization")
-    #result =  LinearOptimizationSolver(objects, connections, grid_size, height, width, padding)
-   # x, y, new_width, new_height = result.initiate_solver()
+    result =  LinearOptimizationSolver(objects, connections, local_connections, grid_size, padding)
+    objects = result.initiate_solver()
     print("[INFO]: Finished Linear Optimization")
     print("[INFO]: Starting Grid Generation")
     #grid = generate_grid(grid_size, objects, new_height, new_width, x, y, center)

@@ -6,22 +6,29 @@ from SimplifyPath import *
 
 
 class LinearOptimizationSolver:
-    def __init__(self, objects, connections, grid_size, height, width, padding):
+    def __init__(self, object_info, connections, local_connections, grid_size, padding):
         self.problem_space = pulp.LpProblem("ObjectPlacementWithSizes", pulp.LpMinimize)
         self.solver = pulp.PULP_CBC_CMD(msg=True, threads=50, timeLimit=300)
 
-        self.objects = objects
+        self.object_info = object_info
+        self.objects = []
+
+
+        for obj in self.object_info:
+            self.objects.append(obj.name)
+        print(self.objects)
+
         self.connections = connections
+        self.local_connections = local_connections
         self.grid_size = grid_size
-        self.height = height
-        self.width = width
+
         self.padding = padding
 
         self.rotated_width = {}
         self.rotated_height = {}
 
-        self.x = pulp.LpVariable.dicts("x", objects, 0, grid_size-1, cat='Integer')
-        self.y = pulp.LpVariable.dicts("y", objects, 0, grid_size-1, cat='Integer')
+        self.x = pulp.LpVariable.dicts("x", self.objects, 0, grid_size-1, cat='Integer')
+        self.y = pulp.LpVariable.dicts("y", self.objects, 0, grid_size-1, cat='Integer')
         self.x_min = pulp.LpVariable("x_min", lowBound=0)
         self.x_max = pulp.LpVariable("x_max", lowBound=0)
         self.y_min = pulp.LpVariable("y_min", lowBound=0)
@@ -31,8 +38,9 @@ class LinearOptimizationSolver:
 
 
 
+
     def constraint_rotation(self):
-        for o1 in self.objects:
+        for o1 in self.objects.keys():
             # Decision variables: rotation
             r0 = pulp.LpVariable(f"r0_{o1}", cat='Binary')
             r90 = pulp.LpVariable(f"r90_{o1}", self.objects, cat='Binary')

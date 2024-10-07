@@ -38,6 +38,7 @@
   "keyToString": {
     "Python.AstarPathAlgorithm.executor": "Run",
     "Python.LP placement.executor": "Run",
+    "Python.LPplacement.executor": "Run",
     "Python.Main.executor": "Run",
     "Python.Placement Astar test.executor": "Run",
     "Python.Placement test.executor": "Run",
@@ -49,7 +50,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "git-widget-placeholder": "Leidulv",
     "last_opened_file_path": "D:/leto/Analog-Automagic-Layout",
-    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
+    "settings.editor.selected.configurable": "configurable.group.build"
   }
 }]]></component>
   <component name="SharedIndexes">
