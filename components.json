@@ -1,0 +1,340 @@
+[
+    {
+        "__class__": "Pin",
+        "type": "ipin",
+        "name": "IBPS_2U"
+    },
+    {
+        "__class__": "Pin",
+        "type": "ipin",
+        "name": "VSS"
+    },
+    {
+        "__class__": "Pin",
+        "type": "opin",
+        "name": "IBNS_20U"
+    },
+    {
+        "__class__": "Transistor",
+        "name": "x1",
+        "schematic_connections": {
+            "D": "IBNS_20U",
+            "G": "IBPS_2U",
+            "S": "VSS",
+            "B": "VSS"
+        },
+        "layout_name": "JNWATR_NCH_12C1F2",
+        "layout_library": "JNW_ATR_SKY130A",
+        "layout_ports": [
+            {
+                "__class__": "LayoutPort",
+                "type": "G",
+                "layer": "m1",
+                "area": {
+                    "__class__": "RectArea",
+                    "x1": 80,
+                    "y1": 180,
+                    "x2": 112,
+                    "y2": 220
+                }
+            },
+            {
+                "__class__": "LayoutPort",
+                "type": "S",
+                "layer": "m1",
+                "area": {
+                    "__class__": "RectArea",
+                    "x1": 144,
+                    "y1": 300,
+                    "x2": 240,
+                    "y2": 340
+                }
+            },
+            {
+                "__class__": "LayoutPort",
+                "type": "B",
+                "layer": "locali",
+                "area": {
+                    "__class__": "RectArea",
+                    "x1": -48,
+                    "y1": 180,
+                    "x2": 48,
+                    "y2": 220
+                }
+            },
+            {
+                "__class__": "LayoutPort",
+                "type": "D",
+                "layer": "m1",
+                "area": {
+                    "__class__": "RectArea",
+                    "x1": 592,
+                    "y1": 20,
+                    "x2": 688,
+                    "y2": 60
+                }
+            }
+        ],
+        "transform_matrix": {
+            "__class__": "TransformMatrix",
+            "a": 0,
+            "b": 0,
+            "c": 0,
+            "d": 0,
+            "e": 0,
+            "f": 0
+        },
+        "bounding_box": {
+            "__class__": "RectArea",
+            "x1": 0,
+            "y1": 0,
+            "x2": 832,
+            "y2": 400
+        }
+    },
+    {
+        "__class__": "Transistor",
+        "name": "x2",
+        "schematic_connections": {
+            "D": "IBPS_2U",
+            "G": "IBPS_2U",
+            "S": "VSS",
+            "B": "VSS"
+        },
+        "layout_name": "JNWATR_NCH_2C1F2",
+        "layout_library": "JNW_ATR_SKY130A",
+        "layout_ports": [
+            {
+                "__class__": "LayoutPort",
+                "type": "G",
+                "layer": "m1",
+                "area": {
+                    "__class__": "RectArea",
+                    "x1": 80,
+                    "y1": 180,
+                    "x2": 112,
+                    "y2": 220
+                }
+            },
+            {
+                "__class__": "LayoutPort",
+                "type": "S",
+                "layer": "m1",
+                "area": {
+                    "__class__": "RectArea",
+                    "x1": 144,
+                    "y1": 300,
+                    "x2": 240,
+                    "y2": 340
+                }
+            },
+            {
+                "__class__": "LayoutPort",
+                "type": "B",
+                "layer": "locali",
+                "area": {
+                    "__class__": "RectArea",
+                    "x1": -48,
+                    "y1": 180,
+                    "x2": 48,
+                    "y2": 220
+                }
+            },
+            {
+                "__class__": "LayoutPort",
+                "type": "D",
+                "layer": "m1",
+                "area": {
+                    "__class__": "RectArea",
+                    "x1": 272,
+                    "y1": 20,
+                    "x2": 368,
+                    "y2": 60
+                }
+            }
+        ],
+        "transform_matrix": {
+            "__class__": "TransformMatrix",
+            "a": 0,
+            "b": 0,
+            "c": 0,
+            "d": 0,
+            "e": 0,
+            "f": 0
+        },
+        "bounding_box": {
+            "__class__": "RectArea",
+            "x1": 0,
+            "y1": 0,
+            "x2": 512,
+            "y2": 400
+        }
+    },
+    {
+        "__class__": "Capacitor",
+        "name": "x4",
+        "schematic_connections": {
+            "A": "net1",
+            "B": "net2"
+        },
+        "layout_name": "JNWTR_CAPX1",
+        "layout_library": "JNW_TR_SKY130A",
+        "layout_ports": [
+            {
+                "__class__": "LayoutPort",
+                "type": "A",
+                "layer": "m3",
+                "area": {
+                    "__class__": "RectArea",
+                    "x1": 0,
+                    "y1": 0,
+                    "x2": 540,
+                    "y2": 50
+                }
+            },
+            {
+                "__class__": "LayoutPort",
+                "type": "B",
+                "layer": "m4",
+                "area": {
+                    "__class__": "RectArea",
+                    "x1": 0,
+                    "y1": 0,
+                    "x2": 540,
+                    "y2": 50
+                }
+            }
+        ],
+        "transform_matrix": {
+            "__class__": "TransformMatrix",
+            "a": 0,
+            "b": 0,
+            "c": 0,
+            "d": 0,
+            "e": 0,
+            "f": 0
+        },
+        "bounding_box": {
+            "__class__": "RectArea",
+            "x1": 0,
+            "y1": 0,
+            "x2": 540,
+            "y2": 540
+        }
+    },
+    {
+        "__class__": "SKY130Capacitor",
+        "name": "XC1",
+        "schematic_connections": [
+            "net3",
+            "net4"
+        ],
+        "layout_name": "cap_mim_m3_1",
+        "layout_library": "sky130_fd_pr",
+        "layout_ports": [],
+        "transform_matrix": {
+            "__class__": "TransformMatrix",
+            "a": 0,
+            "b": 0,
+            "c": 0,
+            "d": 0,
+            "e": 0,
+            "f": 0
+        },
+        "bounding_box": {
+            "__class__": "RectArea",
+            "x1": 0,
+            "y1": 0,
+            "x2": 0,
+            "y2": 0
+        },
+        "width": 1,
+        "length": 1,
+        "multiplier_factor": 1,
+        "instance_multiplier": 1
+    },
+    {
+        "__class__": "SKY130Resistor",
+        "name": "XR1",
+        "schematic_connections": [
+            "net5",
+            "net6",
+            "net7"
+        ],
+        "layout_name": "res_high_po_2p85",
+        "layout_library": "sky130_fd_pr",
+        "layout_ports": [],
+        "transform_matrix": {
+            "__class__": "TransformMatrix",
+            "a": 0,
+            "b": 0,
+            "c": 0,
+            "d": 0,
+            "e": 0,
+            "f": 0
+        },
+        "bounding_box": {
+            "__class__": "RectArea",
+            "x1": 0,
+            "y1": 0,
+            "x2": 0,
+            "y2": 0
+        },
+        "length": 2.85,
+        "multiplier_factor": 1,
+        "instance_multiplier": 1
+    },
+    {
+        "__class__": "Resistor",
+        "name": "x3",
+        "schematic_connections": {
+            "N": "net10",
+            "P": "net11",
+            "B": "net12"
+        },
+        "layout_name": "JNWTR_RES2",
+        "layout_library": "JNW_TR_SKY130A",
+        "layout_ports": [
+            {
+                "__class__": "LayoutPort",
+                "type": "N",
+                "layer": "locali",
+                "area": {
+                    "__class__": "RectArea",
+                    "x1": -18,
+                    "y1": 1260,
+                    "x2": 126,
+                    "y2": 1380
+                }
+            },
+            {
+                "__class__": "LayoutPort",
+                "type": "P",
+                "layer": "locali",
+                "area": {
+                    "__class__": "RectArea",
+                    "x1": 198,
+                    "y1": 1260,
+                    "x2": 342,
+                    "y2": 1380
+                }
+            }
+        ],
+        "transform_matrix": {
+            "__class__": "TransformMatrix",
+            "a": 0,
+            "b": 0,
+            "c": 0,
+            "d": 0,
+            "e": 0,
+            "f": 0
+        },
+        "bounding_box": {
+            "__class__": "RectArea",
+            "x1": 0,
+            "y1": 0,
+            "x2": 324,
+            "y2": 1320
+        }
+    }
+]

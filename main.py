@@ -1,7 +1,7 @@
-from SPICE_parser import SPICEparser, Transistor, Capacitor, Resistor
+from SPICE_parser import SPICEparser
 from Magic_layout_creator import MagicLayoutCreator
-from utilities import Text
-from dataclasses import dataclass
+from utilities import Text, save_to_json, load_from_json
+from dataclasses import dataclass, asdict
 from Magic_component_parser import MagicComponentsParser
 
 @dataclass
@@ -26,15 +26,21 @@ project_properties = ProjectProperties(directory="~/aicex/ip/jnw_bkle_sky130A/",
                                        name_long="JNW_BKLE_SKY130A",
                                        standard_libraries=[atr_lib, tr_lib])
 
-
-if __name__ == '__main__':
+def main():
     print(f"{Text.INFO} Starting layout generation")
 
     # Extracts component information from SPICE file
     components = SPICEparser(project_properties=project_properties)
 
     # Update component attributes with information from it's associated Magic files
-    components = MagicComponentsParser(project_properties=project_properties, components=components.get_info()).get_info()
+    components = MagicComponentsParser(project_properties=project_properties,
+                                       components=components.get_info()).get_info()
+
+    # Save found components to JSON file
+    save_to_json(objects=components, file_name="components")
+
+    # Read JSON data
+    load_from_json(file_name="components")
 
     # Create layout
     MagicLayoutCreator(project_properties=project_properties, components=components)
@@ -43,6 +49,10 @@ if __name__ == '__main__':
     print(f"\n{Text.DEBUG} Components registered:")
     for component in components:
         print(f"- {component}")
+
+
+if __name__ == '__main__':
+    main()
 
 
 

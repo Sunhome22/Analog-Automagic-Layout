@@ -98,16 +98,13 @@ class MagicLayoutCreator:
                 component.transform_matrix.set([1, 0, i, 0, 1, 1500])
                 self.cell_creator(component=component)
 
-        #self.place_text("m2", "(╯°□°)╯︵ ┻━┻")
         #self.place_black_white_picture("Carsten Wulff Picture.jpg")
 
         #self.place_box('m2', [0, 0, 100, 1500])
         #self.place_box('m1', [0, 1400, 1500, 1500])
         #self.place_box('viali', [10, 1500, 100, 1500])
 
-        # Spørre Carsten om JSON format og teknologi avhengige komponenter sann som SKY130 transistorane osv.
-        # Gir det meining å ha i det heile?
-
+        # Make your own libraries for MIM capacitor and BJT
         # To here!
 
         # Labels and properties
