@@ -1,6 +1,8 @@
 import pulp
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
+from dill import objects
+
 from AstarPathAlgorithm import *
 from SimplifyPath import *
 
@@ -39,7 +41,7 @@ class LinearOptimizationSolver:
 
 
 
-    def constraint_rotation(self):
+    def _constraint_rotation(self):
         for o1 in self.objects.keys():
             # Decision variables: rotation
             r0 = pulp.LpVariable(f"r0_{o1}", cat='Binary')
@@ -51,19 +53,51 @@ class LinearOptimizationSolver:
             self.rotated_width[o1] = r0 * self.width[o1] + r90 * self.height[o1] + r180 * self.width[o1] + r270 * self.height[o1]
             self.rotated_height[o1] = r0 * self.height[o1] + r90 * self.width[o1] + r180 * self.height[o1] + r270 * self.width[o1]
 
-    def constraint_minimize_manhattan_distance(self):
+    def _get_port_parameters(self, obj):
+        #staring off utilizing the first point in connections area as point of contact
+        port_parameter = []
+        port_parameter2 = []
+        for o in self.objects:
+            if o.name == obj.starting_comp:
+                for p in o.layout_ports:
+                    if p.type == obj.starting_area or p.type == obj.starting_area[0]:
+                        port_parameter.append(p.type)
+            if o.name == obj.end_comp:
+                for p in o.layout_ports:
+                    if p.type == obj.starting_area or p.type == obj.starting_area[0]:
+                        port_parameter2.append(p.type)
+        return port_parameter, port_parameter2
 
-        for o1, o2 in self.connections:
-            self.d_x[(o1, o2)] = pulp.LpVariable(f"d_x_{o1}_{o2}", 0)
-            self.d_y[(o1, o2)] = pulp.LpVariable(f"d_y_{o1}_{o2}", 0)
+    def _constraint_minimize_manhattan_distance(self):
 
-            self.problem_space += self.d_x[(o1, o2)] >= self.x[o1] - self.x[o2]
-            self.problem_space += self.d_x[(o1, o2)] >= self.x[o2] - self.x[o1]
+        for o1 in self.connections.values:
+            if not o1.end_comp == '' and o1.starting_comp != o1.end_comp:
 
-            self.problem_space += self.d_y[(o1, o2)] >= self.y[o1] - self.y[o2]
-            self.problem_space += self.d_y[(o1, o2)] >= self.y[o2] - self.y[o1]
+                start_port_parameters, end_port_parameters = self._get_port_parameters(o1)
 
-    def constraint_overlap(self):
+                self.d_x[(o1.starting_comp, o1.end_comp)] = pulp.LpVariable(f"d_x_{o1.starting_comp}_{o1.end_comp}", 0, cat='Continuous')
+                self.d_y[(o1.starting_comp, o1.end_comp)] = pulp.LpVariable(f"d_y_{o1.starting_comp}_{o1.end_comp}", 0, cat='Continuous')
+                self.x_start_port = pulp.LpVariable(f"x_start_port_{o1.starting_comp}", 0, cat='Continuous')
+                self.y_start_port = pulp.LpVariable(f"y_start_port_{o1.starting_comp}", 0, cat='Continuous')
+                self.x_end_port = pulp.LpVariable(f"x_end_port_{o1.end_comp}", 0, cat='Continuous')
+                self.y_end_port = pulp.LpVariable(f"y_end_port_{o1.end_comp}", 0, cat='Continuous')
+
+
+                self.problem_space += self.x_start_port <= (start_port_parameters[1] - start_port_parameters[0])
+                self.problem_space += self.y_start_port <= (start_port_parameters[3]-start_port_parameters[2])
+
+                self.problem_space += self.x_end_port <= (end_port_parameters[1] - end_port_parameters[0])
+                self.problem_space += self.y_end_port <= (end_port_parameters[3]-end_port_parameters[2])
+
+
+
+                self.problem_space += self.d_x[(o1.starting_comp, o1.end_comp)] >= (self.x[o1.starting_comp] + self.x_start_port) - (self.x[o1.end_comp] + self.x_end_port)
+                self.problem_space += self.d_x[(o1.starting_comp, o1.end_comp)] >= (self.x[o1.end_comp] + self.x_end_port) - (self.x[o1.starting_comp] + self.x_start_port)
+
+                self.problem_space += self.d_y[(o1.starting_comp, o1.end_comp)] >= (self.y[o1.starting_comp] + self.y_start_port) - (self.y[o1.end_comp] + self.y_end_port)
+                self.problem_space += self.d_y[(o1.starting_comp, o1.end_comp)] >= (self.y[o1.end_comp] + self.y_end_port) - (self.y[o1.starting_comp] + self.y_start_port)
+
+    def _constraint_overlap(self):
 
 
         for o1 in self.objects:
@@ -97,13 +131,13 @@ class LinearOptimizationSolver:
                     self.problem_space += self.y_min <= self.y[o1]
 
 
-    def solve_linear_optimization_problem(self):
+    def _solve_linear_optimization_problem(self):
         self.problem_space += pulp.lpSum([self.d_x[(o1, o2)] + self.d_y[(o1, o2)] for o1, o2 in self.connections]) + (self.x_max - self.x_min) + (
                     self.x_max - self.x_min) + (self.y_max - self.y_min) + (self.y_max - self.y_min), "totalWireLength"
 
         self.problem_space.solve(self.solver)
 
-    def print_status(self):
+    def _print_status(self):
         print(f"[INFO] Solution status: {pulp.LpStatus[self.problem_space.status]}")
 
         for obj in self.objects:
@@ -115,11 +149,11 @@ class LinearOptimizationSolver:
 
 
     def initiate_solver(self):
-        self.constraint_minimize_manhattan_distance()
-        self.constraint_rotation()
-        self.constraint_overlap()
-        self.solve_linear_optimization_problem()
-        self.print_status()
+        self._constraint_minimize_manhattan_distance()
+        self._constraint_rotation()
+        self._constraint_overlap()
+        self._solve_linear_optimization_problem()
+        self._print_status()
         return self.x, self.y, self.rotated_width, self.rotated_width
 
 

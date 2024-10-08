@@ -212,6 +212,7 @@ bounding_box=RectArea(0, 0, 512, 400))
     objects = [M1, M2]
     local_connections, connections = connection_list(objects)
 
+
     center = True
     clean_path = True
     # Object parameters
