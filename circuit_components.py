@@ -1,6 +1,8 @@
+# TODO: Add copyright/license notice
+
+# ================================================== Libraries =========================================================
 from dataclasses import dataclass, field
 from typing import List, Dict
-
 
 # ================================================ Misc. classes =======================================================
 
@@ -58,6 +60,7 @@ class LayoutPort:
 @dataclass
 class CircuitComponent:
     name: str = field(default_factory=str)
+    group: str = field(default_factory=str)
     schematic_connections: Dict[str, str] = field(default_factory=Dict[str, str])
     layout_name: str = field(default_factory=str)
     layout_library: str = field(default_factory=str)

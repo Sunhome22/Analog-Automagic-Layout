@@ -5,9 +5,8 @@
 # BJT Transistors not handled yet
 # Capacitors need to be from the standard technology library or from Carsten's generated TR library
 # Resistors need to be from the standard technology library or from Carsten's generated TR library
-# Remember to pip install external libraries to the server if used
 
-# =================================================== Libraries ========================================================
+# ================================================== Libraries =========================================================
 import os
 import subprocess
 import re
@@ -165,6 +164,7 @@ class SPICEparser:
 
                     # Create transistor component and add extracted parameters
                     transistor = Transistor(name=line_words[0],
+                                            group=re.search(r'\w$', line_words[0]).group(), # last char of name
                                             schematic_connections={port_definitions[i]: line_words[i+1] for i in
                                                          range(min(len(port_definitions), len(line_words), 4))},
                                             layout_name=line_words[5],
@@ -180,6 +180,7 @@ class SPICEparser:
 
                     # Create resistor component and add extracted parameters
                     resistor = Resistor(name=line_words[0],
+                                        group=re.search(r'\w$', line_words[0]).group(), # last char of name
                                         schematic_connections={port_definitions[i]: line_words[i+1] for i in
                                                      range(min(len(port_definitions), len(line_words), 3))},
                                         layout_name=line_words[4],
@@ -195,6 +196,7 @@ class SPICEparser:
 
                     # Create capacitor component and add extracted parameters
                     capacitor = Capacitor(name=line_words[0],
+                                          group=re.search(r'\w$', line_words[0]).group(), # last char of name
                                           schematic_connections={port_definitions[i]: line_words[i+1] for i in
                                                        range(min(len(port_definitions), len(line_words), 2))},
                                           layout_name=line_words[3],

@@ -1,9 +1,14 @@
+# TODO: Add copyright/license notice
+
+# ================================================== Libraries =========================================================
 import os
 import re
-
 from circuit_components import LayoutPort
 from utilities import Text
 from circuit_components import Pin
+
+# ============================================= Magic component parser =================================================
+
 
 class MagicComponentsParser:
     def __init__(self, project_properties, components):

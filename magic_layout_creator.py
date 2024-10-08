@@ -1,9 +1,15 @@
+# TODO: Add copyright/license notice
+
+# ================================================== Libraries =========================================================
 import os
 import time
 from circuit_components import RectArea, Transistor, Capacitor, Resistor
 from utilities import Text
 from typing import List
-from Magic_drawer import get_pixel_boxes_from_text, get_black_white_pixel_boxes_from_image
+from magic_drawer import get_pixel_boxes_from_text, get_black_white_pixel_boxes_from_image
+
+# ============================================== Magic layout creator ==================================================
+
 
 class MagicLayoutCreator:
 
@@ -98,12 +104,11 @@ class MagicLayoutCreator:
                 component.transform_matrix.set([1, 0, i, 0, 1, 1500])
                 self.cell_creator(component=component)
 
-        self.place_black_white_picture("Carsten Wulff Picture.jpg")
+        #self.place_black_white_picture("Carsten Wulff Picture.jpg")
 
         #self.place_box('m2', [0, 0, 100, 1500])
         #self.place_box('m1', [0, 1400, 1500, 1500])
         #self.place_box('viali', [10, 1500, 100, 1500])
-
         # Make your own libraries for MIM capacitor and BJT
         # To here!
 

@@ -1,8 +1,12 @@
-from SPICE_parser import SPICEparser
-from Magic_layout_creator import MagicLayoutCreator
+
+# ================================================== Libraries =========================================================
+from spice_parser import SPICEparser
+from magic_layout_creator import MagicLayoutCreator
 from utilities import Text, save_to_json, load_from_json
 from dataclasses import dataclass, asdict
-from Magic_component_parser import MagicComponentsParser
+from magic_component_parser import MagicComponentsParser
+
+# ========================================== Set-up classes and constants ==============================================
 
 @dataclass
 class ProjectProperties:
@@ -11,12 +15,10 @@ class ProjectProperties:
     name_long: str
     standard_libraries: list
 
-
 @dataclass
 class StandardLibrary:
     name: str
     path: str
-
 
 atr_lib = StandardLibrary(name="JNWATR", path="~/aicex/ip/jnw_bkle_sky130A/design/JNW_ATR_SKY130A")
 tr_lib = StandardLibrary(name="JNWTR", path="~/aicex/ip/jnw_bkle_sky130A/design/JNW_TR_SKY130A")
@@ -26,6 +28,7 @@ project_properties = ProjectProperties(directory="~/aicex/ip/jnw_bkle_sky130A/",
                                        name_long="JNW_BKLE_SKY130A",
                                        standard_libraries=[atr_lib, tr_lib])
 
+# ===================================================== Main ===========================================================
 
 def main():
 
@@ -42,7 +45,7 @@ def main():
     save_to_json(objects=components, file_name="components")
 
     # Read JSON file
-    # load_from_json(file_name="components")
+    load_from_json(file_name="components")
 
     # Create layout
     MagicLayoutCreator(project_properties=project_properties, components=components)

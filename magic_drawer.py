@@ -1,3 +1,5 @@
+# TODO: Add copyright/license notice
+
 from PIL import Image, ImageDraw, ImageFont
 
 
