@@ -35,7 +35,6 @@ class SubCircuit:
     layout_name: str
     ports: List[str]
 
-
 @dataclass
 class Pin:
     type: str
@@ -48,11 +47,19 @@ class LayoutPort:
     layer: str
     area: RectArea
 
-    def __init__(self, type: str, layer: str, area_params: List[int]):
-        self.type = type
-        self.layer = layer
-        self.area = RectArea()  # Initialize area as a new RectArea instance
-        self.area.set(area_params)
+    def __init__(self, type: str, layer: str, area):
+
+        # Deal with setting layout port area as list (maybe remake)
+        if isinstance(area, list):
+            self.type = type
+            self.layer = layer
+            self.area = RectArea()  # Initialize area as a new RectArea instance
+            self.area.set(area)
+
+        else:
+            self.type = type
+            self.layer = layer
+            self.area = area
 
 
 # ============================================= Circuit component classes ==============================================
@@ -61,7 +68,7 @@ class LayoutPort:
 class CircuitComponent:
     name: str = field(default_factory=str)
     group: str = field(default_factory=str)
-    schematic_connections: Dict[str, str] = field(default_factory=Dict[str, str])
+    schematic_connections: Dict[str, str] = field(default_factory=dict)
     layout_name: str = field(default_factory=str)
     layout_library: str = field(default_factory=str)
     layout_ports: List[LayoutPort] = field(default_factory=list)

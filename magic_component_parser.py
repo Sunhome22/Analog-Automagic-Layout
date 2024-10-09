@@ -57,7 +57,7 @@ class MagicComponentsParser:
         if re.search(r'flabel', text_line):
             text_line_words = text_line.split()
 
-            layout_port = LayoutPort(type=text_line_words[-1], layer=text_line_words[1], area_params=[
+            layout_port = LayoutPort(type=text_line_words[-1], layer=text_line_words[1], area=[
                 int(text_line_words[3]), int(text_line_words[4]), int(text_line_words[5]), int(text_line_words[6])])
 
             self.component.layout_ports.append(layout_port)

@@ -2,8 +2,9 @@
 
 # ================================================== Libraries =========================================================
 import json
-from circuit_components import Pin, Transistor, Capacitor, Resistor, LayoutPort, RectArea, TransformMatrix
-from dataclasses import fields, is_dataclass
+import sys
+from circuit_components import *
+from dataclasses import fields, is_dataclass, asdict
 from typing import get_origin, get_args, List
 
 # =============================================== Various utilities ====================================================
@@ -14,12 +15,20 @@ class Text:
     DEBUG = f"\033[38;2;{0};{100};{255}m{'[DEBUG]:'}\033[0m"
 
 
+# Dictionary to map class names to their corresponding classes
+classes_map = {
+    "Pin": Pin,
+    "Transistor": Transistor,
+}
+
+
 def save_to_json(objects: list, file_name: str):
     try:
         with open(f"{file_name}.json", 'w') as file:
 
             # Iterates over objects, serialize them and adds all class type attributes
             obj_dicts = [_serialize_dataclass(obj) for obj in objects]
+            #obj_dicts = [asdict(component) for component in objects]
 
             # Inserts JSON format from list of dicts into file
             json.dump(obj_dicts, file, indent=4)
@@ -29,14 +38,44 @@ def save_to_json(objects: list, file_name: str):
     except Exception as e:
         print(f"{Text.ERROR} The file {file_name}.json could not be written due to: {e}")
 
+
 def load_from_json(file_name: str):
-        json_data = _open_json(file_name=file_name)
-        components = []
+    json_data = _open_json(file_name=file_name)
 
-        for obj in json_data:
-            components.append(_deserialize_data(obj))
+    load_shit(json_data)
+    components = []
 
-        print(components)
+
+def load_shit(json_data):
+    loaded_components = []
+    #for obj in json_data:
+    #    component.append(deserialize_dataclass(obj))
+    component_map = {"Transistor": Transistor,
+                     "Resistor": Resistor,
+                     "LayoutPort": LayoutPort,
+                     "RectArea": RectArea}
+
+    # Not working still, but closer
+    for obj in json_data:
+        print("NEW OBJECT")
+        if '__class__' in obj and obj['__class__'] in component_map:
+            component_class = component_map[obj['__class__']]
+
+            # First load
+            loaded_component = component_class(**{key: value for key, value in obj.items() if key != '__class__'})
+            print(loaded_component)
+            for i in obj.values():
+                if isinstance(i, list):
+                    for j in i:
+                        if '__class__' in j and j['__class__'] in component_map:
+                            nested_class = component_map[j['__class__']]
+                            nested_component = nested_class(**{key: value for key, value in j.items() if key != '__class__'})
+                            print(nested_component)
+
+                            for k in j.values():
+                                if '__class__' in k and k['__class__'] in component_map:
+                                    lvl2_nested_class = component_map[k['__class__']]
+                                    lvl2_component = lvl2_nested_class(**{key: value for key, value in k.items() if key != '__class__'})
 
 
 def _open_json(file_name: str):
@@ -46,46 +85,6 @@ def _open_json(file_name: str):
 
     except FileNotFoundError:
         print(f"{Text.ERROR} The file {file_name}.json could not be found")
-
-# Not working
-def _deserialize_data(obj):
-    class_table = {
-        'Pin': Pin,
-        'Transistor': Transistor,
-        'Capacitor': Capacitor,
-        'Resistor': Resistor,
-        'LayoutPort': LayoutPort,
-        'RectArea': RectArea,
-        'TransformMatrix': TransformMatrix
-    }
-
-    # Get the dataclass type from the class table based on the class name from the JSON
-    found_class = class_table[obj['__class__']]
-
-    # Prepare the arguments for the constructor
-    init_args = {}
-
-    for field in fields(found_class):
-        field_value = obj.get(field.name, None)  # Get the value or None if missing
-        print(f"Handling field: {field.name} with value: {field_value}")  # Print each field being handled
-
-        # Handle lists of dataclasses or other types
-        if get_origin(field.type) == list:
-            item_type = get_args(field.type)[0]  # Get the list's item type (can be LayoutPort in List[LayoutPort])
-            if is_dataclass(item_type) and isinstance(field_value, list):
-                # Recursively deserialize each item in the list
-                field_value = [_deserialize_data(item) for item in field_value]
-
-        # Handle nested dataclasses
-        elif is_dataclass(field.type) and isinstance(field_value, dict):
-            field_value = _deserialize_data(field_value)  # Recursively deserialize the nested dataclass
-
-        # Set the field value, using defaults if applicable
-        init_args[field.name] = field_value
-
-    # Return the instantiated class with the deserialized arguments
-    print(found_class(**init_args))
-    return found_class(**init_args)
 
 
 def _serialize_dataclass(obj):

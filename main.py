@@ -20,6 +20,7 @@ class StandardLibrary:
     name: str
     path: str
 
+
 atr_lib = StandardLibrary(name="JNWATR", path="~/aicex/ip/jnw_bkle_sky130A/design/JNW_ATR_SKY130A")
 tr_lib = StandardLibrary(name="JNWTR", path="~/aicex/ip/jnw_bkle_sky130A/design/JNW_TR_SKY130A")
 
@@ -29,6 +30,7 @@ project_properties = ProjectProperties(directory="~/aicex/ip/jnw_bkle_sky130A/",
                                        standard_libraries=[atr_lib, tr_lib])
 
 # ===================================================== Main ===========================================================
+
 
 def main():
 
