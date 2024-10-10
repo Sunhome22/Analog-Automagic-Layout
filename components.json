@@ -1,21 +1,21 @@
 [
     {
-        "__class__": "Pin",
+        "instance": "Pin",
         "type": "ipin",
         "name": "IBPS_2U"
     },
     {
-        "__class__": "Pin",
+        "instance": "Pin",
         "type": "ipin",
         "name": "VSS"
     },
     {
-        "__class__": "Pin",
+        "instance": "Pin",
         "type": "opin",
         "name": "IBNS_20U"
     },
     {
-        "__class__": "Transistor",
+        "instance": "Transistor",
         "name": "x1",
         "group": "1",
         "schematic_connections": {
@@ -28,11 +28,9 @@
         "layout_library": "JNW_ATR_SKY130A",
         "layout_ports": [
             {
-                "__class__": "LayoutPort",
                 "type": "G",
                 "layer": "m1",
                 "area": {
-                    "__class__": "RectArea",
                     "x1": 80,
                     "y1": 180,
                     "x2": 112,
@@ -40,11 +38,9 @@
                 }
             },
             {
-                "__class__": "LayoutPort",
                 "type": "S",
                 "layer": "m1",
                 "area": {
-                    "__class__": "RectArea",
                     "x1": 144,
                     "y1": 300,
                     "x2": 240,
@@ -52,11 +48,9 @@
                 }
             },
             {
-                "__class__": "LayoutPort",
                 "type": "B",
                 "layer": "locali",
                 "area": {
-                    "__class__": "RectArea",
                     "x1": -48,
                     "y1": 180,
                     "x2": 48,
@@ -64,11 +58,9 @@
                 }
             },
             {
-                "__class__": "LayoutPort",
                 "type": "D",
                 "layer": "m1",
                 "area": {
-                    "__class__": "RectArea",
                     "x1": 592,
                     "y1": 20,
                     "x2": 688,
@@ -77,7 +69,6 @@
             }
         ],
         "transform_matrix": {
-            "__class__": "TransformMatrix",
             "a": 0,
             "b": 0,
             "c": 0,
@@ -86,7 +77,6 @@
             "f": 0
         },
         "bounding_box": {
-            "__class__": "RectArea",
             "x1": 0,
             "y1": 0,
             "x2": 832,
@@ -94,7 +84,7 @@
         }
     },
     {
-        "__class__": "Transistor",
+        "instance": "Transistor",
         "name": "x2",
         "group": "2",
         "schematic_connections": {
@@ -107,11 +97,9 @@
         "layout_library": "JNW_ATR_SKY130A",
         "layout_ports": [
             {
-                "__class__": "LayoutPort",
                 "type": "G",
                 "layer": "m1",
                 "area": {
-                    "__class__": "RectArea",
                     "x1": 80,
                     "y1": 180,
                     "x2": 112,
@@ -119,11 +107,9 @@
                 }
             },
             {
-                "__class__": "LayoutPort",
                 "type": "S",
                 "layer": "m1",
                 "area": {
-                    "__class__": "RectArea",
                     "x1": 144,
                     "y1": 300,
                     "x2": 240,
@@ -131,11 +117,9 @@
                 }
             },
             {
-                "__class__": "LayoutPort",
                 "type": "B",
                 "layer": "locali",
                 "area": {
-                    "__class__": "RectArea",
                     "x1": -48,
                     "y1": 180,
                     "x2": 48,
@@ -143,11 +127,9 @@
                 }
             },
             {
-                "__class__": "LayoutPort",
                 "type": "D",
                 "layer": "m1",
                 "area": {
-                    "__class__": "RectArea",
                     "x1": 272,
                     "y1": 20,
                     "x2": 368,
@@ -156,7 +138,6 @@
             }
         ],
         "transform_matrix": {
-            "__class__": "TransformMatrix",
             "a": 0,
             "b": 0,
             "c": 0,
@@ -165,7 +146,6 @@
             "f": 0
         },
         "bounding_box": {
-            "__class__": "RectArea",
             "x1": 0,
             "y1": 0,
             "x2": 512,
@@ -173,7 +153,7 @@
         }
     },
     {
-        "__class__": "Capacitor",
+        "instance": "Capacitor",
         "name": "x4",
         "group": "4",
         "schematic_connections": {
@@ -184,11 +164,9 @@
         "layout_library": "JNW_TR_SKY130A",
         "layout_ports": [
             {
-                "__class__": "LayoutPort",
                 "type": "A",
                 "layer": "m3",
                 "area": {
-                    "__class__": "RectArea",
                     "x1": 0,
                     "y1": 0,
                     "x2": 540,
@@ -196,11 +174,9 @@
                 }
             },
             {
-                "__class__": "LayoutPort",
                 "type": "B",
                 "layer": "m4",
                 "area": {
-                    "__class__": "RectArea",
                     "x1": 0,
                     "y1": 0,
                     "x2": 540,
@@ -209,7 +185,6 @@
             }
         ],
         "transform_matrix": {
-            "__class__": "TransformMatrix",
             "a": 0,
             "b": 0,
             "c": 0,
@@ -218,7 +193,6 @@
             "f": 0
         },
         "bounding_box": {
-            "__class__": "RectArea",
             "x1": 0,
             "y1": 0,
             "x2": 540,
@@ -226,7 +200,7 @@
         }
     },
     {
-        "__class__": "SKY130Capacitor",
+        "instance": "SKY130Capacitor",
         "name": "XC1",
         "group": "",
         "schematic_connections": [
@@ -237,7 +211,6 @@
         "layout_library": "sky130_fd_pr",
         "layout_ports": [],
         "transform_matrix": {
-            "__class__": "TransformMatrix",
             "a": 0,
             "b": 0,
             "c": 0,
@@ -246,7 +219,6 @@
             "f": 0
         },
         "bounding_box": {
-            "__class__": "RectArea",
             "x1": 0,
             "y1": 0,
             "x2": 0,
@@ -258,7 +230,7 @@
         "instance_multiplier": 1
     },
     {
-        "__class__": "SKY130Resistor",
+        "instance": "SKY130Resistor",
         "name": "XR1",
         "group": "",
         "schematic_connections": [
@@ -270,7 +242,6 @@
         "layout_library": "sky130_fd_pr",
         "layout_ports": [],
         "transform_matrix": {
-            "__class__": "TransformMatrix",
             "a": 0,
             "b": 0,
             "c": 0,
@@ -279,7 +250,6 @@
             "f": 0
         },
         "bounding_box": {
-            "__class__": "RectArea",
             "x1": 0,
             "y1": 0,
             "x2": 0,
@@ -290,7 +260,7 @@
         "instance_multiplier": 1
     },
     {
-        "__class__": "Resistor",
+        "instance": "Resistor",
         "name": "x3",
         "group": "3",
         "schematic_connections": {
@@ -302,11 +272,9 @@
         "layout_library": "JNW_TR_SKY130A",
         "layout_ports": [
             {
-                "__class__": "LayoutPort",
                 "type": "N",
                 "layer": "locali",
                 "area": {
-                    "__class__": "RectArea",
                     "x1": -18,
                     "y1": 1260,
                     "x2": 126,
@@ -314,11 +282,9 @@
                 }
             },
             {
-                "__class__": "LayoutPort",
                 "type": "P",
                 "layer": "locali",
                 "area": {
-                    "__class__": "RectArea",
                     "x1": 198,
                     "y1": 1260,
                     "x2": 342,
@@ -327,7 +293,6 @@
             }
         ],
         "transform_matrix": {
-            "__class__": "TransformMatrix",
             "a": 0,
             "b": 0,
             "c": 0,
@@ -336,7 +301,6 @@
             "f": 0
         },
         "bounding_box": {
-            "__class__": "RectArea",
             "x1": 0,
             "y1": 0,
             "x2": 324,
@@ -344,7 +308,7 @@
         }
     },
     {
-        "__class__": "Transistor",
+        "instance": "Transistor",
         "name": "x5",
         "group": "5",
         "schematic_connections": {
@@ -357,11 +321,9 @@
         "layout_library": "JNW_ATR_SKY130A",
         "layout_ports": [
             {
-                "__class__": "LayoutPort",
                 "type": "G",
                 "layer": "m1",
                 "area": {
-                    "__class__": "RectArea",
                     "x1": 80,
                     "y1": 180,
                     "x2": 112,
@@ -369,11 +331,9 @@
                 }
             },
             {
-                "__class__": "LayoutPort",
                 "type": "S",
                 "layer": "m1",
                 "area": {
-                    "__class__": "RectArea",
                     "x1": 144,
                     "y1": 300,
                     "x2": 240,
@@ -381,11 +341,9 @@
                 }
             },
             {
-                "__class__": "LayoutPort",
                 "type": "B",
                 "layer": "locali",
                 "area": {
-                    "__class__": "RectArea",
                     "x1": -48,
                     "y1": 180,
                     "x2": 48,
@@ -393,11 +351,9 @@
                 }
             },
             {
-                "__class__": "LayoutPort",
                 "type": "D",
                 "layer": "m1",
                 "area": {
-                    "__class__": "RectArea",
                     "x1": 592,
                     "y1": 20,
                     "x2": 688,
@@ -406,7 +362,6 @@
             }
         ],
         "transform_matrix": {
-            "__class__": "TransformMatrix",
             "a": 0,
             "b": 0,
             "c": 0,
@@ -415,7 +370,6 @@
             "f": 0
         },
         "bounding_box": {
-            "__class__": "RectArea",
             "x1": 0,
             "y1": 0,
             "x2": 832,

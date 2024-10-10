@@ -164,12 +164,13 @@ class SPICEparser:
 
                     # Create transistor component and add extracted parameters
                     transistor = Transistor(name=line_words[0],
-                                            group=re.search(r'\w$', line_words[0]).group(), # last char of name
+                                            group=re.search(r'\w$', line_words[0]).group(),  # last char of name
                                             schematic_connections={port_definitions[i]: line_words[i+1] for i in
                                                          range(min(len(port_definitions), len(line_words), 4))},
                                             layout_name=line_words[5],
                                             layout_library=current_library)
 
+                    transistor.instance = transistor.__class__.__name__  # instance ID
                     self.components.append(transistor)
 
                 # Resistor
@@ -186,6 +187,7 @@ class SPICEparser:
                                         layout_name=line_words[4],
                                         layout_library=current_library)
 
+                    resistor.instance = resistor.__class__.__name__  # instance ID
                     self.components.append(resistor)
 
                 # Capacitor
@@ -202,6 +204,7 @@ class SPICEparser:
                                           layout_name=line_words[3],
                                           layout_library=current_library)
 
+                    capacitor.instance = capacitor.__class__.__name__  # instance ID
                     self.components.append(capacitor)
 
                 # SKY130_FD_PR_MIM capacitor
@@ -217,6 +220,7 @@ class SPICEparser:
                                                 multiplier_factor=int(''.join(re.findall(r'\d+', line_words[6]))),
                                                 instance_multiplier=int(''.join(re.findall(r'\d+', line_words[7]))))
 
+                    capacitor.instance = capacitor.__class__.__name__  # instance ID
                     self.components.append(capacitor)
 
                 # SKY130_FD_PR_HIGH_PO resistor
@@ -231,6 +235,7 @@ class SPICEparser:
                                               multiplier_factor=int(''.join(re.findall(r'\d+', line_words[6]))),
                                               instance_multiplier=int(''.join(re.findall(r'\d+', line_words[7]))))
 
+                    resistor.instance = resistor.__class__.__name__  # instance ID
                     self.components.append(resistor)
 
             # Check for pins
@@ -239,6 +244,7 @@ class SPICEparser:
 
                 pin_type = ''.join(re.findall(r'[a-zA-Z]+', line_words[0]))
                 pin = Pin(type=pin_type, name=line_words[1])
+                pin.instance = pin.__class__.__name__  # instance ID
                 self.components.append(pin)
 
         for component in self.components:

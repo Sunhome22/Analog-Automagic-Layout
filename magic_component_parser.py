@@ -3,7 +3,7 @@
 # ================================================== Libraries =========================================================
 import os
 import re
-from circuit_components import LayoutPort
+from circuit_components import LayoutPort, RectArea
 from utilities import Text
 from circuit_components import Pin
 
@@ -57,7 +57,8 @@ class MagicComponentsParser:
         if re.search(r'flabel', text_line):
             text_line_words = text_line.split()
 
-            layout_port = LayoutPort(type=text_line_words[-1], layer=text_line_words[1], area=[
-                int(text_line_words[3]), int(text_line_words[4]), int(text_line_words[5]), int(text_line_words[6])])
+            layout_port = LayoutPort(type=text_line_words[-1], layer=text_line_words[1],
+                                     area=RectArea(x1=int(text_line_words[3]), y1=int(text_line_words[4]),
+                                                   x2=int(text_line_words[5]), y2=int(text_line_words[6])))
 
             self.component.layout_ports.append(layout_port)

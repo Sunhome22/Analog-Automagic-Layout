@@ -37,43 +37,47 @@ class SubCircuit:
 
 @dataclass
 class Pin:
-    type: str
-    name: str
+    instance: str = field(default_factory=str)
+    type: str = field(default_factory=str)
+    name: str = field(default_factory=str)
 
 
 @dataclass
 class LayoutPort:
-    type: str
-    layer: str
-    area: RectArea
+    type: str = field(default_factory=str)
+    layer: str = field(default_factory=str)
+    area: RectArea = field(default_factory=RectArea)
 
-    def __init__(self, type: str, layer: str, area):
-
-        # Deal with setting layout port area as list (maybe remake)
-        if isinstance(area, list):
-            self.type = type
-            self.layer = layer
-            self.area = RectArea()  # Initialize area as a new RectArea instance
-            self.area.set(area)
-
-        else:
-            self.type = type
-            self.layer = layer
-            self.area = area
-
+    # Handling of JSON file input
+    def __post_init__(self):
+        if isinstance(self.area, dict):
+            self.area = RectArea(**self.area)
 
 # ============================================= Circuit component classes ==============================================
 
 @dataclass
 class CircuitComponent:
+    instance: str = field(default_factory=str)
     name: str = field(default_factory=str)
     group: str = field(default_factory=str)
-    schematic_connections: Dict[str, str] = field(default_factory=dict)
+    schematic_connections: dict = field(default_factory=dict)
     layout_name: str = field(default_factory=str)
     layout_library: str = field(default_factory=str)
-    layout_ports: List[LayoutPort] = field(default_factory=list)
-    transform_matrix: TransformMatrix = field(default_factory=TransformMatrix)
-    bounding_box: RectArea = field(default_factory=RectArea)
+    layout_ports: List[LayoutPort] | dict = field(default_factory=list)
+    transform_matrix: TransformMatrix | dict = field(default_factory=TransformMatrix)
+    bounding_box: RectArea | dict = field(default_factory=RectArea)
+
+    # Handling of JSON file input
+    def __post_init__(self):
+
+        if isinstance(self.layout_ports, list):
+            self.layout_ports = [LayoutPort(**rank) for rank in self.layout_ports]
+
+        if isinstance(self.bounding_box, dict):
+            self.bounding_box = RectArea(**self.bounding_box)
+
+        if isinstance(self.transform_matrix, dict):
+            self.transform_matrix = TransformMatrix(**self.transform_matrix)
 
 
 @dataclass

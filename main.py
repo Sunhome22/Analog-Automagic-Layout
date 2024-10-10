@@ -8,12 +8,14 @@ from magic_component_parser import MagicComponentsParser
 
 # ========================================== Set-up classes and constants ==============================================
 
+
 @dataclass
 class ProjectProperties:
     directory: str
     name: str
     name_long: str
     standard_libraries: list
+
 
 @dataclass
 class StandardLibrary:
@@ -47,7 +49,10 @@ def main():
     save_to_json(objects=components, file_name="components")
 
     # Read JSON file
-    load_from_json(file_name="components")
+    # found_stuff = load_from_json(file_name="components")
+    # print(f"\n{Text.DEBUG} Components registered:")
+    # for stuff in found_stuff:
+    #     print(f"- {stuff}")
 
     # Create layout
     MagicLayoutCreator(project_properties=project_properties, components=components)
