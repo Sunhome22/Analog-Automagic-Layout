@@ -6,6 +6,7 @@ from typing import List, Dict
 
 # ================================================ Misc. classes =======================================================
 
+
 @dataclass
 class TransformMatrix:
     a: int = field(default_factory=int)
@@ -31,13 +32,21 @@ class RectArea:
 
 
 @dataclass
+class CircuitCell:
+    name: str
+    ports: List[str]
+
+
+@dataclass
 class SubCircuit:
     layout_name: str
     ports: List[str]
 
+
 @dataclass
 class Pin:
     instance: str = field(default_factory=str)
+    cell: str = field(default_factory=str)
     type: str = field(default_factory=str)
     name: str = field(default_factory=str)
 
@@ -55,10 +64,12 @@ class LayoutPort:
 
 # ============================================= Circuit component classes ==============================================
 
+
 @dataclass
 class CircuitComponent:
     instance: str = field(default_factory=str)
     name: str = field(default_factory=str)
+    cell: str = field(default_factory=str)
     group: str = field(default_factory=str)
     schematic_connections: dict = field(default_factory=dict)
     layout_name: str = field(default_factory=str)

@@ -2,9 +2,10 @@
 # ================================================== Libraries =========================================================
 from spice_parser import SPICEparser
 from magic_layout_creator import MagicLayoutCreator
-from utilities import Text, save_to_json, load_from_json
+from utilities import Text
 from dataclasses import dataclass, asdict
 from magic_component_parser import MagicComponentsParser
+from json_converter import load_from_json, save_to_json
 
 # ========================================== Set-up classes and constants ==============================================
 
@@ -49,10 +50,10 @@ def main():
     save_to_json(objects=components, file_name="components")
 
     # Read JSON file
-    # found_stuff = load_from_json(file_name="components")
-    # print(f"\n{Text.DEBUG} Components registered:")
-    # for stuff in found_stuff:
-    #     print(f"- {stuff}")
+    #found_stuff = load_from_json(file_name="components")
+    #print(f"\n{Text.DEBUG} Components registered:")
+    #for stuff in found_stuff:
+    #    print(f"- {stuff}")
 
     # Create layout
     MagicLayoutCreator(project_properties=project_properties, components=components)
