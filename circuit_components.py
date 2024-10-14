@@ -74,9 +74,9 @@ class CircuitComponent:
     schematic_connections: dict = field(default_factory=dict)
     layout_name: str = field(default_factory=str)
     layout_library: str = field(default_factory=str)
-    layout_ports: List[LayoutPort] | dict = field(default_factory=list)
-    transform_matrix: TransformMatrix | dict = field(default_factory=TransformMatrix)
-    bounding_box: RectArea | dict = field(default_factory=RectArea)
+    layout_ports: List[LayoutPort] = field(default_factory=list) # | dict
+    transform_matrix: TransformMatrix = field(default_factory=TransformMatrix) # | dict
+    bounding_box: RectArea = field(default_factory=RectArea) # | dict
 
     # Handling of JSON file input
     def __post_init__(self):
@@ -106,19 +106,7 @@ class Capacitor(CircuitComponent):
     pass
 
 
-@dataclass
-class SKY130Capacitor(CircuitComponent):
-    width: int = field(default_factory=int)
-    length: int = field(default_factory=int)
-    multiplier_factor: int = field(default_factory=int)
-    instance_multiplier: int = field(default_factory=int)
 
-
-@dataclass
-class SKY130Resistor(CircuitComponent):
-    length: float = field(default_factory=float)
-    multiplier_factor: int = field(default_factory=int)
-    instance_multiplier: int = field(default_factory=int)
 
 
 

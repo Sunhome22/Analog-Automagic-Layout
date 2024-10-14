@@ -15,10 +15,9 @@ from utilities import Text
 from circuit_components import *
 
 # ==================================================== Constants =======================================================
-# "STD" refers to the generated transistors/capacitors/resistors from Carsten's ATR/TR libraries.
-STD_LIB_TRANSISTOR_PARAMS = 6
-STD_LIB_RESISTOR_PARAMS = 5
-STD_LIB_CAPACITOR_PARAMS = 4
+TRANSISTOR_PARAM_COUNT = 6
+RESISTOR_PARAM_COUNT = 5
+CAPACITOR_PARAM_COUNT = 4
 
 # ================================================== SPICE Parser ======================================================
 
@@ -28,13 +27,14 @@ class SPICEparser:
     def __init__(self, project_properties):
         self.project_name = project_properties.name
         self.project_directory = project_properties.directory
-        self.standard_libraries = project_properties.standard_libraries
+        self.component_libraries = project_properties.component_libraries
         self.spice_file_content = list()
         self.components = list()
         self.subcircuits = list()
         self.circuitcells = list()
         self.last_cell_found = ''
-        self.parse()
+
+        self._parse()
 
     def _generate_spice_file_for_schematic(self):
         work_directory = os.path.expanduser(f"{self.project_directory}work/")
@@ -88,20 +88,20 @@ class SPICEparser:
 
         print(f"{Text.INFO} SPICE lines with '+' symbols rebuilt")
 
-    def _get_subcircuit_port_info_for_standard_libraries(self, line):
+    def _get_subcircuit_port_info_for_component_libraries(self, line):
         line_words = line.split()
         subcircuit = SubCircuit(layout_name=line_words[1], ports=line_words[2:])
         self.subcircuits.append(subcircuit)
 
         print(f"{Text.INFO} SPICE subcircuit port info extracted for '{subcircuit.layout_name}'")
 
-    def _remove_expanded_subcircuits_for_standard_libraries(self):
+    def _remove_expanded_subcircuits_for_component_libraries(self):
         in_expanded_symbol = False
         updated_spice_lines = []
         library_names = []
 
         # Create list of library names
-        for item in self.standard_libraries:
+        for item in self.component_libraries:
             library_names.append(item.name)
 
         for line in self.spice_file_content:
@@ -110,7 +110,7 @@ class SPICEparser:
             if any(re.match(rf'^\.subckt {library_name}', line.strip()) for library_name in library_names):
 
                 # Retrieve specific subcircuit port information before deletions
-                self._get_subcircuit_port_info_for_standard_libraries(line)
+                self._get_subcircuit_port_info_for_component_libraries(line)
                 in_expanded_symbol = True
 
             # Check for end of expanded subcircuit
@@ -122,13 +122,13 @@ class SPICEparser:
 
         self.spice_file_content = updated_spice_lines
 
-        print(f"{Text.INFO} SPICE expanded subcircuits for standard libraries removed")
+        print(f"{Text.INFO} SPICE expanded subcircuits for component libraries removed")
 
     def _get_current_component_library(self, spice_file_line_words):
         library_names = []
 
         # Create list of library names
-        for item in self.standard_libraries:
+        for item in self.component_libraries:
             library_names.append(item.name)
 
         for index, library in enumerate(library_names):
@@ -137,7 +137,7 @@ class SPICEparser:
             if re.search(rf"{library}", spice_file_line_words[-1]):
 
                 # Return library name from path name
-                return re.search(r'[^/]+$', self.standard_libraries[index].path).group()
+                return re.search(r'[^/]+$', self.component_libraries[index].path).group()
 
     def _get_current_cell(self, spice_file_line):
         # Update cell information (Any symbol or the schematic itself)
@@ -155,121 +155,97 @@ class SPICEparser:
 
         print(f"{Text.ERROR} Port definition not found for '{line_word}'")
 
-    def parse(self):
+    def _get_components(self, spice_line, current_cell):
+
+        # Check spice line for component identifier
+        if re.match(r'^[^*.]', spice_line):
+            line_words = spice_line.split()
+
+            current_library = self._get_current_component_library(line_words)
+
+            # --- Transistor ---
+            if len(line_words) == TRANSISTOR_PARAM_COUNT:
+                # Get port definitions for component
+                port_definitions = self._get_layout_port_definitions(line_words[5], self.subcircuits)
+
+                # Create transistor component and add extracted parameters
+                transistor = Transistor(name=re.search(r'_(.*)', line_words[0]).group(1) if re.search(r'_(.*)',
+                                            line_words[0]) else line_words[0], # chars after underscore if present
+                                        cell=current_cell,
+                                        group=re.search(r'^[^_]+', line_words[0]).group(),  # chars until underscore
+                                        schematic_connections={port_definitions[i]: line_words[i + 1] for i in
+                                                               range(min(len(port_definitions), len(line_words), 4))},
+                                        layout_name=line_words[5],
+                                        layout_library=current_library)
+
+                transistor.instance = transistor.__class__.__name__  # add instance type
+                self.components.append(transistor)
+
+            # --- Resistor ---
+            if len(line_words) == RESISTOR_PARAM_COUNT:
+                # Get port definitions for component
+                port_definitions = self._get_layout_port_definitions(line_words[4], self.subcircuits)
+
+                # Create resistor component and add extracted parameters
+                resistor = Resistor(name=re.search(r'_(.*)', line_words[0]).group(1) if re.search(r'_(.*)',
+                                            line_words[0]) else line_words[0], # chars after underscore if present
+                                    cell=current_cell,
+                                    group=re.search(r'^[^_]+', line_words[0]).group() if re.search(r'^[^_]+', line_words[0])
+                                                    else '',  # chars until underscore
+                                    schematic_connections={port_definitions[i]: line_words[i + 1] for i in
+                                                           range(min(len(port_definitions), len(line_words), 3))},
+                                    layout_name=line_words[4],
+                                    layout_library=current_library)
+
+                resistor.instance = resistor.__class__.__name__  # add instance type
+                self.components.append(resistor)
+
+            #  --- Capacitor ---
+            if len(line_words) == CAPACITOR_PARAM_COUNT:
+                # Get port definitions for component
+                port_definitions = self._get_layout_port_definitions(line_words[3], self.subcircuits)
+
+                # Create capacitor component and add extracted parameters
+                capacitor = Capacitor(name=re.search(r'_(.*)', line_words[0]).group(1) if re.search(r'_(.*)',
+                                            line_words[0]) else line_words[0], # chars after underscore if present
+                                      cell=current_cell,
+                                      group=re.search(r'^[^_]+', line_words[0]).group(),  # chars until underscore
+                                      schematic_connections={port_definitions[i]: line_words[i + 1] for i in
+                                                             range(min(len(port_definitions), len(line_words), 2))},
+                                      layout_name=line_words[3],
+                                      layout_library=current_library)
+
+                capacitor.instance = capacitor.__class__.__name__  # add instance type
+                self.components.append(capacitor)
+
+
+
+    def _get_pins(self, spice_line, current_cell):
+
+        # Check spice line for pin identifier
+        if re.match(r'^\*\.', spice_line):
+            line_words = spice_line.split()
+
+            pin_type = ''.join(re.findall(r'[a-zA-Z]+', line_words[0]))
+            pin = Pin(type=pin_type, cell=current_cell, name=line_words[1])
+            pin.instance = pin.__class__.__name__  # add instance type
+            self.components.append(pin)
+
+    def _parse(self):
         self._generate_spice_file_for_schematic()
         self._read_spice_file()
         self._rebuild_spice_lines_with_plus_symbol()
-        self._remove_expanded_subcircuits_for_standard_libraries()
+        self._remove_expanded_subcircuits_for_component_libraries()
 
         for line in self.spice_file_content:
 
             current_cell = self._get_current_cell(line)  # Update cell type
+            self._get_components(spice_line=line, current_cell=current_cell)
+            self._get_pins(spice_line=line, current_cell=current_cell)
 
-            # Check for components
-            if re.match(r'^[^*.]', line):
-                line_words = line.split()
-
-                current_library = self._get_current_component_library(line_words)
-
-                # Transistor
-                if len(line_words) == STD_LIB_TRANSISTOR_PARAMS:
-
-                    # Get port definitions for component
-                    port_definitions = self._get_layout_port_definitions(line_words[5], self.subcircuits)
-
-                    # Create transistor component and add extracted parameters
-                    transistor = Transistor(name=line_words[0],
-                                            cell=current_cell,
-                                            group=re.search(r'\w$', line_words[0]).group(),  # last char of name
-                                            schematic_connections={port_definitions[i]: line_words[i+1] for i in
-                                                         range(min(len(port_definitions), len(line_words), 4))},
-                                            layout_name=line_words[5],
-                                            layout_library=current_library)
-
-                    transistor.instance = transistor.__class__.__name__  # instance ID
-                    self.components.append(transistor)
-
-                # Resistor
-                if len(line_words) == STD_LIB_RESISTOR_PARAMS:
-
-                    # Get port definitions for component
-                    port_definitions = self._get_layout_port_definitions(line_words[4], self.subcircuits)
-
-                    # Create resistor component and add extracted parameters
-                    resistor = Resistor(name=line_words[0],
-                                        cell=current_cell,
-                                        group=re.search(r'\w$', line_words[0]).group(), # last char of name
-                                        schematic_connections={port_definitions[i]: line_words[i+1] for i in
-                                                     range(min(len(port_definitions), len(line_words), 3))},
-                                        layout_name=line_words[4],
-                                        layout_library=current_library)
-
-                    resistor.instance = resistor.__class__.__name__  # instance ID
-                    self.components.append(resistor)
-
-                # Capacitor
-                if len(line_words) == STD_LIB_CAPACITOR_PARAMS:
-
-                    # Get port definitions for component
-                    port_definitions = self._get_layout_port_definitions(line_words[3], self.subcircuits)
-
-                    # Create capacitor component and add extracted parameters
-                    capacitor = Capacitor(name=line_words[0],
-                                          cell=current_cell,
-                                          group=re.search(r'\w$', line_words[0]).group(), # last char of name
-                                          schematic_connections={port_definitions[i]: line_words[i+1] for i in
-                                                       range(min(len(port_definitions), len(line_words), 2))},
-                                          layout_name=line_words[3],
-                                          layout_library=current_library)
-
-                    capacitor.instance = capacitor.__class__.__name__  # instance ID
-                    self.components.append(capacitor)
-
-                # SKY130_FD_PR_MIM capacitor
-                if re.search(r'sky130_fd_pr__cap_mim', line):
-
-                    # Create capacitor component and add extracted parameters
-                    capacitor = SKY130Capacitor(name=line_words[0],
-                                                cell=current_cell,
-                                                schematic_connections=line_words[1:3],
-                                                layout_name=re.split(r"__", line_words[3])[-1],
-                                                layout_library=re.split(r"__", line_words[3])[0],
-                                                width=int(''.join(re.findall(r'\d+', line_words[4]))),
-                                                length=int(''.join(re.findall(r'\d+', line_words[5]))),
-                                                multiplier_factor=int(''.join(re.findall(r'\d+', line_words[6]))),
-                                                instance_multiplier=int(''.join(re.findall(r'\d+', line_words[7]))))
-
-                    capacitor.instance = capacitor.__class__.__name__  # instance ID
-                    self.components.append(capacitor)
-
-                # SKY130_FD_PR_HIGH_PO resistor
-                if re.search(r'sky130_fd_pr__res_high_po', line):
-
-                    # Create resistor component and add extracted parameters
-                    resistor = SKY130Resistor(name=line_words[0],
-                                              cell=current_cell,
-                                              schematic_connections=line_words[1:4],
-                                              layout_name=re.split(r"__", line_words[4])[-1],
-                                              layout_library=re.split(r"__", line_words[4])[0],
-                                              length=float(''.join(re.findall(r'\d.', line_words[5]))),
-                                              multiplier_factor=int(''.join(re.findall(r'\d+', line_words[6]))),
-                                              instance_multiplier=int(''.join(re.findall(r'\d+', line_words[7]))))
-
-                    resistor.instance = resistor.__class__.__name__  # instance ID
-                    self.components.append(resistor)
-
-            # Check for pins
-            if re.match(r'^\*\.', line):
-                line_words = line.split()
-
-                pin_type = ''.join(re.findall(r'[a-zA-Z]+', line_words[0]))
-                pin = Pin(type=pin_type, cell=current_cell, name=line_words[1])
-                pin.instance = pin.__class__.__name__  # instance ID
-                self.components.append(pin)
-
+        # Summary of parsing
         for component in self.components:
             print(f"{Text.INFO} Component '{component.__class__.__name__}' named '{component.name}' found")
-
         print(f"{Text.INFO} Components extracted from SPICE file: {len(self.components)}")
 
     def get_info(self) -> list:

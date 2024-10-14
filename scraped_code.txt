@@ -1,0 +1,117 @@
+@dataclass
+class SKY130Capacitor(CircuitComponent):
+    width: int = field(default_factory=int)
+    length: int = field(default_factory=int)
+    multiplier_factor: int = field(default_factory=int)
+    instance_multiplier: int = field(default_factory=int)
+
+
+@dataclass
+class SKY130Resistor(CircuitComponent):
+    length: float = field(default_factory=float)
+    multiplier_factor: int = field(default_factory=int)
+    instance_multiplier: int = field(default_factory=int)
+
+
+
+
+
+            # --- SKY130_FD_PR_MIM capacitor ---
+            if re.search(r'sky130_fd_pr__cap_mim', spice_line):
+
+                # Create capacitor component and add extracted parameters
+                capacitor = SKY130Capacitor(name=line_words[0],
+                                            cell=current_cell,
+                                            schematic_connections=line_words[1:3],
+                                            layout_name=re.split(r"__", line_words[3])[-1],
+                                            layout_library=re.split(r"__", line_words[3])[0],
+                                            width=int(''.join(re.findall(r'\d+', line_words[4]))),
+                                            length=int(''.join(re.findall(r'\d+', line_words[5]))),
+                                            multiplier_factor=int(''.join(re.findall(r'\d+', line_words[6]))),
+                                            instance_multiplier=int(''.join(re.findall(r'\d+', line_words[7]))))
+
+                capacitor.instance = capacitor.__class__.__name__  # add instance type
+                self.components.append(capacitor)
+
+            # --- SKY130_FD_PR_HIGH_PO resistor ---
+            if re.search(r'sky130_fd_pr__res_high_po', spice_line):
+
+                # Create resistor component and add extracted parameters
+                resistor = SKY130Resistor(name=line_words[0],
+                                          cell=current_cell,
+                                          schematic_connections=line_words[1:4],
+                                          layout_name=re.split(r"__", line_words[4])[-1],
+                                          layout_library=re.split(r"__", line_words[4])[0],
+                                          length=float(''.join(re.findall(r'\d.', line_words[5]))),
+                                          multiplier_factor=int(''.join(re.findall(r'\d+', line_words[6]))),
+                                          instance_multiplier=int(''.join(re.findall(r'\d+', line_words[7]))))
+
+                resistor.instance = resistor.__class__.__name__  # add instance type
+                self.components.append(resistor)
+
+
+
+
+# Not working
+def load(json_data):
+    loaded_components = []
+
+    component_map = {"Transistor": Transistor,
+                     "LayoutPort": LayoutPort,
+                     "RectArea": RectArea}
+
+    # Not working still, but closer.
+    for obj in json_data:
+        print("NEW OBJECT")
+        if '__class__' in obj and obj['__class__'] in component_map:
+            component_class = component_map[obj['__class__']]
+
+            # First load
+            loaded_component = component_class(**{key: value for key, value in obj.items() if key != '__class__'})
+            print(loaded_component)
+            for i in obj.values():
+                if isinstance(i, list):
+                    for j in i:
+                        if '__class__' in j and j['__class__'] in component_map:
+                            nested_class = component_map[j['__class__']]
+                            nested_component = nested_class(**{key: value for key, value in j.items() if key != '__class__'})
+                            print(nested_component)
+
+                            for k in j.values():
+                                if '__class__' in k and k['__class__'] in component_map:
+                                    lvl2_nested_class = component_map[k['__class__']]
+                                    lvl2_component = lvl2_nested_class(**{key: value for key, value in k.items() if key != '__class__'})
+
+#obj_dicts = [_serialize_dataclass(obj) for obj in objects] # old method
+
+
+
+
+# Working
+def _serialize_dataclass(obj):
+
+    # Handle non-dataclasses
+    if not is_dataclass(obj):
+        return obj
+
+    # Start building serialized output for the different dataclasses
+    output = {'__class__': obj.__class__.__name__}
+
+    for field in fields(obj):
+        attribute = getattr(obj, field.name)
+
+        # Check if the attribute is a dataclass
+        if is_dataclass(attribute):
+
+            # Recursively serialize nested dataclasses
+            output[field.name] = _serialize_dataclass(attribute)
+
+        # Check if the attribute is a list
+        elif isinstance(attribute, list):
+
+            # Serialize each item in the list
+            output[field.name] = [_serialize_dataclass(item) for item in attribute]
+        else:
+            output[field.name] = attribute  # Just add the attribute
+
+    return output

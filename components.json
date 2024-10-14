@@ -21,7 +21,7 @@
         "instance": "Transistor",
         "name": "x1",
         "cell": "JNW_BKLE",
-        "group": "1",
+        "group": "mirror1",
         "schematic_connections": {
             "D": "IBNS_20U",
             "G": "IBPS_2U",
@@ -91,7 +91,7 @@
         "instance": "Transistor",
         "name": "x2",
         "cell": "JNW_BKLE",
-        "group": "2",
+        "group": "mirror1",
         "schematic_connections": {
             "D": "IBPS_2U",
             "G": "IBPS_2U",
@@ -161,7 +161,7 @@
         "instance": "Capacitor",
         "name": "x4",
         "cell": "JNW_BKLE",
-        "group": "4",
+        "group": "x4",
         "schematic_connections": {
             "A": "net1",
             "B": "net2"
@@ -206,72 +206,10 @@
         }
     },
     {
-        "instance": "SKY130Capacitor",
-        "name": "XC1",
-        "cell": "JNW_BKLE",
-        "group": "",
-        "schematic_connections": [
-            "net3",
-            "net4"
-        ],
-        "layout_name": "cap_mim_m3_1",
-        "layout_library": "sky130_fd_pr",
-        "layout_ports": [],
-        "transform_matrix": {
-            "a": 0,
-            "b": 0,
-            "c": 0,
-            "d": 0,
-            "e": 0,
-            "f": 0
-        },
-        "bounding_box": {
-            "x1": 0,
-            "y1": 0,
-            "x2": 0,
-            "y2": 0
-        },
-        "width": 1,
-        "length": 1,
-        "multiplier_factor": 1,
-        "instance_multiplier": 1
-    },
-    {
-        "instance": "SKY130Resistor",
-        "name": "XR1",
-        "cell": "JNW_BKLE",
-        "group": "",
-        "schematic_connections": [
-            "net5",
-            "net6",
-            "net7"
-        ],
-        "layout_name": "res_high_po_2p85",
-        "layout_library": "sky130_fd_pr",
-        "layout_ports": [],
-        "transform_matrix": {
-            "a": 0,
-            "b": 0,
-            "c": 0,
-            "d": 0,
-            "e": 0,
-            "f": 0
-        },
-        "bounding_box": {
-            "x1": 0,
-            "y1": 0,
-            "x2": 0,
-            "y2": 0
-        },
-        "length": 2.85,
-        "multiplier_factor": 1,
-        "instance_multiplier": 1
-    },
-    {
         "instance": "Resistor",
         "name": "x3",
         "cell": "JNW_BKLE",
-        "group": "3",
+        "group": "x3",
         "schematic_connections": {
             "N": "net10",
             "P": "net11",
@@ -356,7 +294,7 @@
         "instance": "Transistor",
         "name": "x2",
         "cell": "COMP",
-        "group": "2",
+        "group": "diff1",
         "schematic_connections": {
             "D": "net3",
             "G": "VIP",
@@ -426,7 +364,7 @@
         "instance": "Transistor",
         "name": "x3",
         "cell": "COMP",
-        "group": "3",
+        "group": "diff",
         "schematic_connections": {
             "D": "net2",
             "G": "VIN",
@@ -496,7 +434,7 @@
         "instance": "Transistor",
         "name": "x7",
         "cell": "COMP",
-        "group": "7",
+        "group": "x7",
         "schematic_connections": {
             "D": "net2",
             "G": "net2",
@@ -566,7 +504,7 @@
         "instance": "Transistor",
         "name": "x9",
         "cell": "COMP",
-        "group": "9",
+        "group": "x9",
         "schematic_connections": {
             "D": "VO",
             "G": "net2",
@@ -636,7 +574,7 @@
         "instance": "Transistor",
         "name": "x8",
         "cell": "COMP",
-        "group": "8",
+        "group": "x8",
         "schematic_connections": {
             "D": "net4",
             "G": "net3",
@@ -706,7 +644,7 @@
         "instance": "Transistor",
         "name": "x5",
         "cell": "COMP",
-        "group": "5",
+        "group": "x5",
         "schematic_connections": {
             "D": "net3",
             "G": "net3",
@@ -776,7 +714,7 @@
         "instance": "Transistor",
         "name": "x6",
         "cell": "COMP",
-        "group": "6",
+        "group": "mirror2",
         "schematic_connections": {
             "D": "net1",
             "G": "I_BIAS",
@@ -846,7 +784,7 @@
         "instance": "Transistor",
         "name": "x1",
         "cell": "COMP",
-        "group": "1",
+        "group": "mirror2",
         "schematic_connections": {
             "D": "I_BIAS",
             "G": "I_BIAS",
@@ -916,7 +854,7 @@
         "instance": "Transistor",
         "name": "x10",
         "cell": "COMP",
-        "group": "0",
+        "group": "mirror1",
         "schematic_connections": {
             "D": "net4",
             "G": "net4",
@@ -986,7 +924,7 @@
         "instance": "Transistor",
         "name": "x11",
         "cell": "COMP",
-        "group": "1",
+        "group": "mirror1",
         "schematic_connections": {
             "D": "VO",
             "G": "net4",
@@ -1056,7 +994,7 @@
         "instance": "Transistor",
         "name": "x12",
         "cell": "COMP",
-        "group": "2",
+        "group": "x12",
         "schematic_connections": {
             "D": "net3",
             "G": "net2",
@@ -1126,7 +1064,7 @@
         "instance": "Transistor",
         "name": "x13",
         "cell": "COMP",
-        "group": "3",
+        "group": "x13",
         "schematic_connections": {
             "D": "net2",
             "G": "net3",

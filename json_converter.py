@@ -28,12 +28,12 @@ def save_to_json(objects: list, file_name: str):
 
 def load_from_json(file_name: str):
     components = []
+
+    # This needs to be manually update if new components are added!
     component_instances = {"Transistor": Transistor,
                            "Resistor": Resistor,
                            "Capacitor": Capacitor,
-                           "Pin": Pin,
-                           "SKY130Capacitor": SKY130Capacitor,
-                           "SKY130Resistor": SKY130Resistor}
+                           "Pin": Pin}
     # Open JSON file
     try:
         with open(f"{file_name}.json", 'r') as file:

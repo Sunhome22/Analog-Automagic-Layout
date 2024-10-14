@@ -15,7 +15,6 @@ class MagicComponentsParser:
         self.project_name = project_properties.name
         self.project_name_long = project_properties.name_long
         self.project_directory = project_properties.directory
-        self.standard_libraries = project_properties.standard_libraries
         self.components = components
         self.component = None
 

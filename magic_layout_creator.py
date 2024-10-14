@@ -3,7 +3,7 @@
 # ================================================== Libraries =========================================================
 import os
 import time
-from circuit_components import RectArea, Transistor, Capacitor, Resistor
+from circuit_components import RectArea, Transistor, Capacitor, Resistor, Pin
 from utilities import Text
 from typing import List
 from magic_drawer import get_pixel_boxes_from_text, get_black_white_pixel_boxes_from_image
@@ -18,7 +18,6 @@ class MagicLayoutCreator:
         self.project_name = project_properties.name
         self.project_name_long = project_properties.name_long
         self.project_directory = project_properties.directory
-        self.standard_libraries = project_properties.standard_libraries
         self.components = components
         self.magic_file_lines = []
 
@@ -96,7 +95,7 @@ class MagicLayoutCreator:
 
         for component in self.components:
 
-            if isinstance(component, (Transistor, Capacitor, Resistor)):
+            if not isinstance(component, Pin):
                 # Test placing
                 i += 1500
 
