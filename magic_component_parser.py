@@ -22,12 +22,13 @@ class MagicComponentsParser:
         return self.read_magic_files()
 
     def read_magic_files(self):
-
+        updated_components = 0
         for component in self.components:
             self.component = component
 
             # Filter out Pins
             if not isinstance(component, Pin):
+                updated_components += 1
                 layout_file_path = os.path.expanduser(f"{self.project_directory}design/"
                                                       f"{component.layout_library}/{component.layout_name}.mag")
                 try:
@@ -36,12 +37,20 @@ class MagicComponentsParser:
                             self._get_component_bounding_box_info(text_line=text_line)
                             self._get_component_port_info(text_line=text_line)
 
-                        print(f"{Text.INFO} Magic layout port and bouding box info extracted for "
-                              f"'{component.__class__.__name__}' named '{component.name}' with "
-                              f"layout '{component.layout_name}'")
+                        print(f"{Text.INFO} {Text.MAGIC_PARSER} Found layout ports and bouding box for"
+                              f" '{component.name}' from '{component.cell}' with"
+                              f" layout '{component.layout_name}'")
 
                 except FileNotFoundError:
                     print(f"{Text.ERROR} The file {layout_file_path} was not found.")
+
+        # Process complete
+        print(f"{Text.INFO} {Text.MAGIC_PARSER} ======================================================================="
+              f"==========================")
+        print(f"{Text.INFO} {Text.MAGIC_PARSER} Process completed!"
+              f" Components updated: {updated_components}")
+        print(f"{Text.INFO} {Text.MAGIC_PARSER} ======================================================================="
+              f"==========================")
 
         return self.components
 

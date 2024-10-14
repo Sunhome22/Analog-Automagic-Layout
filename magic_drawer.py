@@ -32,7 +32,6 @@ def get_black_white_pixel_boxes_from_image(image_path, scale_factor=3):
     return black_pixel_boxes, white_pixel_boxes
 
 
-
 def get_pixel_boxes_from_text(text, font_path="/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", font_size=1000):
     try:
         font = ImageFont.truetype(font_path, font_size)

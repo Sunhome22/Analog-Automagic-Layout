@@ -46,6 +46,7 @@ class SubCircuit:
 @dataclass
 class Pin:
     instance: str = field(default_factory=str)
+    number_id: int = field(default_factory=int)
     cell: str = field(default_factory=str)
     type: str = field(default_factory=str)
     name: str = field(default_factory=str)
@@ -68,6 +69,7 @@ class LayoutPort:
 @dataclass
 class CircuitComponent:
     instance: str = field(default_factory=str)
+    number_id: int = field(default_factory=int)
     name: str = field(default_factory=str)
     cell: str = field(default_factory=str)
     group: str = field(default_factory=str)
@@ -77,6 +79,7 @@ class CircuitComponent:
     layout_ports: List[LayoutPort] = field(default_factory=list) # | dict
     transform_matrix: TransformMatrix = field(default_factory=TransformMatrix) # | dict
     bounding_box: RectArea = field(default_factory=RectArea) # | dict
+
 
     # Handling of JSON file input
     def __post_init__(self):

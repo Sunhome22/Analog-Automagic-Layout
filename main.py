@@ -39,9 +39,6 @@ project_properties = ProjectProperties(directory="~/aicex/ip/jnw_bkle_sky130A/",
 
 
 def main():
-
-    print(f"{Text.INFO} Starting layout generation")
-
     # Extracts component information from SPICE file
     components = SPICEparser(project_properties=project_properties)
 
@@ -54,18 +51,17 @@ def main():
 
     # Read JSON file
     found_stuff = load_from_json(file_name="components")
-    print(f"\n{Text.DEBUG} Components registered:")
-    for stuff in found_stuff:
-        print(f"- {stuff}")
+    #print(f"\n{Text.DEBUG} Components registered:")
+    #for stuff in found_stuff:
+    #    print(f"- {stuff}")
 
     # Create layout
     MagicLayoutCreator(project_properties=project_properties, components=found_stuff)
 
     # Temporary debugging
-    print(f"\n{Text.DEBUG} Components registered:")
-    for component in components:
-        print(id(component))
-        print(f"- {component}")
+    #print(f"\n{Text.DEBUG} Components registered:")
+    #for component in components:
+    #    print(f"- {component}")
 
 
 if __name__ == '__main__':

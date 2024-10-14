@@ -20,10 +20,10 @@ def save_to_json(objects: list, file_name: str):
             # Inserts JSON format from list of dicts into file
             json.dump(obj_dicts, file, indent=4)
 
-        print(f"{Text.INFO} The file '{file_name}.json' was created")
+        print(f"{Text.INFO} {Text.JSON_CONVERTER} The file '{file_name}.json' was created")
 
     except Exception as e:
-        print(f"{Text.ERROR} The file {file_name}.json could not be written due to: {e}")
+        print(f"{Text.ERROR} {Text.JSON_CONVERTER} The file {file_name}.json could not be written due to: {e}")
 
 
 def load_from_json(file_name: str):
@@ -40,7 +40,7 @@ def load_from_json(file_name: str):
             json_data = json.load(file)
 
     except FileNotFoundError:
-        print(f"{Text.ERROR} The file {file_name}.json could not be found")
+        print(f"{Text.ERROR} {Text.JSON_CONVERTER} The file {file_name}.json could not be found")
 
     # Loop over JSON data
     for component in json_data:
@@ -52,5 +52,7 @@ def load_from_json(file_name: str):
             component_class = component_instances[component['instance']]
             loaded_component = component_class(**component)
             components.append(loaded_component)
+
+    print(f"{Text.INFO} {Text.JSON_CONVERTER} The file '{file_name}.json' was loaded")
 
     return components

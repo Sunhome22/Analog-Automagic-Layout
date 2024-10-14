@@ -30,7 +30,7 @@ class MagicLayoutCreator:
         with open(magic_file_path, "w") as file:
             file.write("\n".join(self.magic_file_lines))
 
-        print(f"{Text.INFO} Magic file created and written")
+        print(f"{Text.INFO} {Text.LAYOUT_CREATOR} The Magic file '{self.project_name}.mag' was created")
 
     def place_black_white_picture(self, image_path: str):
         black_pixels, white_pixels = get_black_white_pixel_boxes_from_image(image_path)
