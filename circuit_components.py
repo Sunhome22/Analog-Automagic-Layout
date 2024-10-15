@@ -1,8 +1,11 @@
+# TODO: Add copyright/license notice
+
+# ================================================== Libraries =========================================================
 from dataclasses import dataclass, field
 from typing import List, Dict
 
-
 # ================================================ Misc. classes =======================================================
+
 
 @dataclass
 class TransformMatrix:
@@ -29,6 +32,12 @@ class RectArea:
 
 
 @dataclass
+class CircuitCell:
+    name: str
+    ports: List[str]
+
+
+@dataclass
 class SubCircuit:
     layout_name: str
     ports: List[str]
@@ -36,34 +45,53 @@ class SubCircuit:
 
 @dataclass
 class Pin:
-    type: str
-    name: str
+    instance: str = field(default_factory=str)
+    number_id: int = field(default_factory=int)
+    cell: str = field(default_factory=str)
+    type: str = field(default_factory=str)
+    name: str = field(default_factory=str)
 
 
 @dataclass
 class LayoutPort:
-    type: str
-    layer: str
-    area: RectArea
+    type: str = field(default_factory=str)
+    layer: str = field(default_factory=str)
+    area: RectArea = field(default_factory=RectArea)
 
-    def __init__(self, type: str, layer: str, area_params: List[int]):
-        self.type = type
-        self.layer = layer
-        self.area = RectArea()  # Initialize area as a new RectArea instance
-        self.area.set(area_params)
-
+    # Handling of JSON file input
+    def __post_init__(self):
+        if isinstance(self.area, dict):
+            self.area = RectArea(**self.area)
 
 # ============================================= Circuit component classes ==============================================
 
+
 @dataclass
 class CircuitComponent:
+    instance: str = field(default_factory=str)
+    number_id: int = field(default_factory=int)
     name: str = field(default_factory=str)
-    schematic_connections: Dict[str, str] = field(default_factory=Dict[str, str])
+    cell: str = field(default_factory=str)
+    group: str = field(default_factory=str)
+    schematic_connections: dict = field(default_factory=dict)
     layout_name: str = field(default_factory=str)
     layout_library: str = field(default_factory=str)
-    layout_ports: List[LayoutPort] = field(default_factory=list)
-    transform_matrix: TransformMatrix = field(default_factory=TransformMatrix)
-    bounding_box: RectArea = field(default_factory=RectArea)
+    layout_ports: List[LayoutPort] = field(default_factory=list) # | dict
+    transform_matrix: TransformMatrix = field(default_factory=TransformMatrix) # | dict
+    bounding_box: RectArea = field(default_factory=RectArea) # | dict
+
+
+    # Handling of JSON file input
+    def __post_init__(self):
+
+        if isinstance(self.layout_ports, list):
+            self.layout_ports = [LayoutPort(**rank) for rank in self.layout_ports]
+
+        if isinstance(self.bounding_box, dict):
+            self.bounding_box = RectArea(**self.bounding_box)
+
+        if isinstance(self.transform_matrix, dict):
+            self.transform_matrix = TransformMatrix(**self.transform_matrix)
 
 
 @dataclass
@@ -79,23 +107,4 @@ class Resistor(CircuitComponent):
 @dataclass
 class Capacitor(CircuitComponent):
     pass
-
-
-@dataclass
-class SKY130Capacitor(CircuitComponent):
-    width: int = field(default_factory=int)
-    length: int = field(default_factory=int)
-    multiplier_factor: int = field(default_factory=int)
-    instance_multiplier: int = field(default_factory=int)
-
-
-@dataclass
-class SKY130Resistor(CircuitComponent):
-    length: float = field(default_factory=float)
-    multiplier_factor: int = field(default_factory=int)
-    instance_multiplier: int = field(default_factory=int)
-
-
-
-
 

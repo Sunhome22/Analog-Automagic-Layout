@@ -5,6 +5,8 @@ from AstarPathAlgorithm import *
 from SimplifyPath import *
 from LPplacement import *
 from circuit_components import *
+from json_converter import load_from_json, save_to_json
+
 
 @dataclass
 class Connection:
@@ -117,68 +119,73 @@ def connection_list(objects):
     object_list = objects
     connections = {}
     local_connections = {}
-    local_connection_area = {}
+    single_connection = {}
     i = 0
     for  obj in object_list:
-        ports = obj.schematic_connections
 
-        for key in ports:
-            for key2 in ports:
+        if not isinstance(obj, Pin):
+            ports = obj.schematic_connections
 
-                if key != key2:
-                    entry = [{'starting_comp':obj.name,  'starting_area':key, 'end_comp':obj.name, 'end_area':key2, 'net':ports[key]}, {'starting_comp': obj.name,  'starting_area':key2, 'end_comp':obj.name, 'end_area':key, 'net':ports[key]}]
-                    if ports[key] == ports[key2] and not any(isinstance(obj, Connection) and obj.__dict__ == target for target in entry for obj in local_connections.values()):
-                        local_connections[i]= Connection(obj.name, key, obj.name, key2, ports[key])
-                        i+=1
-        local_connection_area = local_nets(local_connections)
+            for key in ports:
+                for key2 in ports:
+
+                    if key != key2:
+                        entry = [{'starting_comp': obj.number_id,  'starting_area': key, 'end_comp': obj.number_id, 'end_area': key2, 'net': ports[key]},
+                                 {'starting_comp': obj.number_id,  'starting_area': key2, 'end_comp': obj.number_id, 'end_area': key, 'net': ports[key]}]
+                        if ports[key] == ports[key2] and not any(isinstance(obj, Connection) and obj.__dict__ == target for target in entry for obj in local_connections.values()):
+                            local_connections[i]= Connection(obj.number_id, key, obj.number_id, key2, ports[key])
+                            i+=1
+            local_connection_area = local_nets(local_connections)
     i=0
     for obj in object_list:
         for obj2 in object_list:
-            ports = obj.schematic_connections
-            ports2 = obj2.schematic_connections
+            if not isinstance(obj, Pin) and not isinstance(obj2, Pin):
+
+                ports = obj.schematic_connections
+                ports2 = obj2.schematic_connections
 
 
-            if obj != obj2:
+                if obj != obj2 and obj.cell == obj2.cell:
 
-                for key in ports:
-                    element_appended = False
-                    for key2 in ports2:
-                        key_u1 = key
-                        key_u2 = key2
-                        if ports[key] == ports2[key2]:
+                    for key in ports:
+                        element_appended = False
+                        for key2 in ports2:
+                            key_u1 = key
+                            key_u2 = key2
+                            if ports[key] == ports2[key2]:
 
-                            for local_con in local_connections:
+                                for local_con in local_connections:
 
-                                area = local_connections[local_con].starting_area + local_connections[local_con].end_area
+                                    area = local_connections[local_con].starting_area + local_connections[local_con].end_area
 
-                                if obj.name == local_connections[local_con].starting_comp and (key == area[0] or key == area[1]):
-                                    key_u1 = area
-
-
-                                if obj2.name == local_connections[local_con].starting_comp and (key2 == area[0] or key2 == area[1]):
-                                    key_u2 = area
+                                    if obj.number_id == local_connections[local_con].starting_comp and (key == area[0] or key == area[1]):
+                                        key_u1 = area
 
 
-                            entry = [{'starting_comp': obj.name, 'starting_area': key_u1, 'end_comp': obj2.name,
+                                    if obj2.number_id == local_connections[local_con].starting_comp and (key2 == area[0] or key2 == area[1]):
+                                        key_u2 = area
+
+
+                                entry = [{'starting_comp': obj.number_id, 'starting_area': key_u1, 'end_comp': obj2.number_id,
                                       'end_area': key_u2, 'net': ports[key]},
-                                     {'starting_comp': obj2.name, 'starting_area': key_u2, 'end_comp': obj.name,
+                                     {'starting_comp': obj2.number_id, 'starting_area': key_u2, 'end_comp': obj.number_id,
                                       'end_area': key_u1, 'net': ports[key]}]
 
-                            if not any(isinstance(obj, Connection) and obj.__dict__ == target for target in entry for obj in connections.values()):
+                                if not any(isinstance(obj, Connection) and obj.__dict__ == target for target in entry for obj in connections.values()):
 
-                                connections[i] = Connection(obj.name,key_u1,obj2.name, key_u2, ports[key])
-                                i+=1
-                            element_appended = True
+                                    connections[i] = Connection(obj.number_id,key_u1,obj2.number_id, key_u2, ports[key])
+                                    i+=1
+                                element_appended = True
 
 
-                    if not element_appended:
-                        connections[i] =  Connection(obj.name, key, "", "", ports[key])
-                        i += 1
+                        if not element_appended:
+                            single_connection[-1] =  Connection(obj.number_id, key, "", "", ports[key])
+
 
     connections = remove_duplicates_from_list(connections)
 
 
-    return local_connections, connections
+    return single_connection, local_connections, connections
 
 
 
@@ -187,31 +194,11 @@ def main():
 
     grid_size = 10000
     padding = 0
+    components = load_from_json(file_name='components')
 
-    M1 = Transistor(name='x1',
-schematic_connections={'D': 'IBNS_20U', 'G': 'IBPS_2U', 'S': 'VSS', 'B': 'VSS'},
-layout_name='JNWATR_NCH_12C1F2', layout_library='JNW_ATR_SKY130A',
-layout_ports=[LayoutPort(type='G', layer='m1', area_params=[80, 180, 112, 220]),
-LayoutPort(type='S', layer='m1', area_params=[144, 300,240, 340]),
-LayoutPort(type='B', layer='locali', area_params=[-48, 180, 48, 220]),
-LayoutPort(type='D', layer='m1', area_params=[592, 20, 688, 60])],
-transform_matrix=TransformMatrix(a=1, b=0, c=0, d=0, e=1, f=0),
-bounding_box=RectArea(x1=0, y1=0, x2=832, y2=400))
+    Single_connection, local_connections, connections = connection_list(components)
 
-    M2 = Transistor(name='x2',
-schematic_connections={'D': 'IBPS_2U', 'G': 'IBPS_2U', 'S': 'VSS', 'B': 'VSS'},
-layout_name='JNWATR_NCH_2C1F2', layout_library='JNW_ATR_SKY130A',
-layout_ports=[LayoutPort(type='G', layer='m1', area_params=[80, 180, 112, 220]),
-LayoutPort(type='S', layer='m1', area_params=[144, 300, 240, 340]),
-LayoutPort(type='B', layer='locali', area_params=[-48, 180, 48, 220]),
-LayoutPort(type='D', layer='m1', area_params=[272, 20, 368, 60])],
-transform_matrix=TransformMatrix(a=1, b=0, c=0, d=0, e=1, f=0),
-bounding_box=RectArea(0, 0, 512, 400))
-
-
-    objects = [M1, M2]
-    local_connections, connections = connection_list(objects)
-
+    print(connections)
 
     center = True
     clean_path = True
@@ -221,8 +208,9 @@ bounding_box=RectArea(0, 0, 512, 400))
 
     # space between objects
     print("[INFO]: Starting Linear Optimization")
-    result =  LinearOptimizationSolver(objects, connections, local_connections, grid_size, padding)
+    result =  LinearOptimizationSolver(components, connections, local_connections, grid_size, padding)
     objects = result.initiate_solver()
+    save_to_json(objects, file_name="Result75")
     print("[INFO]: Finished Linear Optimization")
     print("[INFO]: Starting Grid Generation")
     #grid = generate_grid(grid_size, objects, new_height, new_width, x, y, center)

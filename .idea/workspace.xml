@@ -46,6 +46,7 @@
     "Python.Simulated anealing 2.executor": "Run",
     "Python.Transistor.executor": "Run",
     "Python.edge length.executor": "Run",
+    "Python.main(outdated).executor": "Run",
     "Python.test.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "git-widget-placeholder": "Leidulv",
@@ -53,6 +54,11 @@
     "settings.editor.selected.configurable": "configurable.group.build"
   }
 }]]></component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\leto\Analog-Automagic-Layout" />
+    </key>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
