@@ -1,4 +1,4 @@
-import json
+import json_converter
 import sys
 from layout_creator.point import Point
 
@@ -309,7 +309,7 @@ class Rect:
         return o
 
     def printToJson(self):
-        print(json.dumps(self.toJson(), indent=4))
+        print(json_converter.dumps(self.toJson(), indent=4))
 
     def isType(self, typename):
         if (self.__class__.__name__ == typename):

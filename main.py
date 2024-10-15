@@ -1,12 +1,12 @@
 
 # ================================================== Libraries =========================================================
-from spice_parser import SPICEparser
-from magic_layout_creator import MagicLayoutCreator
-from utilities import Text
+from circuit.circuit_spice_parser import SPICEparser
+from magic.magic_layout_creator import MagicLayoutCreator
+from utilities.utilities import Text
 from dataclasses import dataclass, asdict
-from magic_component_parser import MagicComponentsParser
-from json_converter import load_from_json, save_to_json
-
+from magic.magic_component_parser import MagicComponentsParser
+from json_converter.json_converter import save_to_json, load_from_json
+from logger.logger import get_logger
 # ========================================== Set-up classes and constants ==============================================
 
 
@@ -39,6 +39,10 @@ project_properties = ProjectProperties(directory="~/aicex/ip/jnw_bkle_sky130A/",
 
 
 def main():
+
+    # Create logger
+    logger = get_logger(__name__)
+
     # Extracts component information from SPICE file
     components = SPICEparser(project_properties=project_properties)
 
@@ -47,21 +51,17 @@ def main():
                                        components=components.get_info()).get_info()
 
     # Save found components to JSON file
-    save_to_json(objects=components, file_name="components")
+    save_to_json(objects=components, file_name="json_converter/components.json")
 
     # Read JSON file
-    found_stuff = load_from_json(file_name="components")
-    #print(f"\n{Text.DEBUG} Components registered:")
-    #for stuff in found_stuff:
-    #    print(f"- {stuff}")
+    found_stuff = load_from_json(file_name="json_converter/components.json")
 
     # Create layout
     MagicLayoutCreator(project_properties=project_properties, components=found_stuff)
 
-    # Temporary debugging
-    #print(f"\n{Text.DEBUG} Components registered:")
-    #for component in components:
-    #    print(f"- {component}")
+    logger.debug(f" Components registered: ")
+    for component in components:
+        logger.debug(f"- {component}")
 
 
 if __name__ == '__main__':

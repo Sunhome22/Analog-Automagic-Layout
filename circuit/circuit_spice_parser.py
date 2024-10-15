@@ -10,19 +10,16 @@
 import os
 import subprocess
 import re
-import circuit_components
-from utilities import Text
-from circuit_components import *
-
-# ==================================================== Constants =======================================================
-TRANSISTOR_PARAM_COUNT = 6
-RESISTOR_PARAM_COUNT = 5
-CAPACITOR_PARAM_COUNT = 4
+from utilities.utilities import Text
+from circuit.circuit_components import *
 
 # ================================================== SPICE Parser ======================================================
 
-
 class SPICEparser:
+
+    TRANSISTOR_PARAM_COUNT = 6
+    RESISTOR_PARAM_COUNT = 5
+    CAPACITOR_PARAM_COUNT = 4
 
     def __init__(self, project_properties):
         self.project_name = project_properties.name
@@ -34,9 +31,9 @@ class SPICEparser:
         self.circuitcells = list()
         self.last_cell_found = ''
 
-        self._parse()
+        self.__parse()
 
-    def _generate_spice_file_for_schematic(self):
+    def __generate_spice_file_for_schematic(self):
         work_directory = os.path.expanduser(f"{self.project_directory}work/")
 
         # Run SPICE generation command from work directory of project
@@ -48,7 +45,7 @@ class SPICEparser:
         except subprocess.CalledProcessError as e:
             print(f"{Text.ERROR} {Text.SPICE_PARSER}: 'make xsch' command failed with: {e.stderr}")
 
-    def _read_spice_file(self):
+    def __read_spice_file(self):
 
         try:
             spice_file_path = os.path.expanduser(f"{self.project_directory}work/xsch/{self.project_name}.spice")
@@ -63,7 +60,7 @@ class SPICEparser:
             print(f"{Text.ERROR} The file '"
                   f"{self.project_directory}work/xsch/{self.project_name}.spice' was not found.")
 
-    def _rebuild_spice_lines_with_plus_symbol(self):
+    def __rebuild_spice_lines_with_plus_symbol(self):
         # Removes added "+" symbols to long lines in the SPICE file
         updated_spice_lines = []
         previous_line = ""
@@ -88,14 +85,14 @@ class SPICEparser:
 
         print(f"{Text.INFO} {Text.SPICE_PARSER} SPICE lines with '+' symbols rebuilt")
 
-    def _get_subcircuit_port_info_for_component_libraries(self, line):
+    def __get_subcircuit_port_info_for_component_libraries(self, line):
         line_words = line.split()
         subcircuit = SubCircuit(layout_name=line_words[1], ports=line_words[2:])
         self.subcircuits.append(subcircuit)
 
         print(f"{Text.INFO} {Text.SPICE_PARSER} SPICE subcircuit port info found for '{subcircuit.layout_name}'")
 
-    def _remove_expanded_subcircuits_for_component_libraries(self):
+    def __remove_expanded_subcircuits_for_component_libraries(self):
         in_expanded_symbol = False
         updated_spice_lines = []
         library_names = []
@@ -110,7 +107,7 @@ class SPICEparser:
             if any(re.match(rf'^\.subckt {library_name}', line.strip()) for library_name in library_names):
 
                 # Retrieve specific subcircuit port information before deletions
-                self._get_subcircuit_port_info_for_component_libraries(line)
+                self.__get_subcircuit_port_info_for_component_libraries(line)
                 in_expanded_symbol = True
 
             # Check for end of expanded subcircuit
@@ -124,7 +121,7 @@ class SPICEparser:
 
         print(f"{Text.INFO} {Text.SPICE_PARSER} SPICE expanded subcircuits for component libraries removed")
 
-    def _get_current_component_library(self, line):
+    def __get_current_component_library(self, line):
         library_names = []
 
         # Create list of library names
@@ -139,7 +136,7 @@ class SPICEparser:
                 # Return library name from path name
                 return re.search(r'[^/]+$', self.component_libraries[index].path).group()
 
-    def _get_current_cell(self, spice_file_line):
+    def __get_current_cell(self, spice_file_line):
         # Update cell information (Any symbol or the schematic itself)
         if re.match(r'\*\*\.subckt', spice_file_line) or re.match(r'.subckt', spice_file_line):
             print(f"{Text.INFO} {Text.SPICE_PARSER} Found circuit cell '{spice_file_line.split()[1]}'")
@@ -148,14 +145,14 @@ class SPICEparser:
         else:
             return self.last_cell_found
 
-    def _get_layout_port_definitions(self, line_word: str, subcircuits: list):
+    def __get_layout_port_definitions(self, line_word: str, subcircuits: list):
         for circuit in subcircuits:
             if re.match(line_word, circuit.layout_name):
                 return circuit.ports
 
         print(f"{Text.ERROR} {Text.SPICE_PARSER} Port definition not found for '{line_word}'")
 
-    def _get_components(self, spice_line, current_cell, current_library):
+    def __get_components(self, spice_line, current_cell, current_library):
 
         # Check SPICE line for transistor/capacitor/resistor identifier
         if re.match(r'^[^*.]', spice_line):
@@ -170,9 +167,10 @@ class SPICEparser:
                 r'^[^_]+(?=_)', x) else '')(line_words[0])
 
             # --- Transistor ---
-            if len(line_words) == TRANSISTOR_PARAM_COUNT:
+            if len(line_words) == self.TRANSISTOR_PARAM_COUNT:
+
                 # Get port definitions for component
-                port_definitions = self._get_layout_port_definitions(line_words[5], self.subcircuits)
+                port_definitions = self.__get_layout_port_definitions(line_words[5], self.subcircuits)
 
                 # Create transistor component and add extracted parameters
                 transistor = Transistor(name=filtered_name,
@@ -188,9 +186,10 @@ class SPICEparser:
                 self.components.append(transistor)
 
             # --- Resistor ---
-            if len(line_words) == RESISTOR_PARAM_COUNT:
+            if len(line_words) == self.RESISTOR_PARAM_COUNT:
+
                 # Get port definitions for component
-                port_definitions = self._get_layout_port_definitions(line_words[4], self.subcircuits)
+                port_definitions = self.__get_layout_port_definitions(line_words[4], self.subcircuits)
 
                 # Create resistor component and add extracted parameters
                 resistor = Resistor(name=filtered_name,
@@ -206,9 +205,10 @@ class SPICEparser:
                 self.components.append(resistor)
 
             #  --- Capacitor ---
-            if len(line_words) == CAPACITOR_PARAM_COUNT:
+            if len(line_words) == self.CAPACITOR_PARAM_COUNT:
+
                 # Get port definitions for components
-                port_definitions = self._get_layout_port_definitions(line_words[3], self.subcircuits)
+                port_definitions = self.__get_layout_port_definitions(line_words[3], self.subcircuits)
 
                 # Create capacitor component and add extracted parameters
                 capacitor = Capacitor(name=filtered_name,
@@ -232,16 +232,16 @@ class SPICEparser:
             pin.instance = pin.__class__.__name__  # add instance type
             self.components.append(pin)
 
-    def _parse(self):
-        self._generate_spice_file_for_schematic()
-        self._read_spice_file()
-        self._rebuild_spice_lines_with_plus_symbol()
-        self._remove_expanded_subcircuits_for_component_libraries()
+    def __parse(self):
+        self.__generate_spice_file_for_schematic()
+        self.__read_spice_file()
+        self.__rebuild_spice_lines_with_plus_symbol()
+        self.__remove_expanded_subcircuits_for_component_libraries()
 
         for line in self.spice_file_content:
-            current_library = self._get_current_component_library(line)
-            current_cell = self._get_current_cell(line)
-            self._get_components(spice_line=line, current_cell=current_cell, current_library=current_library)
+            current_library = self.__get_current_component_library(line)
+            current_cell = self.__get_current_cell(line)
+            self.__get_components(spice_line=line, current_cell=current_cell, current_library=current_library)
 
         # Summary of parsing
         for component in self.components:

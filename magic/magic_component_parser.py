@@ -3,9 +3,8 @@
 # ================================================== Libraries =========================================================
 import os
 import re
-from circuit_components import LayoutPort, RectArea
-from utilities import Text
-from circuit_components import Pin
+from circuit.circuit_components import LayoutPort, RectArea, Pin
+from utilities.utilities import Text
 
 # ============================================= Magic component parser =================================================
 
@@ -19,9 +18,9 @@ class MagicComponentsParser:
         self.component = None
 
     def get_info(self):
-        return self.read_magic_files()
+        return self.__read_magic_files()
 
-    def read_magic_files(self):
+    def __read_magic_files(self):
         updated_components = 0
         for component in self.components:
             self.component = component
@@ -34,8 +33,8 @@ class MagicComponentsParser:
                 try:
                     with open(layout_file_path, "r") as magic_file:
                         for text_line in magic_file:
-                            self._get_component_bounding_box_info(text_line=text_line)
-                            self._get_component_port_info(text_line=text_line)
+                            self.__get_component_bounding_box_info(text_line=text_line)
+                            self.__get_component_port_info(text_line=text_line)
 
                         print(f"{Text.INFO} {Text.MAGIC_PARSER} Found layout ports and bouding box for"
                               f" '{component.name}' from '{component.cell}' with"
@@ -54,13 +53,13 @@ class MagicComponentsParser:
 
         return self.components
 
-    def _get_component_bounding_box_info(self, text_line: str):
+    def __get_component_bounding_box_info(self, text_line: str):
 
         if re.search(r'string FIXED_BBOX', text_line):
             text_line_words = text_line.split()
             self.component.bounding_box.set(map(int, text_line_words[2:6]))
 
-    def _get_component_port_info(self, text_line: str):
+    def __get_component_port_info(self, text_line: str):
 
         if re.search(r'flabel', text_line):
             text_line_words = text_line.split()

@@ -27,7 +27,7 @@
 
 import os
 import gzip
-import json
+import json_converter
 import re
 
 from layout_creator.cell import Cell
@@ -47,10 +47,10 @@ class Design:
 
         if(fname.endswith(".gz")):
             with gzip.open(fname,"r") as f:
-                jobj = json.load(f)
+                jobj = json_converter.load(f)
         else:
             with open(fname,"r") as f:
-                jobj = json.load(f)
+                jobj = json_converter.load(f)
 
         if(jobj is None):
             raise Exception("Could not read %s, unrecognized format" % fname)
@@ -90,11 +90,11 @@ class Design:
                     continue
                 buffer += line
 
-            obj = json.loads(buffer)
+            obj = json_converter.loads(buffer)
 
         #Read Spice
 
-        spifile = filename.replace(".json",".spi")
+        spifile = filename.replace(".json_converter",".spi")
         if(os.path.exists(spifile)):
             sp = spi.SpiceParser()
             sp.parseFile(spifile)

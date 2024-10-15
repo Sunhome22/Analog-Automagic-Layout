@@ -3,10 +3,10 @@
 # ================================================== Libraries =========================================================
 import os
 import time
-from circuit_components import RectArea, Transistor, Capacitor, Resistor, Pin
-from utilities import Text
+from circuit.circuit_components import RectArea, Transistor, Capacitor, Resistor, Pin
+from utilities.utilities import Text
 from typing import List
-from magic_drawer import get_pixel_boxes_from_text, get_black_white_pixel_boxes_from_image
+from magic.magic_drawer import get_pixel_boxes_from_text, get_black_white_pixel_boxes_from_image
 
 # ============================================== Magic layout creator ==================================================
 

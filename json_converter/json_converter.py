@@ -2,17 +2,17 @@
 
 # ================================================== Libraries =========================================================
 import json
-from circuit_components import *
+from circuit.circuit_components import *
 from dataclasses import asdict
 from typing import List
-from utilities import Text
+from utilities.utilities import Text
 
 # =============================================== JSON converter =======================================================
 
 
 def save_to_json(objects: list, file_name: str):
     try:
-        with open(f"{file_name}.json", 'w') as file:
+        with open(file_name, 'w') as file:
 
             # Iterates over objects, serialize them and adds all class type attributes
             obj_dicts = [asdict(component) for component in objects]  # new method
@@ -20,10 +20,10 @@ def save_to_json(objects: list, file_name: str):
             # Inserts JSON format from list of dicts into file
             json.dump(obj_dicts, file, indent=4)
 
-        print(f"{Text.INFO} {Text.JSON_CONVERTER} The file '{file_name}.json' was created")
+        print(f"{Text.INFO} {Text.JSON_CONVERTER} The file '{file_name}' was created")
 
     except Exception as e:
-        print(f"{Text.ERROR} {Text.JSON_CONVERTER} The file {file_name}.json could not be written due to: {e}")
+        print(f"{Text.ERROR} {Text.JSON_CONVERTER} The file {file_name} could not be written due to: {e}")
 
 
 def load_from_json(file_name: str):
@@ -34,13 +34,13 @@ def load_from_json(file_name: str):
                            "Resistor": Resistor,
                            "Capacitor": Capacitor,
                            "Pin": Pin}
-    # Open JSON file
+    # Read JSON file
     try:
-        with open(f"{file_name}.json", 'r') as file:
+        with open(file_name, 'r') as file:
             json_data = json.load(file)
 
     except FileNotFoundError:
-        print(f"{Text.ERROR} {Text.JSON_CONVERTER} The file {file_name}.json could not be found")
+        print(f"{Text.ERROR} {Text.JSON_CONVERTER} '{file_name}' could not be found")
 
     # Loop over JSON data
     for component in json_data:
@@ -53,6 +53,6 @@ def load_from_json(file_name: str):
             loaded_component = component_class(**component)
             components.append(loaded_component)
 
-    print(f"{Text.INFO} {Text.JSON_CONVERTER} The file '{file_name}.json' was loaded")
+    print(f"{Text.INFO} {Text.JSON_CONVERTER} '{file_name}' was loaded")
 
     return components
