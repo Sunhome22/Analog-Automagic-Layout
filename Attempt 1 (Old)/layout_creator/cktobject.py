@@ -24,7 +24,7 @@
 ##  SOFTWARE.
 ##  
 ######################################################################
-import json_converter
+import json_tool
 
 class CktObject:
 
@@ -52,7 +52,7 @@ class CktObject:
         return o
 
     def printToJson(self):
-        print(json_converter.dumps(self.toJson(), indent=4))
+        print(json_tool.dumps(self.toJson(), indent=4))
 
 
     def isType(self,typename):

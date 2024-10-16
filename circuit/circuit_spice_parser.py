@@ -12,8 +12,10 @@ import subprocess
 import re
 from utilities.utilities import Text
 from circuit.circuit_components import *
+from logger.logger import get_a_logger
 
 # ================================================== SPICE Parser ======================================================
+
 
 class SPICEparser:
 
@@ -31,6 +33,7 @@ class SPICEparser:
         self.circuitcells = list()
         self.last_cell_found = ''
 
+        self.logger = get_a_logger(__name__)
         self.__parse()
 
     def __generate_spice_file_for_schematic(self):
@@ -40,10 +43,10 @@ class SPICEparser:
         try:
             subprocess.run(['make xsch'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True,
                                     check=True, shell=True, cwd=work_directory)
-            print(f"{Text.INFO} {Text.SPICE_PARSER} SPICE file generated from schematic")
+            self.logger.info("SPICE file generated from schematic")
 
         except subprocess.CalledProcessError as e:
-            print(f"{Text.ERROR} {Text.SPICE_PARSER}: 'make xsch' command failed with: {e.stderr}")
+            self.logger.error(f"'make xsch' command failed with: {e.stderr}")
 
     def __read_spice_file(self):
 
@@ -54,11 +57,10 @@ class SPICEparser:
             with open(spice_file_path, "r") as spice_file:
                 for line in spice_file:
                     self.spice_file_content.append(line)
-                print(f"{Text.INFO} {Text.SPICE_PARSER} SPICE content copied into memory")
+                self.logger.info(f"SPICE content copied into memory")
 
         except FileNotFoundError:
-            print(f"{Text.ERROR} The file '"
-                  f"{self.project_directory}work/xsch/{self.project_name}.spice' was not found.")
+            self.logger.error(f"The file {self.project_directory}work/xsch/{self.project_name}.spice' was not found.")
 
     def __rebuild_spice_lines_with_plus_symbol(self):
         # Removes added "+" symbols to long lines in the SPICE file
@@ -82,15 +84,14 @@ class SPICEparser:
             updated_spice_lines.append(previous_line.strip())
 
         self.spice_file_content = updated_spice_lines
-
-        print(f"{Text.INFO} {Text.SPICE_PARSER} SPICE lines with '+' symbols rebuilt")
+        self.logger.info("SPICE lines with '+' symbols rebuilt")
 
     def __get_subcircuit_port_info_for_component_libraries(self, line):
         line_words = line.split()
         subcircuit = SubCircuit(layout_name=line_words[1], ports=line_words[2:])
         self.subcircuits.append(subcircuit)
 
-        print(f"{Text.INFO} {Text.SPICE_PARSER} SPICE subcircuit port info found for '{subcircuit.layout_name}'")
+        self.logger.info(f"SPICE subcircuit port info found for '{subcircuit.layout_name}'")
 
     def __remove_expanded_subcircuits_for_component_libraries(self):
         in_expanded_symbol = False
@@ -119,7 +120,7 @@ class SPICEparser:
 
         self.spice_file_content = updated_spice_lines
 
-        print(f"{Text.INFO} {Text.SPICE_PARSER} SPICE expanded subcircuits for component libraries removed")
+        self.logger.info("SPICE expanded subcircuits for component libraries removed")
 
     def __get_current_component_library(self, line):
         library_names = []
@@ -139,7 +140,7 @@ class SPICEparser:
     def __get_current_cell(self, spice_file_line):
         # Update cell information (Any symbol or the schematic itself)
         if re.match(r'\*\*\.subckt', spice_file_line) or re.match(r'.subckt', spice_file_line):
-            print(f"{Text.INFO} {Text.SPICE_PARSER} Found circuit cell '{spice_file_line.split()[1]}'")
+            self.logger.info(f"Found circuit cell '{spice_file_line.split()[1]}'")
             self.last_cell_found = spice_file_line.split()[1]
             return spice_file_line.split()[1]
         else:
@@ -150,7 +151,7 @@ class SPICEparser:
             if re.match(line_word, circuit.layout_name):
                 return circuit.ports
 
-        print(f"{Text.ERROR} {Text.SPICE_PARSER} Port definition not found for '{line_word}'")
+        self.logger.error(f"Port definition not found for '{line_word}'")
 
     def __get_components(self, spice_line, current_cell, current_library):
 
@@ -245,14 +246,11 @@ class SPICEparser:
 
         # Summary of parsing
         for component in self.components:
-            print(f"{Text.INFO} {Text.SPICE_PARSER} Found '{component.__class__.__name__}' named '{component.name}'"
-                  f" from cell '{component.cell}'")
-        print(f"{Text.INFO} {Text.SPICE_PARSER} ======================================================================="
-              f"==========================")
-        print(f"{Text.INFO} {Text.SPICE_PARSER} Process completed! Components extracted from SPICE file: "
-              f"{len(self.components)}")
-        print(f"{Text.INFO} {Text.SPICE_PARSER} ======================================================================="
-              f"==========================")
+            self.logger.info(f"Found '{component.__class__.__name__}' "
+                             f"named '{component.name}' from cell '{component.cell}'")
+
+        self.logger.info("Process complete! Components extracted from SPICE file: "
+                         f"{len(self.components)}")
 
     def get_info(self) -> list:
         return self.components

@@ -7,6 +7,7 @@ from circuit.circuit_components import RectArea, Transistor, Capacitor, Resistor
 from utilities.utilities import Text
 from typing import List
 from magic.magic_drawer import get_pixel_boxes_from_text, get_black_white_pixel_boxes_from_image
+from logger.logger import get_a_logger
 
 # ============================================== Magic layout creator ==================================================
 
@@ -21,6 +22,7 @@ class MagicLayoutCreator:
         self.components = components
         self.magic_file_lines = []
 
+        self.logger = get_a_logger(__name__)
         self.file_creator()
 
     def write_magic_file(self):
@@ -30,7 +32,7 @@ class MagicLayoutCreator:
         with open(magic_file_path, "w") as file:
             file.write("\n".join(self.magic_file_lines))
 
-        print(f"{Text.INFO} {Text.LAYOUT_CREATOR} The Magic file '{self.project_name}.mag' was created")
+        self.logger.info(f"The Magic file '{self.project_name}.mag' was created")
 
     def place_black_white_picture(self, image_path: str):
         black_pixels, white_pixels = get_black_white_pixel_boxes_from_image(image_path)

@@ -5,6 +5,7 @@ import os
 import re
 from circuit.circuit_components import LayoutPort, RectArea, Pin
 from utilities.utilities import Text
+from logger.logger import get_a_logger
 
 # ============================================= Magic component parser =================================================
 
@@ -16,6 +17,7 @@ class MagicComponentsParser:
         self.project_directory = project_properties.directory
         self.components = components
         self.component = None
+        self.logger = get_a_logger(__name__)
 
     def get_info(self):
         return self.__read_magic_files()
@@ -36,20 +38,14 @@ class MagicComponentsParser:
                             self.__get_component_bounding_box_info(text_line=text_line)
                             self.__get_component_port_info(text_line=text_line)
 
-                        print(f"{Text.INFO} {Text.MAGIC_PARSER} Found layout ports and bouding box for"
-                              f" '{component.name}' from '{component.cell}' with"
-                              f" layout '{component.layout_name}'")
+                        self.logger.info(f"Found layout ports and bouding box for '{component.name}' from "
+                                         f"'{component.cell}' with layout '{component.layout_name}'")
 
                 except FileNotFoundError:
-                    print(f"{Text.ERROR} The file {layout_file_path} was not found.")
+                    self.logger.error(f"The file {layout_file_path} was not found.")
 
         # Process complete
-        print(f"{Text.INFO} {Text.MAGIC_PARSER} ======================================================================="
-              f"==========================")
-        print(f"{Text.INFO} {Text.MAGIC_PARSER} Process completed!"
-              f" Components updated: {updated_components}")
-        print(f"{Text.INFO} {Text.MAGIC_PARSER} ======================================================================="
-              f"==========================")
+        self.logger.info(f"Process complete! Components updated: {updated_components}")
 
         return self.components
 

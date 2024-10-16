@@ -5,8 +5,8 @@ from magic.magic_layout_creator import MagicLayoutCreator
 from utilities.utilities import Text
 from dataclasses import dataclass, asdict
 from magic.magic_component_parser import MagicComponentsParser
-from json_converter.json_converter import save_to_json, load_from_json
-from logger.logger import get_logger
+from json_tool.json_converter import save_to_json, load_from_json
+from logger.logger import get_a_logger
 # ========================================== Set-up classes and constants ==============================================
 
 
@@ -40,8 +40,8 @@ project_properties = ProjectProperties(directory="~/aicex/ip/jnw_bkle_sky130A/",
 
 def main():
 
-    # Create logger
-    logger = get_logger(__name__)
+    # Create a logger
+    logger = get_a_logger(__name__)
 
     # Extracts component information from SPICE file
     components = SPICEparser(project_properties=project_properties)
@@ -51,15 +51,16 @@ def main():
                                        components=components.get_info()).get_info()
 
     # Save found components to JSON file
-    save_to_json(objects=components, file_name="json_converter/components.json")
+    save_to_json(objects=components, file_name="json_tool/components.json")
 
     # Read JSON file
-    found_stuff = load_from_json(file_name="json_converter/components.json")
+    # found_stuff = load_from_json(file_name="json_tool/components.json")
 
     # Create layout
-    MagicLayoutCreator(project_properties=project_properties, components=found_stuff)
+    MagicLayoutCreator(project_properties=project_properties, components=components)
 
-    logger.debug(f" Components registered: ")
+    # Debug log of all components
+    logger.debug(f"Components registered: ")
     for component in components:
         logger.debug(f"- {component}")
 
