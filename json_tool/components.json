@@ -163,64 +163,15 @@
         }
     },
     {
-        "instance": "Capacitor",
-        "number_id": 5,
-        "name": "x4",
-        "cell": "JNW_BKLE",
-        "group": "",
-        "schematic_connections": {
-            "A": "net1",
-            "B": "net2"
-        },
-        "layout_name": "JNWTR_CAPX1",
-        "layout_library": "JNW_TR_SKY130A",
-        "layout_ports": [
-            {
-                "type": "A",
-                "layer": "m3",
-                "area": {
-                    "x1": 0,
-                    "y1": 0,
-                    "x2": 540,
-                    "y2": 50
-                }
-            },
-            {
-                "type": "B",
-                "layer": "m4",
-                "area": {
-                    "x1": 0,
-                    "y1": 0,
-                    "x2": 540,
-                    "y2": 50
-                }
-            }
-        ],
-        "transform_matrix": {
-            "a": 0,
-            "b": 0,
-            "c": 0,
-            "d": 0,
-            "e": 0,
-            "f": 0
-        },
-        "bounding_box": {
-            "x1": 0,
-            "y1": 0,
-            "x2": 540,
-            "y2": 540
-        }
-    },
-    {
         "instance": "Resistor",
-        "number_id": 6,
+        "number_id": 5,
         "name": "x3",
         "cell": "JNW_BKLE",
         "group": "",
         "schematic_connections": {
-            "N": "net10",
-            "P": "net11",
-            "B": "net12"
+            "N": "net8",
+            "P": "net9",
+            "B": "net10"
         },
         "layout_name": "JNWTR_RES2",
         "layout_library": "JNW_TR_SKY130A",
@@ -263,49 +214,49 @@
     },
     {
         "instance": "Pin",
-        "number_id": 7,
+        "number_id": 6,
         "cell": "COMP",
         "type": "ipin",
         "name": "VSS"
     },
     {
         "instance": "Pin",
-        "number_id": 8,
+        "number_id": 7,
         "cell": "COMP",
         "type": "ipin",
         "name": "VDD"
     },
     {
         "instance": "Pin",
-        "number_id": 9,
+        "number_id": 8,
         "cell": "COMP",
         "type": "ipin",
         "name": "VIP"
     },
     {
         "instance": "Pin",
-        "number_id": 10,
+        "number_id": 9,
         "cell": "COMP",
         "type": "ipin",
         "name": "VIN"
     },
     {
         "instance": "Pin",
-        "number_id": 11,
+        "number_id": 10,
         "cell": "COMP",
         "type": "opin",
         "name": "VO"
     },
     {
         "instance": "Pin",
-        "number_id": 12,
+        "number_id": 11,
         "cell": "COMP",
         "type": "ipin",
         "name": "I_BIAS"
     },
     {
         "instance": "Transistor",
-        "number_id": 13,
+        "number_id": 12,
         "name": "x2",
         "cell": "COMP",
         "group": "diff1",
@@ -376,7 +327,7 @@
     },
     {
         "instance": "Transistor",
-        "number_id": 14,
+        "number_id": 13,
         "name": "x3",
         "cell": "COMP",
         "group": "diff",
@@ -447,13 +398,13 @@
     },
     {
         "instance": "Transistor",
-        "number_id": 15,
+        "number_id": 14,
         "name": "x7",
         "cell": "COMP",
         "group": "",
         "schematic_connections": {
-            "D": "net2",
-            "G": "net2",
+            "D": "net5",
+            "G": "net6",
             "S": "VDD",
             "B": "VDD"
         },
@@ -518,7 +469,7 @@
     },
     {
         "instance": "Transistor",
-        "number_id": 16,
+        "number_id": 15,
         "name": "x9",
         "cell": "COMP",
         "group": "",
@@ -589,7 +540,7 @@
     },
     {
         "instance": "Transistor",
-        "number_id": 17,
+        "number_id": 16,
         "name": "x8",
         "cell": "COMP",
         "group": "",
@@ -660,7 +611,7 @@
     },
     {
         "instance": "Transistor",
-        "number_id": 18,
+        "number_id": 17,
         "name": "x5",
         "cell": "COMP",
         "group": "",
@@ -731,7 +682,7 @@
     },
     {
         "instance": "Transistor",
-        "number_id": 19,
+        "number_id": 18,
         "name": "x6",
         "cell": "COMP",
         "group": "mirror2",
@@ -802,7 +753,7 @@
     },
     {
         "instance": "Transistor",
-        "number_id": 20,
+        "number_id": 19,
         "name": "x1",
         "cell": "COMP",
         "group": "mirror2",
@@ -873,7 +824,7 @@
     },
     {
         "instance": "Transistor",
-        "number_id": 21,
+        "number_id": 20,
         "name": "x10",
         "cell": "COMP",
         "group": "mirror1",
@@ -944,7 +895,7 @@
     },
     {
         "instance": "Transistor",
-        "number_id": 22,
+        "number_id": 21,
         "name": "x11",
         "cell": "COMP",
         "group": "mirror1",
@@ -1015,7 +966,7 @@
     },
     {
         "instance": "Transistor",
-        "number_id": 23,
+        "number_id": 22,
         "name": "x12",
         "cell": "COMP",
         "group": "",
@@ -1086,7 +1037,7 @@
     },
     {
         "instance": "Transistor",
-        "number_id": 24,
+        "number_id": 23,
         "name": "x13",
         "cell": "COMP",
         "group": "",

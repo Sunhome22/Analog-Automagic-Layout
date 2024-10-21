@@ -15,6 +15,8 @@ class MagicComponentsParser:
         self.project_name = project_properties.name
         self.project_name_long = project_properties.name_long
         self.project_directory = project_properties.directory
+        self.component_libraries = project_properties.component_libraries
+        self.current_component_library_path = None
         self.components = components
         self.component = None
         self.logger = get_a_logger(__name__)
@@ -30,8 +32,14 @@ class MagicComponentsParser:
             # Filter out Pins
             if not isinstance(component, Pin):
                 updated_components += 1
-                layout_file_path = os.path.expanduser(f"{self.project_directory}design/"
-                                                      f"{component.layout_library}/{component.layout_name}.mag")
+
+                # Find library of current component using matching
+                self.current_component_library_path = next(
+                    (lib.path for lib in self.component_libraries if component.layout_library in lib.path), None)
+
+                layout_file_path = os.path.expanduser(f"{self.current_component_library_path}/"
+                                                      f"{component.layout_name}.mag")
+
                 try:
                     with open(layout_file_path, "r") as magic_file:
                         for text_line in magic_file:

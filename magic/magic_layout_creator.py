@@ -72,9 +72,9 @@ class MagicLayoutCreator:
 
         self.magic_file_lines.extend([
             f"use {component.layout_name} {component.name} ../{component.layout_library}",
-            f"transform {component.transform_matrix.a} {component.transform_matrix.d}"
-            f" {int(component.transform_matrix.c)} {component.transform_matrix.b}"
-            f" {component.transform_matrix.e} {int(component.transform_matrix.f)}",
+            f"transform {component.transform_matrix.a} {component.transform_matrix.b}"
+            f" {component.transform_matrix.c} {component.transform_matrix.d}"
+            f" {component.transform_matrix.e} {component.transform_matrix.f}",
             f"box {component.bounding_box.x1} {component.bounding_box.y1} {component.bounding_box.x2}"
             f" {component.bounding_box.y2}"
         ])
@@ -99,18 +99,16 @@ class MagicLayoutCreator:
 
             if not isinstance(component, Pin):
                 # Test placing
-                #i += 1500 # can't have floating point number on x (wtf)
+                i += 1500 #
+                component.transform_matrix.set([0, 1, i, -1, 0, 1500]) # can't have floating point number on x!!!
 
-                # Test transformation matrix
-                #component.transform_matrix.set([0, 1, i, -1, 0, 1500])
                 self.cell_creator(component=component)
 
         #self.place_black_white_picture("Carsten Wulff Picture.jpg")
-
         #self.place_box('m2', [0, 0, 100, 1500])
         #self.place_box('m1', [0, 1400, 1500, 1500])
         #self.place_box('viali', [10, 1500, 100, 1500])
-        # Make your own libraries for MIM capacitor and BJT
+
         # To here!
 
         # Labels and properties
