@@ -69,9 +69,9 @@ class MagicLayoutCreator:
         ])
 
     def cell_creator(self, component):
-
+        # Static folder name! needs to be fixed
         self.magic_file_lines.extend([
-            f"use {component.layout_name} {component.name} ../{component.layout_library}",
+            f"use {component.layout_name} {component.name} ../AAL_COMP_LIBS/{component.layout_library}",
             f"transform {component.transform_matrix.a} {component.transform_matrix.b}"
             f" {component.transform_matrix.c} {component.transform_matrix.d}"
             f" {component.transform_matrix.e} {component.transform_matrix.f}",
@@ -99,8 +99,8 @@ class MagicLayoutCreator:
 
             if not isinstance(component, Pin):
                 # Test placing
-                i += 1500 #
-                component.transform_matrix.set([0, 1, i, -1, 0, 1500]) # can't have floating point number on x!!!
+                #i += 1500 #
+                #component.transform_matrix.set([0, 1, i, -1, 0, 1500]) # can't have floating point number on x!!!
 
                 self.cell_creator(component=component)
 

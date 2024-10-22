@@ -27,13 +27,13 @@ class ProjectProperties:
 # Component libraries
 atr_lib = ComponentLibrary(name="JNWATR", path="~/aicex/ip/jnw_bkle_sky130A/design/AAL_COMP_LIBS/JNW_ATR_SKY130A")
 tr_lib = ComponentLibrary(name="JNWTR", path="~/aicex/ip/jnw_bkle_sky130A/design/AAL_COMP_LIBS/JNW_TR_SKY130A")
-misc_lib = ComponentLibrary(name="AALMISC", path="~/aicex/ip/jnw_bkle_sky130A/design/AAL_COMP_LIBS/JNW_AAL_SKY130A")
+misc_lib = ComponentLibrary(name="AALMISC", path="~/aicex/ip/jnw_bkle_sky130A/design/AAL_COMP_LIBS/AAL_MISC_SKY130A")
 
 
 project_properties = ProjectProperties(directory="~/aicex/ip/jnw_bkle_sky130A/",
                                        name="JNW_BKLE",
                                        name_long="JNW_BKLE_SKY130A",
-                                       component_libraries=[atr_lib, tr_lib])
+                                       component_libraries=[atr_lib, tr_lib, misc_lib])
 
 # ===================================================== Main ===========================================================
 
@@ -57,7 +57,7 @@ def main():
     found_stuff = load_from_json(file_name="json_tool/Result75.json")
 
     # Create layout
-    MagicLayoutCreator(project_properties=project_properties, components=components)
+    MagicLayoutCreator(project_properties=project_properties, components=found_stuff)
 
     # Debug log of all components
     logger.debug(f"Components registered: ")
