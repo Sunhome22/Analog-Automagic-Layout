@@ -19,8 +19,11 @@ class MagicLayoutCreator:
         self.project_name = project_properties.name
         self.project_name_long = project_properties.name_long
         self.project_directory = project_properties.directory
+        self.component_libraries = project_properties.component_libraries
+        self.current_component_library_path = None
         self.components = components
         self.magic_file_lines = []
+        self.cells_added = 0
 
         self.logger = get_a_logger(__name__)
         self.file_creator()
@@ -32,7 +35,8 @@ class MagicLayoutCreator:
         with open(magic_file_path, "w") as file:
             file.write("\n".join(self.magic_file_lines))
 
-        self.logger.info(f"The Magic file '{self.project_name}.mag' was created")
+        self.logger.info(f"Process complete! File '{self.project_name}.mag' was created with "
+                         f"{self.cells_added} components")
 
     def place_black_white_picture(self, image_path: str):
         black_pixels, white_pixels = get_black_white_pixel_boxes_from_image(image_path)
@@ -69,15 +73,20 @@ class MagicLayoutCreator:
         ])
 
     def cell_creator(self, component):
-        # Static folder name! needs to be fixed
+        # Find library of current component
+        self.current_component_library_path = next(
+            (lib.path for lib in self.component_libraries if component.layout_library in lib.path), None)
+
         self.magic_file_lines.extend([
-            f"use {component.layout_name} {component.name} ../AAL_COMP_LIBS/{component.layout_library}",
+            f"use {component.layout_name} {component.name} {self.current_component_library_path}",
             f"transform {component.transform_matrix.a} {component.transform_matrix.b}"
             f" {component.transform_matrix.c} {component.transform_matrix.d}"
             f" {component.transform_matrix.e} {component.transform_matrix.f}",
             f"box {component.bounding_box.x1} {component.bounding_box.y1} {component.bounding_box.x2}"
             f" {component.bounding_box.y2}"
         ])
+        self.cells_added += 1
+        self.logger.info(f"Component '{component.name} {component.layout_name}' placed with {component.transform_matrix}")
 
     def magic_file_top_template(self):
         self.magic_file_lines.extend([
@@ -99,8 +108,8 @@ class MagicLayoutCreator:
 
             if not isinstance(component, Pin):
                 # Test placing
-                #i += 1500 #
-                #component.transform_matrix.set([0, 1, i, -1, 0, 1500]) # can't have floating point number on x!!!
+                i += 1500 #
+                component.transform_matrix.set([0, 1, i, -1, 0, 1500]) # can't have floating point number on x!!!
 
                 self.cell_creator(component=component)
 

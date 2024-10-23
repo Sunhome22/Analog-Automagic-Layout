@@ -57,7 +57,7 @@ def main():
     found_stuff = load_from_json(file_name="json_tool/Result75.json")
 
     # Create layout
-    MagicLayoutCreator(project_properties=project_properties, components=found_stuff)
+    MagicLayoutCreator(project_properties=project_properties, components=components)
 
     # Debug log of all components
     logger.debug(f"Components registered: ")

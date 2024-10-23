@@ -23,9 +23,9 @@
     {
         "instance": "Transistor",
         "number_id": 3,
-        "name": "x1",
+        "name": "M2",
         "cell": "JNW_BKLE",
-        "group": "mirror1",
+        "group": "mirror0",
         "schematic_connections": {
             "D": "IBNS_20U",
             "G": "IBPS_2U",
@@ -94,7 +94,7 @@
     {
         "instance": "Capacitor",
         "number_id": 4,
-        "name": "x4",
+        "name": "C1",
         "cell": "JNW_BKLE",
         "group": "",
         "schematic_connections": {
@@ -143,13 +143,13 @@
     {
         "instance": "Resistor",
         "number_id": 5,
-        "name": "x3",
+        "name": "R1",
         "cell": "JNW_BKLE",
         "group": "",
         "schematic_connections": {
-            "N": "net10",
-            "P": "net11",
-            "B": "net12"
+            "N": "net3",
+            "P": "net4",
+            "B": "net5"
         },
         "layout_name": "JNWTR_RES2",
         "layout_library": "JNW_TR_SKY130A",
@@ -193,9 +193,9 @@
     {
         "instance": "Transistor",
         "number_id": 6,
-        "name": "x1",
+        "name": "M1",
         "cell": "JNW_BKLE",
-        "group": "mirror",
+        "group": "mirror0",
         "schematic_connections": {
             "D": "IBPS_2U",
             "G": "IBPS_2U",
@@ -264,12 +264,12 @@
     {
         "instance": "Capacitor",
         "number_id": 7,
-        "name": "x1",
+        "name": "C2",
         "cell": "JNW_BKLE",
         "group": "",
         "schematic_connections": {
-            "A": "net19",
-            "B": "net20"
+            "A": "net12",
+            "B": "net13"
         },
         "layout_name": "AALMISC_CAP20f",
         "layout_library": "AAL_MISC_SKY130A",
@@ -355,7 +355,7 @@
     {
         "instance": "Transistor",
         "number_id": 14,
-        "name": "x2",
+        "name": "M7",
         "cell": "COMP",
         "group": "diff1",
         "schematic_connections": {
@@ -426,7 +426,7 @@
     {
         "instance": "Transistor",
         "number_id": 15,
-        "name": "x3",
+        "name": "M8",
         "cell": "COMP",
         "group": "diff",
         "schematic_connections": {
@@ -497,7 +497,7 @@
     {
         "instance": "Transistor",
         "number_id": 16,
-        "name": "x7",
+        "name": "M5",
         "cell": "COMP",
         "group": "",
         "schematic_connections": {
@@ -568,7 +568,7 @@
     {
         "instance": "Transistor",
         "number_id": 17,
-        "name": "x9",
+        "name": "M6",
         "cell": "COMP",
         "group": "",
         "schematic_connections": {
@@ -639,7 +639,7 @@
     {
         "instance": "Transistor",
         "number_id": 18,
-        "name": "x8",
+        "name": "M1",
         "cell": "COMP",
         "group": "",
         "schematic_connections": {
@@ -710,7 +710,7 @@
     {
         "instance": "Transistor",
         "number_id": 19,
-        "name": "x5",
+        "name": "M2",
         "cell": "COMP",
         "group": "",
         "schematic_connections": {
@@ -781,7 +781,7 @@
     {
         "instance": "Transistor",
         "number_id": 20,
-        "name": "x6",
+        "name": "M10",
         "cell": "COMP",
         "group": "mirror2",
         "schematic_connections": {
@@ -852,7 +852,7 @@
     {
         "instance": "Transistor",
         "number_id": 21,
-        "name": "x1",
+        "name": "M9",
         "cell": "COMP",
         "group": "mirror2",
         "schematic_connections": {
@@ -923,7 +923,7 @@
     {
         "instance": "Transistor",
         "number_id": 22,
-        "name": "x10",
+        "name": "M11",
         "cell": "COMP",
         "group": "mirror1",
         "schematic_connections": {
@@ -994,7 +994,7 @@
     {
         "instance": "Transistor",
         "number_id": 23,
-        "name": "x11",
+        "name": "M12",
         "cell": "COMP",
         "group": "mirror1",
         "schematic_connections": {
@@ -1065,7 +1065,7 @@
     {
         "instance": "Transistor",
         "number_id": 24,
-        "name": "x12",
+        "name": "M3",
         "cell": "COMP",
         "group": "",
         "schematic_connections": {
@@ -1136,7 +1136,7 @@
     {
         "instance": "Transistor",
         "number_id": 25,
-        "name": "x13",
+        "name": "M4",
         "cell": "COMP",
         "group": "",
         "schematic_connections": {

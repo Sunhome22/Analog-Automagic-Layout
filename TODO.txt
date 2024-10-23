@@ -3,3 +3,5 @@ Things to implement/fix
 - Start creating basic test to circuit_spice_parser. Pytest will be used
 - Create a virtual environment and update the whole project to python 3.12
 - Add .toml file and update the file structure according to PEP standard
+- Create custom bipolar transistor and update circuit_spice_parser
+- Fix subcircuit handling in circuit_spice_parser

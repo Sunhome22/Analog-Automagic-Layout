@@ -33,7 +33,7 @@ class MagicComponentsParser:
             if not isinstance(component, Pin):
                 updated_components += 1
 
-                # Find library of current component using matching
+                # Find library of current component
                 self.current_component_library_path = next(
                     (lib.path for lib in self.component_libraries if component.layout_library in lib.path), None)
 

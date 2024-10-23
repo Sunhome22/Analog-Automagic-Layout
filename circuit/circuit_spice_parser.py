@@ -1,10 +1,15 @@
 # TODO: Add copyright/license notice
 
-# ==== Temporary personal notes ====:
-# CMOS Transistors need to be from Carsten's generated transistor library ATR
-# BJT Transistors not handled yet
-# Capacitors need to be from the standard technology library or from Carsten's generated TR library
-# Resistors need to be from the standard technology library or from Carsten's generated TR library
+
+# ==================================================== Notes ===========================================================
+"""
+    Naming conversions for circuit components:
+    - R	Resistors
+    - C	Capacitors
+    - Q	Bipolar transistor
+    - M NMOS/PMOS transistor
+    - U	Integrated circuits
+"""
 
 # ================================================== Libraries =========================================================
 import os
@@ -16,12 +21,12 @@ from logger.logger import get_a_logger
 
 # ================================================== SPICE Parser ======================================================
 
+@dataclass
+class ComponentType:
+    name: str
+
 
 class SPICEparser:
-
-    TRANSISTOR_PARAM_COUNT = 6
-    RESISTOR_PARAM_COUNT = 5
-    CAPACITOR_PARAM_COUNT = 4
 
     def __init__(self, project_properties):
         self.project_name = project_properties.name
@@ -155,7 +160,7 @@ class SPICEparser:
 
     def __get_components(self, spice_line, current_cell, current_library):
 
-        # Check SPICE line for transistor/capacitor/resistor identifier
+        # Check SPICE line for circuit component identifier
         if re.match(r'^[^*.]', spice_line):
             line_words = spice_line.split()
 
@@ -167,8 +172,11 @@ class SPICEparser:
             filtered_group = (lambda x: re.search(r'^[^_]+(?=_)', x).group() if re.search(
                 r'^[^_]+(?=_)', x) else '')(line_words[0])
 
-            # --- Transistor ---
-            if len(line_words) == self.TRANSISTOR_PARAM_COUNT:
+            # The first letter of the filtered named defines component type
+            component_identifier = filtered_name[0]
+
+            # --- MOS Transistor ---
+            if component_identifier == 'M':
 
                 # Get port definitions for component
                 port_definitions = self.__get_layout_port_definitions(line_words[5], self.subcircuits)
@@ -187,7 +195,7 @@ class SPICEparser:
                 self.components.append(transistor)
 
             # --- Resistor ---
-            if len(line_words) == self.RESISTOR_PARAM_COUNT:
+            elif component_identifier == 'R':
 
                 # Get port definitions for component
                 port_definitions = self.__get_layout_port_definitions(line_words[4], self.subcircuits)
@@ -206,7 +214,7 @@ class SPICEparser:
                 self.components.append(resistor)
 
             #  --- Capacitor ---
-            if len(line_words) == self.CAPACITOR_PARAM_COUNT:
+            elif component_identifier == 'C':
 
                 # Get port definitions for components
                 port_definitions = self.__get_layout_port_definitions(line_words[3], self.subcircuits)
@@ -224,6 +232,32 @@ class SPICEparser:
                 capacitor.instance = capacitor.__class__.__name__  # add instance type
                 self.components.append(capacitor)
 
+
+            #  --- Bipolar Transistor ---
+            elif component_identifier == 'Q':
+
+                # Get port definitions for component
+                port_definitions = self.__get_layout_port_definitions(line_words[5], self.subcircuits)
+                print(port_definitions)
+                # Create transistor component and add extracted parameters
+                transistor = Transistor(name=filtered_name,
+                                        number_id=len(self.components),
+                                        cell=current_cell,
+                                        group=filtered_group,
+                                        schematic_connections={port_definitions[i]: line_words[i + 1] for i in
+                                                               range(min(len(port_definitions), len(line_words), 4))},
+                                        layout_name=line_words[5],
+                                        layout_library=current_library)
+
+                transistor.instance = transistor.__class__.__name__  # add instance type
+                self.components.append(transistor)
+
+            #  --- Subcircuits ---
+
+
+            else:
+                self.logger.error(f"SPICE line '{spice_line}' is not handled!")
+
         # Check SPICE line for pin identifier
         if re.match(r'^\*\.', spice_line):
             line_words = spice_line.split()
@@ -238,8 +272,10 @@ class SPICEparser:
         self.__read_spice_file()
         self.__rebuild_spice_lines_with_plus_symbol()
         self.__remove_expanded_subcircuits_for_component_libraries()
+        # The only possible subcircuits left in the spice file now are cells
 
         for line in self.spice_file_content:
+            #print(line)
             current_library = self.__get_current_component_library(line)
             current_cell = self.__get_current_cell(line)
             self.__get_components(spice_line=line, current_cell=current_cell, current_library=current_library)
