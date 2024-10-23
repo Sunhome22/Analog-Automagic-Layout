@@ -7,10 +7,16 @@ from circuit_components import Pin
 
 
 class LinearOptimizationSolver:
-    def __init__(self, object_info, connections, local_connections, grid_size, padding):
-        self.problem_space = pulp.LpProblem("ObjectPlacementWithSizes", pulp.LpMinimize)
-        self.solver = pulp.PULP_CBC_CMD(msg=True, threads=75, timeLimit=20*60)
 
+    UNIT_HEIGHT = 400
+    UNIT_WIDTH = 540
+    ROTATION_ENABLE = False
+    PADDING = 0
+
+    def __init__(self, object_info, connections, local_connections, grid_size):
+
+        self.problem_space = pulp.LpProblem("ObjectPlacementWithSizes", pulp.LpMinimize)
+        self.solver = pulp.PULP_CBC_CMD(msg=True, threads=50, timeLimit=5*60)
         self.object_info = object_info
         self.objects = []
 
@@ -18,26 +24,30 @@ class LinearOptimizationSolver:
         for obj in self.object_info:
             if not isinstance(obj, Pin):
                 self.objects.append(obj.number_id)
-
-
-
-
+        print("this is self.objects")
+        print(self.objects)
         self.connections = connections
-
         self.local_connections = local_connections
         self.grid_size = grid_size
-
-        self.padding = padding
-
         self.rotated_width = {}
         self.rotated_height = {}
 
-        self.x = pulp.LpVariable.dicts("x", self.objects, 0, grid_size-1, cat='Integer')
-        self.y = pulp.LpVariable.dicts("y", self.objects, 0, grid_size-1, cat='Integer')
-        self.r0 = (pulp.LpVariable.dicts(f"r0", self.objects, cat='Binary'))
-        self.r90 = pulp.LpVariable.dicts(f"r90", self.objects, cat='Binary')
-        self.r180 = pulp.LpVariable.dicts(f"r180", self.objects, cat='Binary')
-        self.r270 = pulp.LpVariable.dicts(f"r270", self.objects, cat='Binary')
+        #self.x = pulp.LpVariable.dicts("x", self.objects, 0, grid_size-1, cat='Integer')
+        #self.y = pulp.LpVariable.dicts("y", self.objects, 0, grid_size-1, cat='Integer')
+
+
+        self.x_pos, self.y_pos = self._extract_possible_positions()
+
+        self.x = pulp.LpVariable.dicts("x_bin", [(i,xv) for i in self.objects for xv in self.x_pos], cat="Binary")
+        self.y = pulp.LpVariable.dicts("y_bin", [(i, yv) for i in self.objects for yv in self.y_pos], cat="Binary")
+        self.coordinates_x = {}
+        self.coordinates_y = {}
+
+        if self.ROTATION_ENABLE:
+            self.r0 = (pulp.LpVariable.dicts(f"r0", self.objects, cat='Binary'))
+            self.r90 = pulp.LpVariable.dicts(f"r90", self.objects, cat='Binary')
+            self.r180 = pulp.LpVariable.dicts(f"r180", self.objects, cat='Binary')
+            self.r270 = pulp.LpVariable.dicts(f"r270", self.objects, cat='Binary')
 
         self.x_min = pulp.LpVariable("x_min", lowBound=0)
         self.x_max = pulp.LpVariable("x_max", lowBound=0)
@@ -47,7 +57,17 @@ class LinearOptimizationSolver:
         self.d_y = {}
 
 
+    def _extract_possible_positions(self):
+        x = []
+        y = []
 
+        for  x_pos in range(0, self.grid_size-1, self.UNIT_WIDTH):
+            x.append(x_pos)
+
+        for y_pos in range(0,self.grid_size-1, self.UNIT_HEIGHT):
+            y.append(y_pos)
+
+        return x, y
 
     def _constraint_rotation(self):
         for o1 in self.object_info:
@@ -58,11 +78,13 @@ class LinearOptimizationSolver:
 
                 width = o1.bounding_box.x2 - o1.bounding_box.x1
                 height = o1.bounding_box.y2 - o1.bounding_box.y1
-
-                self.problem_space += self.r0[o1.number_id] + self.r90[o1.number_id] + self.r180[o1.number_id] + self.r270[o1.number_id] == 1, f"OneRotation_object_{o1.number_id}"
-                self.rotated_width[o1.number_id] = self.r0[o1.number_id] * width + self.r90[o1.number_id] * height + self.r180[o1.number_id] * width + self.r270[o1.number_id] * height
-                self.rotated_height[o1.number_id] = self.r0[o1.number_id] * height + self.r90[o1.number_id] * width + self.r180[o1.number_id] * height + self.r270[o1.number_id] * width
-
+                if self.ROTATION_ENABLE:
+                    self.problem_space += self.r0[o1.number_id] + self.r90[o1.number_id] + self.r180[o1.number_id] + self.r270[o1.number_id] == 1, f"OneRotation_object_{o1.number_id}"
+                    self.rotated_width[o1.number_id] = self.r0[o1.number_id] * width + self.r90[o1.number_id] * height + self.r180[o1.number_id] * width + self.r270[o1.number_id] * height
+                    self.rotated_height[o1.number_id] = self.r0[o1.number_id] * height + self.r90[o1.number_id] * width + self.r180[o1.number_id] * height + self.r270[o1.number_id] * width
+                else:
+                    self.rotated_width[o1.number_id] = width
+                    self.rotated_height[o1.number_id] = height
     def _get_port_parameters(self, obj):
         #staring off utilizing the first point in connections area as point of contact
         port_parameter = []
@@ -116,21 +138,52 @@ class LinearOptimizationSolver:
 
 
 
-                self.problem_space += self.d_x[(o1.starting_comp, o1.end_comp)] >= (self.x[o1.starting_comp] + self.x_start_port) - (self.x[o1.end_comp] + self.x_end_port)
-                self.problem_space += self.d_x[(o1.starting_comp, o1.end_comp)] >= (self.x[o1.end_comp] + self.x_end_port) - (self.x[o1.starting_comp] + self.x_start_port)
+                self.problem_space += self.d_x[(o1.starting_comp, o1.end_comp)] >= (self.coordinates_x[o1.starting_comp] + self.x_start_port) - (self.coordinates_x[o1.end_comp] + self.x_end_port)
+                self.problem_space += self.d_x[(o1.starting_comp, o1.end_comp)] >= (self.coordinates_x[o1.end_comp] + self.x_end_port) - (self.coordinates_x[o1.starting_comp] + self.x_start_port)
 
-                self.problem_space += self.d_y[(o1.starting_comp, o1.end_comp)] >= (self.y[o1.starting_comp] + self.y_start_port) - (self.y[o1.end_comp] + self.y_end_port)
-                self.problem_space += self.d_y[(o1.starting_comp, o1.end_comp)] >= (self.y[o1.end_comp] + self.y_end_port) - (self.y[o1.starting_comp] + self.y_start_port)
+                self.problem_space += self.d_y[(o1.starting_comp, o1.end_comp)] >= (self.coordinates_y[o1.starting_comp] + self.y_start_port) - (self.coordinates_y[o1.end_comp] + self.y_end_port)
+                self.problem_space += self.d_y[(o1.starting_comp, o1.end_comp)] >= (self.coordinates_y[o1.end_comp] + self.y_end_port) - (self.coordinates_y[o1.starting_comp] + self.y_start_port)
 
                 i += 1
 
     def _constraint_overlap(self):
 
-
-
+        object_list = self.objects
 
         for o1 in self.objects:
-            for o2 in self.objects:
+            self.problem_space += pulp.lpSum([self.x[o1, xv] for xv in self.x_pos]) == 1
+            self.problem_space += pulp.lpSum([self.y[o1, yv] for yv in self.y_pos]) == 1
+
+        for o1 in self.objects:
+            self.coordinates_x[o1] = pulp.lpSum([xv * self.x[(o1, xv)] for xv in self.x_pos])
+
+            self.coordinates_y[o1] = pulp.lpSum([yv * self.y[(o1, yv)] for yv in self.y_pos])
+
+
+
+        # for i in self.objects:
+        #     for j in object_list:
+        #         for k in self.x_pos:
+        #             for p in self.y_pos:
+        #
+        #
+        #                 if i != j:
+        #
+        #
+        #                     self.problem_space += self.x[i,k] + self.x[j,k] + self.y[i,p] + self.y[j,p] <= 3
+        #     object_list.remove(i)
+
+       # object_list = self.objects
+        for o1 in self.objects:
+
+
+            self.problem_space += self.coordinates_x[o1] + self.rotated_width[o1] <= self.grid_size
+            self.problem_space += self.coordinates_y[o1] + self.rotated_height[o1] <= self.grid_size
+            # self.problem_space += self.x_max >= self.coordinates_x[o1] + self.rotated_width[o1]
+            # self.problem_space += self.x_min <= self.coordinates_x[o1]
+            # self.problem_space += self.y_max >= self.coordinates_y[o1] + self.rotated_height[o1]
+            # self.problem_space += self.y_min <= self.coordinates_y[o1]
+            for o2 in object_list:
                 if o1 != o2:
                     z1 = pulp.LpVariable(f"z1_{o1}_{o2}", cat='Binary')
                     z2 = pulp.LpVariable(f"z2_{o1}_{o2}", cat='Binary')
@@ -139,91 +192,94 @@ class LinearOptimizationSolver:
 
                     self.problem_space += z1 + z2 + z3 + z4 == 1, f"NonOverlap_{o1}_{o2}"
 
-                    self.problem_space += self.x[o1] + self.rotated_width[o1] + self.padding <= self.x[o2] + self.grid_size * (1 - z1), f"LeftOf_{o1}_{o2}"
-                    self.problem_space += self.x[o2] + self.rotated_width[o2] + self.padding <= self.x[o1] + self.grid_size * (1 - z2), f"RightOf_{o1}_{o2}"
-                    self.problem_space += self.y[o1] + self.rotated_height[o1] + self.padding <= self.y[o2] + self.grid_size * (1 - z3), f"Below_{o1}_{o2}"
-                    self.problem_space += self.y[o2] + self.rotated_height[o2] + self.padding <= self.y[o1] + self.grid_size * (1 - z4), f"Above_{o1}_{o2}"
+                    self.problem_space += self.coordinates_x[o1] + self.rotated_width[o1] + self.PADDING <= self.coordinates_x[o2] + self.grid_size * (1 - z1), f"LeftOf_{o1}_{o2}"
+                    self.problem_space += self.coordinates_x[o2] + self.rotated_width[o2] + self.PADDING <= self.coordinates_x[o1] + self.grid_size * (1 - z2), f"RightOf_{o1}_{o2}"
+                    self.problem_space += self.coordinates_y[o1] + self.rotated_height[o1] + self.PADDING <= self.coordinates_y[o2] + self.grid_size * (1 - z3), f"Below_{o1}_{o2}"
+                    self.problem_space += self.coordinates_y[o2] + self.rotated_height[o2] + self.PADDING <= self.coordinates_y[o1] + self.grid_size * (1 - z4), f"Above_{o1}_{o2}"
 
-                    self.problem_space += self.x[o1] + self.rotated_width[o1] <= self.grid_size
-                    self.problem_space += self.x[o2] + self.rotated_width[o2] <= self.grid_size
-                    self.problem_space += self.y[o1] + self.rotated_height[o1] <= self.grid_size
-                    self.problem_space += self.y[o2] + self.rotated_height[o2] <= self.grid_size
 
-                    self.problem_space += self.x_max >= self.x[o1]
-                    self.problem_space += self.x_max >= self.x[o2]
-                    self.problem_space += self.x_min <= self.x[o2]
-                    self.problem_space += self.x_min <= self.x[o1]
+            object_list.remove(o1)
 
-                    self.problem_space += self.y_max >= self.y[o1]
-                    self.problem_space += self.y_max >= self.y[o2]
-                    self.problem_space += self.y_min <= self.y[o2]
-                    self.problem_space += self.y_min <= self.y[o1]
 
 
     def _solve_linear_optimization_problem(self):
-        self.problem_space += pulp.lpSum([self.d_x[(o1.starting_comp, o1.end_comp)] + self.d_y[(o1.starting_comp, o1.end_comp)] for o1 in self.connections.values()]) + (self.x_max - self.x_min) + (
-                    self.x_max - self.x_min) + (self.y_max - self.y_min) + (self.y_max - self.y_min), "totalWireLength"
-        print(self.problem_space)
+      #  self.problem_space += pulp.lpSum([self.d_x[(o1.starting_comp, o1.end_comp)] + self.d_y[(o1.starting_comp, o1.end_comp)] for o1 in self.connections.values()]) + (self.x_max - self.x_min) + (
+       #             self.x_max - self.x_min) + (self.y_max - self.y_min) + (self.y_max - self.y_min), "totalWireLength"
+
+        self.problem_space += pulp.lpSum(
+          [self.d_x[(o1.starting_comp, o1.end_comp)] + self.d_y[(o1.starting_comp, o1.end_comp)] for o1 in
+           self.connections.values()]), "totalWireLength"
         self.problem_space.solve(self.solver)
 
     def _print_status(self):
         print(f"[INFO] Solution status: {pulp.LpStatus[self.problem_space.status]}")
-
+        print("this is self.objects")
+        print(self.objects)
         for obj in self.objects:
-            print(f"[INFO] Object {obj} is placed at ({pulp.value(self.x[obj])}, {pulp.value(self.y[obj])})")
+            print(f"[INFO] Object {obj}")
+            print(f"[INFO] Object {obj} is placed at ({pulp.value(self.coordinates_x[obj])}, {pulp.value(self.coordinates_y[obj])})")
 
 
         total_length = pulp.value(self.problem_space.objective)
         print(f"[INFO] Total wire length: {total_length}")
 
     def _update_object_info(self):
-
-        print(self.r0)
-
-
         for obj in self.object_info:
             if not isinstance(obj, Pin):
-                print(obj.number_id)
-                print(self.r0[obj.number_id])
-                print(pulp.value(self.r0[obj.number_id]))
-                if pulp.value(self.r0[obj.number_id]) == 1:
-                    obj.transform_matrix.c = pulp.value(self.x[obj.number_id])
-                    obj.transform_matrix.f = pulp.value(self.x[obj.number_id])
-                elif pulp.value(self.r90[obj.number_id]) == 1:
-                    obj.transform_matrix.a = 0
-                    obj.transform_matrix.b = -1
-                    obj.transform_matrix.c =  pulp.value(self.rotated_width[obj.number_id]) + pulp.value(self.x[obj.number_id])
-                    obj.transform_matrix.d = 1
-                    obj.transform_matrix.e = 0
-                    obj.transform_matrix.f = pulp.value(self.rotated_height[obj.number_id]) + pulp.value(self.y[obj.number_id])
-                elif pulp.value(self.r180[obj.number_id]) == 1:
-                    obj.transform_matrix.a = -1
+                if not self.ROTATION_ENABLE:
+                    obj.transform_matrix.a = 1
                     obj.transform_matrix.b = 0
-                    obj.transform_matrix.c = pulp.value(self.rotated_width[obj.number_id]) + pulp.value(self.x[obj.number_id])
+                    obj.transform_matrix.c = int(pulp.value(self.coordinates_x[obj.number_id]))
                     obj.transform_matrix.d = 0
-                    obj.transform_matrix.e = -1
-                    obj.transform_matrix.f = pulp.value(self.rotated_height[obj.number_id]) + pulp.value(self.y[obj.number_id])
-
-                elif pulp.value(self.r270[obj.number_id]) == 1:
-                    obj.transform_matrix.a = 0
-                    obj.transform_matrix.b = 1
-                    obj.transform_matrix.c = pulp.value(self.rotated_width[obj.number_id]) + pulp.value(self.x[obj.number_id])
-                    obj.transform_matrix.d = -1
-                    obj.transform_matrix.e = 0
-                    obj.transform_matrix.f = pulp.value(self.rotated_height[obj.number_id]) + pulp.value(self.y[obj.number_id])
-
+                    obj.transform_matrix.e = 1
+                    obj.transform_matrix.f = int(pulp.value(self.coordinates_y[obj.number_id]))
                 else:
-                    print("[ERROR]: Rotation Variable not found")
-                    print("[ERROR]: for variable: ")
-                    print(obj)
-                    print("[END ERROR] ")
+                    if pulp.value(self.r0[obj.number_id]) == 1:
+                        obj.transform_matrix.a = 1
+                        obj.transform_matrix.b = 0
+                        obj.transform_matrix.c = int(pulp.value(self.x[obj.number_id]))
+                        obj.transform_matrix.d = 0
+                        obj.transform_matrix.e = 1
+                        obj.transform_matrix.f = int(pulp.value(self.x[obj.number_id]))
+                    elif pulp.value(self.r90[obj.number_id]) == 1:
+                        obj.transform_matrix.a = 0
+                        obj.transform_matrix.b = 1
+                        obj.transform_matrix.c = int(pulp.value(self.rotated_width[obj.number_id]) + pulp.value(self.x[obj.number_id]))
+                        obj.transform_matrix.d = -1
+                        obj.transform_matrix.e = 0
+                        obj.transform_matrix.f = int(pulp.value(self.rotated_height[obj.number_id]) + pulp.value(self.y[obj.number_id]))
+                    elif pulp.value(self.r180[obj.number_id]) == 1:
+                        obj.transform_matrix.a = -1
+                        obj.transform_matrix.b = 0
+                        obj.transform_matrix.c = int(pulp.value(self.rotated_width[obj.number_id]) + pulp.value(self.x[obj.number_id]))
+                        obj.transform_matrix.d = 0
+                        obj.transform_matrix.e = -1
+                        obj.transform_matrix.f = int(pulp.value(self.rotated_height[obj.number_id]) + pulp.value(self.y[obj.number_id]))
+
+                    elif pulp.value(self.r270[obj.number_id]) == 1:
+                        obj.transform_matrix.a = 0
+                        obj.transform_matrix.b = -1
+                        obj.transform_matrix.c = int(pulp.value(self.rotated_width[obj.number_id]) + pulp.value(self.x[obj.number_id]))
+                        obj.transform_matrix.d = 1
+                        obj.transform_matrix.e = 0
+                        obj.transform_matrix.f = int(pulp.value(self.rotated_height[obj.number_id]) + pulp.value(self.y[obj.number_id]))
+
+                    else:
+                        print("[ERROR]: Rotation Variable not found")
+                        print("[ERROR]: for variable: ")
+                        print(obj)
+                        print("[END ERROR] ")
 
 
 
     def initiate_solver(self):
-        self._constraint_minimize_manhattan_distance()
         self._constraint_rotation()
         self._constraint_overlap()
+        self._constraint_minimize_manhattan_distance()
+
+
+
+
         self._solve_linear_optimization_problem()
         self._print_status()
         self._update_object_info()

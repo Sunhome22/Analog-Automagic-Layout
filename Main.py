@@ -193,40 +193,38 @@ def main():
     # Define grid size and objects
 
     grid_size = 10000
-    padding = 0
+
     components = load_from_json(file_name='components')
 
-    Single_connection, local_connections, connections = connection_list(components)
+    single_connection, local_connections, connections = connection_list(components)
 
     print(connections)
-
+    run = True
     center = True
     clean_path = True
-    # Object parameters
 
-
-
+    if run:
     # space between objects
-    print("[INFO]: Starting Linear Optimization")
-    result =  LinearOptimizationSolver(components, connections, local_connections, grid_size, padding)
-    objects = result.initiate_solver()
-    save_to_json(objects, file_name="Result75")
-    print("[INFO]: Finished Linear Optimization")
-    print("[INFO]: Starting Grid Generation")
-    #grid = generate_grid(grid_size, objects, new_height, new_width, x, y, center)
-    print("[INFO]: Finished Grid Generation")
-    print("[INFO]: Starting Initiate A*")
-    #path = initiate_astar(grid, x, y, new_width, new_height, connections, center)
-    print("[INFO]: Finished A*")
-    print("[INFO]: Starting Simplifying Paths")
-   # cleaned_paths = simplify_all_paths(path)
-    print("[INFO]: Finished Simplifying Paths")
-    print("[INFO]: Starting Drawing Results")
-    #if clean_path:
-      #  draw_result(grid_size, objects, cleaned_paths, new_height, new_width, x, y)
-    #else:
-       # draw_result(grid_size, objects, path, new_height, new_width, x, y)
-    print("[INFO]: Finished Drawing Results")
+        print("[INFO]: Starting Linear Optimization")
+        result =  LinearOptimizationSolver(components, connections, local_connections, grid_size)
+        objects = result.initiate_solver()
+        save_to_json(objects, file_name="Result50CV3")
+        print("[INFO]: Finished Linear Optimization")
+        print("[INFO]: Starting Grid Generation")
+        #grid = generate_grid(grid_size, objects, new_height, new_width, x, y, center)
+        print("[INFO]: Finished Grid Generation")
+        print("[INFO]: Starting Initiate A*")
+        #path = initiate_astar(grid, x, y, new_width, new_height, connections, center)
+        print("[INFO]: Finished A*")
+        print("[INFO]: Starting Simplifying Paths")
+        # cleaned_paths = simplify_all_paths(path)
+        print("[INFO]: Finished Simplifying Paths")
+        print("[INFO]: Starting Drawing Results")
+        #if clean_path:
+        #  draw_result(grid_size, objects, cleaned_paths, new_height, new_width, x, y)
+        #else:
+        # draw_result(grid_size, objects, path, new_height, new_width, x, y)
+        print("[INFO]: Finished Drawing Results")
 
 
 
