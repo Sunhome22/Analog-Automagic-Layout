@@ -3,9 +3,10 @@
 # ================================================== Libraries =========================================================
 import os
 import re
-from circuit.circuit_components import LayoutPort, RectArea, Pin
+from circuit.circuit_components import LayoutPort, RectArea, Pin, CircuitCell
 from utilities.utilities import Text
 from logger.logger import get_a_logger
+from dataclasses import dataclass, fields
 
 # ============================================= Magic component parser =================================================
 
@@ -18,7 +19,6 @@ class MagicComponentsParser:
         self.component_libraries = project_properties.component_libraries
         self.current_component_library_path = None
         self.components = components
-        self.component = None
         self.logger = get_a_logger(__name__)
 
     def get_info(self):
@@ -27,10 +27,9 @@ class MagicComponentsParser:
     def __read_magic_files(self):
         updated_components = 0
         for component in self.components:
-            self.component = component
 
-            # Filter out Pins
-            if not isinstance(component, Pin):
+            # Filter out pins and circuit cells
+            if not isinstance(component, (Pin, CircuitCell)):
                 updated_components += 1
 
                 # Find library of current component
@@ -43,11 +42,10 @@ class MagicComponentsParser:
                 try:
                     with open(layout_file_path, "r") as magic_file:
                         for text_line in magic_file:
-                            self.__get_component_bounding_box_info(text_line=text_line)
-                            self.__get_component_port_info(text_line=text_line)
+                            self.__get_component_bounding_box_info(text_line=text_line, component=component)
+                            self.__get_component_port_info(text_line=text_line, component=component)
 
-                        self.logger.info(f"Found layout ports and bouding box for '{component.name}' from "
-                                         f"'{component.cell}' with layout '{component.layout_name}'")
+                        self.__basic_component_is_valid_check(component=component)
 
                 except FileNotFoundError:
                     self.logger.error(f"The file {layout_file_path} was not found.")
@@ -57,13 +55,13 @@ class MagicComponentsParser:
 
         return self.components
 
-    def __get_component_bounding_box_info(self, text_line: str):
+    def __get_component_bounding_box_info(self, text_line: str, component: object):
 
         if re.search(r'string FIXED_BBOX', text_line):
             text_line_words = text_line.split()
-            self.component.bounding_box.set(map(int, text_line_words[2:6]))
+            component.bounding_box.set(map(int, text_line_words[2:6]))
 
-    def __get_component_port_info(self, text_line: str):
+    def __get_component_port_info(self, text_line: str, component: object):
 
         if re.search(r'flabel', text_line):
             text_line_words = text_line.split()
@@ -72,4 +70,29 @@ class MagicComponentsParser:
                                      area=RectArea(x1=int(text_line_words[3]), y1=int(text_line_words[4]),
                                                    x2=int(text_line_words[5]), y2=int(text_line_words[6])))
 
-            self.component.layout_ports.append(layout_port)
+            component.layout_ports.append(layout_port)
+
+    def __basic_component_is_valid_check(self, component):
+
+        # Check if both bounding box info and layout port info is present
+        if not all(getattr(component.bounding_box, field.name) == 0 for field
+                   in fields(component.bounding_box)) and component.layout_ports:
+            self.logger.info(f"Found layout ports and bounding box for '{component.name}' from "
+                             f"'{component.cell}' with layout '{component.layout_name}'")
+
+        # Check if both bounding box info and layout port info is missing
+        elif not component.layout_ports and all(getattr(component.bounding_box, field.name) == 0 for field
+                                                in fields(component.bounding_box)):
+            self.logger.error(f"Found no layout ports or bounding box for'{component.name}' from "
+                              f"'{component.cell}' with layout '{component.layout_name}'")
+
+        # Check if layout ports are missing
+        elif not component.layout_ports:
+            self.logger.error(f"Found no layout ports for '{component.name}' from "
+                              f"'{component.cell}' with layout '{component.layout_name}'")
+
+        # Bounding box is missing
+        else:
+            self.logger.error(f"Found no bounding box for'{component.name}' from "
+                              f"'{component.cell}' with layout '{component.layout_name}'")
+

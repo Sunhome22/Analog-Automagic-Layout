@@ -3,7 +3,7 @@
 # ================================================== Libraries =========================================================
 import os
 import time
-from circuit.circuit_components import RectArea, Transistor, Capacitor, Resistor, Pin
+from circuit.circuit_components import RectArea, Transistor, Capacitor, Resistor, Pin, CircuitCell
 from utilities.utilities import Text
 from typing import List
 from magic.magic_drawer import get_pixel_boxes_from_text, get_black_white_pixel_boxes_from_image
@@ -106,7 +106,8 @@ class MagicLayoutCreator:
 
         for component in self.components:
 
-            if not isinstance(component, Pin):
+            # Filter out pins and circuit cells
+            if not isinstance(component, (Pin, CircuitCell)):
                 # Test placing
                 i += 1500 #
                 component.transform_matrix.set([0, 1, i, -1, 0, 1500]) # can't have floating point number on x!!!

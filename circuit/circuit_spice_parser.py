@@ -35,7 +35,6 @@ class SPICEparser:
         self.spice_file_content = list()
         self.components = list()
         self.subcircuits = list()
-        self.circuitcells = list()
         self.last_cell_found = ''
 
         self.logger = get_a_logger(__name__)
@@ -232,13 +231,12 @@ class SPICEparser:
                 capacitor.instance = capacitor.__class__.__name__  # add instance type
                 self.components.append(capacitor)
 
-
             #  --- Bipolar Transistor ---
             elif component_identifier == 'Q':
 
                 # Get port definitions for component
-                port_definitions = self.__get_layout_port_definitions(line_words[5], self.subcircuits)
-                print(port_definitions)
+                port_definitions = self.__get_layout_port_definitions(line_words[4], self.subcircuits)
+
                 # Create transistor component and add extracted parameters
                 transistor = Transistor(name=filtered_name,
                                         number_id=len(self.components),
@@ -246,14 +244,27 @@ class SPICEparser:
                                         group=filtered_group,
                                         schematic_connections={port_definitions[i]: line_words[i + 1] for i in
                                                                range(min(len(port_definitions), len(line_words), 4))},
-                                        layout_name=line_words[5],
+                                        layout_name=line_words[4],
                                         layout_library=current_library)
 
                 transistor.instance = transistor.__class__.__name__  # add instance type
                 self.components.append(transistor)
 
-            #  --- Subcircuits ---
+            #  --- Circuit cells ---
+            #elif component_identifier == 'U':
+                # Get port definitions for component
+                #port_definitions = self.__get_layout_port_definitions(line_words[-1], self.subcircuits)
+                #print(port_definitions)
+                # Create circuit cell component and add extracted parameters
+                #circuit_cell = CircuitCell(name=line_words[-1],
+                #                           cell=current_cell,
+                #                           number_id=len(self.components),
+                #                           schematic_connections={port_definitions[i]: line_words[i + 1] for i in
+                #                                                  range(min(len(port_definitions), len(line_words), -1))})
 
+                #circuit_cell.instance = circuit_cell.__class__.__name__
+
+                #self.components.append(circuit_cell)
 
             else:
                 self.logger.error(f"SPICE line '{spice_line}' is not handled!")
@@ -275,7 +286,6 @@ class SPICEparser:
         # The only possible subcircuits left in the spice file now are cells
 
         for line in self.spice_file_content:
-            #print(line)
             current_library = self.__get_current_component_library(line)
             current_cell = self.__get_current_cell(line)
             self.__get_components(spice_line=line, current_cell=current_cell, current_library=current_library)
