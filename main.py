@@ -2,7 +2,6 @@
 # ================================================== Libraries =========================================================
 from circuit.circuit_spice_parser import SPICEparser
 from magic.magic_layout_creator import MagicLayoutCreator
-from utilities.utilities import Text
 from dataclasses import dataclass, asdict
 from magic.magic_component_parser import MagicComponentsParser
 from json_tool.json_converter import save_to_json, load_from_json
@@ -54,10 +53,10 @@ def main():
     save_to_json(objects=components, file_name="json_tool/components.json")
 
     # Read JSON file
-    found_stuff = load_from_json(file_name="json_tool/Result75.json")
+    found_stuff = load_from_json(file_name="json_tool/Result50CV3.json")
 
     # Create layout
-    MagicLayoutCreator(project_properties=project_properties, components=components)
+    MagicLayoutCreator(project_properties=project_properties, components=found_stuff)
 
     # Debug log of all components
     logger.debug(f"Components registered: ")

@@ -8,22 +8,17 @@
     - C	Capacitors
     - Q	Bipolar transistor
     - M NMOS/PMOS transistor
-    - U	Integrated circuits
+    - U	Circuit cells/Integrated circuits
 """
 
 # ================================================== Libraries =========================================================
 import os
 import subprocess
 import re
-from utilities.utilities import Text
 from circuit.circuit_components import *
 from logger.logger import get_a_logger
 
 # ================================================== SPICE Parser ======================================================
-
-@dataclass
-class ComponentType:
-    name: str
 
 
 class SPICEparser:
@@ -141,6 +136,15 @@ class SPICEparser:
                 # Return library name from path name
                 return re.search(r'[^/]+$', self.component_libraries[index].path).group()
 
+    def __get_subcircuit_port_info_for_cells(self, spice_file_content):
+        for line in spice_file_content:
+            if re.match(r'\*\*\.subckt', line) or re.match(r'.subckt', line):
+                line_words = line.split()
+                subcircuit = SubCircuit(layout_name=line_words[1], ports=line_words[2:])
+                self.subcircuits.append(subcircuit)
+
+                self.logger.info(f"SPICE subcircuit port info found for '{subcircuit.layout_name}'")
+
     def __get_current_cell(self, spice_file_line):
         # Update cell information (Any symbol or the schematic itself)
         if re.match(r'\*\*\.subckt', spice_file_line) or re.match(r'.subckt', spice_file_line):
@@ -151,13 +155,13 @@ class SPICEparser:
             return self.last_cell_found
 
     def __get_layout_port_definitions(self, line_word: str, subcircuits: list):
-        for circuit in subcircuits:
-            if re.match(line_word, circuit.layout_name):
-                return circuit.ports
+        for subcircuit in subcircuits:
+            if re.match(line_word, subcircuit.layout_name):
+                return subcircuit.ports
 
         self.logger.error(f"Port definition not found for '{line_word}'")
 
-    def __get_components(self, spice_line, current_cell, current_library):
+    def __get_component(self, spice_line, current_cell, current_library):
 
         # Check SPICE line for circuit component identifier
         if re.match(r'^[^*.]', spice_line):
@@ -186,7 +190,7 @@ class SPICEparser:
                                         cell=current_cell,
                                         group=filtered_group,
                                         schematic_connections={port_definitions[i]: line_words[i + 1] for i in
-                                                               range(min(len(port_definitions), len(line_words), 4))},
+                                                               range(min(len(port_definitions), len(line_words) - 1))},
                                         layout_name=line_words[5],
                                         layout_library=current_library)
 
@@ -205,7 +209,7 @@ class SPICEparser:
                                     cell=current_cell,
                                     group=filtered_group,
                                     schematic_connections={port_definitions[i]: line_words[i + 1] for i in
-                                                           range(min(len(port_definitions), len(line_words), 3))},
+                                                           range(min(len(port_definitions), len(line_words) - 1))},
                                     layout_name=line_words[4],
                                     layout_library=current_library)
 
@@ -224,7 +228,7 @@ class SPICEparser:
                                       cell=current_cell,
                                       group=filtered_group,
                                       schematic_connections={port_definitions[i]: line_words[i + 1] for i in
-                                                             range(min(len(port_definitions), len(line_words), 2))},
+                                                             range(min(len(port_definitions), len(line_words) - 1))},
                                       layout_name=line_words[3],
                                       layout_library=current_library)
 
@@ -243,7 +247,7 @@ class SPICEparser:
                                         cell=current_cell,
                                         group=filtered_group,
                                         schematic_connections={port_definitions[i]: line_words[i + 1] for i in
-                                                               range(min(len(port_definitions), len(line_words), 4))},
+                                                               range(min(len(port_definitions), len(line_words) - 1))},
                                         layout_name=line_words[4],
                                         layout_library=current_library)
 
@@ -251,20 +255,22 @@ class SPICEparser:
                 self.components.append(transistor)
 
             #  --- Circuit cells ---
-            #elif component_identifier == 'U':
+            elif component_identifier == 'U':
+
                 # Get port definitions for component
-                #port_definitions = self.__get_layout_port_definitions(line_words[-1], self.subcircuits)
-                #print(port_definitions)
+                port_definitions = self.__get_layout_port_definitions(line_words[-1], self.subcircuits)
+
                 # Create circuit cell component and add extracted parameters
-                #circuit_cell = CircuitCell(name=line_words[-1],
-                #                           cell=current_cell,
-                #                           number_id=len(self.components),
-                #                           schematic_connections={port_definitions[i]: line_words[i + 1] for i in
-                #                                                  range(min(len(port_definitions), len(line_words), -1))})
+                circuit_cell = CircuitCell(name=line_words[-1],
+                                           cell=current_cell,
+                                           number_id=len(self.components),
+                                           schematic_connections={port_definitions[i]: line_words[i + 1] for i in
+                                                                  range(min(len(port_definitions), len(line_words) - 1)
+                                                                        )})
 
-                #circuit_cell.instance = circuit_cell.__class__.__name__
+                circuit_cell.instance = circuit_cell.__class__.__name__  # add instance type
 
-                #self.components.append(circuit_cell)
+                self.components.append(circuit_cell)
 
             else:
                 self.logger.error(f"SPICE line '{spice_line}' is not handled!")
@@ -283,12 +289,16 @@ class SPICEparser:
         self.__read_spice_file()
         self.__rebuild_spice_lines_with_plus_symbol()
         self.__remove_expanded_subcircuits_for_component_libraries()
-        # The only possible subcircuits left in the spice file now are cells
+        # The only possible subcircuits left in the spice file now are cells.
 
+        # Get port info for these cells
+        self.__get_subcircuit_port_info_for_cells(self.spice_file_content)
+
+        # Main component extraction loop
         for line in self.spice_file_content:
             current_library = self.__get_current_component_library(line)
             current_cell = self.__get_current_cell(line)
-            self.__get_components(spice_line=line, current_cell=current_cell, current_library=current_library)
+            self.__get_component(spice_line=line, current_cell=current_cell, current_library=current_library)
 
         # Summary of parsing
         for component in self.components:

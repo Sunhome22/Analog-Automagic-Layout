@@ -4,7 +4,6 @@
 import os
 import re
 from circuit.circuit_components import LayoutPort, RectArea, Pin, CircuitCell
-from utilities.utilities import Text
 from logger.logger import get_a_logger
 from dataclasses import dataclass, fields
 

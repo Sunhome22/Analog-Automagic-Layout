@@ -5,7 +5,6 @@ import json
 from circuit.circuit_components import *
 from dataclasses import asdict
 from typing import List
-from utilities.utilities import Text
 from logger.logger import get_a_logger
 # =============================================== JSON converter =======================================================
 
@@ -55,6 +54,6 @@ def load_from_json(file_name: str):
             loaded_component = component_class(**component)
             components.append(loaded_component)
 
-    logger.info(f"'{file_name}' was loaded")
+    logger.info(f"The file '{file_name}' was loaded")
 
     return components
