@@ -161,6 +161,24 @@ class SPICEparser:
 
         self.logger.error(f"Port definition not found for '{line_word}'")
 
+    def __get_component_category_and_type(self, filtered_name):
+
+        # A map of different category identifiers and type identifiers to their corresponding type words
+        component_category_to_type_table = {
+            ("M", "N"): "nmos",
+            ("M", "P"): "pmos",
+            ("Q", "N"): "npn",
+            ("Q", "P"): "pnp"
+        }
+
+        # The first letter of the filtered name defines category
+        component_category = filtered_name[0]
+
+        # The second letter of the filtered name can define type
+        component_type = component_category_to_type_table.get((component_category, filtered_name[1]), None)
+
+        return component_category, component_type
+
     def __get_component(self, spice_line, current_cell, current_library):
 
         # Check SPICE line for circuit component identifier
@@ -173,19 +191,21 @@ class SPICEparser:
 
             # Component group = characters until underscore if underscore is present
             filtered_group = (lambda x: re.search(r'^[^_]+(?=_)', x).group() if re.search(
-                r'^[^_]+(?=_)', x) else '')(line_words[0])
+                r'^[^_]+(?=_)', x) else None)(line_words[0])
 
-            # The first letter of the filtered named defines component type
-            component_identifier = filtered_name[0]
+            # Component category and type
+            component_category, component_type = self.__get_component_category_and_type(filtered_name)
 
             # --- MOS Transistor ---
-            if component_identifier == 'M':
+            if component_category == 'M':
 
                 # Get port definitions for component
                 port_definitions = self.__get_layout_port_definitions(line_words[5], self.subcircuits)
 
+
                 # Create transistor component and add extracted parameters
                 transistor = Transistor(name=filtered_name,
+                                        type=component_type,
                                         number_id=len(self.components),
                                         cell=current_cell,
                                         group=filtered_group,
@@ -197,14 +217,16 @@ class SPICEparser:
                 transistor.instance = transistor.__class__.__name__  # add instance type
                 self.components.append(transistor)
 
+
             # --- Resistor ---
-            elif component_identifier == 'R':
+            elif component_category == 'R':
 
                 # Get port definitions for component
                 port_definitions = self.__get_layout_port_definitions(line_words[4], self.subcircuits)
 
                 # Create resistor component and add extracted parameters
                 resistor = Resistor(name=filtered_name,
+                                    type=component_type,
                                     number_id=len(self.components),
                                     cell=current_cell,
                                     group=filtered_group,
@@ -217,13 +239,14 @@ class SPICEparser:
                 self.components.append(resistor)
 
             #  --- Capacitor ---
-            elif component_identifier == 'C':
+            elif component_category == 'C':
 
                 # Get port definitions for components
                 port_definitions = self.__get_layout_port_definitions(line_words[3], self.subcircuits)
 
                 # Create capacitor component and add extracted parameters
                 capacitor = Capacitor(name=filtered_name,
+                                      type=component_type,
                                       number_id=len(self.components),
                                       cell=current_cell,
                                       group=filtered_group,
@@ -236,13 +259,14 @@ class SPICEparser:
                 self.components.append(capacitor)
 
             #  --- Bipolar Transistor ---
-            elif component_identifier == 'Q':
+            elif component_category == 'Q':
 
                 # Get port definitions for component
                 port_definitions = self.__get_layout_port_definitions(line_words[4], self.subcircuits)
 
                 # Create transistor component and add extracted parameters
                 transistor = Transistor(name=filtered_name,
+                                        type=component_type,
                                         number_id=len(self.components),
                                         cell=current_cell,
                                         group=filtered_group,
@@ -255,7 +279,7 @@ class SPICEparser:
                 self.components.append(transistor)
 
             #  --- Circuit cells ---
-            elif component_identifier == 'U':
+            elif component_category == 'U':
 
                 # Get port definitions for component
                 port_definitions = self.__get_layout_port_definitions(line_words[-1], self.subcircuits)

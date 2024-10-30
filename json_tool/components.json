@@ -23,7 +23,8 @@
     {
         "instance": "Transistor",
         "number_id": 3,
-        "name": "M2",
+        "name": "MN2",
+        "type": "nmos",
         "cell": "JNW_BKLE",
         "group": "mirror0",
         "schematic_connections": {
@@ -95,11 +96,12 @@
         "instance": "Capacitor",
         "number_id": 4,
         "name": "C1",
+        "type": null,
         "cell": "JNW_BKLE",
-        "group": "",
+        "group": null,
         "schematic_connections": {
-            "A": "net2",
-            "B": "net3"
+            "A": "net1",
+            "B": "net2"
         },
         "layout_name": "JNWTR_CAPX1",
         "layout_library": "JNW_TR_SKY130A",
@@ -144,12 +146,13 @@
         "instance": "Resistor",
         "number_id": 5,
         "name": "R1",
+        "type": null,
         "cell": "JNW_BKLE",
-        "group": "",
+        "group": null,
         "schematic_connections": {
-            "N": "net4",
-            "P": "net5",
-            "B": "net6"
+            "N": "net3",
+            "P": "net4",
+            "B": "net5"
         },
         "layout_name": "JNWTR_RES2",
         "layout_library": "JNW_TR_SKY130A",
@@ -196,7 +199,7 @@
         "name": "COMP",
         "cell": "JNW_BKLE",
         "schematic_connections": {
-            "VDD": "net1",
+            "VDD": "net6",
             "VIN": "net7",
             "VIP": "net8",
             "VO": "net9",
@@ -207,7 +210,8 @@
     {
         "instance": "Transistor",
         "number_id": 7,
-        "name": "M1",
+        "name": "MN1",
+        "type": "nmos",
         "cell": "JNW_BKLE",
         "group": "mirror0",
         "schematic_connections": {
@@ -279,11 +283,12 @@
         "instance": "Capacitor",
         "number_id": 8,
         "name": "C2",
+        "type": null,
         "cell": "JNW_BKLE",
-        "group": "",
+        "group": null,
         "schematic_connections": {
             "A": "net12",
-            "B": "net1"
+            "B": "net13"
         },
         "layout_name": "AALMISC_CAP20f",
         "layout_library": "AAL_MISC_SKY130A",
@@ -327,13 +332,14 @@
     {
         "instance": "Transistor",
         "number_id": 9,
-        "name": "Q1",
+        "name": "QP1",
+        "type": "pnp",
         "cell": "JNW_BKLE",
-        "group": "",
+        "group": null,
         "schematic_connections": {
-            "C": "net13",
-            "B": "net14",
-            "E": "net15"
+            "C": "net14",
+            "B": "net15",
+            "E": "net16"
         },
         "layout_name": "AALMISC_PNP_W3p40L3p40",
         "layout_library": "AAL_MISC_SKY130A",
@@ -429,7 +435,8 @@
     {
         "instance": "Transistor",
         "number_id": 16,
-        "name": "M7",
+        "name": "MN7",
+        "type": "nmos",
         "cell": "COMP",
         "group": "diff1",
         "schematic_connections": {
@@ -500,9 +507,10 @@
     {
         "instance": "Transistor",
         "number_id": 17,
-        "name": "M8",
+        "name": "MN8",
+        "type": "nmos",
         "cell": "COMP",
-        "group": "diff",
+        "group": "diff1",
         "schematic_connections": {
             "D": "net2",
             "G": "VIN",
@@ -571,9 +579,10 @@
     {
         "instance": "Transistor",
         "number_id": 18,
-        "name": "M5",
+        "name": "MP5",
+        "type": "pmos",
         "cell": "COMP",
-        "group": "",
+        "group": null,
         "schematic_connections": {
             "D": "net5",
             "G": "net6",
@@ -642,9 +651,10 @@
     {
         "instance": "Transistor",
         "number_id": 19,
-        "name": "M6",
+        "name": "MP6",
+        "type": "pmos",
         "cell": "COMP",
-        "group": "",
+        "group": null,
         "schematic_connections": {
             "D": "VO",
             "G": "net2",
@@ -713,9 +723,10 @@
     {
         "instance": "Transistor",
         "number_id": 20,
-        "name": "M1",
+        "name": "MP1",
+        "type": "pmos",
         "cell": "COMP",
-        "group": "",
+        "group": null,
         "schematic_connections": {
             "D": "net4",
             "G": "net3",
@@ -784,9 +795,10 @@
     {
         "instance": "Transistor",
         "number_id": 21,
-        "name": "M2",
+        "name": "MP2",
+        "type": "pmos",
         "cell": "COMP",
-        "group": "",
+        "group": null,
         "schematic_connections": {
             "D": "net3",
             "G": "net3",
@@ -855,7 +867,8 @@
     {
         "instance": "Transistor",
         "number_id": 22,
-        "name": "M10",
+        "name": "MN10",
+        "type": "nmos",
         "cell": "COMP",
         "group": "mirror2",
         "schematic_connections": {
@@ -926,7 +939,8 @@
     {
         "instance": "Transistor",
         "number_id": 23,
-        "name": "M9",
+        "name": "MN9",
+        "type": "nmos",
         "cell": "COMP",
         "group": "mirror2",
         "schematic_connections": {
@@ -997,7 +1011,8 @@
     {
         "instance": "Transistor",
         "number_id": 24,
-        "name": "M11",
+        "name": "MN11",
+        "type": "nmos",
         "cell": "COMP",
         "group": "mirror1",
         "schematic_connections": {
@@ -1068,7 +1083,8 @@
     {
         "instance": "Transistor",
         "number_id": 25,
-        "name": "M12",
+        "name": "MN12",
+        "type": "nmos",
         "cell": "COMP",
         "group": "mirror1",
         "schematic_connections": {
@@ -1139,9 +1155,10 @@
     {
         "instance": "Transistor",
         "number_id": 26,
-        "name": "M3",
+        "name": "MP3",
+        "type": "pmos",
         "cell": "COMP",
-        "group": "",
+        "group": null,
         "schematic_connections": {
             "D": "net3",
             "G": "net2",
@@ -1210,9 +1227,10 @@
     {
         "instance": "Transistor",
         "number_id": 27,
-        "name": "M4",
+        "name": "MP4",
+        "type": "pmos",
         "cell": "COMP",
-        "group": "",
+        "group": null,
         "schematic_connections": {
             "D": "net2",
             "G": "net3",
