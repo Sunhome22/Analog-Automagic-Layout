@@ -34,7 +34,8 @@ def load_from_json(file_name: str):
     component_instances = {"Transistor": Transistor,
                            "Resistor": Resistor,
                            "Capacitor": Capacitor,
-                           "Pin": Pin}
+                           "Pin": Pin,
+                           "Cell": CircuitCell}
     # Read JSON file
     try:
         with open(file_name, 'r') as file:

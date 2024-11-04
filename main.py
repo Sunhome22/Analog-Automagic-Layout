@@ -53,7 +53,7 @@ def main():
     save_to_json(objects=components, file_name="json_tool/components.json")
 
     # Read JSON file
-    found_stuff = load_from_json(file_name="json_tool/Result50CV3.json")
+    found_stuff = load_from_json(file_name="json_tool/components.json")
 
     # Create layout
     MagicLayoutCreator(project_properties=project_properties, components=found_stuff)

@@ -39,6 +39,10 @@ class CircuitCell:
     cell: str = field(default_factory=str)
     schematic_connections: dict = field(default_factory=dict)
 
+@dataclass
+class OverlapDistance:
+    x: int = field(default_factory=int)
+    y: int = field(default_factory=int)
 
 @dataclass
 class SubCircuit:
@@ -84,6 +88,7 @@ class CircuitComponent:
     transform_matrix: TransformMatrix = field(default_factory=TransformMatrix) # | dict
     bounding_box: RectArea = field(default_factory=RectArea) # | dict
 
+
     # Handling of JSON file input
     def __post_init__(self):
 
@@ -99,8 +104,7 @@ class CircuitComponent:
 
 @dataclass
 class Transistor(CircuitComponent):
-    pass
-
+    overlap_distance: OverlapDistance = field(default_factory=OverlapDistance)
 
 @dataclass
 class Resistor(CircuitComponent):
