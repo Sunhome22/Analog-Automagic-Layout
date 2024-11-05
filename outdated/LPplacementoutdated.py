@@ -1,8 +1,4 @@
-import pulp
-import matplotlib.pyplot as plt
-import matplotlib.patches as patches
-from AstarPathAlgorithm import *
-from SimplifyPath import *
+from path.a_star import *
 
 
 class LinearOptimizationSolver1:

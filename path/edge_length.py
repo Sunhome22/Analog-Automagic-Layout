@@ -1,4 +1,4 @@
-from Main import connections
+from main import connections
 
 def manhattan_distance( obj1, obj2):
 

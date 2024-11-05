@@ -1,6 +1,4 @@
-
-from SimplifyPath import *
-from LPplacementoutdated import LinearOptimizationSolver1
+from outdated.LPplacementoutdated import LinearOptimizationSolver1
 def main():
     # Define grid size and objects
 

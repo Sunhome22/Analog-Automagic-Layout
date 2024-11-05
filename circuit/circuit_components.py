@@ -33,8 +33,11 @@ class RectArea:
 
 @dataclass
 class CircuitCell:
-    name: str
-    ports: List[str]
+    instance: str = field(default_factory=str)
+    number_id: int = field(default_factory=int)
+    name: str = field(default_factory=str)
+    cell: str = field(default_factory=str)
+    schematic_connections: dict = field(default_factory=dict)
 
 
 @dataclass
@@ -71,6 +74,7 @@ class CircuitComponent:
     instance: str = field(default_factory=str)
     number_id: int = field(default_factory=int)
     name: str = field(default_factory=str)
+    type: str = field(default_factory=str)
     cell: str = field(default_factory=str)
     group: str = field(default_factory=str)
     schematic_connections: dict = field(default_factory=dict)
@@ -79,7 +83,6 @@ class CircuitComponent:
     layout_ports: List[LayoutPort] = field(default_factory=list) # | dict
     transform_matrix: TransformMatrix = field(default_factory=TransformMatrix) # | dict
     bounding_box: RectArea = field(default_factory=RectArea) # | dict
-
 
     # Handling of JSON file input
     def __post_init__(self):
@@ -107,4 +110,6 @@ class Resistor(CircuitComponent):
 @dataclass
 class Capacitor(CircuitComponent):
     pass
+
+
 

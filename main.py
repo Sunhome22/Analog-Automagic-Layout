@@ -1,12 +1,9 @@
-from tkinter.font import names
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
-from AstarPathAlgorithm import *
-from SimplifyPath import *
-from LPplacement import *
-from circuit_components import *
-from json_converter import load_from_json, save_to_json
-
+from linear_optimization.linear_optimization_test import *
+from circuit.circuit_components import *
+from json_tool.json_converter import load_from_json, save_to_json
+import pulp
 
 @dataclass
 class Connection:
@@ -23,7 +20,7 @@ class Connection:
         self.end_area = end_area
         self.net = net
 
-def draw_result(grid_size, objects, paths, height, width, x, y):
+def draw_result(grid_size, objects, connections):
     # set up plot
     fix, ax = plt.subplots(figsize=(10, 10))
     ax.set_xlim(0, grid_size)
@@ -36,26 +33,42 @@ def draw_result(grid_size, objects, paths, height, width, x, y):
         ax.axvline(i, lw=0.5, color='gray', zorder=0)
 
     for obj in objects:
-        print(f"x: {pulp.value(x[obj])}, y: {pulp.value(y[obj])} ")
-        rect = patches.Rectangle((pulp.value(x[obj]), pulp.value(y[obj])), pulp.value(width[obj]),
-                                 pulp.value(height[obj]), linewidth=1, edgecolor='blue', facecolor='red')
+        if not isinstance(obj, Pin) and not isinstance(obj, CircuitCell):
+            print(f"x: {obj.transform_matrix.c}", f"y: {obj.transform_matrix.f} ")
+            rect = patches.Rectangle((obj.transform_matrix.c, obj.transform_matrix.f), obj.bounding_box.x2, obj.bounding_box.y2, linewidth=1, edgecolor='blue', facecolor='red')
 
-        ax.add_patch(rect)
-        ax.text(pulp.value(x[obj]) + pulp.value(width[obj]) / 2, pulp.value(y[obj]) + pulp.value(height[obj]) / 2, obj,
+            ax.add_patch(rect)
+            ax.text(obj.transform_matrix.c + (obj.bounding_box.x2 / 2), obj.transform_matrix.f + (obj.bounding_box.y2 / 2), obj.number_id,
                 ha='center', va='center', fontsize=12, color='black')
 
-    colors = ['blue', 'green', 'cyan', 'magenta', 'black', 'yellow']
-    i = 0
-    for path in paths:
 
-        x_coord, y_coord = zip(*path)
-        ax.plot(x_coord, y_coord, color=colors[i], lw=2)
-        i += 1
-        if i == len(colors) - 1:
-            i = 0
+    for p in connections.values():
+        start = p.starting_comp
+        end = p.end_comp
+        x_values = []
+        y_values = []
+
+        for obj in objects:
+            if not isinstance(obj, Pin) and not isinstance(obj, CircuitCell):
+                if obj.number_id == start:
+
+                    x_values.append(obj.transform_matrix.c + (obj.bounding_box.x2/2))
+                    y_values.append(obj.transform_matrix.f + (obj.bounding_box.y2 / 2))
+                    break
+        for obj in objects:
+            if not isinstance(obj, Pin) and not isinstance(obj, CircuitCell):
+                if obj.number_id == end:
+                    x_values.append(obj.transform_matrix.c + (obj.bounding_box.x2/2))
+                    y_values.append(obj.transform_matrix.f + (obj.bounding_box.y2 / 2))
+                    break
+        plt.plot(x_values, y_values)
+
+
+
+
 
     plt.title('OBJ placement')
-    plt.show()
+    plt.savefig('Results/ResultV21.png')
 
 
 def generate_grid(grid_size, objects, height, width, xpos, ypos, center):
@@ -123,7 +136,7 @@ def connection_list(objects):
     i = 0
     for  obj in object_list:
 
-        if not isinstance(obj, Pin):
+        if not isinstance(obj, Pin) and not isinstance(obj, CircuitCell):
             ports = obj.schematic_connections
 
             for key in ports:
@@ -139,7 +152,7 @@ def connection_list(objects):
     i=0
     for obj in object_list:
         for obj2 in object_list:
-            if not isinstance(obj, Pin) and not isinstance(obj2, Pin):
+            if not isinstance(obj, Pin) and not isinstance(obj2, Pin) and not isinstance(obj, CircuitCell) and not isinstance(obj2, CircuitCell):
 
                 ports = obj.schematic_connections
                 ports2 = obj2.schematic_connections
@@ -188,17 +201,77 @@ def connection_list(objects):
     return single_connection, local_connections, connections
 
 
+def _overlap_transistors(comp):
+    n = []
+    p = []
+    dict = {}
+    for obj in comp:
+        if isinstance(obj, Transistor):
+            if obj.type == "pmos":
+                p.append(obj)
+            elif obj.type== "nmos":
+                n.append(obj)
+            else:
+                print("[ERROR] Could not find Transistor type")
+
+    n_duplicate = n[:]
+    p_duplicate = p[:]
+    top = []
+    side = []
+
+
+
+    for i in n:
+        for j in n_duplicate:
+            if i != j:
+
+                if (i.bounding_box.x2 - i.bounding_box.x1) == (j.bounding_box.x2 - j.bounding_box.x1):
+                    top.append([i.number_id, j.number_id])
+
+                if (i.bounding_box.y2 - i.bounding_box.y1) == (j.bounding_box.y2 - j.bounding_box.y1):
+                    side.append([i.number_id, j.number_id])
+        n_duplicate.remove(i)
+    for k in p:
+        for l in p_duplicate:
+            if k != l:
+
+                if (k.bounding_box.x2 - k.bounding_box.x1) == (l.bounding_box.x2 - l.bounding_box.x1):
+                    top.append([k.number_id, l.number_id])
+
+                if (k.bounding_box.y2 - k.bounding_box.y1) == (l.bounding_box.y2 - l.bounding_box.y1):
+                    side.append([k.number_id, l.number_id])
+        p_duplicate.remove(k)
+
+    dict["side"] = side
+    dict["top"] = top
+
+
+    return dict
+
+
+def diff_components(components):
+    diff_pairs = []
+    comp = components[:]
+    for obj in components:
+        for obj1 in comp:
+            if obj.group == obj1.group and "diff" in obj.type:
+                diff_pairs.append([obj, obj1])
+        comp.remove(obj)
+    return diff_pairs
+
+
 
 def main():
     # Define grid size and objects
 
-    grid_size = 10000
+    grid_size = 5000
 
-    components = load_from_json(file_name='components')
+    components = load_from_json(file_name='json_tool/components.json')
 
     single_connection, local_connections, connections = connection_list(components)
 
-    print(connections)
+    overlap_dict = _overlap_transistors(components)
+
     run = True
     center = True
     clean_path = True
@@ -206,9 +279,9 @@ def main():
     if run:
     # space between objects
         print("[INFO]: Starting Linear Optimization")
-        result =  LinearOptimizationSolver(components, connections, local_connections, grid_size)
+        result =  LinearOptimizationSolver(components, connections, local_connections, grid_size, overlap_dict)
         objects = result.initiate_solver()
-        save_to_json(objects, file_name="Result50CV3")
+        save_to_json(objects, file_name="Results/ResultV21.json")
         print("[INFO]: Finished Linear Optimization")
         print("[INFO]: Starting Grid Generation")
         #grid = generate_grid(grid_size, objects, new_height, new_width, x, y, center)
@@ -223,7 +296,7 @@ def main():
         #if clean_path:
         #  draw_result(grid_size, objects, cleaned_paths, new_height, new_width, x, y)
         #else:
-        # draw_result(grid_size, objects, path, new_height, new_width, x, y)
+        draw_result(grid_size, objects, connections)
         print("[INFO]: Finished Drawing Results")
 
 

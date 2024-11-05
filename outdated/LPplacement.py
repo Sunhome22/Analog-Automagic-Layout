@@ -1,9 +1,8 @@
 
 
-from AstarPathAlgorithm import *
-import math
+from path.a_star import *
 
-from circuit_components import Pin
+from circuit.circuit_components import Pin
 
 
 class LinearOptimizationSolver:
@@ -16,7 +15,7 @@ class LinearOptimizationSolver:
     def __init__(self, object_info, connections, local_connections, grid_size):
 
         self.problem_space = pulp.LpProblem("ObjectPlacementWithSizes", pulp.LpMinimize)
-        self.solver = pulp.PULP_CBC_CMD(msg=True, threads=50, timeLimit=5*60)
+        self.solver = pulp.PULP_CBC_CMD(msg=True, threads=50)
         self.object_info = object_info
         self.objects = []
 
@@ -148,7 +147,7 @@ class LinearOptimizationSolver:
 
     def _constraint_overlap(self):
 
-        object_list = self.objects
+        object_list = self.objects[:]
 
         for o1 in self.objects:
             self.problem_space += pulp.lpSum([self.x[o1, xv] for xv in self.x_pos]) == 1
