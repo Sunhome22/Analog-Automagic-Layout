@@ -21,388 +21,6 @@
         "name": "IBNS_20U"
     },
     {
-        "instance": "Transistor",
-        "number_id": 3,
-        "name": "MN2",
-        "type": "nmos",
-        "cell": "JNW_BKLE",
-        "group": "mirror0",
-        "schematic_connections": {
-            "D": "IBNS_20U",
-            "G": "IBPS_2U",
-            "S": "VSS",
-            "B": "VSS"
-        },
-        "layout_name": "JNWATR_NCH_12C1F2",
-        "layout_library": "JNW_ATR_SKY130A",
-        "layout_ports": [
-            {
-                "type": "G",
-                "layer": "m1",
-                "area": {
-                    "x1": 80,
-                    "y1": 180,
-                    "x2": 112,
-                    "y2": 220
-                }
-            },
-            {
-                "type": "S",
-                "layer": "m1",
-                "area": {
-                    "x1": 144,
-                    "y1": 300,
-                    "x2": 240,
-                    "y2": 340
-                }
-            },
-            {
-                "type": "B",
-                "layer": "locali",
-                "area": {
-                    "x1": -48,
-                    "y1": 180,
-                    "x2": 48,
-                    "y2": 220
-                }
-            },
-            {
-                "type": "D",
-                "layer": "m1",
-                "area": {
-                    "x1": 592,
-                    "y1": 20,
-                    "x2": 688,
-                    "y2": 60
-                }
-            }
-        ],
-        "transform_matrix": {
-            "a": 0,
-            "b": 0,
-            "c": 0,
-            "d": 0,
-            "e": 0,
-            "f": 0
-        },
-        "bounding_box": {
-            "x1": 0,
-            "y1": 0,
-            "x2": 832,
-            "y2": 400
-        },
-        "overlap_distance": {
-            "x": 92,
-            "y": 64
-        }
-    },
-    {
-        "instance": "Capacitor",
-        "number_id": 4,
-        "name": "C1",
-        "type": null,
-        "cell": "JNW_BKLE",
-        "group": null,
-        "schematic_connections": {
-            "A": "net1",
-            "B": "net2"
-        },
-        "layout_name": "JNWTR_CAPX1",
-        "layout_library": "JNW_TR_SKY130A",
-        "layout_ports": [
-            {
-                "type": "A",
-                "layer": "m3",
-                "area": {
-                    "x1": 0,
-                    "y1": 0,
-                    "x2": 540,
-                    "y2": 50
-                }
-            },
-            {
-                "type": "B",
-                "layer": "m4",
-                "area": {
-                    "x1": 0,
-                    "y1": 0,
-                    "x2": 540,
-                    "y2": 50
-                }
-            }
-        ],
-        "transform_matrix": {
-            "a": 0,
-            "b": 0,
-            "c": 0,
-            "d": 0,
-            "e": 0,
-            "f": 0
-        },
-        "bounding_box": {
-            "x1": 0,
-            "y1": 0,
-            "x2": 540,
-            "y2": 540
-        }
-    },
-    {
-        "instance": "Resistor",
-        "number_id": 5,
-        "name": "R1",
-        "type": null,
-        "cell": "JNW_BKLE",
-        "group": null,
-        "schematic_connections": {
-            "N": "net3",
-            "P": "net4",
-            "B": "net5"
-        },
-        "layout_name": "JNWTR_RES2",
-        "layout_library": "JNW_TR_SKY130A",
-        "layout_ports": [
-            {
-                "type": "N",
-                "layer": "locali",
-                "area": {
-                    "x1": -18,
-                    "y1": 1260,
-                    "x2": 126,
-                    "y2": 1380
-                }
-            },
-            {
-                "type": "P",
-                "layer": "locali",
-                "area": {
-                    "x1": 198,
-                    "y1": 1260,
-                    "x2": 342,
-                    "y2": 1380
-                }
-            }
-        ],
-        "transform_matrix": {
-            "a": 0,
-            "b": 0,
-            "c": 0,
-            "d": 0,
-            "e": 0,
-            "f": 0
-        },
-        "bounding_box": {
-            "x1": 0,
-            "y1": 0,
-            "x2": 324,
-            "y2": 1320
-        }
-    },
-    {
-        "instance": "CircuitCell",
-        "number_id": 6,
-        "name": "COMP",
-        "cell": "JNW_BKLE",
-        "schematic_connections": {
-            "VDD": "net6",
-            "VIN": "net7",
-            "VIP": "net8",
-            "VO": "net9",
-            "I_BIAS": "net10",
-            "VSS": "net11"
-        }
-    },
-    {
-        "instance": "Transistor",
-        "number_id": 7,
-        "name": "MN1",
-        "type": "nmos",
-        "cell": "JNW_BKLE",
-        "group": "mirror0",
-        "schematic_connections": {
-            "D": "IBPS_2U",
-            "G": "IBPS_2U",
-            "S": "VSS",
-            "B": "VSS"
-        },
-        "layout_name": "JNWATR_NCH_2C1F2",
-        "layout_library": "JNW_ATR_SKY130A",
-        "layout_ports": [
-            {
-                "type": "G",
-                "layer": "m1",
-                "area": {
-                    "x1": 80,
-                    "y1": 180,
-                    "x2": 112,
-                    "y2": 220
-                }
-            },
-            {
-                "type": "S",
-                "layer": "m1",
-                "area": {
-                    "x1": 144,
-                    "y1": 300,
-                    "x2": 240,
-                    "y2": 340
-                }
-            },
-            {
-                "type": "B",
-                "layer": "locali",
-                "area": {
-                    "x1": -48,
-                    "y1": 180,
-                    "x2": 48,
-                    "y2": 220
-                }
-            },
-            {
-                "type": "D",
-                "layer": "m1",
-                "area": {
-                    "x1": 272,
-                    "y1": 20,
-                    "x2": 368,
-                    "y2": 60
-                }
-            }
-        ],
-        "transform_matrix": {
-            "a": 0,
-            "b": 0,
-            "c": 0,
-            "d": 0,
-            "e": 0,
-            "f": 0
-        },
-        "bounding_box": {
-            "x1": 0,
-            "y1": 0,
-            "x2": 512,
-            "y2": 400
-        },
-        "overlap_distance": {
-            "x": 92,
-            "y": 64
-        }
-    },
-    {
-        "instance": "Capacitor",
-        "number_id": 8,
-        "name": "C2",
-        "type": null,
-        "cell": "JNW_BKLE",
-        "group": null,
-        "schematic_connections": {
-            "A": "net12",
-            "B": "net13"
-        },
-        "layout_name": "AALMISC_CAP20f",
-        "layout_library": "AAL_MISC_SKY130A",
-        "layout_ports": [
-            {
-                "type": "B",
-                "layer": "metal4",
-                "area": {
-                    "x1": 0,
-                    "y1": 0,
-                    "x2": 340,
-                    "y2": 50
-                }
-            },
-            {
-                "type": "A",
-                "layer": "metal3",
-                "area": {
-                    "x1": 0,
-                    "y1": 0,
-                    "x2": 340,
-                    "y2": 50
-                }
-            }
-        ],
-        "transform_matrix": {
-            "a": 0,
-            "b": 0,
-            "c": 0,
-            "d": 0,
-            "e": 0,
-            "f": 0
-        },
-        "bounding_box": {
-            "x1": 0,
-            "y1": 0,
-            "x2": 340,
-            "y2": 340
-        }
-    },
-    {
-        "instance": "Transistor",
-        "number_id": 9,
-        "name": "QP1",
-        "type": "pnp",
-        "cell": "JNW_BKLE",
-        "group": null,
-        "schematic_connections": {
-            "C": "net14",
-            "B": "net15",
-            "E": "net16"
-        },
-        "layout_name": "AALMISC_PNP_W3p40L3p40",
-        "layout_library": "AAL_MISC_SKY130A",
-        "layout_ports": [
-            {
-                "type": "E",
-                "layer": "locali",
-                "area": {
-                    "x1": 554,
-                    "y1": 626,
-                    "x2": 802,
-                    "y2": 730
-                }
-            },
-            {
-                "type": "C",
-                "layer": "locali",
-                "area": {
-                    "x1": 613,
-                    "y1": 1252,
-                    "x2": 714,
-                    "y2": 1301
-                }
-            },
-            {
-                "type": "B",
-                "layer": "locali",
-                "area": {
-                    "x1": 590,
-                    "y1": 1102,
-                    "x2": 708,
-                    "y2": 1142
-                }
-            }
-        ],
-        "transform_matrix": {
-            "a": 0,
-            "b": 0,
-            "c": 0,
-            "d": 0,
-            "e": 0,
-            "f": 0
-        },
-        "bounding_box": {
-            "x1": 0,
-            "y1": 0,
-            "x2": 670,
-            "y2": 670
-        },
-        "overlap_distance": {
-            "x": 0,
-            "y": 0
-        }
-    },
-    {
         "instance": "Pin",
         "number_id": 10,
         "cell": "COMP",
@@ -502,22 +120,18 @@
             }
         ],
         "transform_matrix": {
-            "a": 0,
+            "a": 1,
             "b": 0,
-            "c": 0,
+            "c": 1152,
             "d": 0,
-            "e": 0,
-            "f": 0
+            "e": 1,
+            "f": 1100
         },
         "bounding_box": {
             "x1": 0,
             "y1": 0,
             "x2": 576,
             "y2": 400
-        },
-        "overlap_distance": {
-            "x": 92,
-            "y": 64
         }
     },
     {
@@ -578,22 +192,18 @@
             }
         ],
         "transform_matrix": {
-            "a": 0,
+            "a": 1,
             "b": 0,
             "c": 0,
             "d": 0,
-            "e": 0,
-            "f": 0
+            "e": 1,
+            "f": 1100
         },
         "bounding_box": {
             "x1": 0,
             "y1": 0,
             "x2": 576,
             "y2": 400
-        },
-        "overlap_distance": {
-            "x": 92,
-            "y": 64
         }
     },
     {
@@ -602,10 +212,10 @@
         "name": "MP5",
         "type": "pmos",
         "cell": "COMP",
-        "group": "load1",
+        "group": null,
         "schematic_connections": {
-            "D": "net2",
-            "G": "net2",
+            "D": "net5",
+            "G": "net6",
             "S": "VDD",
             "B": "VDD"
         },
@@ -654,11 +264,11 @@
             }
         ],
         "transform_matrix": {
-            "a": 0,
+            "a": 1,
             "b": 0,
-            "c": 0,
+            "c": 576,
             "d": 0,
-            "e": 0,
+            "e": 1,
             "f": 0
         },
         "bounding_box": {
@@ -666,10 +276,6 @@
             "y1": 0,
             "x2": 576,
             "y2": 400
-        },
-        "overlap_distance": {
-            "x": 92,
-            "y": 64
         }
     },
     {
@@ -678,7 +284,7 @@
         "name": "MP6",
         "type": "pmos",
         "cell": "COMP",
-        "group": "load1",
+        "group": null,
         "schematic_connections": {
             "D": "VO",
             "G": "net2",
@@ -730,11 +336,11 @@
             }
         ],
         "transform_matrix": {
-            "a": 0,
+            "a": 1,
             "b": 0,
             "c": 0,
             "d": 0,
-            "e": 0,
+            "e": 1,
             "f": 0
         },
         "bounding_box": {
@@ -742,19 +348,15 @@
             "y1": 0,
             "x2": 576,
             "y2": 400
-        },
-        "overlap_distance": {
-            "x": 92,
-            "y": 64
         }
     },
     {
         "instance": "Transistor",
         "number_id": 20,
-        "name": "MP1<3>",
+        "name": "MP1",
         "type": "pmos",
         "cell": "COMP",
-        "group": "load1",
+        "group": null,
         "schematic_connections": {
             "D": "net4",
             "G": "net3",
@@ -806,259 +408,27 @@
             }
         ],
         "transform_matrix": {
-            "a": 0,
+            "a": 1,
             "b": 0,
-            "c": 0,
+            "c": 1152,
             "d": 0,
-            "e": 0,
-            "f": 0
+            "e": 1,
+            "f": 400
         },
         "bounding_box": {
             "x1": 0,
             "y1": 0,
             "x2": 576,
             "y2": 400
-        },
-        "overlap_distance": {
-            "x": 92,
-            "y": 64
         }
     },
     {
         "instance": "Transistor",
         "number_id": 21,
-        "name": "MP1<2>",
-        "type": "pmos",
-        "cell": "COMP",
-        "group": "load1",
-        "schematic_connections": {
-            "D": "net4",
-            "G": "net3",
-            "S": "VDD",
-            "B": "VDD"
-        },
-        "layout_name": "JNWATR_PCH_4C5F0",
-        "layout_library": "JNW_ATR_SKY130A",
-        "layout_ports": [
-            {
-                "type": "G",
-                "layer": "m1",
-                "area": {
-                    "x1": 80,
-                    "y1": 180,
-                    "x2": 112,
-                    "y2": 220
-                }
-            },
-            {
-                "type": "S",
-                "layer": "m1",
-                "area": {
-                    "x1": 144,
-                    "y1": 300,
-                    "x2": 240,
-                    "y2": 340
-                }
-            },
-            {
-                "type": "B",
-                "layer": "locali",
-                "area": {
-                    "x1": -48,
-                    "y1": 180,
-                    "x2": 48,
-                    "y2": 220
-                }
-            },
-            {
-                "type": "D",
-                "layer": "m1",
-                "area": {
-                    "x1": 336,
-                    "y1": 20,
-                    "x2": 432,
-                    "y2": 60
-                }
-            }
-        ],
-        "transform_matrix": {
-            "a": 0,
-            "b": 0,
-            "c": 0,
-            "d": 0,
-            "e": 0,
-            "f": 0
-        },
-        "bounding_box": {
-            "x1": 0,
-            "y1": 0,
-            "x2": 576,
-            "y2": 400
-        },
-        "overlap_distance": {
-            "x": 92,
-            "y": 64
-        }
-    },
-    {
-        "instance": "Transistor",
-        "number_id": 22,
-        "name": "MP1<1>",
-        "type": "pmos",
-        "cell": "COMP",
-        "group": "load1",
-        "schematic_connections": {
-            "D": "net4",
-            "G": "net3",
-            "S": "VDD",
-            "B": "VDD"
-        },
-        "layout_name": "JNWATR_PCH_4C5F0",
-        "layout_library": "JNW_ATR_SKY130A",
-        "layout_ports": [
-            {
-                "type": "G",
-                "layer": "m1",
-                "area": {
-                    "x1": 80,
-                    "y1": 180,
-                    "x2": 112,
-                    "y2": 220
-                }
-            },
-            {
-                "type": "S",
-                "layer": "m1",
-                "area": {
-                    "x1": 144,
-                    "y1": 300,
-                    "x2": 240,
-                    "y2": 340
-                }
-            },
-            {
-                "type": "B",
-                "layer": "locali",
-                "area": {
-                    "x1": -48,
-                    "y1": 180,
-                    "x2": 48,
-                    "y2": 220
-                }
-            },
-            {
-                "type": "D",
-                "layer": "m1",
-                "area": {
-                    "x1": 336,
-                    "y1": 20,
-                    "x2": 432,
-                    "y2": 60
-                }
-            }
-        ],
-        "transform_matrix": {
-            "a": 0,
-            "b": 0,
-            "c": 0,
-            "d": 0,
-            "e": 0,
-            "f": 0
-        },
-        "bounding_box": {
-            "x1": 0,
-            "y1": 0,
-            "x2": 576,
-            "y2": 400
-        },
-        "overlap_distance": {
-            "x": 92,
-            "y": 64
-        }
-    },
-    {
-        "instance": "Transistor",
-        "number_id": 23,
-        "name": "MP1<0>",
-        "type": "pmos",
-        "cell": "COMP",
-        "group": "load1",
-        "schematic_connections": {
-            "D": "net4",
-            "G": "net3",
-            "S": "VDD",
-            "B": "VDD"
-        },
-        "layout_name": "JNWATR_PCH_4C5F0",
-        "layout_library": "JNW_ATR_SKY130A",
-        "layout_ports": [
-            {
-                "type": "G",
-                "layer": "m1",
-                "area": {
-                    "x1": 80,
-                    "y1": 180,
-                    "x2": 112,
-                    "y2": 220
-                }
-            },
-            {
-                "type": "S",
-                "layer": "m1",
-                "area": {
-                    "x1": 144,
-                    "y1": 300,
-                    "x2": 240,
-                    "y2": 340
-                }
-            },
-            {
-                "type": "B",
-                "layer": "locali",
-                "area": {
-                    "x1": -48,
-                    "y1": 180,
-                    "x2": 48,
-                    "y2": 220
-                }
-            },
-            {
-                "type": "D",
-                "layer": "m1",
-                "area": {
-                    "x1": 336,
-                    "y1": 20,
-                    "x2": 432,
-                    "y2": 60
-                }
-            }
-        ],
-        "transform_matrix": {
-            "a": 0,
-            "b": 0,
-            "c": 0,
-            "d": 0,
-            "e": 0,
-            "f": 0
-        },
-        "bounding_box": {
-            "x1": 0,
-            "y1": 0,
-            "x2": 576,
-            "y2": 400
-        },
-        "overlap_distance": {
-            "x": 92,
-            "y": 64
-        }
-    },
-    {
-        "instance": "Transistor",
-        "number_id": 24,
         "name": "MP2",
         "type": "pmos",
         "cell": "COMP",
-        "group": "load1",
+        "group": null,
         "schematic_connections": {
             "D": "net3",
             "G": "net3",
@@ -1110,11 +480,11 @@
             }
         ],
         "transform_matrix": {
-            "a": 0,
+            "a": 1,
             "b": 0,
-            "c": 0,
+            "c": 1152,
             "d": 0,
-            "e": 0,
+            "e": 1,
             "f": 0
         },
         "bounding_box": {
@@ -1122,15 +492,11 @@
             "y1": 0,
             "x2": 576,
             "y2": 400
-        },
-        "overlap_distance": {
-            "x": 92,
-            "y": 64
         }
     },
     {
         "instance": "Transistor",
-        "number_id": 25,
+        "number_id": 22,
         "name": "MN10",
         "type": "nmos",
         "cell": "COMP",
@@ -1186,27 +552,23 @@
             }
         ],
         "transform_matrix": {
-            "a": 0,
+            "a": 1,
             "b": 0,
-            "c": 0,
+            "c": 1152,
             "d": 0,
-            "e": 0,
-            "f": 0
+            "e": 1,
+            "f": 1500
         },
         "bounding_box": {
             "x1": 0,
             "y1": 0,
             "x2": 576,
             "y2": 400
-        },
-        "overlap_distance": {
-            "x": 92,
-            "y": 64
         }
     },
     {
         "instance": "Transistor",
-        "number_id": 26,
+        "number_id": 23,
         "name": "MN9",
         "type": "nmos",
         "cell": "COMP",
@@ -1262,27 +624,23 @@
             }
         ],
         "transform_matrix": {
-            "a": 0,
+            "a": 1,
             "b": 0,
             "c": 0,
             "d": 0,
-            "e": 0,
-            "f": 0
+            "e": 1,
+            "f": 1500
         },
         "bounding_box": {
             "x1": 0,
             "y1": 0,
             "x2": 576,
             "y2": 400
-        },
-        "overlap_distance": {
-            "x": 92,
-            "y": 64
         }
     },
     {
         "instance": "Transistor",
-        "number_id": 27,
+        "number_id": 24,
         "name": "MN11",
         "type": "nmos",
         "cell": "COMP",
@@ -1338,27 +696,23 @@
             }
         ],
         "transform_matrix": {
-            "a": 0,
+            "a": 1,
             "b": 0,
-            "c": 0,
+            "c": 576,
             "d": 0,
-            "e": 0,
-            "f": 0
+            "e": 1,
+            "f": 1500
         },
         "bounding_box": {
             "x1": 0,
             "y1": 0,
             "x2": 576,
             "y2": 400
-        },
-        "overlap_distance": {
-            "x": 92,
-            "y": 64
         }
     },
     {
         "instance": "Transistor",
-        "number_id": 28,
+        "number_id": 25,
         "name": "MN12",
         "type": "nmos",
         "cell": "COMP",
@@ -1414,31 +768,27 @@
             }
         ],
         "transform_matrix": {
-            "a": 0,
+            "a": 1,
             "b": 0,
-            "c": 0,
+            "c": 576,
             "d": 0,
-            "e": 0,
-            "f": 0
+            "e": 1,
+            "f": 1100
         },
         "bounding_box": {
             "x1": 0,
             "y1": 0,
             "x2": 576,
             "y2": 400
-        },
-        "overlap_distance": {
-            "x": 92,
-            "y": 64
         }
     },
     {
         "instance": "Transistor",
-        "number_id": 29,
+        "number_id": 26,
         "name": "MP3",
         "type": "pmos",
         "cell": "COMP",
-        "group": "load1",
+        "group": null,
         "schematic_connections": {
             "D": "net3",
             "G": "net2",
@@ -1490,31 +840,27 @@
             }
         ],
         "transform_matrix": {
-            "a": 0,
+            "a": 1,
             "b": 0,
             "c": 0,
             "d": 0,
-            "e": 0,
-            "f": 0
+            "e": 1,
+            "f": 400
         },
         "bounding_box": {
             "x1": 0,
             "y1": 0,
             "x2": 576,
             "y2": 400
-        },
-        "overlap_distance": {
-            "x": 92,
-            "y": 64
         }
     },
     {
         "instance": "Transistor",
-        "number_id": 30,
+        "number_id": 27,
         "name": "MP4",
         "type": "pmos",
         "cell": "COMP",
-        "group": "load1",
+        "group": null,
         "schematic_connections": {
             "D": "net2",
             "G": "net3",
@@ -1566,22 +912,18 @@
             }
         ],
         "transform_matrix": {
-            "a": 0,
+            "a": 1,
             "b": 0,
-            "c": 0,
+            "c": 576,
             "d": 0,
-            "e": 0,
-            "f": 0
+            "e": 1,
+            "f": 400
         },
         "bounding_box": {
             "x1": 0,
             "y1": 0,
             "x2": 576,
             "y2": 400
-        },
-        "overlap_distance": {
-            "x": 92,
-            "y": 64
         }
     }
 ]
