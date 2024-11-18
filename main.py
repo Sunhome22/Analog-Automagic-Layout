@@ -5,6 +5,10 @@ from circuit.circuit_components import *
 from json_tool.json_converter import load_from_json, save_to_json
 import pulp
 
+from path.a_star import initiate_astar
+from path.simplify_path import simplify_all_paths
+
+
 @dataclass
 class Connection:
     starting_comp: str
@@ -25,6 +29,8 @@ def draw_result(grid_size, objects, connections):
     fix, ax = plt.subplots(figsize=(10, 10))
     ax.set_xlim(0, grid_size)
     ax.set_ylim(0, grid_size)
+
+
 
     # draw grid
 
@@ -63,15 +69,16 @@ def draw_result(grid_size, objects, connections):
                     break
         plt.plot(x_values, y_values)
 
+        plt.plot([grid_size//2, grid_size//2], [0, grid_size])
 
 
 
 
     plt.title('OBJ placement')
-    plt.savefig('Results/ResultV21.png')
+    plt.savefig('Results/ResultV21Mirrored5.png')
 
 
-def generate_grid(grid_size, objects, height, width, xpos, ypos, center):
+def generate_grid(grid_size, objects):
     grid = []
     value_appended = False
 
@@ -264,7 +271,7 @@ def diff_components(components):
 def main():
     # Define grid size and objects
 
-    grid_size = 5000
+    grid_size = 3000
 
     components = load_from_json(file_name='json_tool/components.json')
 
@@ -273,7 +280,6 @@ def main():
     overlap_dict = _overlap_transistors(components)
 
     run = True
-    center = True
     clean_path = True
 
     if run:
@@ -281,22 +287,22 @@ def main():
         print("[INFO]: Starting Linear Optimization")
         result =  LinearOptimizationSolver(components, connections, local_connections, grid_size, overlap_dict)
         objects = result.initiate_solver()
-        save_to_json(objects, file_name="Results/ResultV21.json")
+        save_to_json(objects, file_name="Results/ResultV21Mirrored5.json")
         print("[INFO]: Finished Linear Optimization")
         print("[INFO]: Starting Grid Generation")
-        #grid = generate_grid(grid_size, objects, new_height, new_width, x, y, center)
+        grid = generate_grid(grid_size, objects)
         print("[INFO]: Finished Grid Generation")
         print("[INFO]: Starting Initiate A*")
-        #path = initiate_astar(grid, x, y, new_width, new_height, connections, center)
+        path = initiate_astar(grid,  connections, objects)
         print("[INFO]: Finished A*")
         print("[INFO]: Starting Simplifying Paths")
-        # cleaned_paths = simplify_all_paths(path)
+        cleaned_paths = simplify_all_paths(path)
         print("[INFO]: Finished Simplifying Paths")
         print("[INFO]: Starting Drawing Results")
-        #if clean_path:
-        #  draw_result(grid_size, objects, cleaned_paths, new_height, new_width, x, y)
-        #else:
-        draw_result(grid_size, objects, connections)
+        if clean_path:
+            draw_result(grid_size, objects, cleaned_paths)
+        else:
+            draw_result(grid_size, objects, connections)
         print("[INFO]: Finished Drawing Results")
 
 
