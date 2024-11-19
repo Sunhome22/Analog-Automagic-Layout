@@ -1,12 +1,15 @@
+from os.path import pathsep
+
+from astar.a_star import initiate_astar
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
+
+from draw_result.draw import draw_result
 from linear_optimization.linear_optimization_test import *
 from circuit.circuit_components import *
 from json_tool.json_converter import load_from_json, save_to_json
-import pulp
-
-from path.a_star import initiate_astar
-from path.simplify_path import simplify_all_paths
+from grid.generate_grid import generate_grid
+from traces.write_traces import write_traces
 
 
 @dataclass
@@ -23,91 +26,6 @@ class Connection:
         self.end_comp = end_comp
         self.end_area = end_area
         self.net = net
-
-def draw_result(grid_size, objects, connections):
-    # set up plot
-    fix, ax = plt.subplots(figsize=(10, 10))
-    ax.set_xlim(0, grid_size)
-    ax.set_ylim(0, grid_size)
-
-
-
-    # draw grid
-
-    for i in range(grid_size + 1):
-        ax.axhline(i, lw=0.5, color='gray', zorder=0)
-        ax.axvline(i, lw=0.5, color='gray', zorder=0)
-
-    for obj in objects:
-        if not isinstance(obj, Pin) and not isinstance(obj, CircuitCell):
-            print(f"x: {obj.transform_matrix.c}", f"y: {obj.transform_matrix.f} ")
-            rect = patches.Rectangle((obj.transform_matrix.c, obj.transform_matrix.f), obj.bounding_box.x2, obj.bounding_box.y2, linewidth=1, edgecolor='blue', facecolor='red')
-
-            ax.add_patch(rect)
-            ax.text(obj.transform_matrix.c + (obj.bounding_box.x2 / 2), obj.transform_matrix.f + (obj.bounding_box.y2 / 2), obj.number_id,
-                ha='center', va='center', fontsize=12, color='black')
-
-
-    for p in connections.values():
-        start = p.starting_comp
-        end = p.end_comp
-        x_values = []
-        y_values = []
-
-        for obj in objects:
-            if not isinstance(obj, Pin) and not isinstance(obj, CircuitCell):
-                if obj.number_id == start:
-
-                    x_values.append(obj.transform_matrix.c + (obj.bounding_box.x2/2))
-                    y_values.append(obj.transform_matrix.f + (obj.bounding_box.y2 / 2))
-                    break
-        for obj in objects:
-            if not isinstance(obj, Pin) and not isinstance(obj, CircuitCell):
-                if obj.number_id == end:
-                    x_values.append(obj.transform_matrix.c + (obj.bounding_box.x2/2))
-                    y_values.append(obj.transform_matrix.f + (obj.bounding_box.y2 / 2))
-                    break
-        plt.plot(x_values, y_values)
-
-        plt.plot([grid_size//2, grid_size//2], [0, grid_size])
-
-
-
-
-    plt.title('OBJ placement')
-    plt.savefig('Results/ResultV21Mirrored5.png')
-
-
-def generate_grid(grid_size, objects):
-    grid = []
-    value_appended = False
-
-    for y in range(grid_size):
-        grid.append([])
-        for x in range(grid_size):
-            for obj in objects:
-                if center:
-                    if int(pulp.value(xpos[obj]) + int(pulp.value(width[obj])) // 2) == x and int(
-                            pulp.value(ypos[obj])) + int(pulp.value(height[obj])) // 2 == y:
-                        grid[-1].append(1)
-                        value_appended = True
-                else:
-                    if pulp.value(xpos[obj]) == x and pulp.value(ypos[obj]) == y:
-                        grid[-1].append(1)
-                        value_appended = True
-                        break
-                    elif pulp.value(xpos[obj]) <= x <= pulp.value(xpos[obj]) + pulp.value(
-                            width[obj]) - 1 and pulp.value(ypos[obj]) <= y <= pulp.value(ypos[obj]) + pulp.value(
-                            height[obj]) - 1:
-                        grid[-1].append(1)
-                        value_appended = True
-                        break
-            if not value_appended:
-                grid[-1].append(0)
-            else:
-                value_appended = False
-
-    return grid
 
 
 def get_key(val, dict):
@@ -268,6 +186,7 @@ def diff_components(components):
 
 
 
+
 def main():
     # Define grid size and objects
 
@@ -280,31 +199,36 @@ def main():
     overlap_dict = _overlap_transistors(components)
 
     run = True
-    clean_path = True
-
+    clean_path = False
+    skip = True
     if run:
     # space between objects
         print("[INFO]: Starting Linear Optimization")
-        result =  LinearOptimizationSolver(components, connections, local_connections, grid_size, overlap_dict)
-        objects = result.initiate_solver()
-        save_to_json(objects, file_name="Results/ResultV21Mirrored5.json")
+        if not skip:
+            result =  LinearOptimizationSolver(components, connections, local_connections, grid_size, overlap_dict)
+            objects = result.initiate_solver()
+            save_to_json(objects, file_name="Results/ResultV21Mirrored5.json")
+        else:
+            objects = load_from_json(file_name="Results/ResultV21Mirrored4.json")
         print("[INFO]: Finished Linear Optimization")
         print("[INFO]: Starting Grid Generation")
         grid = generate_grid(grid_size, objects)
         print("[INFO]: Finished Grid Generation")
         print("[INFO]: Starting Initiate A*")
-        path = initiate_astar(grid,  connections, objects)
+        path, path_names = initiate_astar(grid, connections, local_connections, objects)
         print("[INFO]: Finished A*")
+
+        write_traces(objects, path, path_names)
         print("[INFO]: Starting Simplifying Paths")
-        cleaned_paths = simplify_all_paths(path)
+        #cleaned_paths = simplify_all_paths(path)
         print("[INFO]: Finished Simplifying Paths")
         print("[INFO]: Starting Drawing Results")
-        if clean_path:
-            draw_result(grid_size, objects, cleaned_paths)
-        else:
-            draw_result(grid_size, objects, connections)
+        #if clean_path:
+           # draw_result(grid_size, objects, cleaned_paths)
+       # else:
+        draw_result(grid_size, objects, path)
         print("[INFO]: Finished Drawing Results")
 
 
-
-main()
+if __name__ == "__main__":
+    main()

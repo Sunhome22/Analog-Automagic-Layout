@@ -103,10 +103,7 @@ class LinearOptimizationSolver:
                         mirrored_objects.append([group[0][0], group[0][1]])
 
 
-        for obj in mirrored_objects:
-            print("Pair")
-            print(obj[0].number_id)
-            print(obj[1].number_id)
+
         return mirrored_objects
 
     def _constrain_mirror(self):
