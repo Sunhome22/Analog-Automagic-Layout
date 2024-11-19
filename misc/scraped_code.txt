@@ -115,3 +115,13 @@ def _serialize_dataclass(obj):
             output[field.name] = attribute  # Just add the attribute
 
     return output
+
+
+
+    # Test placing
+    # i += 1500 #
+    # component.transform_matrix.set([0, 1, i, -1, 0, 1500]) # can't have floating point number on x!!!
+    # self.place_black_white_picture("Carsten Wulff Picture.jpg")
+    # self.place_box('m2', [0, 0, 100, 1500])
+    # self.place_box('m1', [0, 1400, 1500, 1500])
+    # self.place_box('viali', [10, 1500, 100, 1500])

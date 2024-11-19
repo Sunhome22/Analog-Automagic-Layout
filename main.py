@@ -1,4 +1,3 @@
-
 # ================================================== Libraries =========================================================
 from circuit.circuit_spice_parser import SPICEparser
 from magic.magic_layout_creator import MagicLayoutCreator
@@ -6,6 +5,7 @@ from dataclasses import dataclass, asdict
 from magic.magic_component_parser import MagicComponentsParser
 from json_tool.json_converter import save_to_json, load_from_json
 from logger.logger import get_a_logger
+from circuit.circuit_components import Trace, RectAreaLayer, RectArea
 # ========================================== Set-up classes and constants ==============================================
 
 
@@ -54,6 +54,18 @@ def main():
 
     # Read JSON file
     found_stuff = load_from_json(file_name="json_tool/ResultV21.json")
+
+    # An example trace
+    a_trace = Trace()
+    a_trace.instance = a_trace.__class__.__name__  # add instance type
+    a_trace.number_id = 0
+    a_trace.name = "16G-17G"
+    a_trace.segments.append(RectAreaLayer(layer="locali", area=RectArea(x1=300, y1=0, x2=450, y2=50)))
+    a_trace.vias.append(RectAreaLayer(layer="viali", area=RectArea(x1=300, y1=0, x2=350, y2=50)))
+    a_trace.segments.append(RectAreaLayer(layer="m1", area=RectArea(x1=300, y1=0, x2=350, y2=300)))
+    found_stuff.append(a_trace)
+
+    save_to_json(objects=found_stuff, file_name="json_tool/test.json")
 
     # Create layout
     MagicLayoutCreator(project_properties=project_properties, components=found_stuff)

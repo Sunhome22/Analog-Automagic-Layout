@@ -32,31 +32,26 @@ class RectArea:
 
 
 @dataclass
-class CircuitCell:
-    instance: str = field(default_factory=str)
-    number_id: int = field(default_factory=int)
-    name: str = field(default_factory=str)
-    cell: str = field(default_factory=str)
-    schematic_connections: dict = field(default_factory=dict)
+class RectAreaLayer:
+    layer: str = field(default_factory=str)
+    area: RectArea = field(default_factory=RectArea)
+
+    # Handling of JSON file input
+    def __post_init__(self):
+        if isinstance(self.area, dict):
+            self.area = RectArea(**self.area)
+
 
 @dataclass
 class OverlapDistance:
     x: int = field(default_factory=int)
     y: int = field(default_factory=int)
 
+
 @dataclass
 class SubCircuit:
     layout_name: str
     ports: List[str]
-
-
-@dataclass
-class Pin:
-    instance: str = field(default_factory=str)
-    number_id: int = field(default_factory=int)
-    cell: str = field(default_factory=str)
-    type: str = field(default_factory=str)
-    name: str = field(default_factory=str)
 
 
 @dataclass
@@ -70,11 +65,10 @@ class LayoutPort:
         if isinstance(self.area, dict):
             self.area = RectArea(**self.area)
 
-# ============================================= Circuit component classes ==============================================
-
+# ================================================ Component classes ===================================================
 
 @dataclass
-class CircuitComponent:
+class DefaultComponent:
     instance: str = field(default_factory=str)
     number_id: int = field(default_factory=int)
     name: str = field(default_factory=str)
@@ -103,22 +97,46 @@ class CircuitComponent:
 
 
 @dataclass
-class Transistor(CircuitComponent):
+class Transistor(DefaultComponent):
     overlap_distance: OverlapDistance = field(default_factory=OverlapDistance)
 
+
 @dataclass
-class Resistor(CircuitComponent):
+class Resistor(DefaultComponent):
     pass
 
 
 @dataclass
-class Capacitor(CircuitComponent):
+class Capacitor(DefaultComponent):
     pass
 
 
+@dataclass
+class Pin:
+    instance: str = field(default_factory=str)
+    number_id: int = field(default_factory=int)
+    cell: str = field(default_factory=str)
+    type: str = field(default_factory=str)
+    name: str = field(default_factory=str)
+    layout: RectAreaLayer = field(default_factory=RectAreaLayer)
 
 
+@dataclass
+class Trace:
+    instance: str = field(default_factory=str)
+    number_id: int = field(default_factory=int)
+    name: str = field(default_factory=str)
+    segments: List[RectAreaLayer] = field(default_factory=list)  # | dict
+    vias: List[RectAreaLayer] = field(default_factory=list) # | dict
 
+
+@dataclass
+class CircuitCell:
+    instance: str = field(default_factory=str)
+    number_id: int = field(default_factory=int)
+    name: str = field(default_factory=str)
+    cell: str = field(default_factory=str)
+    schematic_connections: dict = field(default_factory=dict)
 
 
 

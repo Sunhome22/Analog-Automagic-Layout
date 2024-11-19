@@ -3,15 +3,16 @@
 # ================================================== Libraries =========================================================
 import os
 import time
-from circuit.circuit_components import RectArea, Transistor, Capacitor, Resistor, Pin, CircuitCell
+from circuit.circuit_components import RectArea, Transistor, Capacitor, Resistor, Pin, CircuitCell, Trace
 from typing import List
 from magic.magic_drawer import get_pixel_boxes_from_text, get_black_white_pixel_boxes_from_image
 from logger.logger import get_a_logger
 
 # ============================================== Magic layout creator ==================================================
-
+VIA_SIZE_OFFSET = 10
 
 class MagicLayoutCreator:
+
 
     def __init__(self, project_properties, components):
         self.project_properties = project_properties
@@ -23,6 +24,7 @@ class MagicLayoutCreator:
         self.components = components
         self.magic_file_lines = []
         self.cells_added = 0
+        self.traces_added = 0
 
         self.logger = get_a_logger(__name__)
         self.file_creator()
@@ -34,8 +36,8 @@ class MagicLayoutCreator:
         with open(magic_file_path, "w") as file:
             file.write("\n".join(self.magic_file_lines))
 
-        self.logger.info(f"Process complete! File '{self.project_name}.mag' was created with "
-                         f"{self.cells_added} components")
+        self.logger.info(f"Process complete! File '{self.project_name}.mag' was created. "
+                         f"Components: {self.cells_added} Traces: {self.traces_added}")
 
     def place_black_white_picture(self, image_path: str):
         black_pixels, white_pixels = get_black_white_pixel_boxes_from_image(image_path)
@@ -62,16 +64,34 @@ class MagicLayoutCreator:
             rect_area.set(box)
             self.magic_file_lines.append(f"rect {rect_area.x1} {rect_area.y1} {rect_area.x2} {rect_area.y2}")
 
-    def place_box(self, layer: str, area: List[int]):
-        rect_area = RectArea()
-        rect_area.set(area)
-
+    def place_box(self, layer: str, area: RectArea()):
         self.magic_file_lines.extend([
             f"<< {layer} >>",
-            f"rect {rect_area.x1} {rect_area.y1} {rect_area.x2} {rect_area.y2}"
+            f"rect {area.x1} {area.y1} {area.x2} {area.y2}"
         ])
 
+    def trace_creator(self, component):
+        via_count = 0
+        segment_count = 0
+
+        for segment in component.segments:
+            self.place_box(layer=segment.layer, area=segment.area)
+            segment_count += 1
+
+        for via in component.vias:
+            via.area.x1 = via.area.x1 + VIA_SIZE_OFFSET
+            via.area.y1 = via.area.y1 + VIA_SIZE_OFFSET
+            via.area.x2 = via.area.x2 - VIA_SIZE_OFFSET
+            via.area.y2 = via.area.y2 - VIA_SIZE_OFFSET
+            self.place_box(layer=via.layer, area=via.area)
+            via_count += 1
+
+        self.traces_added += 1
+        self.logger.info(f"{component.instance} '{component.name}' placed. "
+                         f"Segments: {segment_count} Vias: {via_count} ")
+
     def cell_creator(self, component):
+
         # Find library of current component
         self.current_component_library_path = next(
             (lib.path for lib in self.component_libraries if component.layout_library in lib.path), None)
@@ -85,7 +105,8 @@ class MagicLayoutCreator:
             f" {component.bounding_box.y2}"
         ])
         self.cells_added += 1
-        self.logger.info(f"Component '{component.name} {component.layout_name}' placed with {component.transform_matrix}")
+        self.logger.info(f"{component.instance} '{component.name} {component.layout_name}' "
+                         f"placed with {component.transform_matrix}")
 
     def magic_file_top_template(self):
         self.magic_file_lines.extend([
@@ -100,25 +121,15 @@ class MagicLayoutCreator:
     def file_creator(self):
         self.magic_file_top_template()
 
-        # Just for testing from here:
-        i = 1000
-
         for component in self.components:
 
-            # Filter out pins and circuit cells
-            if not isinstance(component, (Pin, CircuitCell)):
-                # Test placing
-                # i += 1500 #
-                # component.transform_matrix.set([0, 1, i, -1, 0, 1500]) # can't have floating point number on x!!!
-
+            # Filter out pins, traces and circuit cells (temporary)
+            if not isinstance(component, (Pin, CircuitCell, Trace)):
                 self.cell_creator(component=component)
 
-        # self.place_black_white_picture("Carsten Wulff Picture.jpg")
-        # self.place_box('m2', [0, 0, 100, 1500])
-        # self.place_box('m1', [0, 1400, 1500, 1500])
-        # self.place_box('viali', [10, 1500, 100, 1500])
-
-        # To here!
+            # Handle Traces
+            if isinstance(component, Trace):
+                self.trace_creator(component=component)
 
         # Labels and properties
         self.magic_file_lines.extend([
