@@ -53,19 +53,19 @@ def main():
     save_to_json(objects=components, file_name="json_tool/components.json")
 
     # Read JSON file
-    found_stuff = load_from_json(file_name="json_tool/ResultV21.json")
+    found_stuff = load_from_json(file_name="json_tool/test2.json")
 
     # An example trace
-    a_trace = Trace()
-    a_trace.instance = a_trace.__class__.__name__  # add instance type
-    a_trace.number_id = 0
-    a_trace.name = "16G-17G"
-    a_trace.segments.append(RectAreaLayer(layer="locali", area=RectArea(x1=300, y1=0, x2=450, y2=50)))
-    a_trace.vias.append(RectAreaLayer(layer="viali", area=RectArea(x1=300, y1=0, x2=350, y2=50)))
-    a_trace.segments.append(RectAreaLayer(layer="m1", area=RectArea(x1=300, y1=0, x2=350, y2=300)))
-    found_stuff.append(a_trace)
+    #a_trace = Trace()
+    #a_trace.instance = a_trace.__class__.__name__  # add instance type
+    #a_trace.number_id = 0
+    #a_trace.name = "16G-17G"
+    #a_trace.segments.append(RectAreaLayer(layer="locali", area=RectArea(x1=300, y1=0, x2=450, y2=50)))
+    #a_trace.vias.append(RectAreaLayer(layer="viali", area=RectArea(x1=300, y1=0, x2=350, y2=50)))
+    #a_trace.segments.append(RectAreaLayer(layer="m1", area=RectArea(x1=300, y1=0, x2=350, y2=300)))
+    #found_stuff.append(a_trace)
 
-    save_to_json(objects=found_stuff, file_name="json_tool/test.json")
+    #save_to_json(objects=found_stuff, file_name="json_tool/test.json")
 
     # Create layout
     MagicLayoutCreator(project_properties=project_properties, components=found_stuff)

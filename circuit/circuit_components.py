@@ -129,6 +129,15 @@ class Trace:
     segments: List[RectAreaLayer] = field(default_factory=list)  # | dict
     vias: List[RectAreaLayer] = field(default_factory=list) # | dict
 
+    # Handling of JSON file input
+    def __post_init__(self):
+
+        if isinstance(self.segments, list):
+            self.segments = [RectAreaLayer(**rank) for rank in self.segments]
+
+        if isinstance(self.vias, list):
+            self.vias = [RectAreaLayer(**rank) for rank in self.vias]
+
 
 @dataclass
 class CircuitCell:
