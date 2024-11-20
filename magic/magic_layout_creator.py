@@ -7,9 +7,22 @@ from circuit.circuit_components import RectArea, Transistor, Capacitor, Resistor
 from typing import List
 from magic.magic_drawer import get_pixel_boxes_from_text, get_black_white_pixel_boxes_from_image
 from logger.logger import get_a_logger
+from collections import defaultdict, deque
 
 # ============================================== Magic layout creator ==================================================
-VIA_SIZE_OFFSET = 10
+VIA_SIZE_OFFSET = 5
+
+via_map = {
+    ('locali', 'm1'): 'viali',
+    ('m1', 'm2'): 'via1',
+    ('m2', 'm3'): 'via2'
+}
+
+intermediate_metal_layers = {
+    ('locali', 'm2'): 'm1',
+    ('m1', 'm3'): 'm2',
+    ('m2', 'm4'): 'm3'
+}
 
 class MagicLayoutCreator:
 
@@ -71,7 +84,7 @@ class MagicLayoutCreator:
             f"rect {area.x1} {area.y1} {area.x2} {area.y2}"
         ])
 
-    def via_adder(self, component):
+    def add_trace_vias(self, component):
         """Checks for overlap between segments of a trace in different layers and adds vias"""
         last_segment_layer = None
 
@@ -80,6 +93,77 @@ class MagicLayoutCreator:
             if segment.layer != last_segment_layer:
                 last_segment_layer = segment.layer
                 print(last_segment_layer)
+
+    def add_trace_connection_point(self, trace):
+        # TODO: Make this more understandable
+
+        # Iterate over all components
+        for component in self.components:
+            if not isinstance(component, (Pin, CircuitCell, Trace)):
+
+                # Iterate over all ports for every segment of the current trace
+                for port in component.layout_ports:
+                    for segment in trace.segments:
+
+                        segment_midpoint_x = abs(segment.area.x2) # will always be on x2
+                        segment_midpoint_y = (abs(segment.area.y2) - abs(segment.area.y1))//2 + abs(segment.area.y1)
+
+                        # Get the actual position of the port by adding transform matrix details
+                        port_pos = RectArea(x1=port.area.x1 + component.transform_matrix.c,
+                                            x2=port.area.x2 + component.transform_matrix.c,
+                                            y1=port.area.y1 + component.transform_matrix.f,
+                                            y2=port.area.y2 + component.transform_matrix.f)
+
+                        # Check if the segment point is within the bounds of a specific port
+                        if (port_pos.y2 >= segment_midpoint_y >= port_pos.y1
+                                and port_pos.x2 >= segment_midpoint_x >= port_pos.x1):
+
+                            metal_layers = self.get_inbetween_layers(start_layer=segment.layer, end_layer=port.layer,
+                                                                     map=intermediate_metal_layers)
+
+                            via_layers = self.get_inbetween_layers(start_layer=segment.layer, end_layer=port.layer,
+                                                                   map=via_map)
+
+                            # Place all necessary metal(s)
+                            self.place_box(layer=segment.layer, area=port_pos)
+
+                            for metal_layer in metal_layers:
+                                self.place_box(layer=metal_layer, area=port_pos)
+
+
+                            # Set via size in relation to port
+                            via_pos = RectArea(x1=port_pos.x1 + 5, y1=port_pos.y1 + 5,
+                                               x2=port_pos.x2 - 5, y2=port_pos.y2 - 5)
+
+                            # Place all necessary via(s)
+                            for via_layer in via_layers:
+                                self.place_box(layer=via_layer, area=via_pos)
+
+
+
+    def get_inbetween_layers(self, start_layer, end_layer, map):
+        path = []
+        current_layer = start_layer
+
+        while current_layer != end_layer:
+            # Find the next layer to traverse
+            found = False
+            for (layer1, layer2), item in map.items():
+                if current_layer == layer1 and layer2 not in path:
+                    path.append(item)
+                    current_layer = layer2
+                    found = True
+                    break
+                elif current_layer == layer2 and layer1 not in path:
+                    path.append(item)
+                    current_layer = layer1
+                    found = True
+                    break
+
+            if not found:
+                return self.logger.error(f"A problem occurred between these layers: {start} to {end}")
+
+        return path
 
 
 
@@ -142,8 +226,9 @@ class MagicLayoutCreator:
 
             # Handle Traces
             if isinstance(component, Trace):
-                self.via_adder(component=component)
+                self.add_trace_connection_point(trace=component)
                 self.trace_creator(component=component)
+                self.add_trace_vias(component=component)
 
         # Labels and properties
         self.magic_file_lines.extend([
