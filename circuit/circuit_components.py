@@ -87,7 +87,7 @@ class DefaultComponent:
     def __post_init__(self):
 
         if isinstance(self.layout_ports, list):
-            self.layout_ports = [LayoutPort(**rank) for rank in self.layout_ports]
+            self.layout_ports = [LayoutPort(**item) for item in self.layout_ports]
 
         if isinstance(self.bounding_box, dict):
             self.bounding_box = RectArea(**self.bounding_box)
@@ -127,16 +127,16 @@ class Trace:
     number_id: int = field(default_factory=int)
     name: str = field(default_factory=str)
     segments: List[RectAreaLayer] = field(default_factory=list)  # | dict
-    vias: List[RectAreaLayer] = field(default_factory=list) # | dict
+    vias: List[RectAreaLayer] = field(default_factory=list)  # | dict
 
     # Handling of JSON file input
     def __post_init__(self):
 
         if isinstance(self.segments, list):
-            self.segments = [RectAreaLayer(**rank) for rank in self.segments]
+            self.segments = [RectAreaLayer(**item) for item in self.segments]
 
         if isinstance(self.vias, list):
-            self.vias = [RectAreaLayer(**rank) for rank in self.vias]
+            self.vias = [RectAreaLayer(**item) for item in self.vias]
 
 
 @dataclass

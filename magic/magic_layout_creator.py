@@ -64,12 +64,24 @@ class MagicLayoutCreator:
             rect_area.set(box)
             self.magic_file_lines.append(f"rect {rect_area.x1} {rect_area.y1} {rect_area.x2} {rect_area.y2}")
 
-    def place_box(self, layer: str, area: RectArea()):
+    def place_box(self, layer: str, area: RectArea):
 
         self.magic_file_lines.extend([
             f"<< {layer} >>",
             f"rect {area.x1} {area.y1} {area.x2} {area.y2}"
         ])
+
+    def via_adder(self, component):
+        """Checks for overlap between segments of a trace in different layers and adds vias"""
+        last_segment_layer = None
+
+        for segment in component.segments:
+
+            if segment.layer != last_segment_layer:
+                last_segment_layer = segment.layer
+                print(last_segment_layer)
+
+
 
     def trace_creator(self, component):
         via_count = 0
@@ -130,6 +142,7 @@ class MagicLayoutCreator:
 
             # Handle Traces
             if isinstance(component, Trace):
+                self.via_adder(component=component)
                 self.trace_creator(component=component)
 
         # Labels and properties
