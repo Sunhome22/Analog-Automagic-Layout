@@ -1,49 +1,57 @@
+
+
 from circuit.circuit_components import Pin, CircuitCell
+def _port_area(objects):
+    port_area = []
+    area_coordinates = {}
+
+
+    for obj in objects:
+        if not isinstance(obj, (Pin,CircuitCell)):
+            for port in obj.layout_ports:
+                x1 = obj.transform_matrix.c + port.area.x1
+                x2 = obj.transform_matrix.c + port.area.x2
+                y1 = obj.transform_matrix.f + port.area.y1
+                y2 = obj.transform_matrix.f + port.area.y2
+
+                port_area.append([x1, y1, x2, y2])
+
+                new_entry = {str(obj.number_id) + port.type : []}
+                for y in range(y1, y2, 1):
+                    for x in range(x1, x2, 1):
+                            new_entry[str(obj.number_id) + port.type].append((x,y))
+
+                area_coordinates.update(new_entry)
+
+
+    return port_area, area_coordinates
+
 
 
 def generate_grid(grid_size, objects):
     grid = []
     value_appended = False
-    OFFSET_X = 184
-    OFFSET_Y = 128
 
-
-    i = 0
-    p = 0
-    f = 0
-    for y in range(grid_size//10):
+    area, area_coordinates = _port_area(objects)
+    for y in range(grid_size):
         grid.append([])
-        for x in range(grid_size//10):
-            for obj in objects:
+        for x in range(grid_size):
+            for p in area:
 
-                if not isinstance(obj, Pin) and not isinstance(obj, CircuitCell):
-                    conditions = [
-                        (obj.transform_matrix.c + obj.bounding_box.x2 + OFFSET_X/2)/10 >= x,
-                        (obj.transform_matrix.c - OFFSET_X/2)/10  <= x,
-                         (obj.transform_matrix.f + obj.bounding_box.y2 + OFFSET_Y/2)/10>= y,
-                          (obj.transform_matrix.f - OFFSET_Y/2)/10 <= y
-                    ]
+                if p[0]<=x<=p[2] and p[1]<=y<=p[3]:
 
-
-
-                    if all(conditions):
-                        i += 1
-                        grid[-1].append(1)
-                        value_appended = True
-                        break
+                    grid[-1].append(2)
+                    value_appended = True
+                    break
 
             if not value_appended:
                 grid[-1].append(0)
-                p += 1
+
             else:
 
                 value_appended = False
-            f += 1
 
 
-    # for row in grid:
-    #     print(row)
-    print(f"Appended 1's: {i}")
-    print(f"Appended 0's: {p}")
-    print(f"Appended 1and0's: {f}")
-    return grid
+
+
+    return grid, area, area_coordinates

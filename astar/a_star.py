@@ -158,7 +158,9 @@ def astar(maze, start, end):
             open_list.append(child)
 
 
-def initiate_astar(grid, connections, local_connections, objects):
+
+
+def initiate_astar(grid, connections, local_connections, objects, area):
     path = []
     local = True
     glo = False
@@ -181,19 +183,19 @@ def initiate_astar(grid, connections, local_connections, objects):
 
         for obj in objects:
 
-            if not isinstance(obj, Pin) and not isinstance(obj, CircuitCell) and obj.number_id == id_start:
+            if not isinstance(obj, (Pin, CircuitCell)) and obj.number_id == id_start:
                 for port in obj.layout_ports:
 
                     if port.type == start_area:
 
-                        start = [(obj.transform_matrix.c + (port.area.x2+port.area.x1)//2)//10, (obj.transform_matrix.f + (port.area.y2 + port.area.y1)//2)//10]
+                        start = [(obj.transform_matrix.c + (port.area.x2+port.area.x1)//2), (obj.transform_matrix.f + (port.area.y2 + port.area.y1)//2)]
                         start_found = True
                         break
-            if not isinstance(obj, Pin) and not isinstance(obj, CircuitCell) and obj.number_id == id_end:
+            if not isinstance(obj, (Pin, CircuitCell)) and obj.number_id == id_end:
                 for port in obj.layout_ports:
                     if port.type == end_area:
-                        end = [(obj.transform_matrix.c + (port.area.x2 + port.area.x1)//2) // 10,
-                               (obj.transform_matrix.f + (port.area.y2 + port.area.y1)//2) // 10]
+                        end = [(obj.transform_matrix.c + (port.area.x2 + port.area.x1)//2) ,
+                               (obj.transform_matrix.f + (port.area.y2 + port.area.y1)//2) ]
                         end_found = True
                         break
             if start_found and end_found:

@@ -53,7 +53,7 @@ def draw_result(grid_size, objects, connections):
     else:
         scaled_points = []
         for p in connections:
-            scaled_points.append( [(x * 10, y * 10) for x, y in p])
+            scaled_points.append( [(x , y ) for x, y in p])
         for con in scaled_points:
 
             x_coords, y_coords = zip(*con)

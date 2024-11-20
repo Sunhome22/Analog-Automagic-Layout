@@ -45,7 +45,9 @@
     "Python.SimplifyPath.executor": "Run",
     "Python.Simulated anealing 2.executor": "Run",
     "Python.Transistor.executor": "Run",
+    "Python.a_star_test.executor": "Run",
     "Python.edge length.executor": "Run",
+    "Python.local_astar_test.executor": "Run",
     "Python.main(outdated).executor": "Run",
     "Python.main.executor": "Run",
     "Python.test.executor": "Run",
@@ -81,5 +83,16 @@
       <updated>1725887787186</updated>
     </task>
     <servers />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/astar/local_astar_test.py</url>
+          <line>140</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

@@ -1,6 +1,6 @@
 from os.path import pathsep
 
-from astar.a_star import initiate_astar
+from astar.a_star_test import initiate_astar
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 
@@ -212,10 +212,10 @@ def main():
             objects = load_from_json(file_name="Results/ResultV21Mirrored4.json")
         print("[INFO]: Finished Linear Optimization")
         print("[INFO]: Starting Grid Generation")
-        grid = generate_grid(grid_size, objects)
+        grid, area, area_coordinates = generate_grid(grid_size, objects)
         print("[INFO]: Finished Grid Generation")
         print("[INFO]: Starting Initiate A*")
-        path, path_names = initiate_astar(grid, connections, local_connections, objects)
+        path, path_names = initiate_astar(grid, connections, local_connections, objects, area, area_coordinates)
         print("[INFO]: Finished A*")
 
         write_traces(objects, path, path_names)

@@ -1059,390 +1059,105 @@
         "instance": "Trace",
         "number_id": 0,
         "name": "16S-16B",
-        "segments": [
-            {
-                "layer": "m1",
-                "area": {
-                    "x1": 924,
-                    "y1": 182,
-                    "x2": 1116,
-                    "y2": 212
-                }
-            },
-            {
-                "layer": "m2",
-                "area": {
-                    "x1": 924,
-                    "y1": 182,
-                    "x2": 954,
-                    "y2": 1700
-                }
-            }
-        ],
+        "segments": [],
         "vias": []
     },
     {
         "instance": "Trace",
         "number_id": 1,
         "name": "17S-17B",
-        "segments": [
-            {
-                "layer": "m1",
-                "area": {
-                    "x1": 1500,
-                    "y1": 182,
-                    "x2": 1692,
-                    "y2": 212
-                }
-            },
-            {
-                "layer": "m2",
-                "area": {
-                    "x1": 1500,
-                    "y1": 182,
-                    "x2": 1530,
-                    "y2": 1700
-                }
-            }
-        ],
+        "segments": [],
         "vias": []
     },
     {
         "instance": "Trace",
         "number_id": 2,
         "name": "18S-18B",
-        "segments": [
-            {
-                "layer": "m1",
-                "area": {
-                    "x1": 924,
-                    "y1": 42,
-                    "x2": 1116,
-                    "y2": 72
-                }
-            },
-            {
-                "layer": "m2",
-                "area": {
-                    "x1": 924,
-                    "y1": 42,
-                    "x2": 954,
-                    "y2": 300
-                }
-            }
-        ],
+        "segments": [],
         "vias": []
     },
     {
         "instance": "Trace",
         "number_id": 3,
         "name": "19S-19B",
-        "segments": [
-            {
-                "layer": "m1",
-                "area": {
-                    "x1": 1500,
-                    "y1": 42,
-                    "x2": 1692,
-                    "y2": 72
-                }
-            },
-            {
-                "layer": "m2",
-                "area": {
-                    "x1": 1500,
-                    "y1": 42,
-                    "x2": 1530,
-                    "y2": 300
-                }
-            }
-        ],
+        "segments": [],
         "vias": []
     },
     {
         "instance": "Trace",
         "number_id": 4,
         "name": "20S-20B",
-        "segments": [
-            {
-                "layer": "m1",
-                "area": {
-                    "x1": 924,
-                    "y1": 122,
-                    "x2": 1116,
-                    "y2": 152
-                }
-            },
-            {
-                "layer": "m2",
-                "area": {
-                    "x1": 924,
-                    "y1": 122,
-                    "x2": 954,
-                    "y2": 1100
-                }
-            }
-        ],
+        "segments": [],
         "vias": []
     },
     {
         "instance": "Trace",
         "number_id": 5,
         "name": "21D-21G",
-        "segments": [
-            {
-                "layer": "m1",
-                "area": {
-                    "x1": 1596,
-                    "y1": 94,
-                    "x2": 1884,
-                    "y2": 124
-                }
-            },
-            {
-                "layer": "m2",
-                "area": {
-                    "x1": 1596,
-                    "y1": 94,
-                    "x2": 1626,
-                    "y2": 1100
-                }
-            }
-        ],
+        "segments": [],
         "vias": []
     },
     {
         "instance": "Trace",
         "number_id": 6,
         "name": "21S-21B",
-        "segments": [
-            {
-                "layer": "m1",
-                "area": {
-                    "x1": 1500,
-                    "y1": 122,
-                    "x2": 1692,
-                    "y2": 152
-                }
-            },
-            {
-                "layer": "m2",
-                "area": {
-                    "x1": 1500,
-                    "y1": 122,
-                    "x2": 1530,
-                    "y2": 1100
-                }
-            }
-        ],
+        "segments": [],
         "vias": []
     },
     {
         "instance": "Trace",
         "number_id": 7,
         "name": "22S-22B",
-        "segments": [
-            {
-                "layer": "m1",
-                "area": {
-                    "x1": 924,
-                    "y1": 262,
-                    "x2": 1116,
-                    "y2": 292
-                }
-            },
-            {
-                "layer": "m2",
-                "area": {
-                    "x1": 924,
-                    "y1": 262,
-                    "x2": 954,
-                    "y2": 2500
-                }
-            }
-        ],
+        "segments": [],
         "vias": []
     },
     {
         "instance": "Trace",
         "number_id": 8,
         "name": "23D-23G",
-        "segments": [
-            {
-                "layer": "m1",
-                "area": {
-                    "x1": 1596,
-                    "y1": 234,
-                    "x2": 1884,
-                    "y2": 264
-                }
-            },
-            {
-                "layer": "m2",
-                "area": {
-                    "x1": 1596,
-                    "y1": 234,
-                    "x2": 1626,
-                    "y2": 2500
-                }
-            }
-        ],
+        "segments": [],
         "vias": []
     },
     {
         "instance": "Trace",
         "number_id": 9,
         "name": "23S-23B",
-        "segments": [
-            {
-                "layer": "m1",
-                "area": {
-                    "x1": 1500,
-                    "y1": 262,
-                    "x2": 1692,
-                    "y2": 292
-                }
-            },
-            {
-                "layer": "m2",
-                "area": {
-                    "x1": 1500,
-                    "y1": 262,
-                    "x2": 1530,
-                    "y2": 2500
-                }
-            }
-        ],
+        "segments": [],
         "vias": []
     },
     {
         "instance": "Trace",
         "number_id": 10,
         "name": "24D-24G",
-        "segments": [
-            {
-                "layer": "m1",
-                "area": {
-                    "x1": 1020,
-                    "y1": 194,
-                    "x2": 1308,
-                    "y2": 224
-                }
-            },
-            {
-                "layer": "m2",
-                "area": {
-                    "x1": 1020,
-                    "y1": 194,
-                    "x2": 1050,
-                    "y2": 2100
-                }
-            }
-        ],
+        "segments": [],
         "vias": []
     },
     {
         "instance": "Trace",
         "number_id": 11,
         "name": "24S-24B",
-        "segments": [
-            {
-                "layer": "m1",
-                "area": {
-                    "x1": 924,
-                    "y1": 222,
-                    "x2": 1116,
-                    "y2": 252
-                }
-            },
-            {
-                "layer": "m2",
-                "area": {
-                    "x1": 924,
-                    "y1": 222,
-                    "x2": 954,
-                    "y2": 2100
-                }
-            }
-        ],
+        "segments": [],
         "vias": []
     },
     {
         "instance": "Trace",
         "number_id": 12,
         "name": "25S-25B",
-        "segments": [
-            {
-                "layer": "m1",
-                "area": {
-                    "x1": 1500,
-                    "y1": 222,
-                    "x2": 1692,
-                    "y2": 252
-                }
-            },
-            {
-                "layer": "m2",
-                "area": {
-                    "x1": 1500,
-                    "y1": 222,
-                    "x2": 1530,
-                    "y2": 2100
-                }
-            }
-        ],
+        "segments": [],
         "vias": []
     },
     {
         "instance": "Trace",
         "number_id": 13,
         "name": "26S-26B",
-        "segments": [
-            {
-                "layer": "m1",
-                "area": {
-                    "x1": 924,
-                    "y1": 82,
-                    "x2": 1116,
-                    "y2": 112
-                }
-            },
-            {
-                "layer": "m2",
-                "area": {
-                    "x1": 924,
-                    "y1": 82,
-                    "x2": 954,
-                    "y2": 700
-                }
-            }
-        ],
+        "segments": [],
         "vias": []
     },
     {
         "instance": "Trace",
         "number_id": 14,
         "name": "27S-27B",
-        "segments": [
-            {
-                "layer": "m1",
-                "area": {
-                    "x1": 1500,
-                    "y1": 82,
-                    "x2": 1692,
-                    "y2": 112
-                }
-            },
-            {
-                "layer": "m2",
-                "area": {
-                    "x1": 1500,
-                    "y1": 82,
-                    "x2": 1530,
-                    "y2": 700
-                }
-            }
-        ],
+        "segments": [],
         "vias": []
     }
 ]
