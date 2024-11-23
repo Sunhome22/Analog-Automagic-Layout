@@ -202,7 +202,6 @@ class SPICEparser:
                 # Get port definitions for component
                 port_definitions = self.__get_layout_port_definitions(line_words[5], self.subcircuits)
 
-
                 # Create transistor component and add extracted parameters
                 transistor = Transistor(name=filtered_name,
                                         type=component_type,
@@ -216,7 +215,6 @@ class SPICEparser:
 
                 transistor.instance = transistor.__class__.__name__  # add instance type
                 self.components.append(transistor)
-
 
             # --- Resistor ---
             elif component_category == 'R':

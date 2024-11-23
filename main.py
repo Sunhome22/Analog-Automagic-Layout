@@ -64,7 +64,6 @@ def main():
     #a_trace.vias.append(RectAreaLayer(layer="viali", area=RectArea(x1=300, y1=0, x2=350, y2=50)))
     #a_trace.segments.append(RectAreaLayer(layer="m1", area=RectArea(x1=300, y1=0, x2=350, y2=300)))
     #found_stuff.append(a_trace)
-
     #save_to_json(objects=found_stuff, file_name="json_tool/test.json")
 
     # Create layout

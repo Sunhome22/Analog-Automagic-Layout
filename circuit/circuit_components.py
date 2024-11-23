@@ -67,6 +67,7 @@ class LayoutPort:
 
 # ================================================ Component classes ===================================================
 
+
 @dataclass
 class DefaultComponent:
     instance: str = field(default_factory=str)
@@ -81,7 +82,6 @@ class DefaultComponent:
     layout_ports: List[LayoutPort] = field(default_factory=list) # | dict
     transform_matrix: TransformMatrix = field(default_factory=TransformMatrix) # | dict
     bounding_box: RectArea = field(default_factory=RectArea) # | dict
-
 
     # Handling of JSON file input
     def __post_init__(self):

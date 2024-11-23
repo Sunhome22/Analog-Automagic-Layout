@@ -81,9 +81,9 @@ class MagicComponentsParser:
             elif self.found_bounding_box:
 
                 x_difference = int((abs(self.transistor_well_size.x1) + abs(self.transistor_well_size.x2)
-                - (abs(component.bounding_box.x1) + abs(component.bounding_box.x2)))/2)
+                                    - (abs(component.bounding_box.x1) + abs(component.bounding_box.x2)))/2)
                 y_difference = int((abs(self.transistor_well_size.y1) + abs(self.transistor_well_size.y2)
-                - (abs(component.bounding_box.y1) + abs(component.bounding_box.y2)))/2)
+                                    - (abs(component.bounding_box.y1) + abs(component.bounding_box.y2)))/2)
 
                 component.overlap_distance.x = x_difference
                 component.overlap_distance.y = y_difference
