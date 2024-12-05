@@ -68,7 +68,7 @@ def main():
     save_to_json(objects=components, file_name="json_tool/components.json")
 
     # Read JSON file
-    found_stuff = load_from_json(file_name="json_tool/TracesLO1.json")
+    found_stuff = load_from_json(file_name="json_tool/TracesLO1 3.json")
 
     # An example trace
     #a_trace = Trace()

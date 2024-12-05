@@ -18,7 +18,7 @@
     - R	Resistors
     - C	Capacitors
     - Q	Bipolar transistor
-    - M NMOS/PMOS transistor
+    - MN/MP NMOS/PMOS transistor
     - U	Circuit cells/Integrated circuits
 """
 
