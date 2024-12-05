@@ -53,7 +53,7 @@
     "Python.test.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "git-widget-placeholder": "Leidulv",
-    "last_opened_file_path": "D:/leto/Analog-Automagic-Layout",
+    "last_opened_file_path": "C:/Users/leto/Downloads/Fordypningsprosjekt",
     "settings.editor.selected.configurable": "reference.settingsdialog.project.grazie"
   }
 }]]></component>
@@ -83,16 +83,5 @@
       <updated>1725887787186</updated>
     </task>
     <servers />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/astar/local_astar_test.py</url>
-          <line>140</line>
-          <option name="timeStamp" value="1" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
 </project>

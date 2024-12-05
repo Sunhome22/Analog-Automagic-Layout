@@ -22,80 +22,64 @@ def heuristic(a, b):
     return abs(a[0] - b[0]) + abs(a[1] - b[1])
 
 
-def is_valid_block(x, y, direction, path_width, grid):
-    """Check if a block of size `path_width` is valid at position (x, y)."""
-    grid_height = len(grid)
-    grid_width = len(grid[0])
-
-    # Validate block based on direction
-    if direction in ["up", "down"]:
-        # Moving vertically: check a column of width `path_width`
-        for dx in range(-(path_width // 2), (path_width // 2) + 1):
-            nx = x + dx
-            if not (0 <= nx < grid_width) or not (0 <= y < grid_height) or grid[y][nx] != 0:
-                return False
-    elif direction in ["left", "right"]:
-        # Moving horizontally: check a row of width `path_width`
-        for dy in range(-(path_width // 2), (path_width // 2) + 1):
-            ny = y + dy
-            if not (0 <= x < grid_width) or not (0 <= ny < grid_height) or grid[ny][x] != 0:
-                return False
-    return True
-
-
-def get_neighbors(node, path_width, grid):
-    """Generate neighbors considering path width."""
+def get_neighbors(node, grid, path_tracker):
+    """Generate valid neighbors for a given node."""
     x, y, direction = node
     neighbors = []
 
     moves = {
-        "up": (0, -1, "up"),
-        "down": (0, 1, "down"),
-        "left": (-1, 0, "left"),
-        "right": (1, 0, "right"),
+        "up": (0, -1, "vertical"),
+        "down": (0, 1, "vertical"),
+        "left": (-1, 0, "horizontal"),
+        "right": (1, 0, "horizontal"),
     }
 
     for move, (dx, dy, new_direction) in moves.items():
         nx, ny = x + dx, y + dy
-        if is_valid_block(nx, ny, new_direction, path_width, grid):
-            neighbors.append((nx, ny, new_direction))
+
+        # Check bounds
+        if 0 <= nx < len(grid[0]) and 0 <= ny < len(grid):
+            # Check for overlap rule
+            if (nx, ny) in path_tracker:
+                # Allow crossing but not continuous overlap
+                existing_direction = path_tracker[(nx, ny)]
+                if existing_direction == new_direction:
+                    continue  # Skip if the direction is the same
+            # Valid neighbor
+            if grid[ny][nx] == 0:  # 0 = Walkable
+                neighbors.append((nx, ny, new_direction))
     return neighbors
 
 
-def expand_path(path, path_width):
-    """Expand the path to include all points occupied by the path width."""
-    expanded_path = set()
-    for x, y, direction in path:
-        if direction in ["up", "down"]:
-            # Add points in a column
-            for dx in range(-(path_width // 2), (path_width // 2) + 1):
-                expanded_path.add((x + dx, y))
-        elif direction in ["left", "right"]:
-            # Add points in a row
-            for dy in range(-(path_width // 2), (path_width // 2) + 1):
-                expanded_path.add((x, y + dy))
-    return sorted(expanded_path)  # Sorted for consistency
-
-
-def a_star(start, goal, grid, path_width):
-    """A* algorithm with variable path width."""
+def a_star_with_crossing_rule(start, goal, grid):
+    """A* algorithm where paths can cross but cannot overlap continuously."""
     open_set = PriorityQueue()
     open_set.push((start[0], start[1], None), 0)  # (x, y, direction)
 
-    came_from = {}
+    # Ensure start and goal are tuples
+    start = tuple(start)
+    goal = tuple(goal)
+
+    # Initialize g_score and f_score with tuples for keys
     g_score = {start: 0}
     f_score = {start: heuristic(start, goal)}
+
+    came_from = {}
+    path_tracker = {}  # Tracks the direction of paths on the grid
 
     while not open_set.is_empty():
         current = open_set.pop()
         x, y, direction = current
 
-        if (x, y) == goal:
-            path = reconstruct_path(came_from, current)
-            expanded_path = expand_path(path, path_width)
-            return expanded_path
+        # Update the path tracker
+        if direction:
+            path_tracker[(x, y)] = direction
 
-        for neighbor in get_neighbors(current, path_width, grid):
+        # Check if the goal is reached
+        if (x, y) == goal:
+            return reconstruct_path(came_from, current)
+
+        for neighbor in get_neighbors(current, grid, path_tracker):
             nx, ny, new_direction = neighbor
             tentative_g_score = g_score.get((x, y), float('inf')) + 1
 
@@ -112,7 +96,7 @@ def reconstruct_path(came_from, current):
     """Reconstruct the path from start to goal."""
     path = []
     while current in came_from:
-        path.append(current)  # Include direction for expansion
+        path.append((current[0], current[1]))  # Only include (x, y)
         current = came_from[(current[0], current[1], current[2])]
     path.reverse()
     return path
@@ -121,23 +105,18 @@ def reconstruct_path(came_from, current):
 # Example Usage
 if __name__ == "__main__":
     grid = [
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 3, 3, 3, 3, 3, 3, 0, 0, 0, 0],
-        [0, 0, 3, 3, 3, 3, 3, 3, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0],
+        [0, 1, 1, 1, 0],
+        [0, 0, 0, 1, 0],
+        [0, 1, 0, 0, 0],
+        [0, 0, 0, 0, 0],
     ]  # 0 = Walkable, 1 = Obstacle
 
-    start = (3
-             , 0)  # Start position
-    goal = (7, 7)  # Goal position
-    path_width = 3
-    path = a_star(start, goal, grid, path_width)
+    # Ensure start and goal are tuples
+    start = (0, 0)  # Start position
+    goal = (4, 4)  # Goal position
+
+    path = a_star_with_crossing_rule(start, goal, grid)
     if path:
         print("Path found:", path)
     else:

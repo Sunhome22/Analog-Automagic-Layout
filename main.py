@@ -197,7 +197,7 @@ def main():
     single_connection, local_connections, connections = connection_list(components)
 
     overlap_dict = _overlap_transistors(components)
-
+    path= []
     run = True
     clean_path = False
     skip = True
@@ -212,10 +212,10 @@ def main():
             objects = load_from_json(file_name="Results/ResultV21Mirrored4.json")
         print("[INFO]: Finished Linear Optimization")
         print("[INFO]: Starting Grid Generation")
-        grid, area, area_coordinates = generate_grid(grid_size, objects)
+        grid, area, area_coordinates, perimeter = generate_grid(grid_size, objects)
         print("[INFO]: Finished Grid Generation")
         print("[INFO]: Starting Initiate A*")
-        path, path_names = initiate_astar(grid, connections, local_connections, objects, area, area_coordinates)
+        path, path_names = initiate_astar(grid, connections, local_connections, objects, area, area_coordinates, perimeter)
         print("[INFO]: Finished A*")
 
         write_traces(objects, path, path_names)
@@ -226,7 +226,7 @@ def main():
         #if clean_path:
            # draw_result(grid_size, objects, cleaned_paths)
        # else:
-        draw_result(grid_size, objects, path)
+        draw_result(grid_size, objects, paths)
         print("[INFO]: Finished Drawing Results")
 
 

@@ -1,146 +1,86 @@
-
-
-import pulp
+import heapq
 
 from circuit.circuit_components import CircuitCell, Pin
 
-import heapq
 
+class Node:
+    def __init__(self, position, parent=None):
+        self.position = position
+        self.parent = parent
+        self.g = 0  # Distance from start node
+        self.h = 0  # Heuristic distance to goal
+        self.f = 0  # Total cost (f = g + h)
 
-class PriorityQueue:
-    def __init__(self):
-        self.elements = []
-
-    def is_empty(self):
-        return len(self.elements) == 0
-
-    def push(self, item, priority):
-        heapq.heappush(self.elements, (priority, item))
-
-    def pop(self):
-        return heapq.heappop(self.elements)[1]
+    def __lt__(self, other):
+        return self.f < other.f
 
 
 def heuristic(a, b):
-    """Manhattan distance heuristic."""
+    """Calculate Manhattan distance heuristic."""
     return abs(a[0] - b[0]) + abs(a[1] - b[1])
 
 
-def is_valid_block(x, y, grid, path_width, start_area, end_area, path_tracker, current_direction):
-    """Check if a block of size path_width is valid at position (x, y)."""
-    grid_height = len(grid)
-    grid_width = len(grid[0])
+def astar( start, end,grid):
+    """
+    Perform A* search on a grid.
 
-    for dx in range(path_width):
-        for dy in range(path_width):
-            nx, ny = x + dx, y + dy
+    grid: 2D list where 0 represents open and 1 represents blocked
+    start: Tuple (x, y) for the starting point
+    end: Tuple (x, y) for the goal
+    """
+    open_list = []
+    closed_list = set()
+    start_node = Node(start)
+    goal_node = Node(end)
 
-            # Check bounds
-            if nx >= grid_width or ny >= grid_height:
-                return False
+    heapq.heappush(open_list, start_node)
 
-            # Special obstacle check
-            if grid[ny][nx] == 2:  # Special obstacle
-                if (nx, ny) not in start_area and (nx, ny) not in end_area:
-                    return False
+    while open_list:
+        current_node = heapq.heappop(open_list)
+        closed_list.add(current_node.position)
 
-            # Regular obstacle check
-            if grid[ny][nx] == 1:  # Regular obstacle
-                return False
+        # If the goal is reached
+        if current_node.position == goal_node.position:
+            path = []
+            while current_node:
+                path.append(current_node.position)
+                current_node = current_node.parent
+            return path[::-1]
 
-            # Crossing rule check
-            if (nx, ny) in path_tracker:
-                existing_direction = path_tracker[(nx, ny)]
-                if existing_direction == "horizontal" and current_direction == "horizontal":
-                    return False
-                if existing_direction == "vertical" and current_direction == "vertical":
-                    return False
+        # Generate neighbors
+        neighbors = [
+            (0, -1), (0, 1), (-1, 0), (1, 0)  # Up, Down, Left, Right
+        ]
+        for move in neighbors:
+            neighbor_pos = (current_node.position[0] + move[0], current_node.position[1] + move[1])
 
-    return True
+            # Check boundaries and obstacles
+            if (len(grid) > neighbor_pos[0] >= 0 == grid[neighbor_pos[0]][neighbor_pos[1]] and
+                    0 <= neighbor_pos[1] < len(grid[0]) and
+                    neighbor_pos not in closed_list):
 
+                neighbor_node = Node(neighbor_pos, current_node)
+                neighbor_node.g = current_node.g + 1
+                neighbor_node.h = heuristic(neighbor_pos, goal_node.position)
+                neighbor_node.f = neighbor_node.g + neighbor_node.h
 
-def get_neighbors(node, grid, path_width, start_area, end_area, path_tracker):
-    """Generate neighbors while respecting all rules."""
-    x, y, direction = node
-    neighbors = []
+                # Add to open list if not already there
+                if all(neighbor_node.position != node.position or neighbor_node.f < node.f for node in open_list):
+                    heapq.heappush(open_list, neighbor_node)
 
-    moves = {
-        "up": (0, -1, "vertical"),
-        "down": (0, 1, "vertical"),
-        "left": (-1, 0, "horizontal"),
-        "right": (1, 0, "horizontal"),
-    }
-
-    for move, (dx, dy, new_direction) in moves.items():
-        nx, ny = x + dx, y + dy
-        if is_valid_block(nx, ny, grid, path_width, start_area, end_area, path_tracker, new_direction):
-            neighbors.append((nx, ny, new_direction))
-
-    return neighbors
-
-
-def a_star(start_area, end_area, grid, path_width):
-    """A* algorithm with all rules implemented."""
-    open_set = PriorityQueue()
-
-    # Initialize the open set with all nodes in the starting area
-    for start in start_area:
-        open_set.push((start[0], start[1], None), 0)  # (x, y, direction)
-
-    came_from = {}
-    g_score = {start: 0 for start in start_area}
-    f_score = {start: heuristic(start, end_area[0]) for start in start_area}
-
-    # Track paths with their direction (horizontal/vertical)
-    path_tracker = {}
-
-    while not open_set.is_empty():
-        current = open_set.pop()
-        x, y, direction = current
-
-        # Add to path tracker
-        if direction:
-            path_tracker[(x, y)] = direction
-
-        # Check if current node is in the ending area
-        if (x, y) in end_area:
-            return reconstruct_path(came_from, current)
-
-        for neighbor in get_neighbors(current, grid, path_width, start_area, end_area, path_tracker):
-            nx, ny, new_direction = neighbor
-            tentative_g_score = g_score[(x, y)] + 1  # Uniform cost
-
-            if (nx, ny) not in g_score or tentative_g_score < g_score[(nx, ny)]:
-                came_from[(nx, ny)] = (x, y, direction)
-                g_score[(nx, ny)] = tentative_g_score
-                f_score[(nx, ny)] = g_score[(nx, ny)] + heuristic((nx, ny), end_area[0])
-                open_set.push((nx, ny, new_direction), f_score[(nx, ny)])
-
-    return None  # No path found
-
-
-def reconstruct_path(came_from, current):
-    """Reconstruct the path."""
-    path = []
-    while current in came_from:
-        path.append(current)
-        current = came_from[(current[0], current[1])]
-    path.reverse()
-    return path
+    return None
 
 
 
-
-
-
-
-
-
-def initiate_astar(grid, connections, local_connections, objects, area, area_coordinates):
+def initiate_astar(grid, connections, local_connections, objects, area, area_coordinates, perimeter):
     path = []
     local = True
     glo = False
     path_names = []
+    rows = len(grid)
+    cols = len(grid[0]) if rows > 0 else 0
+    print(f"Grid size: {rows} rows, {cols} columns")
+
     if local and glo:
         spliced_list = {**connections, **local_connections}
     elif glo:
@@ -160,17 +100,22 @@ def initiate_astar(grid, connections, local_connections, objects, area, area_coo
         for obj in objects:
 
             if not isinstance(obj, (Pin, CircuitCell)) and obj.number_id == id_start:
-                for p in area_coordinates:
+                x_start = (obj.transform_matrix.c - perimeter[0] + 96 + 64 + 32)
+                y_start = (obj.transform_matrix.f - perimeter[1] + 120)
+                for port in obj.layout_ports:
 
-                    if p == str(obj.number_id) + start_area:
+                    if port.type == start_area:
 
-                        start = area_coordinates[str(obj.number_id) + start_area]
+                        start = (((port.area.x2+port.area.x1)//2 + x_start)//32,  ((port.area.y1+port.area.y2)//2+y_start) //40)
+
                         start_found = True
                         break
             if not isinstance(obj, (Pin, CircuitCell)) and obj.number_id == id_end:
-                for p in area_coordinates:
-                    if p == str(obj.number_id) + end_area:
-                        end = area_coordinates[str(obj.number_id) + start_area]
+                x_start = (obj.transform_matrix.c - perimeter[0] +( 96 + 64 + 32))
+                y_start = (obj.transform_matrix.f - perimeter[1] + 120)
+                for port in obj.layout_ports:
+                    if port.type == end_area:
+                        end = (((port.area.x2+port.area.x1)//2 + x_start)//32,  ((port.area.y1+port.area.y2)//2+y_start) //40)
                         end_found = True
                         break
             if start_found and end_found:
@@ -180,12 +125,10 @@ def initiate_astar(grid, connections, local_connections, objects, area, area_coo
         string = str(id_start) + str(start_area) + "-" + str(id_end) + str(end_area)
         path_names.append(string)
         print(start_area, end_area)
-
+        print(start, end)
         print("--------------------")
-        path.append(a_star(start, end, grid, 30))
-        print(path)
-        print("Completed Path")
-
+        path.append(astar(start, end, grid))
+        print(path[-1])
 
 
     return path, path_names

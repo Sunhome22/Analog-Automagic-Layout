@@ -146,7 +146,7 @@
     {
         "instance": "Transistor",
         "number_id": 16,
-        "name": "MN7",
+        "name": "MN1",
         "type": "nmos",
         "cell": "COMP",
         "group": "diff1",
@@ -222,7 +222,7 @@
     {
         "instance": "Transistor",
         "number_id": 17,
-        "name": "MN8",
+        "name": "MN2",
         "type": "nmos",
         "cell": "COMP",
         "group": "diff1",
@@ -298,7 +298,7 @@
     {
         "instance": "Transistor",
         "number_id": 18,
-        "name": "MP5",
+        "name": "MP1",
         "type": "pmos",
         "cell": "COMP",
         "group": "load1",
@@ -374,7 +374,7 @@
     {
         "instance": "Transistor",
         "number_id": 19,
-        "name": "MP6",
+        "name": "MP2",
         "type": "pmos",
         "cell": "COMP",
         "group": "load1",
@@ -450,7 +450,7 @@
     {
         "instance": "Transistor",
         "number_id": 20,
-        "name": "MP1",
+        "name": "MP3",
         "type": "pmos",
         "cell": "COMP",
         "group": "load1",
@@ -526,7 +526,7 @@
     {
         "instance": "Transistor",
         "number_id": 21,
-        "name": "MP2",
+        "name": "MP4",
         "type": "pmos",
         "cell": "COMP",
         "group": "load1",
@@ -602,7 +602,7 @@
     {
         "instance": "Transistor",
         "number_id": 22,
-        "name": "MN10",
+        "name": "MN3",
         "type": "nmos",
         "cell": "COMP",
         "group": "mirror2",
@@ -678,7 +678,7 @@
     {
         "instance": "Transistor",
         "number_id": 23,
-        "name": "MN9",
+        "name": "MN4",
         "type": "nmos",
         "cell": "COMP",
         "group": "mirror2",
@@ -754,7 +754,7 @@
     {
         "instance": "Transistor",
         "number_id": 24,
-        "name": "MN11",
+        "name": "MN5",
         "type": "nmos",
         "cell": "COMP",
         "group": "mirror1",
@@ -830,7 +830,7 @@
     {
         "instance": "Transistor",
         "number_id": 25,
-        "name": "MN12",
+        "name": "MN6",
         "type": "nmos",
         "cell": "COMP",
         "group": "mirror1",
@@ -906,7 +906,7 @@
     {
         "instance": "Transistor",
         "number_id": 26,
-        "name": "MP3",
+        "name": "MP5",
         "type": "pmos",
         "cell": "COMP",
         "group": "load1",
@@ -982,7 +982,7 @@
     {
         "instance": "Transistor",
         "number_id": 27,
-        "name": "MP4",
+        "name": "MP6",
         "type": "pmos",
         "cell": "COMP",
         "group": "load1",

@@ -8,7 +8,8 @@ def draw_result(grid_size, objects, connections):
     fix, ax = plt.subplots(figsize=(10, 10))
     ax.set_xlim(0, grid_size)
     ax.set_ylim(0, grid_size)
-    path = True
+    path = False
+
 
 
 
@@ -24,8 +25,11 @@ def draw_result(grid_size, objects, connections):
             rect = patches.Rectangle((obj.transform_matrix.c, obj.transform_matrix.f), obj.bounding_box.x2, obj.bounding_box.y2, linewidth=1, edgecolor='blue', facecolor='red')
 
             ax.add_patch(rect)
-            ax.text(obj.transform_matrix.c + (obj.bounding_box.x2 / 2), obj.transform_matrix.f + (obj.bounding_box.y2 / 2), obj.number_id,
+
+
+            ax.text(obj.transform_matrix.c + (obj.bounding_box.x2 / 2), obj.transform_matrix.f + (obj.bounding_box.y2 / 2), obj.group +"_"+ obj.name,
                 ha='center', va='center', fontsize=12, color='black')
+
 
     if not path:
         for p in connections.values():
@@ -63,4 +67,4 @@ def draw_result(grid_size, objects, connections):
 
 
     plt.title('OBJ placement')
-    plt.savefig('Results/ResultV3LocalRoute.png')
+    plt.savefig('Results/ResultV3LocalRoute2.png')
