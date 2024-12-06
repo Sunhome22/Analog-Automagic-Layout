@@ -71,14 +71,14 @@ def main():
     found_stuff = load_from_json(file_name="json_tool/TracesLO1 3.json")
 
     # An example trace
-    #a_trace = Trace()
-    #a_trace.instance = a_trace.__class__.__name__  # add instance type
-    #a_trace.number_id = 0
-    #a_trace.name = "16G-17G"
-    #a_trace.segments.append(RectAreaLayer(layer="locali", area=RectArea(x1=300, y1=0, x2=450, y2=50)))
+    a_trace = Trace()
+    a_trace.instance = a_trace.__class__.__name__  # add instance type
+    a_trace.number_id = 0
+    a_trace.name = "16G-17G"
+    a_trace.segments.append(RectAreaLayer(layer="locali", area=RectArea(x1=300, y1=0, x2=450, y2=50)))
     #a_trace.vias.append(RectAreaLayer(layer="viali", area=RectArea(x1=300, y1=0, x2=350, y2=50)))
-    #a_trace.segments.append(RectAreaLayer(layer="m1", area=RectArea(x1=300, y1=0, x2=350, y2=300)))
-    #found_stuff.append(a_trace)
+    a_trace.segments.append(RectAreaLayer(layer="m4", area=RectArea(x1=300, y1=0, x2=350, y2=350)))
+    found_stuff.append(a_trace)
     #save_to_json(objects=found_stuff, file_name="json_tool/test.json")
 
     # Create layout
@@ -88,7 +88,6 @@ def main():
     logger.debug(f"Components registered: ")
     for component in components:
         logger.debug(f"- {component}")
-
 
 if __name__ == '__main__':
     main()

@@ -42,6 +42,7 @@ class MagicLayoutCreator:
         self.__file_creator()
 
     def place_black_white_picture(self, image_path: str):
+        """Not used"""
         black_pixels, white_pixels = get_black_white_pixel_boxes_from_image(image_path)
 
         self.magic_file_lines.append(f"<< m1 >>")
@@ -57,6 +58,7 @@ class MagicLayoutCreator:
             self.magic_file_lines.append(f"rect {rect_area.x1} {rect_area.y1} {rect_area.x2} {rect_area.y2}")
 
     def place_text(self, layer: str, text: str):
+        """Not used"""
         pixel_boxes = get_pixel_boxes_from_text(text)
 
         self.magic_file_lines.append(f"<< {layer} >>")
@@ -84,29 +86,28 @@ class MagicLayoutCreator:
         ])
 
     def __via_placer(self, start_layer, end_layer, area):
-        """Adds via(s) and potentially necessary metal layers between a start layer and an end layer"""
+        """Adds via(s) and potentially necessary metal layers between a top layer and a bottom layer"""
 
-        VIA_OFFSET = 5
+        VIA_OFFSET = 6 # Needs to be handled in the future, but works for now.
 
         via_map = {
             ('locali', 'm1'): 'viali',
+            ('m1', 'locali'): 'viali',
             ('m1', 'm2'): 'via1',
+            ('m2', 'm1'): 'via1',
             ('m2', 'm3'): 'via2',
-            ('m3', 'm4'): 'via3'
+            ('m3', 'm2'): 'via2',
+            ('m3', 'm4'): 'via3',
+            ('m4', 'm3'): 'via3',
         }
+        metal_layer_list = ['locali', 'm1', 'm2', 'm3', 'm4']
 
-        intermediate_metal_layers = {
-            ('locali', 'm2'): 'm1',
-            ('m1', 'm3'): 'm2',
-            ('m2', 'm4'): 'm3',
-            ('m3', 'm5'): 'm4'
-        }
 
-        metal_layers = self.__get_inbetween_layers(start_layer=start_layer, end_layer=end_layer,
-                                                   map=intermediate_metal_layers)
-
-        via_layers = self.__get_inbetween_layers(start_layer=start_layer, end_layer=end_layer, map=via_map)
-
+        metal_layers = self.get_inbetween_metal_layers(start_layer=start_layer, end_layer=end_layer,
+                                                            metal_layer_list=metal_layer_list)
+        via_layers = self.__get_inbetween_via_layers(start_layer=start_layer, end_layer=end_layer, via_map=via_map)
+        print(via_layers)
+        print(metal_layers)
         # Metal area is increased with an offset to compensate for the via if via is present
         metal_area = RectArea(x1=area.x1, y1=area.y1, x2=area.x2, y2=area.y2)
         if via_layers is not None:
@@ -114,17 +115,14 @@ class MagicLayoutCreator:
                                   x2=area.x2 + VIA_OFFSET, y2=area.y2 + VIA_OFFSET)
 
         # Place all necessary metal(s)
-        self.__place_box(layer=start_layer, area=metal_area)
-        self.__place_box(layer=end_layer, area=metal_area)
-
         if metal_layers is not None:
             for metal_layer in metal_layers:
-
                 self.__place_box(layer=metal_layer, area=metal_area)
 
         # Place all necessary via(s)
-        for via_layer in via_layers:
-            self.__place_box(layer=via_layer, area=area)
+        if via_layers is not None:
+            for via_layer in via_layers:
+                self.__place_box(layer=via_layer, area=area)
 
     def __add_trace_vias(self, component):
         """Checks for overlap between segments of a trace in different layers and adds vias"""
@@ -140,7 +138,9 @@ class MagicLayoutCreator:
 
             if len(segments_on_different_layers) == 2:
 
+                # Handles first possible overlap orientation
                 if segments_on_different_layers[0].area.x1 == segments_on_different_layers[1].area.x1:
+
                     via_area = RectArea(x1=segments_on_different_layers[0].area.x1,
                                         y1=segments_on_different_layers[0].area.y1,
                                         x2=segments_on_different_layers[1].area.x2,
@@ -150,8 +150,22 @@ class MagicLayoutCreator:
                                       end_layer=segments_on_different_layers[1].layer, area=via_area)
 
                     segments_on_different_layers.pop(0)
+
+                # Handles second possible overlap orientation
+                elif segments_on_different_layers[0].area.y1 == segments_on_different_layers[1].area.y1:
+
+                    via_area = RectArea(x1=segments_on_different_layers[0].area.x1,
+                                        y1=segments_on_different_layers[0].area.y1,
+                                        x2=segments_on_different_layers[0].area.x2,
+                                        y2=segments_on_different_layers[1].area.y2)
+
+                    self.__via_placer(start_layer=segments_on_different_layers[0].layer,
+                                      end_layer=segments_on_different_layers[1].layer, area=via_area)
+
+                    segments_on_different_layers.pop(0)
+
                 else:
-                    self.logger.error("NOT HANDLED")
+                    self.logger("Oh no")
 
     def __add_trace_connection_point(self, trace):
         """Creates a connection point based on which layer a trace want to connect to a port"""
@@ -182,34 +196,49 @@ class MagicLayoutCreator:
                             self.logger.info(f"Connection point placed for port '{port.type}' of '{component.name}' "
                                              f"from layer '{port.layer}' to '{segment.layer}'")
 
-    def __get_inbetween_layers(self, start_layer, end_layer, map):
-        """Returns a list layers between a start layer and an end layer based on a map"""
 
-        path = []
-        current_layer = start_layer
-        visited = set()
+    def get_inbetween_metal_layers(self, start_layer, end_layer, metal_layer_list):
+        """Gets all metal layers, including start and end layer, and deals with if their positions are
+            effectively swapped in the metal layer list"""
 
-        while current_layer != end_layer:
-            visited.add(current_layer)
+        try:
+            # Get layers between the start and end (inclusive)
+            result = metal_layer_list[min(metal_layer_list.index(start_layer), metal_layer_list.index(end_layer)):
+                                      max(metal_layer_list.index(start_layer), metal_layer_list.index(end_layer)) + 1]
+            return result
 
-            # Find the next layer to traverse
-            found = False
-            for (layer1, layer2), item in map.items():
-                if current_layer == layer1 and layer2 not in visited:
-                    path.append(item)
-                    current_layer = layer2
-                    found = True
-                    break
-                elif current_layer == layer2 and layer1 not in visited:
-                    path.append(item)
-                    current_layer = layer1
-                    found = True
-                    break
+        except ValueError:
+            self.logger.error(f"Could not get layers inbetween '{start_layer}' to '{end_layer}'")
 
-            if not found:
-                return None
+    def __get_inbetween_via_layers(self, start_layer, end_layer, via_map):
+        """Returns a list of layers between a start layer and an end layer based on a map"""
 
-        return path
+        try:
+            graph = {}
+            for (start, end), intermediate in via_map.items():
+                graph.setdefault(start, []).append((end, intermediate))
+
+            # BFS to traverse and gather intermediates
+            queue = deque([(start_layer, [])])  # (current_node, intermediates_so_far)
+            visited = set()  # To track visited nodes and avoid infinite loops
+
+            while queue:
+                current_node, intermediates = queue.popleft()
+
+                # If the target is reached, return the collected intermediates
+                if current_node == end_layer:
+                    return intermediates
+
+                # Traverse neighbors
+                visited.add(current_node)
+                for neighbor, intermediate in graph.get(current_node, []):
+                    if neighbor not in visited:
+                        queue.append((neighbor, intermediates + [intermediate]))
+
+            return None  # Return None if no path exists
+
+        except ValueError:
+            self.logger.error(f"Could not get layers inbetween '{start_layer}' to '{end_layer}'")
 
     def __trace_creator(self, component):
         via_count = 0
