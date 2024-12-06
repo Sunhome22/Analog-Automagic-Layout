@@ -1,6 +1,36 @@
+from dataclasses import dataclass
+import re
+
+from dill import objects
+
 from circuit.circuit_components import Trace, RectAreaLayer, RectArea
 from json_tool.json_converter import save_to_json
+from magic.magic_layout_creator import MagicLayoutCreator
 
+@dataclass
+class ComponentLibrary:
+    name: str
+    path: str
+
+
+@dataclass
+class ProjectProperties:
+    directory: str
+    name: str
+    name_long: str
+    component_libraries: list[ComponentLibrary]
+
+
+# Component libraries
+atr_lib = ComponentLibrary(name="JNWATR", path="~/aicex/ip/jnw_bkle_sky130A/design/AAL_COMP_LIBS/JNW_ATR_SKY130A")
+tr_lib = ComponentLibrary(name="JNWTR", path="~/aicex/ip/jnw_bkle_sky130A/design/AAL_COMP_LIBS/JNW_TR_SKY130A")
+misc_lib = ComponentLibrary(name="AALMISC", path="~/aicex/ip/jnw_bkle_sky130A/design/AAL_COMP_LIBS/AAL_MISC_SKY130A")
+
+
+project_properties = ProjectProperties(directory="~/aicex/ip/jnw_bkle_sky130A/",
+                                       name="JNW_BKLE",
+                                       name_long="JNW_BKLE_SKY130A",
+                                       component_libraries=[atr_lib, tr_lib, misc_lib])
 
 def direction(p1, p2):
     dx = p2[0] - p1[0]
@@ -8,7 +38,7 @@ def direction(p1, p2):
     return dx, dy
 
 def segment_path(path):
-    if len(path) < 2:
+    if path is None or len(path) < 2:
         return []  # No segments for a path with less than 2 points
 
     segments = []
@@ -35,10 +65,28 @@ def segment_path(path):
 
     return segments
 
-def _rectangle_values(segments):
+def _rectangle_values(segments,used_area, area_coordinates, path_names, index, port_coord):
     rectangles = []
+    name = path_names[index]
+    pattern = r"(\d+)([a-zA-Z])-(\d+)([a-zA-Z])"
 
-    for seg in segments:
+    # Match the pattern
+    match = re.match(pattern, name)
+
+    if match:
+        start_id = int(match.group(1))  # First number (4)
+        start_port = match.group(2)  # First letter (t)
+        end_id = int(match.group(3))  # Second number (17)
+        end_port = match.group(4)  # Last letter (j)
+    else:
+        start_id = 0  # First number (4)
+        start_port = 0  # First letter (t)
+        end_id = 0  # Second number (17)
+        end_port = 0
+
+
+
+    for index1, seg in enumerate(segments):
 
         min_x = seg[0][0]
         max_x = seg[0][0]
@@ -53,15 +101,22 @@ def _rectangle_values(segments):
               max_y= y
             elif y < min_y:
                 min_y = y
-        rectangles.append([min_x,min_y,max_x,max_y])
 
+        if len(segments == 2):
+            if index1 == 0 :
+                if min_x == max_x:
+                    rectangles.append([port_coord[str(start_id) + start_port][0],port_coord[str(start_id) + start_port][1],port_coord[str(start_id) + start_port][0],port_coord[str(end_id) + end_port][1]])
+                elif min_y == max_y:
+                    rectangles.append(
+                            [port_coord[str(start_id) + start_port][0], port_coord[str(start_id) + start_port][1],
+                             port_coord[str(start_id) + start_port][0], port_coord[str(end_id) + end_port][1]])
     return rectangles
 
 
 
 
-def write_traces(objects, path, path_names):
-    trace_width = 30
+def write_traces(objects, path, path_names, used_area, area_coordinates, port_coord):
+    trace_width = 32
     for index, p in enumerate(path):
 
         a_trace = Trace()
@@ -70,7 +125,7 @@ def write_traces(objects, path, path_names):
         a_trace.name = path_names[index]
 
         segments = segment_path(p)
-        rectangles = _rectangle_values(segments)
+        rectangles = _rectangle_values(segments, used_area, area_coordinates, path_names, index, port_coord)
 
         for rect in rectangles:
 
@@ -95,3 +150,5 @@ def write_traces(objects, path, path_names):
         objects.append(a_trace)
 
     save_to_json(objects=objects, file_name="json_tool/TracesLO1.json")
+    # found_stuff = load_from_json(file_name="json_tool/TracesLO1.json")
+    MagicLayoutCreator(project_properties=project_properties, components=objects)

@@ -9,6 +9,7 @@ from linear_optimization.linear_optimization_test import *
 from circuit.circuit_components import *
 from json_tool.json_converter import load_from_json, save_to_json
 from grid.generate_grid import generate_grid
+
 from traces.write_traces import write_traces
 
 
@@ -212,13 +213,13 @@ def main():
             objects = load_from_json(file_name="Results/ResultV21Mirrored4.json")
         print("[INFO]: Finished Linear Optimization")
         print("[INFO]: Starting Grid Generation")
-        grid, area, area_coordinates, perimeter = generate_grid(grid_size, objects)
+        grid, area, area_coordinates, used_area, port_coord = generate_grid(grid_size, objects)
         print("[INFO]: Finished Grid Generation")
         print("[INFO]: Starting Initiate A*")
-        path, path_names = initiate_astar(grid, connections, local_connections, objects, area, area_coordinates, perimeter)
+        path, path_names = initiate_astar(grid, connections, local_connections, objects, area, area_coordinates, used_area)
         print("[INFO]: Finished A*")
 
-        write_traces(objects, path, path_names)
+        write_traces(objects, path, path_names, used_area, area_coordinates, port_coord)
         print("[INFO]: Starting Simplifying Paths")
         #cleaned_paths = simplify_all_paths(path)
         print("[INFO]: Finished Simplifying Paths")
@@ -226,8 +227,10 @@ def main():
         #if clean_path:
            # draw_result(grid_size, objects, cleaned_paths)
        # else:
-        draw_result(grid_size, objects, paths)
+        draw_result(grid_size, objects, path, used_area)
         print("[INFO]: Finished Drawing Results")
+
+
 
 
 if __name__ == "__main__":

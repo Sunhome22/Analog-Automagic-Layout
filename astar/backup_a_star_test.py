@@ -34,7 +34,7 @@ def heuristic(a, b):
     return abs(a[0] - b[0]) + abs(a[1] - b[1])
 
 
-def get_neighbors(node, grid, goal):
+def get_neighbors(node, grid):
     """Get valid neighbors for the current node."""
     x, y = node
     neighbors = []
@@ -45,8 +45,6 @@ def get_neighbors(node, grid, goal):
 
         # Check bounds and obstacles
         if 0 <= nx < len(grid[0]) and 0 <= ny < len(grid) and grid[ny][nx] == 0:
-            neighbors.append((nx, ny))
-        elif 0 <= nx < len(grid[0]) and 0 <= ny < len(grid) and grid[ny][nx] == goal:
             neighbors.append((nx, ny))
 
     return neighbors
@@ -63,6 +61,14 @@ def reconstruct_path(came_from, current):
 
 
 def a_star(grid, start, goal):
+    """
+    Perform the A* algorithm to find the shortest path in a grid.
+
+    :param grid: 2D list representing the map (0 = free, 1 = obstacle)
+    :param start: Starting point as a tuple (x, y)
+    :param goal: Goal point as a tuple (x, y)
+    :return: The shortest path as a list of tuples, or None if no path is found.
+    """
     open_set = PriorityQueue()
     open_set.push(start, 0)
 
@@ -77,7 +83,7 @@ def a_star(grid, start, goal):
         if current == goal:
             return reconstruct_path(came_from, current)
 
-        for neighbor in get_neighbors(current, grid, goal):
+        for neighbor in get_neighbors(current, grid):
             tentative_g_score = g_score[current] + 1  # Cost from start to neighbor
 
             if neighbor not in g_score or tentative_g_score < g_score[neighbor]:
@@ -116,14 +122,27 @@ def initiate_astar(grid, connections, local_connections, objects, area, area_coo
         for obj in objects:
 
             if not isinstance(obj, (Pin, CircuitCell)) and obj.number_id == id_start:
-                start = (area_coordinates[str(id_start)+start_area][0][0], area_coordinates[str(id_start)+start_area][0][2])
-                print(start)
-                start_found = True
 
+                x_start = (obj.transform_matrix.c - used_area[0] + (96 + 60 + 30))
+                y_start = (obj.transform_matrix.f - used_area[1] + 100)
+
+                for p in obj.layout_ports:
+
+                    if p.type == start_area:
+                        start = (
+                        ((p.area.x2 + p.area.x1) // 2 + x_start) // 32, ((p.area.y2 + p.area.y1) // 2 + y_start) // 40)
+                        start_found = True
+                        coordinate_shift.append((obj.transform_matrix.c, obj.transform_matrix.f))
+                        break
             if not isinstance(obj, (Pin, CircuitCell)) and obj.number_id == id_end:
-                end  = (area_coordinates[str(id_end)+end_area][0][0], area_coordinates[str(id_end)+end_area][0][2])
-                end_found = True
-
+                x_start = (obj.transform_matrix.c - used_area[0] + (96 + 60 + 30))
+                y_start = (obj.transform_matrix.f - used_area[1] + 100)
+                for p in obj.layout_ports:
+                    if p.type == end_area:
+                        end = (
+                        ((p.area.x2 + p.area.x1) // 2 + x_start) // 32, ((p.area.y2 + p.area.y1) // 2 + y_start) // 40)
+                        end_found = True
+                        break
             if start_found and end_found:
                 break
         print("--------------------")
@@ -134,16 +153,13 @@ def initiate_astar(grid, connections, local_connections, objects, area, area_coo
         path_names.append(string)
         print(start, end)
         print("--------------------")
-        grid[start[1]][start[0]] = 0
-        grid[end[1]][end[0]] = 0
         path.append(a_star(grid, start, end))
-        grid[start[1]][start[0]] = 1
-        grid[end[1]][end[0]] = 1
+
         seg = segment_path(path[-1])
         print("Seg:")
         for s in seg:
-
             print(s)
+        #if len(seg >= 1):
         print("PATH:")
         print(path[-1])
         print("Completed Path")
@@ -154,7 +170,5 @@ def initiate_astar(grid, connections, local_connections, objects, area, area_coo
         print("ROW and COL values")
         for x, y in add_grid_points:
             grid[y][x] = 1
-        # for row in grid:
-        #     print(row)
 
     return path, path_names

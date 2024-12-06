@@ -146,7 +146,7 @@
     {
         "instance": "Transistor",
         "number_id": 16,
-        "name": "MN7",
+        "name": "MN1",
         "type": "nmos",
         "cell": "COMP",
         "group": "diff1",
@@ -222,7 +222,7 @@
     {
         "instance": "Transistor",
         "number_id": 17,
-        "name": "MN8",
+        "name": "MN2",
         "type": "nmos",
         "cell": "COMP",
         "group": "diff1",
@@ -602,7 +602,7 @@
     {
         "instance": "Transistor",
         "number_id": 22,
-        "name": "MN10",
+        "name": "MN3",
         "type": "nmos",
         "cell": "COMP",
         "group": "mirror2",
@@ -678,7 +678,7 @@
     {
         "instance": "Transistor",
         "number_id": 23,
-        "name": "MN9",
+        "name": "MN4",
         "type": "nmos",
         "cell": "COMP",
         "group": "mirror2",
@@ -754,7 +754,7 @@
     {
         "instance": "Transistor",
         "number_id": 24,
-        "name": "MN11",
+        "name": "MN5",
         "type": "nmos",
         "cell": "COMP",
         "group": "mirror1",
@@ -830,7 +830,7 @@
     {
         "instance": "Transistor",
         "number_id": 25,
-        "name": "MN12",
+        "name": "MN6",
         "type": "nmos",
         "cell": "COMP",
         "group": "mirror1",
@@ -1059,105 +1059,390 @@
         "instance": "Trace",
         "number_id": 0,
         "name": "16S-16B",
-        "segments": [],
+        "segments": [
+            {
+                "layer": "m3",
+                "area": {
+                    "x1": 908,
+                    "y1": 1812,
+                    "x2": 1084,
+                    "y2": 1844
+                }
+            },
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 908,
+                    "y1": 1684,
+                    "x2": 940,
+                    "y2": 1828
+                }
+            }
+        ],
         "vias": []
     },
     {
         "instance": "Trace",
         "number_id": 1,
         "name": "17S-17B",
-        "segments": [],
+        "segments": [
+            {
+                "layer": "m3",
+                "area": {
+                    "x1": 1484,
+                    "y1": 1812,
+                    "x2": 1660,
+                    "y2": 1844
+                }
+            },
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 1484,
+                    "y1": 1684,
+                    "x2": 1516,
+                    "y2": 1828
+                }
+            }
+        ],
         "vias": []
     },
     {
         "instance": "Trace",
         "number_id": 2,
         "name": "18S-18B",
-        "segments": [],
+        "segments": [
+            {
+                "layer": "m3",
+                "area": {
+                    "x1": 908,
+                    "y1": 404,
+                    "x2": 1084,
+                    "y2": 436
+                }
+            },
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 908,
+                    "y1": 276,
+                    "x2": 940,
+                    "y2": 420
+                }
+            }
+        ],
         "vias": []
     },
     {
         "instance": "Trace",
         "number_id": 3,
         "name": "19S-19B",
-        "segments": [],
+        "segments": [
+            {
+                "layer": "m3",
+                "area": {
+                    "x1": 1484,
+                    "y1": 404,
+                    "x2": 1660,
+                    "y2": 436
+                }
+            },
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 1484,
+                    "y1": 276,
+                    "x2": 1516,
+                    "y2": 420
+                }
+            }
+        ],
         "vias": []
     },
     {
         "instance": "Trace",
         "number_id": 4,
         "name": "20S-20B",
-        "segments": [],
+        "segments": [
+            {
+                "layer": "m3",
+                "area": {
+                    "x1": 908,
+                    "y1": 1204,
+                    "x2": 1084,
+                    "y2": 1236
+                }
+            },
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 908,
+                    "y1": 1076,
+                    "x2": 940,
+                    "y2": 1220
+                }
+            }
+        ],
         "vias": []
     },
     {
         "instance": "Trace",
         "number_id": 5,
         "name": "21D-21G",
-        "segments": [],
+        "segments": [
+            {
+                "layer": "m3",
+                "area": {
+                    "x1": 1580,
+                    "y1": 916,
+                    "x2": 1852,
+                    "y2": 948
+                }
+            },
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 1580,
+                    "y1": 916,
+                    "x2": 1612,
+                    "y2": 1092
+                }
+            }
+        ],
         "vias": []
     },
     {
         "instance": "Trace",
         "number_id": 6,
         "name": "21S-21B",
-        "segments": [],
+        "segments": [
+            {
+                "layer": "m3",
+                "area": {
+                    "x1": 1484,
+                    "y1": 1204,
+                    "x2": 1660,
+                    "y2": 1236
+                }
+            },
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 1484,
+                    "y1": 1076,
+                    "x2": 1516,
+                    "y2": 1220
+                }
+            }
+        ],
         "vias": []
     },
     {
         "instance": "Trace",
         "number_id": 7,
         "name": "22S-22B",
-        "segments": [],
+        "segments": [
+            {
+                "layer": "m3",
+                "area": {
+                    "x1": 908,
+                    "y1": 2612,
+                    "x2": 1084,
+                    "y2": 2644
+                }
+            },
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 908,
+                    "y1": 2484,
+                    "x2": 940,
+                    "y2": 2628
+                }
+            }
+        ],
         "vias": []
     },
     {
         "instance": "Trace",
         "number_id": 8,
         "name": "23D-23G",
-        "segments": [],
+        "segments": [
+            {
+                "layer": "m3",
+                "area": {
+                    "x1": 1580,
+                    "y1": 2324,
+                    "x2": 1852,
+                    "y2": 2356
+                }
+            },
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 1580,
+                    "y1": 2324,
+                    "x2": 1612,
+                    "y2": 2500
+                }
+            }
+        ],
         "vias": []
     },
     {
         "instance": "Trace",
         "number_id": 9,
         "name": "23S-23B",
-        "segments": [],
+        "segments": [
+            {
+                "layer": "m3",
+                "area": {
+                    "x1": 1484,
+                    "y1": 2612,
+                    "x2": 1660,
+                    "y2": 2644
+                }
+            },
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 1484,
+                    "y1": 2484,
+                    "x2": 1516,
+                    "y2": 2628
+                }
+            }
+        ],
         "vias": []
     },
     {
         "instance": "Trace",
         "number_id": 10,
         "name": "24D-24G",
-        "segments": [],
+        "segments": [
+            {
+                "layer": "m3",
+                "area": {
+                    "x1": 1004,
+                    "y1": 1940,
+                    "x2": 1276,
+                    "y2": 1972
+                }
+            },
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 1004,
+                    "y1": 1940,
+                    "x2": 1036,
+                    "y2": 2116
+                }
+            }
+        ],
         "vias": []
     },
     {
         "instance": "Trace",
         "number_id": 11,
         "name": "24S-24B",
-        "segments": [],
+        "segments": [
+            {
+                "layer": "m3",
+                "area": {
+                    "x1": 908,
+                    "y1": 2196,
+                    "x2": 1084,
+                    "y2": 2228
+                }
+            },
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 908,
+                    "y1": 2100,
+                    "x2": 940,
+                    "y2": 2212
+                }
+            }
+        ],
         "vias": []
     },
     {
         "instance": "Trace",
         "number_id": 12,
         "name": "25S-25B",
-        "segments": [],
+        "segments": [
+            {
+                "layer": "m3",
+                "area": {
+                    "x1": 1484,
+                    "y1": 2196,
+                    "x2": 1660,
+                    "y2": 2228
+                }
+            },
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 1484,
+                    "y1": 2100,
+                    "x2": 1516,
+                    "y2": 2212
+                }
+            }
+        ],
         "vias": []
     },
     {
         "instance": "Trace",
         "number_id": 13,
         "name": "26S-26B",
-        "segments": [],
+        "segments": [
+            {
+                "layer": "m3",
+                "area": {
+                    "x1": 908,
+                    "y1": 820,
+                    "x2": 1084,
+                    "y2": 852
+                }
+            },
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 908,
+                    "y1": 692,
+                    "x2": 940,
+                    "y2": 836
+                }
+            }
+        ],
         "vias": []
     },
     {
         "instance": "Trace",
         "number_id": 14,
         "name": "27S-27B",
-        "segments": [],
+        "segments": [
+            {
+                "layer": "m3",
+                "area": {
+                    "x1": 1484,
+                    "y1": 820,
+                    "x2": 1660,
+                    "y2": 852
+                }
+            },
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 1484,
+                    "y1": 692,
+                    "x2": 1516,
+                    "y2": 836
+                }
+            }
+        ],
         "vias": []
     }
 ]
