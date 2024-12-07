@@ -1,6 +1,6 @@
-#======================================================================================================================#
+# ==================================================================================================================== #
 # Copyright (C) 2024 Bjørn K.T. Solheim, Leidulv Tønnesland
-#======================================================================================================================#
+# ==================================================================================================================== #
 # This program is free software: you can redistribute it and/or modify it under the terms of
 # the GNU General Public License as published by the Free Software Foundation, version 3.
 #
@@ -10,7 +10,7 @@
 #
 # You should have received a copy of the GNU General Public License along with this program.
 # If not, see <https://www.gnu.org/licenses/>.
-#======================================================================================================================#
+# ==================================================================================================================== #
 
 # ================================================== Libraries =========================================================
 import os
@@ -85,7 +85,7 @@ class MagicLayoutCreator:
             f"rect {area.x1} {area.y1} {area.x2} {area.y2}"
         ])
 
-    def __via_placer(self, start_layer, end_layer, area):
+    def __via_placer(self, start_layer: str, end_layer: str, area: RectArea):
         """Adds via(s) and potentially necessary metal layers between a top layer and a bottom layer"""
 
         VIA_OFFSET = 6 # Needs to be handled in the future, but works for now.
@@ -102,12 +102,10 @@ class MagicLayoutCreator:
         }
         metal_layer_list = ['locali', 'm1', 'm2', 'm3', 'm4']
 
-
         metal_layers = self.get_inbetween_metal_layers(start_layer=start_layer, end_layer=end_layer,
-                                                            metal_layer_list=metal_layer_list)
+                                                       metal_layer_list=metal_layer_list)
         via_layers = self.__get_inbetween_via_layers(start_layer=start_layer, end_layer=end_layer, via_map=via_map)
-        print(via_layers)
-        print(metal_layers)
+
         # Metal area is increased with an offset to compensate for the via if via is present
         metal_area = RectArea(x1=area.x1, y1=area.y1, x2=area.x2, y2=area.y2)
         if via_layers is not None:
@@ -124,10 +122,13 @@ class MagicLayoutCreator:
             for via_layer in via_layers:
                 self.__place_box(layer=via_layer, area=area)
 
-    def __add_trace_vias(self, component):
-        """Checks for overlap between segments of a trace in different layers and adds vias"""
+    def __add_trace_vias(self, component: Trace) -> int:
+        """Checks for overlap between segments of a trace in different layers and adds vias.
+        Returns the number of vias placed"""
+
         last_segment_layer = None
         segments_on_different_layers = []
+        via_count = 0
 
         for segment in component.segments:
 
@@ -150,6 +151,7 @@ class MagicLayoutCreator:
                                       end_layer=segments_on_different_layers[1].layer, area=via_area)
 
                     segments_on_different_layers.pop(0)
+                    via_count += 1
 
                 # Handles second possible overlap orientation
                 elif segments_on_different_layers[0].area.y1 == segments_on_different_layers[1].area.y1:
@@ -163,11 +165,14 @@ class MagicLayoutCreator:
                                       end_layer=segments_on_different_layers[1].layer, area=via_area)
 
                     segments_on_different_layers.pop(0)
+                    via_count += 1
 
                 else:
-                    self.logger("Oh no")
+                    self.logger("An unexpteced overlap position between trace segments occured")
 
-    def __add_trace_connection_point(self, trace):
+        return via_count
+
+    def __add_trace_connection_point(self, trace: Trace):
         """Creates a connection point based on which layer a trace want to connect to a port"""
 
         # Iterate over all components
@@ -194,10 +199,9 @@ class MagicLayoutCreator:
                             self.__via_placer(start_layer=segment.layer, end_layer=port.layer, area=port_pos)
 
                             self.logger.info(f"Connection point placed for port '{port.type}' of '{component.name}' "
-                                             f"from layer '{port.layer}' to '{segment.layer}'")
+                                             f"between layer '{port.layer}' and '{segment.layer}'")
 
-
-    def get_inbetween_metal_layers(self, start_layer, end_layer, metal_layer_list):
+    def get_inbetween_metal_layers(self, start_layer: str, end_layer: str, metal_layer_list: list):
         """Gets all metal layers, including start and end layer, and deals with if their positions are
             effectively swapped in the metal layer list"""
 
@@ -210,7 +214,7 @@ class MagicLayoutCreator:
         except ValueError:
             self.logger.error(f"Could not get layers inbetween '{start_layer}' to '{end_layer}'")
 
-    def __get_inbetween_via_layers(self, start_layer, end_layer, via_map):
+    def __get_inbetween_via_layers(self, start_layer: str, end_layer: str, via_map: dict):
         """Returns a list of layers between a start layer and an end layer based on a map"""
 
         try:
@@ -240,7 +244,7 @@ class MagicLayoutCreator:
         except ValueError:
             self.logger.error(f"Could not get layers inbetween '{start_layer}' to '{end_layer}'")
 
-    def __trace_creator(self, component):
+    def __trace_creator(self, component: Trace):
         via_count = 0
         segment_count = 0
 
@@ -250,11 +254,11 @@ class MagicLayoutCreator:
             segment_count += 1
 
         # Add vias at intersection points between segments that move up/down in layers
-        self.__add_trace_vias(component)
+        via_count += self.__add_trace_vias(component)
 
         self.traces_added += 1
-        self.logger.info(f"{component.instance} '{component.name}' placed. "
-                         f"Segments: {segment_count} Vias: {via_count} ")
+        self.logger.info(f"{component.instance} '{component.name}' placed with: Segments: {segment_count}"
+                         f" Vias: {via_count}")
 
     def __cell_creator(self, component):
 

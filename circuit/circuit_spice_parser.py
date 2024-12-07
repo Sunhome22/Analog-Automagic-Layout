@@ -1,6 +1,6 @@
-#======================================================================================================================#
+# ==================================================================================================================== #
 # Copyright (C) 2024 Bjørn K.T. Solheim, Leidulv Tønnesland
-#======================================================================================================================#
+# ==================================================================================================================== #
 # This program is free software: you can redistribute it and/or modify it under the terms of
 # the GNU General Public License as published by the Free Software Foundation, version 3.
 #
@@ -10,7 +10,7 @@
 #
 # You should have received a copy of the GNU General Public License along with this program.
 # If not, see <https://www.gnu.org/licenses/>.
-#======================================================================================================================#
+# ==================================================================================================================== #
 
 # ==================================================== Notes ===========================================================
 """
@@ -96,7 +96,7 @@ class SPICEparser:
         self.spice_file_content = updated_spice_lines
         self.logger.info("SPICE lines with '+' symbols rebuilt")
 
-    def __get_subcircuit_port_info_for_component_libraries(self, line):
+    def __get_subcircuit_port_info_for_component_libraries(self, line: str):
         line_words = line.split()
         subcircuit = SubCircuit(layout_name=line_words[1], ports=line_words[2:])
         self.subcircuits.append(subcircuit)
@@ -132,7 +132,7 @@ class SPICEparser:
 
         self.logger.info("SPICE expanded subcircuits for component libraries removed")
 
-    def __get_current_component_library(self, line):
+    def __get_current_component_library(self, line: str):
         library_names = []
 
         # Create list of library names
@@ -147,7 +147,7 @@ class SPICEparser:
                 # Return library name from path name
                 return re.search(r'[^/]+$', self.component_libraries[index].path).group()
 
-    def __get_subcircuit_port_info_for_cells(self, spice_file_content):
+    def __get_subcircuit_port_info_for_cells(self, spice_file_content: list):
         for line in spice_file_content:
             if re.match(r'\*\*\.subckt', line) or re.match(r'.subckt', line):
                 line_words = line.split()
@@ -156,7 +156,7 @@ class SPICEparser:
 
                 self.logger.info(f"SPICE subcircuit port info found for '{subcircuit.layout_name}'")
 
-    def __get_current_cell(self, spice_file_line):
+    def __get_current_cell(self, spice_file_line: str):
         # Update cell information (Any symbol or the schematic itself)
         if re.match(r'\*\*\.subckt', spice_file_line) or re.match(r'.subckt', spice_file_line):
             self.logger.info(f"Found circuit cell '{spice_file_line.split()[1]}'")
@@ -190,7 +190,7 @@ class SPICEparser:
 
         return component_category, component_type
 
-    def __get_component(self, spice_line, current_cell, current_library):
+    def __get_component(self, spice_line: str, current_cell: str, current_library: str):
 
         # Check SPICE line for circuit component identifier
         if re.match(r'^[^*.]', spice_line):

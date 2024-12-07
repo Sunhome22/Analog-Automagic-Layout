@@ -1,6 +1,6 @@
-#======================================================================================================================#
+# ==================================================================================================================== #
 # Copyright (C) 2024 Bjørn K.T. Solheim, Leidulv Tønnesland
-#======================================================================================================================#
+# ==================================================================================================================== #
 # This program is free software: you can redistribute it and/or modify it under the terms of
 # the GNU General Public License as published by the Free Software Foundation, version 3.
 #
@@ -10,7 +10,7 @@
 #
 # You should have received a copy of the GNU General Public License along with this program.
 # If not, see <https://www.gnu.org/licenses/>.
-#======================================================================================================================#
+# ==================================================================================================================== #
 
 
 # ================================================== Libraries =========================================================
@@ -70,16 +70,15 @@ def main():
     # Read JSON file
     found_stuff = load_from_json(file_name="json_tool/TracesLO1 3.json")
 
-    # An example trace
+    # An example test trace with 2 segments
     a_trace = Trace()
     a_trace.instance = a_trace.__class__.__name__  # add instance type
     a_trace.number_id = 0
     a_trace.name = "16G-17G"
     a_trace.segments.append(RectAreaLayer(layer="locali", area=RectArea(x1=300, y1=0, x2=450, y2=50)))
-    #a_trace.vias.append(RectAreaLayer(layer="viali", area=RectArea(x1=300, y1=0, x2=350, y2=50)))
     a_trace.segments.append(RectAreaLayer(layer="m4", area=RectArea(x1=300, y1=0, x2=350, y2=350)))
     found_stuff.append(a_trace)
-    #save_to_json(objects=found_stuff, file_name="json_tool/test.json")
+    # save_to_json(objects=found_stuff, file_name="json_tool/test.json")
 
     # Create layout
     MagicLayoutCreator(project_properties=project_properties, components=found_stuff)
@@ -88,6 +87,7 @@ def main():
     logger.debug(f"Components registered: ")
     for component in components:
         logger.debug(f"- {component}")
+
 
 if __name__ == '__main__':
     main()
