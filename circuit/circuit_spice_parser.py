@@ -35,7 +35,7 @@ from logger.logger import get_a_logger
 class SPICEparser:
 
     def __init__(self, project_properties):
-        self.project_name = project_properties.name
+        self.project_cell_name = project_properties.cell_name
         self.project_directory = project_properties.directory
         self.component_libraries = project_properties.component_libraries
         self.spice_file_content = list()
@@ -61,16 +61,16 @@ class SPICEparser:
     def __read_spice_file(self):
 
         try:
-            spice_file_path = os.path.expanduser(f"{self.project_directory}work/xsch/{self.project_name}.spice")
+            spice_file_path = os.path.expanduser(f"{self.project_directory}work/xsch/{self.project_cell_name}.spice")
 
             # Copy each line of the file into a list
             with open(spice_file_path, "r") as spice_file:
                 for line in spice_file:
                     self.spice_file_content.append(line)
-                self.logger.info(f"SPICE content copied into memory")
+                self.logger.info(f"SPICE content copied into program")
 
         except FileNotFoundError:
-            self.logger.error(f"The file {self.project_directory}work/xsch/{self.project_name}.spice' was not found.")
+            self.logger.error(f"The file {self.project_directory}work/xsch/{self.project_cell_name}.spice' was not found.")
 
     def __rebuild_spice_lines_with_plus_symbol(self):
         # Removes added "+" symbols to long lines in the SPICE file

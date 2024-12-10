@@ -28,8 +28,8 @@ class MagicLayoutCreator:
 
     def __init__(self, project_properties, components):
         self.project_properties = project_properties
-        self.project_name = project_properties.name
-        self.project_name_long = project_properties.name_long
+        self.project_cell_name = project_properties.cell_name
+        self.project_lib_name = project_properties.lib_name
         self.project_directory = project_properties.directory
         self.component_libraries = project_properties.component_libraries
         self.current_component_library_path = None
@@ -70,12 +70,12 @@ class MagicLayoutCreator:
 
     def __write_magic_file(self):
         magic_file_path = os.path.expanduser(f"{self.project_directory}design/"
-                                             f"{self.project_name_long}/{self.project_name}.mag")
+                                             f"{self.project_lib_name}/{self.project_cell_name}.mag")
 
         with open(magic_file_path, "w") as file:
             file.write("\n".join(self.magic_file_lines))
 
-        self.logger.info(f"Process complete! File '{self.project_name}.mag' was created. "
+        self.logger.info(f"Process complete! File '{self.project_cell_name}.mag' was created. "
                          f"Components: {self.cells_added} Traces: {self.traces_added}")
 
     def __place_box(self, layer: str, area: RectArea):

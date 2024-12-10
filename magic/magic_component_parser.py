@@ -24,8 +24,7 @@ from dataclasses import dataclass, fields
 
 class MagicComponentsParser:
     def __init__(self, project_properties, components):
-        self.project_name = project_properties.name
-        self.project_name_long = project_properties.name_long
+        self.project_cell_name = project_properties.cell_name
         self.project_directory = project_properties.directory
         self.component_libraries = project_properties.component_libraries
         self.current_component_library_path = None
