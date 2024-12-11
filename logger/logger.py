@@ -32,7 +32,7 @@ YELLOW = "\033[38;2;255;255;70m"
 
 
 def get_a_logger(name):
-    """Returns a custom dynamic logger with the given name"""
+    """Returns a custom dynamic logger with the given file name"""
 
     color_table = {
         "__main__": RED,
@@ -56,7 +56,7 @@ def get_a_logger(name):
     console_handler.setFormatter(formatter)
     logger.addHandler(console_handler)
 
-    # Get log-level from command line option
+    # Get log-level options in command line
     parser = argparse.ArgumentParser(description="Set log level from command line")
     parser.add_argument(
         '--log-level',

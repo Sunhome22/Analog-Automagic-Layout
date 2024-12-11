@@ -222,24 +222,24 @@ class MagicLayoutCreator:
             for (start, end), intermediate in via_map.items():
                 graph.setdefault(start, []).append((end, intermediate))
 
-            # BFS to traverse and gather intermediates
-            queue = deque([(start_layer, [])])  # (current_node, intermediates_so_far)
-            visited = set()  # To track visited nodes and avoid infinite loops
+            # Breadth first search (typical implementation)
+            queue = deque([(start_layer, [])])  # current_node, intermediates_so_far
+            visited = set()
 
             while queue:
                 current_node, intermediates = queue.popleft()
 
-                # If the target is reached, return the collected intermediates
+                # Return nodes if the target is reached
                 if current_node == end_layer:
                     return intermediates
 
-                # Traverse neighbors
+                # Go through neighbors
                 visited.add(current_node)
                 for neighbor, intermediate in graph.get(current_node, []):
                     if neighbor not in visited:
                         queue.append((neighbor, intermediates + [intermediate]))
 
-            return None  # Return None if no path exists
+            return None  # No path found
 
         except ValueError:
             self.logger.error(f"Could not get layers inbetween '{start_layer}' to '{end_layer}'")
