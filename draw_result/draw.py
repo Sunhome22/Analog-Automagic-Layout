@@ -4,7 +4,7 @@ from circuit.circuit_components import Pin, CircuitCell, Trace
 
 
 def draw_result(grid_size, objects, connections, used_area):
-
+    connections2 =  [x for x in connections if x is not None]
     # set up plot
     fix, ax = plt.subplots(figsize=(10, 10))
     ax.set_xlim(0, grid_size)
@@ -29,7 +29,7 @@ def draw_result(grid_size, objects, connections, used_area):
                 ha='center', va='center', fontsize=12, color='black')
 
     if not path:
-        for p in connections.values():
+        for p in connections2.values():
             start = p.starting_comp
             end = p.end_comp
             x_values = []
@@ -53,8 +53,8 @@ def draw_result(grid_size, objects, connections, used_area):
             plt.plot([grid_size//2, grid_size//2], [0, grid_size])
     else:
         scaled_points = []
-        for p in connections:
-            scaled_points.append( [(used_area[0]-192 + x*32 , used_area[1]-120 + y*32 ) for x, y in p])
+        for p in connections2:
+            scaled_points.append( [(used_area[0]-500 + x , used_area[1]-500 + y ) for x, y in p])
         for con in scaled_points:
 
             x_coords, y_coords = zip(*con)

@@ -1,11 +1,13 @@
 from dataclasses import dataclass
 import re
 
-from dill import objects
+
 
 from circuit.circuit_components import Trace, RectAreaLayer, RectArea
 from json_tool.json_converter import save_to_json
 from magic.magic_layout_creator import MagicLayoutCreator
+
+
 
 @dataclass
 class ComponentLibrary:
@@ -16,8 +18,8 @@ class ComponentLibrary:
 @dataclass
 class ProjectProperties:
     directory: str
-    name: str
-    name_long: str
+    cell_name: str
+    lib_name: str
     component_libraries: list[ComponentLibrary]
 
 
@@ -28,14 +30,16 @@ misc_lib = ComponentLibrary(name="AALMISC", path="~/aicex/ip/jnw_bkle_sky130A/de
 
 
 project_properties = ProjectProperties(directory="~/aicex/ip/jnw_bkle_sky130A/",
-                                       name="JNW_BKLE",
-                                       name_long="JNW_BKLE_SKY130A",
+                                       cell_name="JNW_BKLE",
+                                       lib_name="JNW_BKLE_SKY130A",
                                        component_libraries=[atr_lib, tr_lib, misc_lib])
+
 
 def direction(p1, p2):
     dx = p2[0] - p1[0]
     dy = p2[1] - p1[1]
     return dx, dy
+
 
 def segment_path(path):
     if path is None or len(path) < 2:
@@ -65,8 +69,22 @@ def segment_path(path):
 
     return segments
 
-def _rectangle_values(segments,used_area, area_coordinates, path_names, index, port_coord):
+
+def _calc_tmp_endpoint(x1, x2, l):
+    tot = l[0] + l[-1]
+
+    if x2 > x1:
+
+        weight = round((x2 - x1) * (l[0] / tot))
+    else:
+        weight = round((x1 - x2) * (l[0] / tot))
+
+    return weight
+
+
+def _rectangle_values(segments, used_area, area_coordinates, path_names, index, port_coord):
     rectangles = []
+    lengths = []
     name = path_names[index]
     pattern = r"(\d+)([a-zA-Z])-(\d+)([a-zA-Z])"
 
@@ -78,13 +96,18 @@ def _rectangle_values(segments,used_area, area_coordinates, path_names, index, p
         start_port = match.group(2)  # First letter (t)
         end_id = int(match.group(3))  # Second number (17)
         end_port = match.group(4)  # Last letter (j)
+
     else:
         start_id = 0  # First number (4)
         start_port = 0  # First letter (t)
         end_id = 0  # Second number (17)
         end_port = 0
 
+    temp_end_point_x = 0
+    temp_end_point_y = 0
 
+    for s in segments:
+        lengths.append(len(s))
 
     for index1, seg in enumerate(segments):
 
@@ -93,32 +116,88 @@ def _rectangle_values(segments,used_area, area_coordinates, path_names, index, p
         min_y = seg[0][1]
         max_y = seg[0][1]
         for x, y in seg:
-            if x>max_x:
+            if x > max_x:
                 max_x = x
             elif x < min_x:
                 min_x = x
-            if y> max_y:
-              max_y= y
+            if y > max_y:
+                max_y = y
             elif y < min_y:
                 min_y = y
 
-        if len(segments == 2):
-            if index1 == 0 :
+        if len(segments) == 1:
+            if min_x == max_x:
+                rectangles.append(
+                    [port_coord[str(start_id) + start_port][0][0], port_coord[str(start_id) + start_port][0][1],
+                     port_coord[str(start_id) + start_port][0][0], port_coord[str(end_id) + end_port][0][1]])
+            else:
+                rectangles.append(
+                    [port_coord[str(start_id) + start_port][0][0], port_coord[str(start_id) + start_port][0][1],
+                     port_coord[str(end_id) + end_port][0][0], port_coord[str(start_id) + start_port][0][1]])
+
+
+        elif len(segments) == 2:
+            if index1 == 0:
                 if min_x == max_x:
-                    rectangles.append([port_coord[str(start_id) + start_port][0],port_coord[str(start_id) + start_port][1],port_coord[str(start_id) + start_port][0],port_coord[str(end_id) + end_port][1]])
-                elif min_y == max_y:
+                    print("we end up here")
                     rectangles.append(
-                            [port_coord[str(start_id) + start_port][0], port_coord[str(start_id) + start_port][1],
-                             port_coord[str(start_id) + start_port][0], port_coord[str(end_id) + end_port][1]])
+                        [port_coord[str(start_id) + start_port][0][0], port_coord[str(start_id) + start_port][0][1],
+                         port_coord[str(start_id) + start_port][0][0], port_coord[str(end_id) + end_port][0][1]])
+                else:
+                    print("we end up here")
+                    rectangles.append(
+                        [port_coord[str(start_id) + start_port][0][0], port_coord[str(start_id) + start_port][0][1],
+                         port_coord[str(end_id) + end_port][0][0], port_coord[str(start_id) + start_port][0][1]])
+            elif index1 == 1:
+                if min_x == max_x:
+                    rectangles.append(
+                        [port_coord[str(end_id) + end_port][0][0], port_coord[str(start_id) + start_port][0][1],
+                         port_coord[str(end_id) + end_port][0][0], port_coord[str(end_id) + end_port][0][1]])
+                else:
+                    rectangles.append(
+                        [port_coord[str(start_id) + start_port][0][0], port_coord[str(end_id) + end_port][0][1],
+                         port_coord[str(end_id) + end_port][0][0], port_coord[str(end_id) + end_port][0][1]])
+
+        elif len(segments) == 3:
+
+            if index1 == 0:
+                if min_x == max_x:
+                    temp_end_point_y = _calc_tmp_endpoint(port_coord[str(start_id) + start_port][0][1],
+                                                          port_coord[str(end_id) + end_port][0][1], lengths)
+                    rectangles.append(
+                        [port_coord[str(start_id) + start_port][0][0], port_coord[str(start_id) + start_port][0][1],
+                         port_coord[str(start_id) + start_port][0][0], temp_end_point_y])
+                else:
+                    temp_end_point_x = _calc_tmp_endpoint(port_coord[str(start_id) + start_port][0][0],
+                                                          port_coord[str(end_id) + end_port][0][0], lengths)
+                    rectangles.append(
+                        [port_coord[str(start_id) + start_port][0][0], port_coord[str(start_id) + start_port][0][1],
+                         temp_end_point_x, port_coord[str(start_id) + start_port][0][1]])
+            elif index1 == 1:
+                if min_x == max_x:
+                    rectangles.append([temp_end_point_x, port_coord[str(start_id) + start_port][0][1], temp_end_point_x,
+                                       port_coord[str(end_id) + end_port][0][1]])
+                else:
+                    rectangles.append(
+                        [port_coord[str(start_id) + start_port][0][0], temp_end_point_y,
+                         port_coord[str(end_id) + end_port][0][0], temp_end_point_y])
+            elif index1 == 2:
+                if min_x == max_x:
+                    rectangles.append([port_coord[str(end_id) + end_port][0][0], temp_end_point_y,
+                                       port_coord[str(end_id) + end_port][0][0],
+                                       port_coord[str(end_id) + end_port][0][1]])
+                else:
+                    rectangles.append(
+                        [temp_end_point_x, port_coord[str(end_id) + end_port][0][1],
+                         port_coord[str(end_id) + end_port][0][0], port_coord[str(end_id) + end_port][0][1]])
+
     return rectangles
-
-
 
 
 def write_traces(objects, path, path_names, used_area, area_coordinates, port_coord):
     trace_width = 32
     for index, p in enumerate(path):
-
+        print(index)
         a_trace = Trace()
         a_trace.instance = a_trace.__class__.__name__  # add instance type
         a_trace.number_id = index
@@ -128,25 +207,35 @@ def write_traces(objects, path, path_names, used_area, area_coordinates, port_co
         rectangles = _rectangle_values(segments, used_area, area_coordinates, path_names, index, port_coord)
 
         for rect in rectangles:
-
+            print("rectangl")
+            print(rect)
             if rect[0] == rect[2]:
                 if rect[1] > rect[3]:
-                    a_trace.segments.append(RectAreaLayer(layer="m2", area=RectArea(x1=rect[0]-trace_width//2, y1=rect[1], x2=rect[2]+trace_width//2, y2=rect[3]-trace_width//2)))
+                    a_trace.segments.append(RectAreaLayer(layer="m2",
+                                                          area=RectArea(x1=rect[0] - trace_width // 2, y1=rect[3]- trace_width // 2,
+                                                                        x2=rect[2] + trace_width // 2,
+                                                                        y2=rect[1]+ trace_width // 2 )))
                 elif rect[1] < rect[3]:
                     a_trace.segments.append(RectAreaLayer(layer="m2",
                                                           area=RectArea(x1=rect[0] - trace_width // 2,
-                                                                        y1=rect[1] -  trace_width // 2,
+                                                                        y1=rect[1]- trace_width // 2 ,
                                                                         x2=rect[2] + trace_width // 2,
-                                                                        y2=rect[3]  )))
+                                                                        y2=rect[3]+ trace_width // 2)))
 
             elif rect[1] == rect[3]:
-                if rect[0] < rect [2]:
-                    a_trace.segments.append(RectAreaLayer(layer="m3", area=RectArea(x1=rect[0]-trace_width//2, y1=rect[1]-trace_width//2, x2=rect[2], y2=rect[3]+trace_width//2)))
-                elif rect[0] > rect [2]:
+                if rect[0] < rect[2]:
+                    a_trace.segments.append(RectAreaLayer(layer="m3", area=RectArea(x1=rect[0]- trace_width // 2,
+                                                                                    y1=rect[1] - trace_width // 2,
+                                                                                    x2=rect[2]+ trace_width // 2,
+                                                                                    y2=rect[3] + trace_width // 2)))
+                elif rect[0] > rect[2]:
                     a_trace.segments.append(RectAreaLayer(layer="m3",
-                                                          area=RectArea(x1=rect[0], y1=rect[1] - trace_width//2, x2=rect[2]+trace_width//2,
-                                                                        y2=rect[3] + trace_width/2)))
-       # a_trace.segments.append(RectAreaLayer(layer="m1", area=RectArea(x1=300, y1=0, x2=350, y2=300)))
+                                                          area=RectArea(x1=rect[2]- trace_width // 2, y1=rect[1] - trace_width // 2,
+                                                                        x2=rect[0]+ trace_width // 2 ,
+                                                                        y2=rect[3] + trace_width // 2)))
+        # a_trace.segments.append(RectAreaLayer(layer="m1", area=RectArea(x1=300, y1=0, x2=350, y2=300)))
+
+        print(f"a_trace: {a_trace}")
         objects.append(a_trace)
 
     save_to_json(objects=objects, file_name="json_tool/TracesLO1.json")

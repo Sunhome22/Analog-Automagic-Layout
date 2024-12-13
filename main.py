@@ -10,7 +10,7 @@ from circuit.circuit_components import *
 from json_tool.json_converter import load_from_json, save_to_json
 from grid.generate_grid import generate_grid
 
-from traces.write_traces import write_traces
+from traces.write_trace_test import write_traces
 
 
 @dataclass

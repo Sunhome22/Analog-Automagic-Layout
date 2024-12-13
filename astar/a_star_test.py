@@ -1,12 +1,5 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Sun Nov 24 08:05:03 2024
-
-@author: LeidulvMT
-"""
-
 import pulp
-from traces.write_traces import segment_path
+from traces.write_trace_test import segment_path
 from circuit.circuit_components import CircuitCell, Pin
 
 import heapq
@@ -34,20 +27,35 @@ def heuristic(a, b):
     return abs(a[0] - b[0]) + abs(a[1] - b[1])
 
 
-def get_neighbors(node, grid, goal):
+def get_neighbors(node, grid, goal, seg_list):
     """Get valid neighbors for the current node."""
     x, y = node
     neighbors = []
     directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]  # Right, Down, Left, Up
+    in_seg = False
+    index = 0
+
+    if len(seg_list) > 0:
+        for i, seg in enumerate(seg_list):
+            if node in seg:
+                in_seg = True
+                index = i
+                break
 
     for dx, dy in directions:
         nx, ny = x + dx, y + dy
 
-        # Check bounds and obstacles
-        if 0 <= nx < len(grid[0]) and 0 <= ny < len(grid) and grid[ny][nx] == 0:
-            neighbors.append((nx, ny))
-        elif 0 <= nx < len(grid[0]) and 0 <= ny < len(grid) and grid[ny][nx] == goal:
-            neighbors.append((nx, ny))
+        if in_seg:
+            # Check bounds and obstacles
+            if 0 <= nx < len(grid[0]) and 0 <= ny < len(grid) and grid[ny][nx] == 0 and (nx, ny) not in seg_list[index]:
+                neighbors.append((nx, ny))
+            elif 0 <= nx < len(grid[0]) and 0 <= ny < len(grid) and grid[ny][nx] == goal:
+                neighbors.append((nx, ny))
+        else:
+            if 0 <= nx < len(grid[0]) and 0 <= ny < len(grid) and grid[ny][nx] == 0:
+                neighbors.append((nx, ny))
+            elif 0 <= nx < len(grid[0]) and 0 <= ny < len(grid) and grid[ny][nx] == goal:
+                neighbors.append((nx, ny))
 
     return neighbors
 
@@ -62,7 +70,7 @@ def reconstruct_path(came_from, current):
     return path
 
 
-def a_star(grid, start, goal):
+def a_star(grid, start, goal, seg_list):
     open_set = PriorityQueue()
     open_set.push(start, 0)
 
@@ -77,7 +85,7 @@ def a_star(grid, start, goal):
         if current == goal:
             return reconstruct_path(came_from, current)
 
-        for neighbor in get_neighbors(current, grid, goal):
+        for neighbor in get_neighbors(current, grid, goal, seg_list):
             tentative_g_score = g_score[current] + 1  # Cost from start to neighbor
 
             if neighbor not in g_score or tentative_g_score < g_score[neighbor]:
@@ -92,8 +100,9 @@ def a_star(grid, start, goal):
 
 def initiate_astar(grid, connections, local_connections, objects, area, area_coordinates, used_area):
     path = []
+    seg_list = []
     local = True
-    glo = False
+    glo = True
     path_names = []
     coordinate_shift = []
 
@@ -116,12 +125,13 @@ def initiate_astar(grid, connections, local_connections, objects, area, area_coo
         for obj in objects:
 
             if not isinstance(obj, (Pin, CircuitCell)) and obj.number_id == id_start:
-                start = (area_coordinates[str(id_start)+start_area][0][0], area_coordinates[str(id_start)+start_area][0][2])
+                start = (
+                area_coordinates[str(id_start) + start_area][0][0], area_coordinates[str(id_start) + start_area][0][2])
                 print(start)
                 start_found = True
 
             if not isinstance(obj, (Pin, CircuitCell)) and obj.number_id == id_end:
-                end  = (area_coordinates[str(id_end)+end_area][0][0], area_coordinates[str(id_end)+end_area][0][2])
+                end = (area_coordinates[str(id_end) + end_area][0][0], area_coordinates[str(id_end) + end_area][0][2])
                 end_found = True
 
             if start_found and end_found:
@@ -133,28 +143,27 @@ def initiate_astar(grid, connections, local_connections, objects, area, area_coo
         string = str(id_start) + str(start_area) + "-" + str(id_end) + str(end_area)
         path_names.append(string)
         print(start, end)
-        print("--------------------")
         grid[start[1]][start[0]] = 0
         grid[end[1]][end[0]] = 0
-        path.append(a_star(grid, start, end))
+        path.append(a_star(grid, start, end, seg_list))
         grid[start[1]][start[0]] = 1
         grid[end[1]][end[0]] = 1
         seg = segment_path(path[-1])
-        print("Seg:")
-        for s in seg:
 
-            print(s)
+
+        for s in seg:
+            seg_list.append(s)
+
         print("PATH:")
         print(path[-1])
         print("Completed Path")
-
+        print("--------------------")
         add_grid_points = [sub[-1] for sub in seg]
-        print(add_grid_points)
-
         print("ROW and COL values")
         for x, y in add_grid_points:
             grid[y][x] = 1
-        # for row in grid:
-        #     print(row)
+
+    for g in grid:
+        print(g)
 
     return path, path_names
