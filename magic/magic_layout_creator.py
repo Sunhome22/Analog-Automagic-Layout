@@ -79,7 +79,7 @@ class MagicLayoutCreator:
                          f"Components: {self.cells_added} Traces: {self.traces_added}")
 
     def __place_box(self, layer: str, area: RectArea):
-
+        """Adds a box to the list of magic file lines"""
         self.magic_file_lines.extend([
             f"<< {layer} >>",
             f"rect {area.x1} {area.y1} {area.x2} {area.y2}"
@@ -88,7 +88,7 @@ class MagicLayoutCreator:
     def __via_placer(self, start_layer: str, end_layer: str, area: RectArea):
         """Adds via(s) and potentially necessary metal layers between a top layer and a bottom layer"""
 
-        VIA_OFFSET = 6 # Needs to be handled in the future, but works for now.
+        VIA_OFFSET = 6  # Needs to be handled in the future, but works for now.
 
         via_map = {
             ('locali', 'm1'): 'viali',
@@ -167,8 +167,9 @@ class MagicLayoutCreator:
                     segments_on_different_layers.pop(0)
                     via_count += 1
 
+                # Any thing else you be impossible
                 else:
-                    self.logger("An unexpteced overlap position between trace segments occured")
+                    self.logger.error("An unexpteced overlap position between trace segments occured")
 
         return via_count
 
@@ -247,6 +248,17 @@ class MagicLayoutCreator:
     def __trace_creator(self, component: Trace):
         via_count = 0
         segment_count = 0
+        invalid_segments = 0
+
+        # Check if segmemts are valid
+        for segment in component.segments:
+            if segment.area.x2 <= segment.area.x1 or segment.area.y2 <= segment.area.y1:
+                invalid_segments += 1
+                self.logger.error(f"For trace '{component.name}' segment area {segment.area} is invalid!")
+
+        # Skip generation if there are invalid segmetns
+        if invalid_segments != 0:
+            return
 
         # Add segments
         for segment in component.segments:
@@ -255,10 +267,10 @@ class MagicLayoutCreator:
 
         # Add vias at intersection points between segments that move up/down in layers
         via_count += self.__add_trace_vias(component)
-
         self.traces_added += 1
-        self.logger.info(f"{component.instance} '{component.name}' placed with: Segments: {segment_count}"
-                         f" Vias: {via_count}")
+        self.logger.info(f"{component.instance} '{component.name}' placed with segments: {segment_count}"
+                         f" vias: {via_count}")
+
 
     def __cell_creator(self, component):
 
@@ -290,16 +302,20 @@ class MagicLayoutCreator:
 
     def __file_creator(self):
         self.__magic_file_top_template()
-
+        
+        # Place transistors, resistors or capacitors
         for component in self.components:
-
-            # Filter out pins, traces and circuit cells (temporary)
-            if not isinstance(component, (Pin, CircuitCell, Trace)):
+            if isinstance(component, (Transistor, Resistor, Capacitor)):
                 self.__cell_creator(component=component)
 
-            # Handle Traces
+        # Place connection points
+        for component in self.components:
             if isinstance(component, Trace):
                 self.__add_trace_connection_point(trace=component)
+
+        # Place traces
+        for component in self.components:
+            if isinstance(component, Trace):
                 self.__trace_creator(component=component)
 
         # Labels and properties
