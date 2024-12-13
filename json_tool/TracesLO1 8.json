@@ -1,0 +1,2550 @@
+[
+    {
+        "instance": "Pin",
+        "number_id": 0,
+        "cell": "JNW_BKLE",
+        "type": "ipin",
+        "name": "IBPS_2U",
+        "layout": {
+            "layer": "",
+            "area": {
+                "x1": 0,
+                "y1": 0,
+                "x2": 0,
+                "y2": 0
+            }
+        }
+    },
+    {
+        "instance": "Pin",
+        "number_id": 1,
+        "cell": "JNW_BKLE",
+        "type": "ipin",
+        "name": "VSS",
+        "layout": {
+            "layer": "",
+            "area": {
+                "x1": 0,
+                "y1": 0,
+                "x2": 0,
+                "y2": 0
+            }
+        }
+    },
+    {
+        "instance": "Pin",
+        "number_id": 2,
+        "cell": "JNW_BKLE",
+        "type": "opin",
+        "name": "IBNS_20U",
+        "layout": {
+            "layer": "",
+            "area": {
+                "x1": 0,
+                "y1": 0,
+                "x2": 0,
+                "y2": 0
+            }
+        }
+    },
+    {
+        "instance": "Pin",
+        "number_id": 10,
+        "cell": "COMP",
+        "type": "ipin",
+        "name": "VSS",
+        "layout": {
+            "layer": "",
+            "area": {
+                "x1": 0,
+                "y1": 0,
+                "x2": 0,
+                "y2": 0
+            }
+        }
+    },
+    {
+        "instance": "Pin",
+        "number_id": 11,
+        "cell": "COMP",
+        "type": "ipin",
+        "name": "VDD",
+        "layout": {
+            "layer": "",
+            "area": {
+                "x1": 0,
+                "y1": 0,
+                "x2": 0,
+                "y2": 0
+            }
+        }
+    },
+    {
+        "instance": "Pin",
+        "number_id": 12,
+        "cell": "COMP",
+        "type": "ipin",
+        "name": "VIP",
+        "layout": {
+            "layer": "",
+            "area": {
+                "x1": 0,
+                "y1": 0,
+                "x2": 0,
+                "y2": 0
+            }
+        }
+    },
+    {
+        "instance": "Pin",
+        "number_id": 13,
+        "cell": "COMP",
+        "type": "ipin",
+        "name": "VIN",
+        "layout": {
+            "layer": "",
+            "area": {
+                "x1": 0,
+                "y1": 0,
+                "x2": 0,
+                "y2": 0
+            }
+        }
+    },
+    {
+        "instance": "Pin",
+        "number_id": 14,
+        "cell": "COMP",
+        "type": "opin",
+        "name": "VO",
+        "layout": {
+            "layer": "",
+            "area": {
+                "x1": 0,
+                "y1": 0,
+                "x2": 0,
+                "y2": 0
+            }
+        }
+    },
+    {
+        "instance": "Pin",
+        "number_id": 15,
+        "cell": "COMP",
+        "type": "ipin",
+        "name": "I_BIAS",
+        "layout": {
+            "layer": "",
+            "area": {
+                "x1": 0,
+                "y1": 0,
+                "x2": 0,
+                "y2": 0
+            }
+        }
+    },
+    {
+        "instance": "Transistor",
+        "number_id": 16,
+        "name": "MN1",
+        "type": "nmos",
+        "cell": "COMP",
+        "group": "diff1",
+        "schematic_connections": {
+            "D": "net3",
+            "G": "VIP",
+            "S": "net1",
+            "B": "net1"
+        },
+        "layout_name": "JNWATR_NCH_4C5F0",
+        "layout_library": "JNW_ATR_SKY130A",
+        "layout_ports": [
+            {
+                "type": "G",
+                "layer": "m1",
+                "area": {
+                    "x1": 80,
+                    "y1": 180,
+                    "x2": 112,
+                    "y2": 220
+                }
+            },
+            {
+                "type": "S",
+                "layer": "m1",
+                "area": {
+                    "x1": 144,
+                    "y1": 300,
+                    "x2": 240,
+                    "y2": 340
+                }
+            },
+            {
+                "type": "B",
+                "layer": "locali",
+                "area": {
+                    "x1": -48,
+                    "y1": 180,
+                    "x2": 48,
+                    "y2": 220
+                }
+            },
+            {
+                "type": "D",
+                "layer": "m1",
+                "area": {
+                    "x1": 336,
+                    "y1": 20,
+                    "x2": 432,
+                    "y2": 60
+                }
+            }
+        ],
+        "transform_matrix": {
+            "a": 1,
+            "b": 0,
+            "c": 924,
+            "d": 0,
+            "e": 1,
+            "f": 1500
+        },
+        "bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 576,
+            "y2": 400
+        },
+        "overlap_distance": {
+            "x": 0,
+            "y": 0
+        }
+    },
+    {
+        "instance": "Transistor",
+        "number_id": 17,
+        "name": "MN2",
+        "type": "nmos",
+        "cell": "COMP",
+        "group": "diff1",
+        "schematic_connections": {
+            "D": "net2",
+            "G": "VIN",
+            "S": "net1",
+            "B": "net1"
+        },
+        "layout_name": "JNWATR_NCH_4C5F0",
+        "layout_library": "JNW_ATR_SKY130A",
+        "layout_ports": [
+            {
+                "type": "G",
+                "layer": "m1",
+                "area": {
+                    "x1": 80,
+                    "y1": 180,
+                    "x2": 112,
+                    "y2": 220
+                }
+            },
+            {
+                "type": "S",
+                "layer": "m1",
+                "area": {
+                    "x1": 144,
+                    "y1": 300,
+                    "x2": 240,
+                    "y2": 340
+                }
+            },
+            {
+                "type": "B",
+                "layer": "locali",
+                "area": {
+                    "x1": -48,
+                    "y1": 180,
+                    "x2": 48,
+                    "y2": 220
+                }
+            },
+            {
+                "type": "D",
+                "layer": "m1",
+                "area": {
+                    "x1": 336,
+                    "y1": 20,
+                    "x2": 432,
+                    "y2": 60
+                }
+            }
+        ],
+        "transform_matrix": {
+            "a": 1,
+            "b": 0,
+            "c": 1500,
+            "d": 0,
+            "e": 1,
+            "f": 1500
+        },
+        "bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 576,
+            "y2": 400
+        },
+        "overlap_distance": {
+            "x": 0,
+            "y": 0
+        }
+    },
+    {
+        "instance": "Transistor",
+        "number_id": 18,
+        "name": "MP5",
+        "type": "pmos",
+        "cell": "COMP",
+        "group": "load1",
+        "schematic_connections": {
+            "D": "net5",
+            "G": "net6",
+            "S": "VDD",
+            "B": "VDD"
+        },
+        "layout_name": "JNWATR_PCH_4C5F0",
+        "layout_library": "JNW_ATR_SKY130A",
+        "layout_ports": [
+            {
+                "type": "G",
+                "layer": "m1",
+                "area": {
+                    "x1": 80,
+                    "y1": 180,
+                    "x2": 112,
+                    "y2": 220
+                }
+            },
+            {
+                "type": "S",
+                "layer": "m1",
+                "area": {
+                    "x1": 144,
+                    "y1": 300,
+                    "x2": 240,
+                    "y2": 340
+                }
+            },
+            {
+                "type": "B",
+                "layer": "locali",
+                "area": {
+                    "x1": -48,
+                    "y1": 180,
+                    "x2": 48,
+                    "y2": 220
+                }
+            },
+            {
+                "type": "D",
+                "layer": "m1",
+                "area": {
+                    "x1": 336,
+                    "y1": 20,
+                    "x2": 432,
+                    "y2": 60
+                }
+            }
+        ],
+        "transform_matrix": {
+            "a": 1,
+            "b": 0,
+            "c": 924,
+            "d": 0,
+            "e": 1,
+            "f": 100
+        },
+        "bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 576,
+            "y2": 400
+        },
+        "overlap_distance": {
+            "x": 0,
+            "y": 0
+        }
+    },
+    {
+        "instance": "Transistor",
+        "number_id": 19,
+        "name": "MP6",
+        "type": "pmos",
+        "cell": "COMP",
+        "group": "load1",
+        "schematic_connections": {
+            "D": "VO",
+            "G": "net2",
+            "S": "VDD",
+            "B": "VDD"
+        },
+        "layout_name": "JNWATR_PCH_4C5F0",
+        "layout_library": "JNW_ATR_SKY130A",
+        "layout_ports": [
+            {
+                "type": "G",
+                "layer": "m1",
+                "area": {
+                    "x1": 80,
+                    "y1": 180,
+                    "x2": 112,
+                    "y2": 220
+                }
+            },
+            {
+                "type": "S",
+                "layer": "m1",
+                "area": {
+                    "x1": 144,
+                    "y1": 300,
+                    "x2": 240,
+                    "y2": 340
+                }
+            },
+            {
+                "type": "B",
+                "layer": "locali",
+                "area": {
+                    "x1": -48,
+                    "y1": 180,
+                    "x2": 48,
+                    "y2": 220
+                }
+            },
+            {
+                "type": "D",
+                "layer": "m1",
+                "area": {
+                    "x1": 336,
+                    "y1": 20,
+                    "x2": 432,
+                    "y2": 60
+                }
+            }
+        ],
+        "transform_matrix": {
+            "a": 1,
+            "b": 0,
+            "c": 1500,
+            "d": 0,
+            "e": 1,
+            "f": 100
+        },
+        "bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 576,
+            "y2": 400
+        },
+        "overlap_distance": {
+            "x": 0,
+            "y": 0
+        }
+    },
+    {
+        "instance": "Transistor",
+        "number_id": 20,
+        "name": "MP1",
+        "type": "pmos",
+        "cell": "COMP",
+        "group": "load1",
+        "schematic_connections": {
+            "D": "net4",
+            "G": "net3",
+            "S": "VDD",
+            "B": "VDD"
+        },
+        "layout_name": "JNWATR_PCH_4C5F0",
+        "layout_library": "JNW_ATR_SKY130A",
+        "layout_ports": [
+            {
+                "type": "G",
+                "layer": "m1",
+                "area": {
+                    "x1": 80,
+                    "y1": 180,
+                    "x2": 112,
+                    "y2": 220
+                }
+            },
+            {
+                "type": "S",
+                "layer": "m1",
+                "area": {
+                    "x1": 144,
+                    "y1": 300,
+                    "x2": 240,
+                    "y2": 340
+                }
+            },
+            {
+                "type": "B",
+                "layer": "locali",
+                "area": {
+                    "x1": -48,
+                    "y1": 180,
+                    "x2": 48,
+                    "y2": 220
+                }
+            },
+            {
+                "type": "D",
+                "layer": "m1",
+                "area": {
+                    "x1": 336,
+                    "y1": 20,
+                    "x2": 432,
+                    "y2": 60
+                }
+            }
+        ],
+        "transform_matrix": {
+            "a": 1,
+            "b": 0,
+            "c": 924,
+            "d": 0,
+            "e": 1,
+            "f": 900
+        },
+        "bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 576,
+            "y2": 400
+        },
+        "overlap_distance": {
+            "x": 0,
+            "y": 0
+        }
+    },
+    {
+        "instance": "Transistor",
+        "number_id": 21,
+        "name": "MP2",
+        "type": "pmos",
+        "cell": "COMP",
+        "group": "load1",
+        "schematic_connections": {
+            "D": "net3",
+            "G": "net3",
+            "S": "VDD",
+            "B": "VDD"
+        },
+        "layout_name": "JNWATR_PCH_4C5F0",
+        "layout_library": "JNW_ATR_SKY130A",
+        "layout_ports": [
+            {
+                "type": "G",
+                "layer": "m1",
+                "area": {
+                    "x1": 80,
+                    "y1": 180,
+                    "x2": 112,
+                    "y2": 220
+                }
+            },
+            {
+                "type": "S",
+                "layer": "m1",
+                "area": {
+                    "x1": 144,
+                    "y1": 300,
+                    "x2": 240,
+                    "y2": 340
+                }
+            },
+            {
+                "type": "B",
+                "layer": "locali",
+                "area": {
+                    "x1": -48,
+                    "y1": 180,
+                    "x2": 48,
+                    "y2": 220
+                }
+            },
+            {
+                "type": "D",
+                "layer": "m1",
+                "area": {
+                    "x1": 336,
+                    "y1": 20,
+                    "x2": 432,
+                    "y2": 60
+                }
+            }
+        ],
+        "transform_matrix": {
+            "a": 1,
+            "b": 0,
+            "c": 1500,
+            "d": 0,
+            "e": 1,
+            "f": 900
+        },
+        "bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 576,
+            "y2": 400
+        },
+        "overlap_distance": {
+            "x": 0,
+            "y": 0
+        }
+    },
+    {
+        "instance": "Transistor",
+        "number_id": 22,
+        "name": "MN3",
+        "type": "nmos",
+        "cell": "COMP",
+        "group": "mirror2",
+        "schematic_connections": {
+            "D": "net1",
+            "G": "I_BIAS",
+            "S": "VSS",
+            "B": "VSS"
+        },
+        "layout_name": "JNWATR_NCH_4C5F0",
+        "layout_library": "JNW_ATR_SKY130A",
+        "layout_ports": [
+            {
+                "type": "G",
+                "layer": "m1",
+                "area": {
+                    "x1": 80,
+                    "y1": 180,
+                    "x2": 112,
+                    "y2": 220
+                }
+            },
+            {
+                "type": "S",
+                "layer": "m1",
+                "area": {
+                    "x1": 144,
+                    "y1": 300,
+                    "x2": 240,
+                    "y2": 340
+                }
+            },
+            {
+                "type": "B",
+                "layer": "locali",
+                "area": {
+                    "x1": -48,
+                    "y1": 180,
+                    "x2": 48,
+                    "y2": 220
+                }
+            },
+            {
+                "type": "D",
+                "layer": "m1",
+                "area": {
+                    "x1": 336,
+                    "y1": 20,
+                    "x2": 432,
+                    "y2": 60
+                }
+            }
+        ],
+        "transform_matrix": {
+            "a": 1,
+            "b": 0,
+            "c": 924,
+            "d": 0,
+            "e": 1,
+            "f": 2300
+        },
+        "bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 576,
+            "y2": 400
+        },
+        "overlap_distance": {
+            "x": 0,
+            "y": 0
+        }
+    },
+    {
+        "instance": "Transistor",
+        "number_id": 23,
+        "name": "MN4",
+        "type": "nmos",
+        "cell": "COMP",
+        "group": "mirror2",
+        "schematic_connections": {
+            "D": "I_BIAS",
+            "G": "I_BIAS",
+            "S": "VSS",
+            "B": "VSS"
+        },
+        "layout_name": "JNWATR_NCH_4C5F0",
+        "layout_library": "JNW_ATR_SKY130A",
+        "layout_ports": [
+            {
+                "type": "G",
+                "layer": "m1",
+                "area": {
+                    "x1": 80,
+                    "y1": 180,
+                    "x2": 112,
+                    "y2": 220
+                }
+            },
+            {
+                "type": "S",
+                "layer": "m1",
+                "area": {
+                    "x1": 144,
+                    "y1": 300,
+                    "x2": 240,
+                    "y2": 340
+                }
+            },
+            {
+                "type": "B",
+                "layer": "locali",
+                "area": {
+                    "x1": -48,
+                    "y1": 180,
+                    "x2": 48,
+                    "y2": 220
+                }
+            },
+            {
+                "type": "D",
+                "layer": "m1",
+                "area": {
+                    "x1": 336,
+                    "y1": 20,
+                    "x2": 432,
+                    "y2": 60
+                }
+            }
+        ],
+        "transform_matrix": {
+            "a": 1,
+            "b": 0,
+            "c": 1500,
+            "d": 0,
+            "e": 1,
+            "f": 2300
+        },
+        "bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 576,
+            "y2": 400
+        },
+        "overlap_distance": {
+            "x": 0,
+            "y": 0
+        }
+    },
+    {
+        "instance": "Transistor",
+        "number_id": 24,
+        "name": "MN5",
+        "type": "nmos",
+        "cell": "COMP",
+        "group": "mirror1",
+        "schematic_connections": {
+            "D": "net4",
+            "G": "net4",
+            "S": "VSS",
+            "B": "VSS"
+        },
+        "layout_name": "JNWATR_NCH_4C5F0",
+        "layout_library": "JNW_ATR_SKY130A",
+        "layout_ports": [
+            {
+                "type": "G",
+                "layer": "m1",
+                "area": {
+                    "x1": 80,
+                    "y1": 180,
+                    "x2": 112,
+                    "y2": 220
+                }
+            },
+            {
+                "type": "S",
+                "layer": "m1",
+                "area": {
+                    "x1": 144,
+                    "y1": 300,
+                    "x2": 240,
+                    "y2": 340
+                }
+            },
+            {
+                "type": "B",
+                "layer": "locali",
+                "area": {
+                    "x1": -48,
+                    "y1": 180,
+                    "x2": 48,
+                    "y2": 220
+                }
+            },
+            {
+                "type": "D",
+                "layer": "m1",
+                "area": {
+                    "x1": 336,
+                    "y1": 20,
+                    "x2": 432,
+                    "y2": 60
+                }
+            }
+        ],
+        "transform_matrix": {
+            "a": 1,
+            "b": 0,
+            "c": 924,
+            "d": 0,
+            "e": 1,
+            "f": 1900
+        },
+        "bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 576,
+            "y2": 400
+        },
+        "overlap_distance": {
+            "x": 0,
+            "y": 0
+        }
+    },
+    {
+        "instance": "Transistor",
+        "number_id": 25,
+        "name": "MN6",
+        "type": "nmos",
+        "cell": "COMP",
+        "group": "mirror1",
+        "schematic_connections": {
+            "D": "VO",
+            "G": "net4",
+            "S": "VSS",
+            "B": "VSS"
+        },
+        "layout_name": "JNWATR_NCH_4C5F0",
+        "layout_library": "JNW_ATR_SKY130A",
+        "layout_ports": [
+            {
+                "type": "G",
+                "layer": "m1",
+                "area": {
+                    "x1": 80,
+                    "y1": 180,
+                    "x2": 112,
+                    "y2": 220
+                }
+            },
+            {
+                "type": "S",
+                "layer": "m1",
+                "area": {
+                    "x1": 144,
+                    "y1": 300,
+                    "x2": 240,
+                    "y2": 340
+                }
+            },
+            {
+                "type": "B",
+                "layer": "locali",
+                "area": {
+                    "x1": -48,
+                    "y1": 180,
+                    "x2": 48,
+                    "y2": 220
+                }
+            },
+            {
+                "type": "D",
+                "layer": "m1",
+                "area": {
+                    "x1": 336,
+                    "y1": 20,
+                    "x2": 432,
+                    "y2": 60
+                }
+            }
+        ],
+        "transform_matrix": {
+            "a": 1,
+            "b": 0,
+            "c": 1500,
+            "d": 0,
+            "e": 1,
+            "f": 1900
+        },
+        "bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 576,
+            "y2": 400
+        },
+        "overlap_distance": {
+            "x": 0,
+            "y": 0
+        }
+    },
+    {
+        "instance": "Transistor",
+        "number_id": 26,
+        "name": "MP3",
+        "type": "pmos",
+        "cell": "COMP",
+        "group": "load1",
+        "schematic_connections": {
+            "D": "net3",
+            "G": "net2",
+            "S": "VDD",
+            "B": "VDD"
+        },
+        "layout_name": "JNWATR_PCH_4C5F0",
+        "layout_library": "JNW_ATR_SKY130A",
+        "layout_ports": [
+            {
+                "type": "G",
+                "layer": "m1",
+                "area": {
+                    "x1": 80,
+                    "y1": 180,
+                    "x2": 112,
+                    "y2": 220
+                }
+            },
+            {
+                "type": "S",
+                "layer": "m1",
+                "area": {
+                    "x1": 144,
+                    "y1": 300,
+                    "x2": 240,
+                    "y2": 340
+                }
+            },
+            {
+                "type": "B",
+                "layer": "locali",
+                "area": {
+                    "x1": -48,
+                    "y1": 180,
+                    "x2": 48,
+                    "y2": 220
+                }
+            },
+            {
+                "type": "D",
+                "layer": "m1",
+                "area": {
+                    "x1": 336,
+                    "y1": 20,
+                    "x2": 432,
+                    "y2": 60
+                }
+            }
+        ],
+        "transform_matrix": {
+            "a": 1,
+            "b": 0,
+            "c": 924,
+            "d": 0,
+            "e": 1,
+            "f": 500
+        },
+        "bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 576,
+            "y2": 400
+        },
+        "overlap_distance": {
+            "x": 0,
+            "y": 0
+        }
+    },
+    {
+        "instance": "Transistor",
+        "number_id": 27,
+        "name": "MP4",
+        "type": "pmos",
+        "cell": "COMP",
+        "group": "load1",
+        "schematic_connections": {
+            "D": "net2",
+            "G": "net3",
+            "S": "VDD",
+            "B": "VDD"
+        },
+        "layout_name": "JNWATR_PCH_4C5F0",
+        "layout_library": "JNW_ATR_SKY130A",
+        "layout_ports": [
+            {
+                "type": "G",
+                "layer": "m1",
+                "area": {
+                    "x1": 80,
+                    "y1": 180,
+                    "x2": 112,
+                    "y2": 220
+                }
+            },
+            {
+                "type": "S",
+                "layer": "m1",
+                "area": {
+                    "x1": 144,
+                    "y1": 300,
+                    "x2": 240,
+                    "y2": 340
+                }
+            },
+            {
+                "type": "B",
+                "layer": "locali",
+                "area": {
+                    "x1": -48,
+                    "y1": 180,
+                    "x2": 48,
+                    "y2": 220
+                }
+            },
+            {
+                "type": "D",
+                "layer": "m1",
+                "area": {
+                    "x1": 336,
+                    "y1": 20,
+                    "x2": 432,
+                    "y2": 60
+                }
+            }
+        ],
+        "transform_matrix": {
+            "a": 1,
+            "b": 0,
+            "c": 1500,
+            "d": 0,
+            "e": 1,
+            "f": 500
+        },
+        "bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 576,
+            "y2": 400
+        },
+        "overlap_distance": {
+            "x": 0,
+            "y": 0
+        }
+    },
+    {
+        "instance": "Trace",
+        "number_id": 0,
+        "name": "16S-16B",
+        "segments": [
+            {
+                "layer": "m3",
+                "area": {
+                    "x1": 977.8181818181818,
+                    "y1": 1804,
+                    "x2": 1132,
+                    "y2": 1836
+                }
+            },
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 977.8181818181818,
+                    "y1": 1684,
+                    "x2": 1009.8181818181818,
+                    "y2": 1759.6363636363637
+                }
+            }
+        ],
+        "vias": []
+    },
+    {
+        "instance": "Trace",
+        "number_id": 1,
+        "name": "17S-17B",
+        "segments": [
+            {
+                "layer": "m3",
+                "area": {
+                    "x1": 1553.8181818181818,
+                    "y1": 1804,
+                    "x2": 1708,
+                    "y2": 1836
+                }
+            },
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 1553.8181818181818,
+                    "y1": 1684,
+                    "x2": 1585.8181818181818,
+                    "y2": 1759.6363636363637
+                }
+            }
+        ],
+        "vias": []
+    },
+    {
+        "instance": "Trace",
+        "number_id": 2,
+        "name": "18S-18B",
+        "segments": [
+            {
+                "layer": "m3",
+                "area": {
+                    "x1": 988.0,
+                    "y1": 404,
+                    "x2": 1132,
+                    "y2": 436
+                }
+            },
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 988.0,
+                    "y1": 284,
+                    "x2": 1020.0,
+                    "y2": 366.0
+                }
+            }
+        ],
+        "vias": []
+    },
+    {
+        "instance": "Trace",
+        "number_id": 3,
+        "name": "19S-19B",
+        "segments": [
+            {
+                "layer": "m3",
+                "area": {
+                    "x1": 1564.0,
+                    "y1": 404,
+                    "x2": 1708,
+                    "y2": 436
+                }
+            },
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 1564.0,
+                    "y1": 284,
+                    "x2": 1596.0,
+                    "y2": 366.0
+                }
+            }
+        ],
+        "vias": []
+    },
+    {
+        "instance": "Trace",
+        "number_id": 4,
+        "name": "20S-20B",
+        "segments": [
+            {
+                "layer": "m3",
+                "area": {
+                    "x1": 988.0,
+                    "y1": 1204,
+                    "x2": 1132,
+                    "y2": 1236
+                }
+            },
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 988.0,
+                    "y1": 1084,
+                    "x2": 1020.0,
+                    "y2": 1166.0
+                }
+            }
+        ],
+        "vias": []
+    },
+    {
+        "instance": "Trace",
+        "number_id": 5,
+        "name": "21D-21G",
+        "segments": [
+            {
+                "layer": "m3",
+                "area": {
+                    "x1": 1688.0,
+                    "y1": 924,
+                    "x2": 1900,
+                    "y2": 956
+                }
+            },
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 1688.0,
+                    "y1": 1024.0,
+                    "x2": 1720.0,
+                    "y2": 1116
+                }
+            }
+        ],
+        "vias": []
+    },
+    {
+        "instance": "Trace",
+        "number_id": 6,
+        "name": "21S-21B",
+        "segments": [
+            {
+                "layer": "m3",
+                "area": {
+                    "x1": 1564.0,
+                    "y1": 1204,
+                    "x2": 1708,
+                    "y2": 1236
+                }
+            },
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 1564.0,
+                    "y1": 1084,
+                    "x2": 1596.0,
+                    "y2": 1166.0
+                }
+            }
+        ],
+        "vias": []
+    },
+    {
+        "instance": "Trace",
+        "number_id": 7,
+        "name": "22S-22B",
+        "segments": [
+            {
+                "layer": "m3",
+                "area": {
+                    "x1": 977.8181818181818,
+                    "y1": 2604,
+                    "x2": 1132,
+                    "y2": 2636
+                }
+            },
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 977.8181818181818,
+                    "y1": 2484,
+                    "x2": 1009.8181818181818,
+                    "y2": 2559.6363636363635
+                }
+            }
+        ],
+        "vias": []
+    },
+    {
+        "instance": "Trace",
+        "number_id": 8,
+        "name": "23D-23G",
+        "segments": [
+            {
+                "layer": "m3",
+                "area": {
+                    "x1": 1688.0,
+                    "y1": 2324,
+                    "x2": 1900,
+                    "y2": 2356
+                }
+            },
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 1688.0,
+                    "y1": 2424.0,
+                    "x2": 1720.0,
+                    "y2": 2516
+                }
+            }
+        ],
+        "vias": []
+    },
+    {
+        "instance": "Trace",
+        "number_id": 9,
+        "name": "23S-23B",
+        "segments": [
+            {
+                "layer": "m3",
+                "area": {
+                    "x1": 1553.8181818181818,
+                    "y1": 2604,
+                    "x2": 1708,
+                    "y2": 2636
+                }
+            },
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 1553.8181818181818,
+                    "y1": 2484,
+                    "x2": 1585.8181818181818,
+                    "y2": 2559.6363636363635
+                }
+            }
+        ],
+        "vias": []
+    },
+    {
+        "instance": "Trace",
+        "number_id": 10,
+        "name": "24D-24G",
+        "segments": [
+            {
+                "layer": "m3",
+                "area": {
+                    "x1": 1112.0,
+                    "y1": 1924,
+                    "x2": 1324,
+                    "y2": 1956
+                }
+            },
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 1112.0,
+                    "y1": 2024.0,
+                    "x2": 1144.0,
+                    "y2": 2116
+                }
+            }
+        ],
+        "vias": []
+    },
+    {
+        "instance": "Trace",
+        "number_id": 11,
+        "name": "24S-24B",
+        "segments": [
+            {
+                "layer": "m3",
+                "area": {
+                    "x1": 988.0,
+                    "y1": 2204,
+                    "x2": 1132,
+                    "y2": 2236
+                }
+            },
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 988.0,
+                    "y1": 2084,
+                    "x2": 1020.0,
+                    "y2": 2166.0
+                }
+            }
+        ],
+        "vias": []
+    },
+    {
+        "instance": "Trace",
+        "number_id": 12,
+        "name": "25S-25B",
+        "segments": [
+            {
+                "layer": "m3",
+                "area": {
+                    "x1": 1564.0,
+                    "y1": 2204,
+                    "x2": 1708,
+                    "y2": 2236
+                }
+            },
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 1564.0,
+                    "y1": 2084,
+                    "x2": 1596.0,
+                    "y2": 2166.0
+                }
+            }
+        ],
+        "vias": []
+    },
+    {
+        "instance": "Trace",
+        "number_id": 13,
+        "name": "26S-26B",
+        "segments": [
+            {
+                "layer": "m3",
+                "area": {
+                    "x1": 988.0,
+                    "y1": 804,
+                    "x2": 1132,
+                    "y2": 836
+                }
+            },
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 988.0,
+                    "y1": 684,
+                    "x2": 1020.0,
+                    "y2": 766.0
+                }
+            }
+        ],
+        "vias": []
+    },
+    {
+        "instance": "Trace",
+        "number_id": 14,
+        "name": "27S-27B",
+        "segments": [
+            {
+                "layer": "m3",
+                "area": {
+                    "x1": 1564.0,
+                    "y1": 804,
+                    "x2": 1708,
+                    "y2": 836
+                }
+            },
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 1564.0,
+                    "y1": 684,
+                    "x2": 1596.0,
+                    "y2": 766.0
+                }
+            }
+        ],
+        "vias": []
+    },
+    {
+        "instance": "Trace",
+        "number_id": 15,
+        "name": "19S-20S",
+        "segments": [
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 1676,
+                    "y1": 404,
+                    "x2": 1708,
+                    "y2": 483.05882352941177
+                }
+            },
+            {
+                "layer": "m3",
+                "area": {
+                    "x1": 1438.8235294117646,
+                    "y1": 451.05882352941177,
+                    "x2": 1674.1176470588234,
+                    "y2": 483.05882352941177
+                }
+            },
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 1438.8235294117646,
+                    "y1": 733.4117647058823,
+                    "x2": 1470.8235294117646,
+                    "y2": 985.0196078431372
+                }
+            },
+            {
+                "layer": "m3",
+                "area": {
+                    "x1": 1246.8235294117646,
+                    "y1": 953.0196078431372,
+                    "x2": 1312.7058823529412,
+                    "y2": 985.0196078431372
+                }
+            },
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 1246.8235294117646,
+                    "y1": 1000.0784313725491,
+                    "x2": 1278.8235294117646,
+                    "y2": 1236
+                }
+            }
+        ],
+        "vias": []
+    },
+    {
+        "instance": "Trace",
+        "number_id": 16,
+        "name": "19S-21S",
+        "segments": [
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 1676,
+                    "y1": 404,
+                    "x2": 1708,
+                    "y2": 726.909090909091
+                }
+            },
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 1676.0,
+                    "y1": 767.6363636363636,
+                    "x2": 1708.0,
+                    "y2": 1187.5151515151515
+                }
+            }
+        ],
+        "vias": []
+    },
+    {
+        "instance": "Trace",
+        "number_id": 17,
+        "name": "19D-25D",
+        "segments": [
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 1868,
+                    "y1": 124,
+                    "x2": 1900,
+                    "y2": 493.5
+                }
+            },
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 1868.0,
+                    "y1": 545.875,
+                    "x2": 1900.0,
+                    "y2": 1899.75
+                }
+            }
+        ],
+        "vias": []
+    },
+    {
+        "instance": "Trace",
+        "number_id": 18,
+        "name": "19G-26G",
+        "segments": [
+            {
+                "layer": "m3",
+                "area": {
+                    "x1": 1532.0,
+                    "y1": 284,
+                    "x2": 1612,
+                    "y2": 316
+                }
+            },
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 1532.0,
+                    "y1": 317.3333333333333,
+                    "x2": 1564.0,
+                    "y2": 382.66666666666663
+                }
+            },
+            {
+                "layer": "m3",
+                "area": {
+                    "x1": 1196.0,
+                    "y1": 350.66666666666663,
+                    "x2": 1516.0,
+                    "y2": 382.66666666666663
+                }
+            },
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 1196.0,
+                    "y1": 550.6666666666666,
+                    "x2": 1228.0,
+                    "y2": 716
+                }
+            }
+        ],
+        "vias": []
+    },
+    {
+        "instance": "Trace",
+        "number_id": 19,
+        "name": "19S-26S",
+        "segments": [
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 1676,
+                    "y1": 404,
+                    "x2": 1708,
+                    "y2": 466.0
+                }
+            },
+            {
+                "layer": "m3",
+                "area": {
+                    "x1": 1388.0,
+                    "y1": 434.0,
+                    "x2": 1664.8,
+                    "y2": 466.0
+                }
+            },
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 1388.0,
+                    "y1": 604.0,
+                    "x2": 1420.0,
+                    "y2": 686.0
+                }
+            },
+            {
+                "layer": "m3",
+                "area": {
+                    "x1": 1258.4,
+                    "y1": 654.0,
+                    "x2": 1348.0,
+                    "y2": 686.0
+                }
+            },
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 1258.4,
+                    "y1": 694.0,
+                    "x2": 1290.4,
+                    "y2": 836
+                }
+            }
+        ],
+        "vias": []
+    },
+    {
+        "instance": "Trace",
+        "number_id": 20,
+        "name": "19G-27D",
+        "segments": [
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 1580,
+                    "y1": 284,
+                    "x2": 1612,
+                    "y2": 422.66666666666663
+                }
+            },
+            {
+                "layer": "m3",
+                "area": {
+                    "x1": 1708.0,
+                    "y1": 390.66666666666663,
+                    "x2": 1900,
+                    "y2": 422.66666666666663
+                }
+            }
+        ],
+        "vias": []
+    },
+    {
+        "instance": "Trace",
+        "number_id": 21,
+        "name": "19S-27S",
+        "segments": [
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 1676.0,
+                    "y1": 470.66666666666663,
+                    "x2": 1708.0,
+                    "y2": 791.5555555555555
+                }
+            }
+        ],
+        "vias": []
+    },
+    {
+        "instance": "Trace",
+        "number_id": 22,
+        "name": "20G-21D",
+        "segments": [
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 1004,
+                    "y1": 1061.7777777777778,
+                    "x2": 1036,
+                    "y2": 1116
+                }
+            },
+            {
+                "layer": "m3",
+                "area": {
+                    "x1": 1124.0,
+                    "y1": 1061.7777777777778,
+                    "x2": 1852.0,
+                    "y2": 1093.7777777777778
+                }
+            },
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 1820.0,
+                    "y1": 924,
+                    "x2": 1852.0,
+                    "y2": 964.8888888888889
+                }
+            }
+        ],
+        "vias": []
+    },
+    {
+        "instance": "Trace",
+        "number_id": 23,
+        "name": "20S-21S",
+        "segments": [
+            {
+                "layer": "m3",
+                "area": {
+                    "x1": 1100,
+                    "y1": 1204,
+                    "x2": 1397.8461538461538,
+                    "y2": 1236
+                }
+            },
+            {
+                "layer": "m3",
+                "area": {
+                    "x1": 1432.3076923076924,
+                    "y1": 1204.0,
+                    "x2": 1663.6923076923076,
+                    "y2": 1236.0
+                }
+            }
+        ],
+        "vias": []
+    },
+    {
+        "instance": "Trace",
+        "number_id": 24,
+        "name": "20D-24D",
+        "segments": [
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 1292,
+                    "y1": 924,
+                    "x2": 1324,
+                    "y2": 1443.1794871794873
+                }
+            },
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 1292.0,
+                    "y1": 1488.102564102564,
+                    "x2": 1324.0,
+                    "y2": 1904.7179487179487
+                }
+            }
+        ],
+        "vias": []
+    },
+    {
+        "instance": "Trace",
+        "number_id": 25,
+        "name": "20D-25G",
+        "segments": [
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 1292,
+                    "y1": 924,
+                    "x2": 1324,
+                    "y2": 1019.2727272727273
+                }
+            },
+            {
+                "layer": "m3",
+                "area": {
+                    "x1": 1307.709090909091,
+                    "y1": 987.2727272727273,
+                    "x2": 1355.418181818182,
+                    "y2": 1019.2727272727273
+                }
+            },
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 1323.418181818182,
+                    "y1": 1050.5454545454545,
+                    "x2": 1355.418181818182,
+                    "y2": 1820.7272727272727
+                }
+            },
+            {
+                "layer": "m3",
+                "area": {
+                    "x1": 1506.6909090909091,
+                    "y1": 1788.7272727272727,
+                    "x2": 1580.581818181818,
+                    "y2": 1820.7272727272727
+                }
+            },
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 1548.581818181818,
+                    "y1": 1957.4545454545455,
+                    "x2": 1580.581818181818,
+                    "y2": 2052.727272727273
+                }
+            },
+            {
+                "layer": "m3",
+                "area": {
+                    "x1": 1564.290909090909,
+                    "y1": 2020.7272727272727,
+                    "x2": 1612,
+                    "y2": 2052.727272727273
+                }
+            }
+        ],
+        "vias": []
+    },
+    {
+        "instance": "Trace",
+        "number_id": 26,
+        "name": "20G-26D",
+        "segments": [
+            {
+                "layer": "m3",
+                "area": {
+                    "x1": 1004,
+                    "y1": 1084,
+                    "x2": 1063.8709677419354,
+                    "y2": 1116
+                }
+            },
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 1031.8709677419354,
+                    "y1": 686.5806451612902,
+                    "x2": 1063.8709677419354,
+                    "y2": 1061.8064516129032
+                }
+            },
+            {
+                "layer": "m3",
+                "area": {
+                    "x1": 1208.3870967741937,
+                    "y1": 686.5806451612902,
+                    "x2": 1324,
+                    "y2": 718.5806451612902
+                }
+            }
+        ],
+        "vias": []
+    },
+    {
+        "instance": "Trace",
+        "number_id": 27,
+        "name": "20S-26S",
+        "segments": [
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 1100,
+                    "y1": 851.0588235294117,
+                    "x2": 1132,
+                    "y2": 1236
+                }
+            }
+        ],
+        "vias": []
+    },
+    {
+        "instance": "Trace",
+        "number_id": 28,
+        "name": "20G-27G",
+        "segments": [
+            {
+                "layer": "m3",
+                "area": {
+                    "x1": 1004,
+                    "y1": 1084,
+                    "x2": 1102.9767441860465,
+                    "y2": 1116
+                }
+            },
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 1070.9767441860465,
+                    "y1": 953.7674418604652,
+                    "x2": 1102.9767441860465,
+                    "y2": 1069.4883720930234
+                }
+            },
+            {
+                "layer": "m3",
+                "area": {
+                    "x1": 1191.5348837209303,
+                    "y1": 953.7674418604652,
+                    "x2": 1263.7209302325582,
+                    "y2": 985.7674418604652
+                }
+            },
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 1231.7209302325582,
+                    "y1": 860.7441860465117,
+                    "x2": 1263.7209302325582,
+                    "y2": 957.8604651162791
+                }
+            },
+            {
+                "layer": "m3",
+                "area": {
+                    "x1": 1325.4883720930234,
+                    "y1": 860.7441860465117,
+                    "x2": 1531.6279069767443,
+                    "y2": 892.7441860465117
+                }
+            },
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 1499.6279069767443,
+                    "y1": 711.9069767441861,
+                    "x2": 1531.6279069767443,
+                    "y2": 771.8139534883721
+                }
+            },
+            {
+                "layer": "m3",
+                "area": {
+                    "x1": 1539.8139534883721,
+                    "y1": 711.9069767441861,
+                    "x2": 1612,
+                    "y2": 743.9069767441861
+                }
+            }
+        ],
+        "vias": []
+    },
+    {
+        "instance": "Trace",
+        "number_id": 29,
+        "name": "20S-27S",
+        "segments": [
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 1100,
+                    "y1": 1157.4883720930234,
+                    "x2": 1132,
+                    "y2": 1236
+                }
+            },
+            {
+                "layer": "m3",
+                "area": {
+                    "x1": 1166.9767441860465,
+                    "y1": 1157.4883720930234,
+                    "x2": 1239.1627906976744,
+                    "y2": 1189.4883720930234
+                }
+            },
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 1207.1627906976744,
+                    "y1": 1045.860465116279,
+                    "x2": 1239.1627906976744,
+                    "y2": 1161.5813953488373
+                }
+            },
+            {
+                "layer": "m3",
+                "area": {
+                    "x1": 1327.7209302325582,
+                    "y1": 1045.860465116279,
+                    "x2": 1399.906976744186,
+                    "y2": 1077.860465116279
+                }
+            },
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 1367.906976744186,
+                    "y1": 980.7441860465117,
+                    "x2": 1399.906976744186,
+                    "y2": 1049.953488372093
+                }
+            },
+            {
+                "layer": "m3",
+                "area": {
+                    "x1": 1421.4883720930234,
+                    "y1": 980.7441860465117,
+                    "x2": 1681.2093023255816,
+                    "y2": 1012.7441860465117
+                }
+            },
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 1649.2093023255816,
+                    "y1": 804,
+                    "x2": 1681.2093023255816,
+                    "y2": 854.6046511627907
+                }
+            }
+        ],
+        "vias": []
+    },
+    {
+        "instance": "Trace",
+        "number_id": 30,
+        "name": "21D-26D",
+        "segments": [
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 1868,
+                    "y1": 889.7142857142857,
+                    "x2": 1900,
+                    "y2": 956
+                }
+            },
+            {
+                "layer": "m3",
+                "area": {
+                    "x1": 1505.942857142857,
+                    "y1": 889.7142857142857,
+                    "x2": 1850.6285714285714,
+                    "y2": 921.7142857142857
+                }
+            },
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 1505.942857142857,
+                    "y1": 524,
+                    "x2": 1537.942857142857,
+                    "y2": 704.5714285714286
+                }
+            }
+        ],
+        "vias": []
+    },
+    {
+        "instance": "Trace",
+        "number_id": 31,
+        "name": "21S-26S",
+        "segments": [
+            {
+                "layer": "m3",
+                "area": {
+                    "x1": 1426.918918918919,
+                    "y1": 1204,
+                    "x2": 1708,
+                    "y2": 1236
+                }
+            },
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 1426.918918918919,
+                    "y1": 858.0540540540541,
+                    "x2": 1458.918918918919,
+                    "y2": 1063.027027027027
+                }
+            },
+            {
+                "layer": "m3",
+                "area": {
+                    "x1": 1100,
+                    "y1": 858.0540540540541,
+                    "x2": 1209.837837837838,
+                    "y2": 890.0540540540541
+                }
+            }
+        ],
+        "vias": []
+    },
+    {
+        "instance": "Trace",
+        "number_id": 32,
+        "name": "21D-27G",
+        "segments": [
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 1868,
+                    "y1": 889.7142857142857,
+                    "x2": 1900,
+                    "y2": 956
+                }
+            },
+            {
+                "layer": "m3",
+                "area": {
+                    "x1": 1676.0,
+                    "y1": 889.7142857142857,
+                    "x2": 1858.857142857143,
+                    "y2": 921.7142857142857
+                }
+            },
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 1676.0,
+                    "y1": 684,
+                    "x2": 1708.0,
+                    "y2": 796.0
+                }
+            }
+        ],
+        "vias": []
+    },
+    {
+        "instance": "Trace",
+        "number_id": 33,
+        "name": "21S-27S",
+        "segments": [],
+        "vias": []
+    },
+    {
+        "instance": "Trace",
+        "number_id": 34,
+        "name": "22G-23D",
+        "segments": [
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 1004,
+                    "y1": 2462.9473684210525,
+                    "x2": 1036,
+                    "y2": 2516
+                }
+            },
+            {
+                "layer": "m3",
+                "area": {
+                    "x1": 1117.6842105263158,
+                    "y1": 2462.9473684210525,
+                    "x2": 1786.3157894736842,
+                    "y2": 2494.9473684210525
+                }
+            },
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 1754.3157894736842,
+                    "y1": 2332.421052631579,
+                    "x2": 1786.3157894736842,
+                    "y2": 2377.0526315789475
+                }
+            },
+            {
+                "layer": "m3",
+                "area": {
+                    "x1": 1822.5263157894738,
+                    "y1": 2332.421052631579,
+                    "x2": 1900,
+                    "y2": 2364.421052631579
+                }
+            }
+        ],
+        "vias": []
+    },
+    {
+        "instance": "Trace",
+        "number_id": 35,
+        "name": "22S-23S",
+        "segments": [
+            {
+                "layer": "m3",
+                "area": {
+                    "x1": 1100,
+                    "y1": 2604,
+                    "x2": 1378.857142857143,
+                    "y2": 2636
+                }
+            },
+            {
+                "layer": "m3",
+                "area": {
+                    "x1": 1408.5714285714284,
+                    "y1": 2604.0,
+                    "x2": 1605.142857142857,
+                    "y2": 2636.0
+                }
+            },
+            {
+                "layer": "m3",
+                "area": {
+                    "x1": 1634.857142857143,
+                    "y1": 2604.0,
+                    "x2": 1708,
+                    "y2": 2636.0
+                }
+            }
+        ],
+        "vias": []
+    },
+    {
+        "instance": "Trace",
+        "number_id": 36,
+        "name": "22S-24S",
+        "segments": [
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 1100,
+                    "y1": 2204,
+                    "x2": 1132,
+                    "y2": 2636
+                }
+            }
+        ],
+        "vias": []
+    },
+    {
+        "instance": "Trace",
+        "number_id": 37,
+        "name": "22S-25S",
+        "segments": [
+            {
+                "layer": "m3",
+                "area": {
+                    "x1": 1100,
+                    "y1": 2604,
+                    "x2": 1177.4736842105262,
+                    "y2": 2636
+                }
+            },
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 1145.4736842105262,
+                    "y1": 2446.1052631578946,
+                    "x2": 1177.4736842105262,
+                    "y2": 2604.4210526315787
+                }
+            },
+            {
+                "layer": "m3",
+                "area": {
+                    "x1": 1327.3684210526317,
+                    "y1": 2446.1052631578946,
+                    "x2": 1632.2105263157896,
+                    "y2": 2478.1052631578946
+                }
+            },
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 1600.2105263157896,
+                    "y1": 2225.0526315789475,
+                    "x2": 1632.2105263157896,
+                    "y2": 2288.6315789473683
+                }
+            },
+            {
+                "layer": "m3",
+                "area": {
+                    "x1": 1645.6842105263158,
+                    "y1": 2225.0526315789475,
+                    "x2": 1708,
+                    "y2": 2257.0526315789475
+                }
+            }
+        ],
+        "vias": []
+    },
+    {
+        "instance": "Trace",
+        "number_id": 38,
+        "name": "23S-24S",
+        "segments": [
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 1676,
+                    "y1": 2570.6666666666665,
+                    "x2": 1708,
+                    "y2": 2636
+                }
+            },
+            {
+                "layer": "m3",
+                "area": {
+                    "x1": 1340.0,
+                    "y1": 2570.6666666666665,
+                    "x2": 1660.0,
+                    "y2": 2602.6666666666665
+                }
+            },
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 1340.0,
+                    "y1": 2237.3333333333335,
+                    "x2": 1372.0,
+                    "y2": 2402.6666666666665
+                }
+            },
+            {
+                "layer": "m3",
+                "area": {
+                    "x1": 1100,
+                    "y1": 2237.3333333333335,
+                    "x2": 1180.0,
+                    "y2": 2269.3333333333335
+                }
+            }
+        ],
+        "vias": []
+    },
+    {
+        "instance": "Trace",
+        "number_id": 39,
+        "name": "23S-25S",
+        "segments": [
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 1676.0,
+                    "y1": 2464.0,
+                    "x2": 1708.0,
+                    "y2": 2576.0
+                }
+            },
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 1676.0,
+                    "y1": 2204,
+                    "x2": 1708.0,
+                    "y2": 2436.0
+                }
+            }
+        ],
+        "vias": []
+    },
+    {
+        "instance": "Trace",
+        "number_id": 40,
+        "name": "24D-25G",
+        "segments": [
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 1292,
+                    "y1": 1924,
+                    "x2": 1324,
+                    "y2": 1985.090909090909
+                }
+            },
+            {
+                "layer": "m3",
+                "area": {
+                    "x1": 1344.3636363636363,
+                    "y1": 1953.090909090909,
+                    "x2": 1507.2727272727273,
+                    "y2": 1985.090909090909
+                }
+            },
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 1475.2727272727273,
+                    "y1": 2025.8181818181818,
+                    "x2": 1507.2727272727273,
+                    "y2": 2079.6363636363635
+                }
+            },
+            {
+                "layer": "m3",
+                "area": {
+                    "x1": 1514.5454545454545,
+                    "y1": 2047.6363636363635,
+                    "x2": 1585.8181818181818,
+                    "y2": 2079.6363636363635
+                }
+            },
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 1553.8181818181818,
+                    "y1": 2069.4545454545455,
+                    "x2": 1585.8181818181818,
+                    "y2": 2116
+                }
+            }
+        ],
+        "vias": []
+    },
+    {
+        "instance": "Trace",
+        "number_id": 41,
+        "name": "24S-25S",
+        "segments": [
+            {
+                "layer": "m3",
+                "area": {
+                    "x1": 1172.0,
+                    "y1": 2204.0,
+                    "x2": 1660.0,
+                    "y2": 2236.0
+                }
+            }
+        ],
+        "vias": []
+    },
+    {
+        "instance": "Trace",
+        "number_id": 42,
+        "name": "26D-27G",
+        "segments": [
+            {
+                "layer": "m3",
+                "area": {
+                    "x1": 1292,
+                    "y1": 524,
+                    "x2": 1367.2,
+                    "y2": 556
+                }
+            },
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 1335.2,
+                    "y1": 548.0,
+                    "x2": 1367.2,
+                    "y2": 620.0
+                }
+            },
+            {
+                "layer": "m3",
+                "area": {
+                    "x1": 1407.2,
+                    "y1": 588.0,
+                    "x2": 1583.2,
+                    "y2": 620.0
+                }
+            },
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 1551.2,
+                    "y1": 668.0,
+                    "x2": 1583.2,
+                    "y2": 716
+                }
+            }
+        ],
+        "vias": []
+    },
+    {
+        "instance": "Trace",
+        "number_id": 43,
+        "name": "26G-27D",
+        "segments": [
+            {
+                "layer": "m3",
+                "area": {
+                    "x1": 1004,
+                    "y1": 684,
+                    "x2": 1097.7142857142858,
+                    "y2": 716
+                }
+            },
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 1065.7142857142858,
+                    "y1": 653.5238095238095,
+                    "x2": 1097.7142857142858,
+                    "y2": 704.5714285714286
+                }
+            },
+            {
+                "layer": "m3",
+                "area": {
+                    "x1": 1168.5714285714284,
+                    "y1": 653.5238095238095,
+                    "x2": 1426.857142857143,
+                    "y2": 685.5238095238095
+                }
+            },
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 1394.857142857143,
+                    "y1": 600.1904761904761,
+                    "x2": 1426.857142857143,
+                    "y2": 643.6190476190476
+                }
+            },
+            {
+                "layer": "m3",
+                "area": {
+                    "x1": 1456.5714285714287,
+                    "y1": 600.1904761904761,
+                    "x2": 1858.8571428571427,
+                    "y2": 632.1904761904761
+                }
+            },
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 1826.8571428571427,
+                    "y1": 524,
+                    "x2": 1858.8571428571427,
+                    "y2": 563.6190476190476
+                }
+            }
+        ],
+        "vias": []
+    },
+    {
+        "instance": "Trace",
+        "number_id": 44,
+        "name": "26S-27S",
+        "segments": [],
+        "vias": []
+    }
+]

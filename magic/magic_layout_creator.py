@@ -88,7 +88,7 @@ class MagicLayoutCreator:
     def __via_placer(self, start_layer: str, end_layer: str, area: RectArea):
         """Adds via(s) and potentially necessary metal layers between a top layer and a bottom layer"""
 
-        VIA_OFFSET = 6  # Needs to be handled in the future, but works for now.
+        VIA_OFFSET = 7  # Needs to be handled in the future, but works for now.
 
         via_map = {
             ('locali', 'm1'): 'viali',
@@ -139,38 +139,59 @@ class MagicLayoutCreator:
 
             if len(segments_on_different_layers) == 2:
 
-                # Handles first possible overlap orientation
-                if segments_on_different_layers[0].area.x1 == segments_on_different_layers[1].area.x1:
+                segment1, segment2 = segments_on_different_layers[0], segments_on_different_layers[1]
 
-                    via_area = RectArea(x1=segments_on_different_layers[0].area.x1,
-                                        y1=segments_on_different_layers[0].area.y1,
-                                        x2=segments_on_different_layers[1].area.x2,
-                                        y2=segments_on_different_layers[0].area.y2)
+                overlap_x1 = max(segment1.area.x1, segment2.area.x1)
+                overlap_y1 = max(segment1.area.y1, segment2.area.y1)
+                overlap_x2 = min(segment1.area.x2, segment2.area.x2)
+                overlap_y2 = min(segment1.area.y2, segment2.area.y2)
 
-                    self.__via_placer(start_layer=segments_on_different_layers[0].layer,
-                                      end_layer=segments_on_different_layers[1].layer, area=via_area)
+                # Check if there is no overlap
+                if overlap_x1 >= overlap_x2 or overlap_y1 >= overlap_y2:
+                    continue
 
-                    segments_on_different_layers.pop(0)
-                    via_count += 1
+                square_x1 = min(segment1.area.x1, overlap_x1)  # Smallest x from segment1
 
-                # Handles second possible overlap orientation
-                elif segments_on_different_layers[0].area.y1 == segments_on_different_layers[1].area.y1:
+                # Calculate the square side length
+                square_side = max(overlap_y2 - overlap_y1, overlap_x2 - overlap_x1)
 
-                    via_area = RectArea(x1=segments_on_different_layers[0].area.x1,
-                                        y1=segments_on_different_layers[0].area.y1,
-                                        x2=segments_on_different_layers[0].area.x2,
-                                        y2=segments_on_different_layers[1].area.y2)
-
-                    self.__via_placer(start_layer=segments_on_different_layers[0].layer,
-                                      end_layer=segments_on_different_layers[1].layer, area=via_area)
-
-                    segments_on_different_layers.pop(0)
-                    via_count += 1
-
-                # Any thing else you be impossible
+                # Determine offsets based on orientation
+                if segment1.area.y1 <= segment2.area.y1 and segment1.area.x1 <= segment2.area.x1:
+                    # Case 1: Bottom-right
+                    offset_x = 0
+                    offset_y = -15
+                elif segment1.area.y1 <= segment2.area.y1 and segment1.area.x1 > segment2.area.x1:
+                    # Case 2: Bottom-left
+                    offset_x = -15
+                    offset_y = -15
+                elif segment1.area.y1 > segment2.area.y1 and segment1.area.x1 <= segment2.area.x1:
+                    # Case 3: Top-left
+                    offset_x = 0
+                    offset_y = 15
+                elif segment1.area.y1 > segment2.area.y1 and segment1.area.x1 > segment2.area.x1:
+                    # Case 4: Top-right
+                    offset_x = -15
+                    offset_y = 0
                 else:
-                    self.logger.error("An unexpteced overlap position between trace segments occured")
+                    # General overlap, no specific offset needed
+                    offset_x = 0
+                    offset_y = 0
 
+                # Define the maximized square area
+                via_area = RectArea(
+                    x1=square_x1 + offset_x,
+                    y1=overlap_y1 + offset_y,
+                    x2=square_x1 + square_side*2 + offset_x,
+                    y2=overlap_y1 + square_side*2 + offset_y
+                )
+
+                self.__via_placer(
+                    start_layer=segment1.layer,
+                    end_layer=segment2.layer,
+                    area=via_area
+                )
+                segments_on_different_layers.pop(0)
+                via_count += 1
         return via_count
 
     def __add_trace_connection_point(self, trace: Trace):
@@ -195,8 +216,10 @@ class MagicLayoutCreator:
 
                         # Check if the segment point is within the bounds of a specific port
                         if (port_pos.y2 >= segment_midpoint_y >= port_pos.y1
-                                and port_pos.x2 >= segment_midpoint_x >= port_pos.x1):
-
+                                or port_pos.x2 >= segment_midpoint_x >= port_pos.x1):
+                            #print(port_pos)
+                            #print(f"y: {segment_midpoint_y}")
+                            #print(f"x: {segment_midpoint_x}")
                             self.__via_placer(start_layer=segment.layer, end_layer=port.layer, area=port_pos)
 
                             self.logger.info(f"Connection point placed for port '{port.type}' of '{component.name}' "
@@ -251,10 +274,10 @@ class MagicLayoutCreator:
         invalid_segments = 0
 
         # Check if segmemts are valid
-        for segment in component.segments:
-            if segment.area.x2 <= segment.area.x1 or segment.area.y2 <= segment.area.y1:
-                invalid_segments += 1
-                self.logger.error(f"For trace '{component.name}' segment area {segment.area} is invalid!")
+        #for segment in component.segments:
+        #    if segment.area.x2 <= segment.area.x1 or segment.area.y2 <= segment.area.y1:
+        #        invalid_segments += 1
+        #        self.logger.error(f"For trace '{component.name}' segment area {segment.area} is invalid!")
 
         # Skip generation if there are invalid segmetns
         if invalid_segments != 0:

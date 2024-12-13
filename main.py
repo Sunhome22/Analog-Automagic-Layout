@@ -68,15 +68,15 @@ def main():
     save_to_json(objects=components, file_name="json_tool/components.json")
 
     # Read JSON file
-    found_stuff = load_from_json(file_name="json_tool/TracesLO1 3.json")
+    found_stuff = load_from_json(file_name="json_tool/TracesLO1 6.json")
 
     # An example test trace with 2 segments
     a_trace = Trace()
     a_trace.instance = a_trace.__class__.__name__  # add instance type
     a_trace.number_id = 0
     a_trace.name = "16G-17G"
-    #a_trace.segments.append(RectAreaLayer(layer="locali", area=RectArea(x1=450, y1=50, x2=300, y2=0)))
-    a_trace.segments.append(RectAreaLayer(layer="m4", area=RectArea(x1=300, y1=350, x2=300, y2=300)))
+    a_trace.segments.append(RectAreaLayer(layer="locali", area=RectArea(x1=50, y1=100, x2=400, y2=150)))
+    a_trace.segments.append(RectAreaLayer(layer="m3", area=RectArea(x1=50, y1=200, x2=200, y2=250)))
     found_stuff.append(a_trace)
     # save_to_json(objects=found_stuff, file_name="json_tool/test.json")
 
