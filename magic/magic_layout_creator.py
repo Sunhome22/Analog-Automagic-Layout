@@ -124,7 +124,7 @@ class MagicLayoutCreator:
 
     def __add_trace_vias(self, component: Trace) -> int:
         """Checks for overlap between segments of a trace in different layers and adds vias.
-        Returns the number of vias placed"""
+        Returns the number of vias placed. Not working prop"""
 
         last_segment_layer = None
         segments_on_different_layers = []
@@ -155,21 +155,21 @@ class MagicLayoutCreator:
                 # Calculate the square side length
                 square_side = max(overlap_y2 - overlap_y1, overlap_x2 - overlap_x1)
 
-                # Determine offsets based on orientation
+                # Determine offsets based on orientation (just a  quick attempt, not working fully)
                 if segment1.area.y1 <= segment2.area.y1 and segment1.area.x1 <= segment2.area.x1:
-                    # Case 1: Bottom-right
+                    # Bottom-right
                     offset_x = 0
                     offset_y = -15
                 elif segment1.area.y1 <= segment2.area.y1 and segment1.area.x1 > segment2.area.x1:
-                    # Case 2: Bottom-left
+                    # Bottom-left
                     offset_x = -15
                     offset_y = -15
                 elif segment1.area.y1 > segment2.area.y1 and segment1.area.x1 <= segment2.area.x1:
-                    # Case 3: Top-left
+                    # Top-left
                     offset_x = 0
                     offset_y = 15
                 elif segment1.area.y1 > segment2.area.y1 and segment1.area.x1 > segment2.area.x1:
-                    # Case 4: Top-right
+                    # Top-right
                     offset_x = -15
                     offset_y = 0
                 else:
@@ -245,7 +245,7 @@ class MagicLayoutCreator:
                 graph.setdefault(start, []).append((end, intermediate))
 
             # Breadth first search (typical implementation)
-            queue = deque([(start_layer, [])])  # current_node, intermediates_so_far
+            queue = deque([(start_layer, [])])  # current node, intermediates so far
             visited = set()
 
             while queue:
@@ -271,13 +271,13 @@ class MagicLayoutCreator:
         segment_count = 0
         invalid_segments = 0
 
-        # Check if segmemts are valid
+        # Check if segments are valid
         for segment in component.segments:
             if segment.area.x2 <= segment.area.x1 or segment.area.y2 <= segment.area.y1:
                 invalid_segments += 1
                 self.logger.error(f"For trace '{component.name}' segment area {segment.area} is invalid!")
 
-        # Skip generation if there are invalid segmetns
+        # Skip generation if there are invalid segments
         if invalid_segments != 0:
             return
 
