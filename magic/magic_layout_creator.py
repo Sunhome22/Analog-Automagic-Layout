@@ -217,9 +217,7 @@ class MagicLayoutCreator:
                         # Check if the segment point is within the bounds of a specific port
                         if (port_pos.y2 >= segment_midpoint_y >= port_pos.y1
                                 or port_pos.x2 >= segment_midpoint_x >= port_pos.x1):
-                            #print(port_pos)
-                            #print(f"y: {segment_midpoint_y}")
-                            #print(f"x: {segment_midpoint_x}")
+
                             self.__via_placer(start_layer=segment.layer, end_layer=port.layer, area=port_pos)
 
                             self.logger.info(f"Connection point placed for port '{port.type}' of '{component.name}' "
@@ -274,10 +272,10 @@ class MagicLayoutCreator:
         invalid_segments = 0
 
         # Check if segmemts are valid
-        #for segment in component.segments:
-        #    if segment.area.x2 <= segment.area.x1 or segment.area.y2 <= segment.area.y1:
-        #        invalid_segments += 1
-        #        self.logger.error(f"For trace '{component.name}' segment area {segment.area} is invalid!")
+        for segment in component.segments:
+            if segment.area.x2 <= segment.area.x1 or segment.area.y2 <= segment.area.y1:
+                invalid_segments += 1
+                self.logger.error(f"For trace '{component.name}' segment area {segment.area} is invalid!")
 
         # Skip generation if there are invalid segmetns
         if invalid_segments != 0:

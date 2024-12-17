@@ -4,3 +4,4 @@ Things to implement/fix
 - Create a virtual environment and update the whole project to python 3.12
 - Add .toml file
 - Update found vias and inbetween placed metal layers to JSON file after layout creation has completed.
+- Handle bulks accidently overlapping for the diffpair of the original comparator circuit
