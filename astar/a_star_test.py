@@ -98,21 +98,12 @@ def a_star(grid, start, goal, seg_list):
     return None  # No path found
 
 
-def initiate_astar(grid, connections, local_connections, objects, area, area_coordinates, used_area):
+def initiate_astar(grid, connections, local_connections, objects, area_coordinates):
     path = []
     seg_list = []
-    local = True
-    glo = True
     path_names = []
-    coordinate_shift = []
 
-    if local and glo:
-        spliced_list = {**connections, **local_connections}
-    elif glo:
-        spliced_list = connections
-
-    else:
-        spliced_list = local_connections
+    spliced_list = {**connections, **local_connections}
 
     for con in spliced_list.values():
         id_start = con.starting_comp
@@ -127,7 +118,7 @@ def initiate_astar(grid, connections, local_connections, objects, area, area_coo
             if not isinstance(obj, (Pin, CircuitCell)) and obj.number_id == id_start:
                 start = (
                 area_coordinates[str(id_start) + start_area][0][0], area_coordinates[str(id_start) + start_area][0][2])
-                print(start)
+
                 start_found = True
 
             if not isinstance(obj, (Pin, CircuitCell)) and obj.number_id == id_end:
@@ -136,34 +127,32 @@ def initiate_astar(grid, connections, local_connections, objects, area, area_coo
 
             if start_found and end_found:
                 break
-        print("--------------------")
-        print("Object position")
-        print(obj.transform_matrix.c, obj.transform_matrix.f)
-        print(id_start, id_end)
+
         string = str(id_start) + str(start_area) + "-" + str(id_end) + str(end_area)
         path_names.append(string)
-        print(start, end)
+
+        #Start and end point walkable
         grid[start[1]][start[0]] = 0
         grid[end[1]][end[0]] = 0
+
         path.append(a_star(grid, start, end, seg_list))
+
+        #Start and end point not walkable
         grid[start[1]][start[0]] = 1
         grid[end[1]][end[0]] = 1
+
         seg = segment_path(path[-1])
 
 
         for s in seg:
             seg_list.append(s)
 
-        print("PATH:")
-        print(path[-1])
-        print("Completed Path")
-        print("--------------------")
+
         add_grid_points = [sub[-1] for sub in seg]
-        print("ROW and COL values")
+
         for x, y in add_grid_points:
             grid[y][x] = 1
 
-    for g in grid:
-        print(g)
+
 
     return path, path_names

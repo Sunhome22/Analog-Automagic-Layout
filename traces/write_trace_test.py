@@ -76,32 +76,16 @@ def calculate_segment_length(segment):
     )
 
 def _calc_tmp_endpoint(start, end, lengths, segment_index, total_length):
-    """
-    Calculate the interpolated endpoint for a segment.
 
-    :param start: Starting coordinate (x or y).
-    :param end: Ending coordinate (x or y).
-    :param lengths: List of segment lengths.
-    :param segment_index: Index of the current segment.
-    :param total_length: Total length of all segments.
-    :return: Interpolated coordinate.
-    """
     if total_length == 0:
         return start  # Avoid division by zero if all lengths are zero
 
-    cumulative_length = sum(lengths[:segment_index])  # Length up to the current segment
+    cumulative_length = sum(lengths[:segment_index])
     ratio = cumulative_length / total_length
     return start + (end - start) * ratio
 
 def calculate_directional_lengths(path_segments):
-    """
-    Calculate the total length of all horizontal and vertical segments.
 
-    :param path_segments: List of segments, where each segment is a list of coordinate tuples [(x, y), ...].
-    :return: Tuple (length_x, length_y) where:
-             - length_x is the total length of horizontal segments.
-             - length_y is the total length of vertical segments.
-    """
     length_x = 0
     length_y = 0
 
@@ -121,18 +105,9 @@ def calculate_directional_lengths(path_segments):
 
 
 def map_path_to_rectangles(path_segments, port_coord, path_name):
-    """
-    Map a path into rectangles based on the given start and end real-world coordinates from port_coord.
-
-    :param path_segments: List of segments, where each segment is a list of coordinate tuples [(x, y), ...].
-    :param port_coord: Dictionary containing real-world coordinates for ports.
-    :param path_name: String representing the path name in the format "start_idstart_port-end_idend_port".
-    :return: List of rectangles defined by their corner coordinates [x1, y1, x2, y2].
-    """
     rectangles = []
     length_x, length_y = calculate_directional_lengths(path_segments)
 
-    # Parse the path name to extract start and end IDs and ports
     pattern = r"(\d+)([a-zA-Z])-(\d+)([a-zA-Z])"
     match = re.match(pattern, path_name)
 
@@ -142,7 +117,7 @@ def map_path_to_rectangles(path_segments, port_coord, path_name):
         end_id = int(match.group(3))
         end_port = match.group(4)
     else:
-        raise ValueError("Invalid path name format. Expected format: start_idstart_port-end_idend_port")
+        print("[ERROR]: Invalid path name, pattern not found")
 
     # Get the real-world start and end coordinates
     start_real = port_coord[f"{start_id}{start_port}"][0]
@@ -174,7 +149,7 @@ def map_path_to_rectangles(path_segments, port_coord, path_name):
                 end_x = start_real[0] - (start_real[0]- end_real[0]) * (cumulative_x / length_x)
 
         else:
-            raise ValueError("Segment must be either horizontal or vertical.")
+            print("ERROR: Invalid segment, must be either vertical or horizontal")
 
         rectangles.append([start_x, start_y, end_x, end_y])
 
@@ -182,10 +157,9 @@ def map_path_to_rectangles(path_segments, port_coord, path_name):
 
 
 
-def write_traces(objects, path, path_names, used_area, area_coordinates, port_coord):
+def write_traces(objects, path, path_names,  port_coord):
     trace_width = 30
     for index, p in enumerate(path):
-        print(f"Processing path {index}: {path_names[index]}")
         a_trace = Trace()
         a_trace.instance = a_trace.__class__.__name__  # Add instance type
         a_trace.number_id = index
@@ -196,14 +170,13 @@ def write_traces(objects, path, path_names, used_area, area_coordinates, port_co
             rectangles = map_path_to_rectangles(segments, port_coord, path_names[index])
 
             for rect in rectangles:
-                print(f"Processing rectangle: {rect}")
                 if rect[0] == rect[2]:  # Vertical
                     if rect[1] > rect[3]:  # Ensure y1 < y2
                         rect[1], rect[3] = rect[3], rect[1]
                     a_trace.segments.append(RectAreaLayer(
                         layer="m2",
                         area=RectArea(
-                            x1=int(rect[0]) - trace_width // 2,
+                            x1=int(rect[0]) - trace_width // 2, #Adding width to trace
                             y1=int(rect[1]),
                             x2=int(rect[2]) + trace_width // 2,
                             y2=int(rect[3])
@@ -221,9 +194,7 @@ def write_traces(objects, path, path_names, used_area, area_coordinates, port_co
                             y2=int(rect[3]) + trace_width // 2
                         )
                     ))
-                else:
-                    print(f"Invalid rectangle: {rect}")
-                    raise ValueError("Rectangle is neither vertical nor horizontal.")
+
 
             objects.append(a_trace)
 

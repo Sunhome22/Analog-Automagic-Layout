@@ -1,4 +1,4 @@
-from astar.a_star import *
+from outdated.a_star import *
 
 
 class LinearOptimizationSolver1:

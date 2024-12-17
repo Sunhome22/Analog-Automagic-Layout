@@ -66,4 +66,4 @@ def generate_grid(grid_size, objects):
         print(x,y)
         grid[y][x] = 1
 
-    return grid, port_area, area_coordinates, used_area, port_coord
+    return grid, area_coordinates, used_area, port_coord

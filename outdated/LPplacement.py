@@ -1,6 +1,6 @@
 
 
-from astar.a_star import *
+from outdated.a_star import *
 
 from circuit.circuit_components import Pin
 
