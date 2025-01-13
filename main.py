@@ -67,32 +67,33 @@ def main():
     logger = get_a_logger(__name__)
 
     # Extracts component information from SPICE file
-    components = SPICEparser(project_properties=project_properties)
+    #components = SPICEparser(project_properties=project_properties)
 
     # Update component attributes with information from it's associated Magic files
-    components = MagicComponentsParser(project_properties=project_properties,
-                                       components=components.get_info()).get_info()
+    #components = MagicComponentsParser(project_properties=project_properties,
+    #                                   components=components.get_info()).get_info()
 
     # Algorithms
-    single_connection, local_connections, connections = connection_list(components)
-    overlap_dict = overlap_transistors(components)
+    #single_connection, local_connections, connections = connection_list(components)
+    #overlap_dict = overlap_transistors(components)
 
-    result = LinearOptimizationSolver(components, connections, local_connections, grid_size, overlap_dict)
-    components = result.initiate_solver()
+    #result = LinearOptimizationSolver(components, connections, local_connections, grid_size, overlap_dict)
+    #components = result.initiate_solver()
 
-    grid, area_coordinates, used_area, port_coord = generate_grid(grid_size, components)
-    path, path_names = initiate_astar(grid, connections, local_connections, components, area_coordinates)
-    components = write_traces(components, path, path_names, port_coord)
+    #grid, area_coordinates, used_area, port_coord = generate_grid(grid_size, components)
+    #path, path_names = initiate_astar(grid, connections, local_connections, components, area_coordinates)
+    #components = write_traces(components, path, path_names, port_coord)
 
-    logger.info("Starting Drawing Results")
-    draw_result(grid_size, components, path, used_area)
-    logger.info("Finished Drawing Results")
+    #logger.info("Starting Drawing Results")
+    #draw_result(grid_size, components, path, used_area)
+    #logger.info("Finished Drawing Results")
+
+    # Save found components to JSON file
+    components = load_from_json(file_name="results/Comparator_OTA_complete_generation_data.json")
 
     # Create layout
     MagicLayoutCreator(project_properties=project_properties, components=components)
 
-    # Save found components to JSON file
-    save_to_json(objects=components, file_name="json_tool/components.json")
 
     # Debug log of all components
     logger.debug(f"Components registered: ")
