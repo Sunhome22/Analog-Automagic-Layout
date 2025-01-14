@@ -1,3 +1,5 @@
+#!/home/bjorn/Analog-Automagic-Layout/venv/bin/python
+
 # ==================================================================================================================== #
 # Copyright (C) 2024 Bjørn K.T. Solheim, Leidulv Tønnesland
 # ==================================================================================================================== #
@@ -93,7 +95,6 @@ def main():
 
     # Create layout
     MagicLayoutCreator(project_properties=project_properties, components=components)
-
 
     # Debug log of all components
     logger.debug(f"Components registered: ")
