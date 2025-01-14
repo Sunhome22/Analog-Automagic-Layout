@@ -1,0 +1,6 @@
+Place components in layout. Take a grid sized square wire and attempt to place it on each square
+of the grid. Do this for all layers and create a map of where wire placement is allowed based on DRC results.
+Feed this information back into the A* algorithm or potentially a DQN neural network. This way we can figure out
+where wires are allowed to be placed.
+
+Or instead maybe we can just run DRC checks everytime we want to place a wire segment to see if it is valid
