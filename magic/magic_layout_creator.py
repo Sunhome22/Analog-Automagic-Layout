@@ -182,18 +182,19 @@ class MagicLayoutCreator:
         return via_count
 
     def __add_trace_connection_point(self, trace: Trace):
-        """Creates a connection point based on which layer a trace want to connect to a port"""
+        """Creates a connection point based on which layer a trace wants to connect to a port.
+        Multiple connections to a port will show as the connection point being added multiple times"""
 
         # Iterate over all components
         for component in self.components:
 
-            # Filter
+            # Filter out things that does not have ports
             if not isinstance(component, (Pin, CircuitCell, Trace)):
 
                 # Iterate over all ports for every segment of the current trace
                 for port in component.layout_ports:
-
                     for segment in trace.segments:
+
                         # Get the position of the port in final layout by adding transform matrix details
                         port_pos = RectArea(x1=port.area.x1 + component.transform_matrix.c,
                                             x2=port.area.x2 + component.transform_matrix.c,
@@ -206,8 +207,9 @@ class MagicLayoutCreator:
 
                             self.__via_placer(start_layer=segment.layer, end_layer=port.layer, area=port_pos)
 
-                            self.logger.info(f"Connection point placed for port '{port.type}' of '{component.name}' "
-                                             f"between layer '{port.layer}' and '{segment.layer}'")
+                            self.logger.info(f"Connection placed on port '{port.type}' of '{component.name}' "
+                                             f"between layer '{port.layer}' and '{segment.layer}' "
+                                             f"for trace '{trace.name}'")
 
     def get_inbetween_metal_layers(self, start_layer: str, end_layer: str, metal_layer_list: list):
         """Gets all metal layers, including start and end layer, and deals with if their positions are
