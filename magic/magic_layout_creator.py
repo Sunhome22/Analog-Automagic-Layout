@@ -35,8 +35,10 @@ class MagicLayoutCreator:
         self.current_component_library_path = None
         self.components = components
         self.magic_file_lines = []
-        self.cells_added = 0
-        self.traces_added = 0
+        self.total_components_added = 0
+        self.total_connection_points_added = 0
+        self.total_traces_added = 0
+        self.total_vias_added = 0
 
         self.logger = get_a_logger(__name__)
         self.__file_creator()
@@ -67,16 +69,6 @@ class MagicLayoutCreator:
             rect_area = RectArea()
             rect_area.set(box)
             self.magic_file_lines.append(f"rect {rect_area.x1} {rect_area.y1} {rect_area.x2} {rect_area.y2}")
-
-    def __write_magic_file(self):
-        magic_file_path = os.path.expanduser(f"{self.project_directory}design/"
-                                             f"{self.project_lib_name}/{self.project_cell_name}.mag")
-
-        with open(magic_file_path, "w") as file:
-            file.write("\n".join(self.magic_file_lines))
-
-        self.logger.info(f"Process complete! File '{self.project_cell_name}.mag' was created. "
-                         f"Components: {self.cells_added} Traces: {self.traces_added}")
 
     def __place_box(self, layer: str, area: RectArea):
         """Adds a box to the list of magic file lines"""
@@ -112,62 +104,45 @@ class MagicLayoutCreator:
             metal_area = RectArea(x1=area.x1 - VIA_OFFSET, y1=area.y1 - VIA_OFFSET,
                                   x2=area.x2 + VIA_OFFSET, y2=area.y2 + VIA_OFFSET)
 
-        # Place all necessary metal(s)
+        # Place all required metal(s)
         if metal_layers is not None:
             for metal_layer in metal_layers:
                 self.__place_box(layer=metal_layer, area=metal_area)
 
-        # Place all necessary via(s)
+        # Place all required via(s)
         if via_layers is not None:
             for via_layer in via_layers:
                 self.__place_box(layer=via_layer, area=area)
 
-    def __add_trace_vias(self, component: Trace) -> int:
+    def __add_trace_vias(self, trace: Trace) -> int:
         """Checks for overlap between segments of a trace in different layers and adds vias."""
         last_segment_layer = None
         previous_segment = None
         via_count = 0
 
-        for segment in component.segments:
-            # Process only if on a different layer
+        for segment in trace.segments:
+
             if last_segment_layer != segment.layer:
                 last_segment_layer = segment.layer
 
                 if previous_segment:
+
                     # Calculate overlap
                     overlap_x1 = max(previous_segment.area.x1, segment.area.x1)
                     overlap_y1 = max(previous_segment.area.y1, segment.area.y1)
                     overlap_x2 = min(previous_segment.area.x2, segment.area.x2)
                     overlap_y2 = min(previous_segment.area.y2, segment.area.y2)
 
-                    x_test = int((overlap_x2 - overlap_x1)/2)
-                    y_test = int((overlap_y2 - overlap_y1)/2)
-                    #print(x_test)
-                    #print(y_test)
-                    #print(overlap_x1, overlap_y1, overlap_x2, overlap_y2)
                     # Skip if no overlap
                     if overlap_x1 < overlap_x2 and overlap_y1 < overlap_y2:
-                        # Determine offsets
-
-                        offset_x = 0
-                        offset_y = 0
-
-                        if previous_segment.area.x1 > segment.area.x1:
-                            offset_x = -15
-                            offset_y = 0
-
-                        if previous_segment.area.y1 > segment.area.y1:
-                            offset_x = -15
-                            offset_y = -15
 
                         # Define via area
                         via_area = RectArea(
-                            x1=overlap_x1 - x_test,
-                            y1=overlap_y1 - y_test,
-                            x2=overlap_x2 + x_test,
-                            y2=overlap_y2 + y_test
+                            x1=overlap_x1,
+                            y1=overlap_y1,
+                            x2=overlap_x2,
+                            y2=overlap_y2
                         )
-
                         # Place the via
                         self.__via_placer(
                             start_layer=previous_segment.layer,
@@ -185,27 +160,27 @@ class MagicLayoutCreator:
         """Creates a connection point based on which layer a trace wants to connect to a port.
         Multiple connections to a port will show as the connection point being added multiple times"""
 
-        # Iterate over all components
+        # Iterate over all components and filter out things that does not have ports
         for component in self.components:
-
-            # Filter out things that does not have ports
             if not isinstance(component, (Pin, CircuitCell, Trace)):
 
                 # Iterate over all ports for every segment of the current trace
                 for port in component.layout_ports:
                     for segment in trace.segments:
 
-                        # Get the position of the port in final layout by adding transform matrix details
+                        # Get port position in finished layout by adding transform matrix coordinates
                         port_pos = RectArea(x1=port.area.x1 + component.transform_matrix.c,
                                             x2=port.area.x2 + component.transform_matrix.c,
                                             y1=port.area.y1 + component.transform_matrix.f,
                                             y2=port.area.y2 + component.transform_matrix.f)
 
-                        # Check for overlap between the port and the segment
+                        # Check for overlap between the port and the segment and add vias accordingly
                         if not (segment.area.x2 < port_pos.x1 or segment.area.x1 > port_pos.x2 or
                                 segment.area.y2 < port_pos.y1 or segment.area.y1 > port_pos.y2):
 
                             self.__via_placer(start_layer=segment.layer, end_layer=port.layer, area=port_pos)
+
+                            self.total_connection_points_added += 1
 
                             self.logger.info(f"Connection placed on port '{port.type}' of '{component.name}' "
                                              f"between layer '{port.layer}' and '{segment.layer}' "
@@ -225,14 +200,14 @@ class MagicLayoutCreator:
             self.logger.error(f"Could not get layers inbetween '{start_layer}' to '{end_layer}'")
 
     def __get_inbetween_via_layers(self, start_layer: str, end_layer: str, via_map: dict):
-        """Returns a list of layers between a start layer and an end layer based on a map"""
+        """Returns a list of layers between a start layer and an end layer based on a map using
+           the Breath first search algorithm"""
 
         try:
             graph = {}
             for (start, end), intermediate in via_map.items():
                 graph.setdefault(start, []).append((end, intermediate))
 
-            # Breadth first search (typical implementation)
             queue = deque([(start_layer, [])])  # current node, intermediates so far
             visited = set()
 
@@ -254,25 +229,27 @@ class MagicLayoutCreator:
         except ValueError:
             self.logger.error(f"Could not get layers inbetween '{start_layer}' to '{end_layer}'")
 
-    def __trace_creator(self, component: Trace):
+    def __trace_creator(self, trace: Trace):
         via_count = 0
         segment_count = 0
 
-        # Check if segments are valid
-        for segment in component.segments:
+        # Basic check if segments are valid (no DRC)
+        for segment in trace.segments:
             if segment.area.x2 < segment.area.x1 or segment.area.y2 < segment.area.y1:
-                self.logger.error(f"For trace '{component.name}' segment area {segment.area} is invalid!")
+                self.logger.error(f"For trace '{trace.name}' segment area {segment.area} is invalid!")
 
         # Add segments
-        for segment in component.segments:
+        for segment in trace.segments:
             self.__place_box(layer=segment.layer, area=segment.area)
             segment_count += 1
 
         # Add vias at intersection points between segments that move up/down in layers
-        via_count += self.__add_trace_vias(component)
-        self.traces_added += 1
-        self.logger.info(f"{component.instance} '{component.name}' placed with segments: {segment_count}"
+        via_count += self.__add_trace_vias(trace=trace)
+        self.logger.info(f"{trace.instance} '{trace.name}' placed with segments: {segment_count}"
                          f" vias: {via_count}")
+
+        self.total_vias_added += via_count
+        self.total_traces_added += 1
 
     def __cell_creator(self, component):
 
@@ -288,7 +265,8 @@ class MagicLayoutCreator:
             f"box {component.bounding_box.x1} {component.bounding_box.y1} {component.bounding_box.x2}"
             f" {component.bounding_box.y2}"
         ])
-        self.cells_added += 1
+        self.total_components_added += 1
+
         self.logger.info(f"{component.instance} '{component.name} {component.layout_name}' "
                          f"placed with {component.transform_matrix}")
 
@@ -305,7 +283,7 @@ class MagicLayoutCreator:
     def __file_creator(self):
         self.__magic_file_top_template()
 
-        # Place transistors, resistors or capacitors
+        # Place functional components
         for component in self.components:
             if isinstance(component, (Transistor, Resistor, Capacitor)):
                 self.__cell_creator(component=component)
@@ -318,7 +296,7 @@ class MagicLayoutCreator:
         # Place traces
         for component in self.components:
             if isinstance(component, Trace):
-                self.__trace_creator(component=component)
+                self.__trace_creator(trace=component)
 
         # Labels and properties
         self.magic_file_lines.extend([
@@ -331,5 +309,18 @@ class MagicLayoutCreator:
 
         # Write everything to file
         self.__write_magic_file()
+
+    def __write_magic_file(self):
+        magic_file_path = os.path.expanduser(f"{self.project_directory}design/"
+                                             f"{self.project_lib_name}/{self.project_cell_name}.mag")
+
+        with open(magic_file_path, "w") as file:
+            file.write("\n".join(self.magic_file_lines))
+
+        self.logger.info(f"Process complete! File '{self.project_cell_name}.mag' was created. "
+                         f"| Functional Components: {self.total_components_added} | "
+                         f"Connection Points: {self.total_connection_points_added} | "
+                         f"Traces: {self.total_traces_added} | Vias: {self.total_vias_added} |")
+
 
 

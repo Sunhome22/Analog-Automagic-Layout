@@ -66,7 +66,7 @@ project_properties = ProjectProperties(directory="~/aicex/ip/jnw_bkle_sky130A/",
 def main():
 
     # Create a logger
-    logger = get_a_logger(__name__)
+    #logger = get_a_logger(__name__)
 
     # Extracts component information from SPICE file
     #components = SPICEparser(project_properties=project_properties)

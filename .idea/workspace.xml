@@ -5,8 +5,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f7791a66-c797-4448-a536-1f4db186a974" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/pyproject.toml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TODO.txt" beforeDir="false" afterPath="$PROJECT_DIR$/TODO.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/circuit/circuit_components.py" beforeDir="false" afterPath="$PROJECT_DIR$/circuit/circuit_components.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/circuit/circuit_spice_parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/circuit/circuit_spice_parser.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/magic/magic_component_parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/magic/magic_component_parser.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/magic/magic_layout_creator.py" beforeDir="false" afterPath="$PROJECT_DIR$/magic/magic_layout_creator.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/results/Comparator_OTA_complete_generation_data.json" beforeDir="false" afterPath="$PROJECT_DIR$/results/Comparator_OTA_complete_generation_data.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -24,6 +32,11 @@
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="\\wsl$\Ubuntu-22.04\home\bjorn\Analog-Automagic-Layout\src" />
+    </key>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>

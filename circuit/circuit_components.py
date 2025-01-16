@@ -77,11 +77,11 @@ class LayoutPort:
         if isinstance(self.area, dict):
             self.area = RectArea(**self.area)
 
-# ================================================ Component classes ===================================================
+# =========================================== Functional Component classes =============================================
 
 
 @dataclass
-class DefaultComponent:
+class FunctionalComponent:
     instance: str = field(default_factory=str)
     number_id: int = field(default_factory=int)
     name: str = field(default_factory=str)
@@ -109,18 +109,20 @@ class DefaultComponent:
 
 
 @dataclass
-class Transistor(DefaultComponent):
+class Transistor(FunctionalComponent):
     overlap_distance: OverlapDistance = field(default_factory=OverlapDistance)
 
 
 @dataclass
-class Resistor(DefaultComponent):
+class Resistor(FunctionalComponent):
     pass
 
 
 @dataclass
-class Capacitor(DefaultComponent):
+class Capacitor(FunctionalComponent):
     pass
+
+# ============================================ Structural Component classes ============================================
 
 
 @dataclass

@@ -65,12 +65,19 @@ class SPICEparser:
 
             # Copy each line of the file into a list
             with open(spice_file_path, "r") as spice_file:
+
                 for line in spice_file:
-                    self.spice_file_content.append(line)
+                    # Check for missing symbols
+                    if re.search(r'\bIS MISSING\b', line):
+                        self.logger.error(f"Component '{line.split()[1]}' is missing the symbol '{line.split()[3]}'")
+                    else:
+                        self.spice_file_content.append(line)
+
                 self.logger.info(f"SPICE content copied into program")
 
         except FileNotFoundError:
-            self.logger.error(f"The file {self.project_directory}work/xsch/{self.project_cell_name}.spice' was not found.")
+            self.logger.error(f"The file {self.project_directory}work/xsch/"
+                              f"{self.project_cell_name}.spice' was not found.")
 
     def __rebuild_spice_lines_with_plus_symbol(self):
         # Removes added "+" symbols to long lines in the SPICE file

@@ -70,7 +70,7 @@ class MagicComponentsParser:
                     self.logger.error(f"The file {layout_file_path} was not found.")
 
         # Process complete
-        self.logger.info(f"Process complete! Components updated: {updated_components}")
+        self.logger.info(f"Process complete! Functional components updated: {updated_components}")
 
         return self.components
 
