@@ -2,6 +2,14 @@
 [project]
 name = "Analog-Automagic-Layout"
 version = "1.0.0"
-dependencies = ["PuLP==2.9.0", "setuptools==75.1.0", "wheel==0.44.0", "pillow==10.4.0", "pip==23.2.1", "numpy==2.1.1"]
+dependencies = [
+    "PuLP==2.9.0",
+    "setuptools==75.1.0",
+    "wheel==0.44.0",
+    "pillow==10.4.0",
+    "pip==23.2.1",
+    "numpy==2.1.1",
+    "matplotlib==3.10.0"
+]
 
 

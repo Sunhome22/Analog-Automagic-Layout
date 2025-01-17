@@ -1,0 +1,10 @@
+Metadata-Version: 2.2
+Name: Analog-Automagic-Layout
+Version: 1.0.0
+License-File: LICENSE
+Requires-Dist: PuLP==2.9.0
+Requires-Dist: setuptools==75.1.0
+Requires-Dist: wheel==0.44.0
+Requires-Dist: pillow==10.4.0
+Requires-Dist: pip==23.2.1
+Requires-Dist: numpy==2.1.1
