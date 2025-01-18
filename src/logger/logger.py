@@ -29,8 +29,8 @@ LIGHT_BLUE = "\033[38;2;51;153;255m"
 ORANGE = "\033[38;2;255;153;51m"
 YELLOW = "\033[38;2;255;255;70m"
 PURPLE = "\033[38;2;153;51;255m"
-CYAN ="\033[38;2;0;204;204m"
-PINK ="\033[38;2;255;51;255m"
+CYAN = "\033[38;2;0;204;204m"
+PINK = "\033[38;2;255;51;255m"
 # =================================================== Logging ==========================================================
 
 
@@ -41,7 +41,7 @@ def get_a_logger(name):
         "__main__": RED,
         "circuit.circuit_spice_parser": LIGHT_GREEN,
         "magic.magic_component_parser": LIGHT_BLUE,
-        "json_tool.json_converter": ORANGE,
+        "json_converter.json_converter": ORANGE,
         "magic.magic_layout_creator": YELLOW,
         "linear_optimization.linear_optimization":PURPLE,
         "connections.connections": CYAN,
@@ -72,7 +72,7 @@ def get_a_logger(name):
     )
     args = parser.parse_args()
 
-    # Override log level if log level argument is provided
+    # Override if log level argument is provided
     if args.log_level:
         log_level = getattr(logging, args.log_level)
         logger.setLevel(log_level)

@@ -20,7 +20,7 @@ from circuit.circuit_spice_parser import SPICEparser
 from magic.magic_layout_creator import MagicLayoutCreator
 from dataclasses import dataclass, asdict
 from magic.magic_component_parser import MagicComponentsParser
-from json_tool.json_converter import save_to_json, load_from_json
+from json_converter.json_converter import save_to_json, load_from_json
 from logger.logger import get_a_logger
 from circuit.circuit_components import Trace, RectAreaLayer, RectArea
 from astar.a_star import initiate_astar
@@ -29,7 +29,8 @@ from linear_optimization.linear_optimization import *
 from grid.generate_grid import generate_grid
 from connections.connections import *
 from traces.write_trace import write_traces
-
+from drc.drc_checking import DRCchecking
+import os
 # ========================================== Set-up classes and constants ==============================================
 
 # Define grid size and objects
@@ -47,6 +48,7 @@ class ProjectProperties:
     cell_name: str
     lib_name: str
     component_libraries: list[ComponentLibrary]
+    main_file_directory: str
 
 
 # Component libraries
@@ -58,7 +60,8 @@ misc_lib = ComponentLibrary(name="AALMISC", path="~/aicex/ip/jnw_bkle_sky130A/de
 project_properties = ProjectProperties(directory="~/aicex/ip/jnw_bkle_sky130A/",
                                        cell_name="JNW_BKLE",
                                        lib_name="JNW_BKLE_SKY130A",
-                                       component_libraries=[atr_lib, tr_lib, misc_lib])
+                                       component_libraries=[atr_lib, tr_lib, misc_lib],
+                                       main_file_directory=os.path.dirname(os.path.abspath(__file__)))
 
 # ===================================================== Main ===========================================================
 
@@ -91,10 +94,13 @@ def main():
     #logger.info("Finished Drawing Results")
 
     # Save found components to JSON file
-    components = load_from_json(file_name="results/Comparator_OTA_complete_generation_data.json")
+    components = load_from_json(file_name=f"{project_properties.main_file_directory}/results/"
+                                          f"Comparator_OTA_complete_generation_data.json")
 
     # Create layout
     MagicLayoutCreator(project_properties=project_properties, components=components)
+
+    DRCchecking(project_properties=project_properties)
 
     # Debug log of all components
     logger.debug(f"Components registered: ")

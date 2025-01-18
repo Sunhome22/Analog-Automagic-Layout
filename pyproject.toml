@@ -1,15 +1,15 @@
 # pip install -e .
 [project]
 name = "Analog-Automagic-Layout"
-version = "1.0.0"
-dependencies = [
-    "PuLP==2.9.0",
-    "setuptools==75.1.0",
-    "wheel==0.44.0",
-    "pillow==10.4.0",
-    "pip==23.2.1",
-    "numpy==2.1.1",
-    "matplotlib==3.10.0"
+version = "2.0.0"
+description = "Generates a Magic VLSI layout from an Xschem schematic"
+readme = {file = "README.md"}
+license = {file = "LICENSE" }
+requires-python = ">=3.10"
+authors = [
+    { name = "Bjørn K.T. Solheim", email = "bjorn_solheim@hotmail.no" },
+    { name = "Leidulv Tønnesland", email = "leidulv.tonnesland@gmail.com" },
 ]
+dependencies = {file = "requirements.txt"}
 
 

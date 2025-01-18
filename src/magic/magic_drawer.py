@@ -16,6 +16,7 @@ from PIL import Image, ImageDraw, ImageFont
 
 
 def get_black_white_pixel_boxes_from_image(image_path, scale_factor=3):
+    """ not used """
 
     # Open the image
     image = Image.open(image_path)
@@ -45,6 +46,8 @@ def get_black_white_pixel_boxes_from_image(image_path, scale_factor=3):
 
 
 def get_pixel_boxes_from_text(text, font_path="/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", font_size=1000):
+    """ not used """
+
     try:
         font = ImageFont.truetype(font_path, font_size)
     except IOError:

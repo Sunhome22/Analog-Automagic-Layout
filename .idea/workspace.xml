@@ -5,37 +5,28 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f7791a66-c797-4448-a536-1f4db186a974" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/drc/drc_checking.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/drc/log_drc_info.tcl" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TODO.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/TODO.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/astar/a_star.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/astar/a_star.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/circuit/circuit_components.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/circuit/circuit_components.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/circuit/circuit_spice_parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/circuit/circuit_spice_parser.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/connections/connections.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/connections/connections.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/draw_result/draw.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/draw_result/draw.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/grid/generate_grid.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/grid/generate_grid.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/json_tool/components.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/json_tool/components.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/json_tool/json_converter.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/json_tool/json_converter.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/linear_optimization/linear_optimization.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/linear_optimization/linear_optimization.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/logger/logger.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/logger/logger.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/magic/magic_component_parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/magic/magic_component_parser.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/magic/magic_drawer.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/magic/magic_drawer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/magic/magic_layout_creator.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/magic/magic_layout_creator.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/TODO.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/TODO.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pyproject.toml" beforeDir="false" afterPath="$PROJECT_DIR$/pyproject.toml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/results/Carsten Wulff in layout.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/results/Carsten Wulff in layout.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/results/Comparator_OTA_complete_generation_data.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/results/Comparator_OTA_complete_generation_data.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/results/OTA_comparator_placement_in_layout.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/results/OTA_comparator_placement_in_layout.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/results/OTA_comparator_placement_with_traces_1.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/results/OTA_comparator_placement_with_traces_1.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/results/OTA_comparator_placement_with_traces_2.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/results/OTA_comparator_placement_with_traces_2.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/results/OTA_placement _and_routing_matplotlib.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/results/OTA_placement _and_routing_matplotlib.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/results/Simplified_trace_test_result.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/results/Simplified_trace_test_result.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/results/proposed_placement_and_routing.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/results/proposed_placement_and_routing.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/traces/write_trace.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/traces/write_trace.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/json_tool/components.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/json_converter/components.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/json_tool/json_converter.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/json_converter/json_converter.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/logger/logger.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/logger/logger.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/magic/magic_drawer.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/magic/magic_drawer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
