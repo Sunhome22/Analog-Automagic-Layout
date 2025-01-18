@@ -18,6 +18,8 @@ import os
 import subprocess
 import re
 from logger.logger import get_a_logger
+import matplotlib.pyplot as plt
+import matplotlib.patches as patches
 # ================================================= DRC checker ========================================================
 
 
@@ -29,7 +31,17 @@ class DRCchecking:
         self.project_cell_name = project_properties.cell_name
         self.main_file_directory = project_properties.main_file_directory
         self.logger = get_a_logger(__name__)
+
         self.__create_drc_log()
+        drc_log = self.__read_drc_log()
+
+        nested_errors = drc_log[2]
+
+        # Create a new figure and axis
+        fig, ax = plt.subplots(figsize=(12, 12))
+
+        # Save the plot to an image file
+        # plt.savefig('drc_erros_plot.png', dpi=300, bbox_inches='tight')  # Save as PNG with high resolution
 
     def __create_drc_log(self):
         """Runs a Tcl script that creates a result log from running a series of DRC related magic commands"""
@@ -48,6 +60,18 @@ class DRCchecking:
         except subprocess.CalledProcessError as e:
             self.logger.error(f"'magic ../design/{self.project_lib_name}/{self.project_cell_name}.mag "
                               f"-dnull -noconsole < {tcl_script_path}' failed with {e.stderr}")
+
+    def __read_drc_log(self) -> list:
+        work_directory = os.path.expanduser(f"{self.project_directory}work/")
+        drc_log = []
+        try:
+            with open(f"{work_directory}/drc_output.log", "r") as drc_output_log:
+                for text_line in drc_output_log:
+                    drc_log.append(text_line)
+                return drc_log
+
+        except FileNotFoundError:
+            self.logger.error(f"The file {work_directory}/drc_output.log was not found.")
 
 
 

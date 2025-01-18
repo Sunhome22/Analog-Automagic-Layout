@@ -5,16 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f7791a66-c797-4448-a536-1f4db186a974" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/drc/drc_checking.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/drc/log_drc_info.tcl" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/TODO.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/TODO.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pyproject.toml" beforeDir="false" afterPath="$PROJECT_DIR$/pyproject.toml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/json_tool/components.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/json_converter/components.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/json_tool/json_converter.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/json_converter/json_converter.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/logger/logger.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/logger/logger.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/magic/magic_drawer.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/magic/magic_drawer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/drc/drc_checking.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/drc/drc_checking.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
