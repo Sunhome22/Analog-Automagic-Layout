@@ -2,10 +2,12 @@ astar
 circuit
 connections
 draw_result
+drc
 grid
-json_tool
+json_converter
 linear_optimization
 logger
 magic
+main
 results
 traces

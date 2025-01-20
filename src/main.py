@@ -1,5 +1,6 @@
-#!/home/bjorn/Analog-Automagic-Layout/venv/bin/python
+#!/pri/bjs1/Analog-Automagic-Layout/venv/bin/python
 
+# #!/home/bjorn/Analog-Automagic-Layout/venv/bin/python
 # ==================================================================================================================== #
 # Copyright (C) 2024 Bjørn K.T. Solheim, Leidulv Tønnesland
 # ==================================================================================================================== #

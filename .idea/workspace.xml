@@ -32,8 +32,15 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "Bjørn__v2"
+  }
+}]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\bjs1\Analog-Automagic-Layout\src\drc" />
       <recent name="\\wsl$\Ubuntu-22.04\home\bjorn\Analog-Automagic-Layout\docs" />
       <recent name="\\wsl$\Ubuntu-22.04\home\bjorn\Analog-Automagic-Layout" />
       <recent name="\\wsl$\Ubuntu-22.04\home\bjorn\Analog-Automagic-Layout\src" />
@@ -42,7 +49,7 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-python-sdk-975db3bf15a3-31b6be0877a2-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-241.18034.82" />
+        <option value="bundled-python-sdk-98f27166c754-ba05f1cad1b1-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-242.21829.153" />
       </set>
     </attachedChunks>
   </component>
