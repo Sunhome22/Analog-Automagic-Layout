@@ -25,7 +25,6 @@ class Connection:
     end_comp: str
     end_area: str
     net: str
-
     def __init__(self, starting_comp: str, starting_area: str, end_comp: str, end_area: str, net: str):
 
         self.starting_comp = starting_comp
@@ -35,146 +34,92 @@ class Connection:
         self.net = net
 
 
+class ConnectionLists:
 
-def remove_duplicates_from_list(dict):
-    temp = {}
+    def __init__(self, components):
+        self.components = components
 
-    for key, value in dict.items():
-        if value not in temp.values():
-            temp[key] = value
 
-    return temp
+        self.local_connections = []
+        self.connections = []
+        self.single_connection = []
+        self.overlap_dict = {}
 
-def local_nets(local_connection_list):
-    local_connection_nets = {}
 
-    for local_conn in local_connection_list:
 
-        local_connection_nets[local_connection_list[local_conn].starting_comp]={ local_connection_list[local_conn].starting_area + local_connection_list[local_conn].end_area}
-    return local_connection_nets
+    def local_connection_list(self):
 
-def connection_list(objects):
-
-    object_list = objects
-    connections = {}
-    local_connections = {}
-    single_connection = {}
-    i = 0
-    for  obj in object_list:
-
-        if not isinstance(obj, Pin) and not isinstance(obj, CircuitCell):
-            ports = obj.schematic_connections
-
-            for key in ports:
-                for key2 in ports:
-
-                    if key != key2:
-                        entry = [{'starting_comp': obj.number_id,  'starting_area': key, 'end_comp': obj.number_id, 'end_area': key2, 'net': ports[key]},
-                                 {'starting_comp': obj.number_id,  'starting_area': key2, 'end_comp': obj.number_id, 'end_area': key, 'net': ports[key]}]
-                        if ports[key] == ports[key2] and not any(isinstance(obj, Connection) and obj.__dict__ == target for target in entry for obj in local_connections.values()):
-                            local_connections[i]= Connection(obj.number_id, key, obj.number_id, key2, ports[key])
-                            i+=1
-            local_connection_area = local_nets(local_connections)
-    i=0
-    for obj in object_list:
-        for obj2 in object_list:
-            if not isinstance(obj, Pin) and not isinstance(obj2, Pin) and not isinstance(obj, CircuitCell) and not isinstance(obj2, CircuitCell):
-
+        for obj in self.components:
+            if not isinstance(obj, (Pin, CircuitCell)):
                 ports = obj.schematic_connections
-                ports2 = obj2.schematic_connections
+
+                for key in ports:
+                    for key1 in ports:
+
+                        if key != key1:
+                            entry = [Connection(obj.number_id, key, obj.number_id,key1,ports[key]), Connection(obj.number_id, key1, obj.number_id, key, ports[key])]
+                            if ports[key] == ports[key1] and not any(isinstance(obj, Connection) and obj == target for target in entry for obj in self.local_connections):
+                                self.local_connections.append(Connection(obj.number_id, key, obj.number_id, key1, ports[key]))
 
 
-                if obj != obj2 and obj.cell == obj2.cell:
+    def connection_list(self):
 
-                    for key in ports:
-                        element_appended = False
-                        for key2 in ports2:
-                            key_u1 = key
-                            key_u2 = key2
-                            if ports[key] == ports2[key2]:
-
-                                for local_con in local_connections:
-
-                                    area = local_connections[local_con].starting_area + local_connections[local_con].end_area
-
-                                    if obj.number_id == local_connections[local_con].starting_comp and (key == area[0] or key == area[1]):
-                                        key_u1 = area
-
-
-                                    if obj2.number_id == local_connections[local_con].starting_comp and (key2 == area[0] or key2 == area[1]):
-                                        key_u2 = area
-
-
-                                entry = [{'starting_comp': obj.number_id, 'starting_area': key_u1, 'end_comp': obj2.number_id,
-                                      'end_area': key_u2, 'net': ports[key]},
-                                     {'starting_comp': obj2.number_id, 'starting_area': key_u2, 'end_comp': obj.number_id,
-                                      'end_area': key_u1, 'net': ports[key]}]
-
-                                if not any(isinstance(obj, Connection) and obj.__dict__ == target for target in entry for obj in connections.values()):
-
-                                    connections[i] = Connection(obj.number_id,key_u1,obj2.number_id, key_u2, ports[key])
-                                    i+=1
-                                element_appended = True
-
-
-                        if not element_appended:
-                            single_connection[-1] =  Connection(obj.number_id, key, "", "", ports[key])
-
-
-    connections = remove_duplicates_from_list(connections)
-
-
-    return single_connection, local_connections, connections
-
-
-def overlap_transistors(comp):
-    n = []
-    p = []
-    dict = {}
-    for obj in comp:
-        if isinstance(obj, Transistor):
-            if obj.type == "pmos":
-                p.append(obj)
-            elif obj.type== "nmos":
-                n.append(obj)
-            else:
-                logger.error(f"Transistor type '{obj.type}' not handled yet")
-
-    n_duplicate = n[:]
-    p_duplicate = p[:]
-    top = []
-    side = []
+        object_list = self.components
 
 
 
-    for i in n:
-        for j in n_duplicate:
-            if i != j:
+        i=0
+        for object1 in object_list:
+            for object2 in object_list:
+                if not isinstance(object1, (Pin, CircuitCell)) and not isinstance(object2, (Pin,CircuitCell)):
 
-                if (i.bounding_box.x2 - i.bounding_box.x1) == (j.bounding_box.x2 - j.bounding_box.x1):
-                    top.append([i.number_id, j.number_id])
-
-                if (i.bounding_box.y2 - i.bounding_box.y1) == (j.bounding_box.y2 - j.bounding_box.y1):
-                    side.append([i.number_id, j.number_id])
-        n_duplicate.remove(i)
-    for k in p:
-        for l in p_duplicate:
-            if k != l:
-
-                if (k.bounding_box.x2 - k.bounding_box.x1) == (l.bounding_box.x2 - l.bounding_box.x1):
-                    top.append([k.number_id, l.number_id])
-
-                if (k.bounding_box.y2 - k.bounding_box.y1) == (l.bounding_box.y2 - l.bounding_box.y1):
-                    side.append([k.number_id, l.number_id])
-        p_duplicate.remove(k)
-
-    dict["side"] = side
-    dict["top"] = top
+                    object1_ports = object1.schematic_connections
+                    object2_ports = object2.schematic_connections
 
 
-    return dict
+                    if object1 != object2 and object1.cell == object2.cell:
+
+                        for p1 in object1_ports:
+                            element_appended = False
+                            for p2 in object2_ports:
+                                if object1_ports[p1] == object2_ports[p2]:
+
+                                    entry = [Connection(object1.number_id, p1,  object2.number_id, p2,  object1_ports[p1]),Connection(object2.number_id, p2, object1.number_id, p1, object2_ports[p2])]
+
+                                    if not any(isinstance(obj, Connection) and obj == target for target in entry for obj in self.connections):
+
+                                        self.connections.append(Connection(object1.number_id,p1,object2.number_id, p2, object1_ports[p1]))
+
+                                        element_appended = True
 
 
+                            if not element_appended:
+                                self.single_connection[-1] =  Connection(object1.number_id, p1, "", "", object1[p1])
+
+    def _overlap_transistors(self):
+        n_transistors = []
+        p_transistors = []
+
+        for obj in self.components:
+            if isinstance(obj, Transistor):
+                if obj.type == "pmos":
+                    p_transistors.append(obj)
+                elif obj.type== "nmos":
+                    n_transistors.append(obj)
+                else:
+                    logger.error(f"Transistor type '{obj.type}' not handled yet")
+
+
+        top, side = overlap_pairs(n_transistors, n_transistors)
+        new_top, new_side = overlap_pairs(p_transistors,p_transistors)
+
+        self.overlap_dict["side"] = side + new_side
+        self.overlap_dict["top"] = top + new_top
+
+
+
+
+###----------Usikker på om denne blir brukt---------------####
 def diff_components(components):
     diff_pairs = []
     comp = components[:]
@@ -184,3 +129,27 @@ def diff_components(components):
                 diff_pairs.append([obj, obj1])
         comp.remove(obj)
     return diff_pairs
+
+
+def overlap_pairs(list1, list2):
+    top = []
+    side = []
+    for i in list1:
+        for j in list2:
+            if i != j:
+
+                if (i.bounding_box.x2 - i.bounding_box.x1) == (j.bounding_box.x2 - j.bounding_box.x1):
+                    top.append([i.number_id, j.number_id])
+
+                if (i.bounding_box.y2 - i.bounding_box.y1) == (j.bounding_box.y2 - j.bounding_box.y1):
+                    side.append([i.number_id, j.number_id])
+    return top, side
+
+def _remove_duplicates_from_list(dictionary):
+    temp = {}
+
+    for key, value in dictionary.items():
+        if value not in temp.values():
+            temp[key] = value
+
+    return temp

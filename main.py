@@ -74,8 +74,7 @@ def main():
                                        components=components.get_info()).get_info()
 
     # Algorithms
-    single_connection, local_connections, connections = connection_list(components)
-    overlap_dict = overlap_transistors(components)
+    single_connection, local_connections, connections, overlap_dict = connection_list(components)
 
     result = LinearOptimizationSolver(components, connections, local_connections, grid_size, overlap_dict)
     components = result.initiate_solver()

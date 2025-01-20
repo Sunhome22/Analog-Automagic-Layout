@@ -4,7 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a135f6d7-11a0-4bae-b20d-a00d3877ac06" name="Changes" comment="" />
+    <list default="true" id="a135f6d7-11a0-4bae-b20d-a00d3877ac06" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/Analog-Automagic-Layout.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Analog-Automagic-Layout.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/connections/connections.py" beforeDir="false" afterPath="$PROJECT_DIR$/connections/connections.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/grid/generate_grid.py" beforeDir="false" afterPath="$PROJECT_DIR$/grid/generate_grid.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -32,12 +39,14 @@
   "keyToString": {
     "Python.SPICE_parser.executor": "Run",
     "Python.circuit_spice_parser.executor": "Run",
+    "Python.con.executor": "Run",
     "Python.main.executor": "Run",
     "Python.test.executor": "Run",
     "Python.xschem.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "main",
-    "last_opened_file_path": "D:/bjs1/Analog-Automagic-Layout/json_tool",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "Leidulv__v2",
+    "last_opened_file_path": "C:/Users/Leidu/Documents/GitHub/Analog-Automagic-Layout",
     "settings.editor.selected.configurable": "preferences.pluginManager"
   }
 }]]></component>
@@ -55,7 +64,7 @@
       <recent name="D:\bjs1\Analog-Automagic-Layout\circuit" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.circuit_spice_parser">
+  <component name="RunManager">
     <configuration name="circuit_spice_parser" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="Analog-Automagic-Layout" />
       <option name="ENV_FILES" value="" />
@@ -65,7 +74,6 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="SDK_NAME" value="Python 3.12 (analog automagic layout)" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
@@ -115,7 +123,7 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-python-sdk-98f27166c754-ba05f1cad1b1-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-242.21829.153" />
+        <option value="bundled-python-sdk-495700d161d3-aa17d162503b-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-243.22562.220" />
       </set>
     </attachedChunks>
   </component>
@@ -132,5 +140,16 @@
   </component>
   <component name="UnknownFeatures">
     <option featureType="com.intellij.fileTypeFactory" implementationName="*.conf" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
 </project>
