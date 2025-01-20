@@ -13,7 +13,7 @@ src/circuit/circuit_components.py
 src/circuit/circuit_spice_parser.py
 src/connections/connections.py
 src/draw_result/draw.py
-src/drc/drc_checking.py
+src/drc/drc_checker.py
 src/grid/generate_grid.py
 src/json_converter/json_converter.py
 src/linear_optimization/linear_optimization.py

@@ -35,7 +35,14 @@ class DRCchecking:
         self.__create_drc_log()
         drc_log = self.__read_drc_log()
 
-        nested_errors = drc_log[2]
+        detailed_errors = drc_log[2]
+        new_detailed_errors = ""
+
+        for i in detailed_errors:
+            if i == "{{":
+                new_detailed_errors = detailed_errors.replace(" ", ",")
+        #print(new)
+
 
         # Create a new figure and axis
         fig, ax = plt.subplots(figsize=(12, 12))

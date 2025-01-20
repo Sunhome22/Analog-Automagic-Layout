@@ -2,6 +2,7 @@ Metadata-Version: 2.2
 Name: Analog-Automagic-Layout
 Version: 2.0.0
 Summary: Generates a Magic VLSI layout from an Xschem schematic
+Author-email: "Bjørn K.T. Solheim" <bjorn_solheim@hotmail.no>, Leidulv Tønnesland <leidulv.tonnesland@gmail.com>
 License:                     GNU GENERAL PUBLIC LICENSE
                                Version 3, 29 June 2007
         

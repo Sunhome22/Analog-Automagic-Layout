@@ -30,6 +30,7 @@ ORANGE = "\033[38;2;255;153;51m"
 YELLOW = "\033[38;2;255;255;70m"
 PURPLE = "\033[38;2;153;51;255m"
 CYAN = "\033[38;2;0;204;204m"
+DARK_CYAN = "\033[38;2;0;153;153m"
 PINK = "\033[38;2;255;51;255m"
 # =================================================== Logging ==========================================================
 
@@ -46,7 +47,8 @@ def get_a_logger(name):
         "linear_optimization.linear_optimization":PURPLE,
         "connections.connections": CYAN,
         "astar.a_star": BLUE,
-        "grid.generate_grid": PINK
+        "grid.generate_grid": PINK,
+        "drc.drc_checker": DARK_CYAN
     }
 
     file_spcific_color = color_table.get(name, WHITE)

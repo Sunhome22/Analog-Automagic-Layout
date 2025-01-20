@@ -30,7 +30,7 @@ from linear_optimization.linear_optimization import *
 from grid.generate_grid import generate_grid
 from connections.connections import *
 from traces.write_trace import write_traces
-from drc.drc_checking import DRCchecking
+from drc.drc_checker import DRCchecking
 import os
 # ========================================== Set-up classes and constants ==============================================
 

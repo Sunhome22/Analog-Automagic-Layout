@@ -69,7 +69,7 @@ class MagicLayoutCreator:
             rect_area.set(box)
             self.magic_file_lines.append(f"rect {rect_area.x1} {rect_area.y1} {rect_area.x2} {rect_area.y2}")
 
-    def __place_box(self, layer: str, area: RectArea):
+    def __place_box(self, layer: str, area: RectArea) -> object:
         """Adds a box to the list of magic file lines"""
         self.magic_file_lines.extend([
             f"<< {layer} >>",
