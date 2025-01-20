@@ -56,7 +56,6 @@ def draw_result(grid_size, objects, connections, used_area):
         for p in connections2:
             scaled_points.append( [(used_area[0]-500 + x , used_area[1]-500 + y ) for x, y in p])
         for con in scaled_points:
-
             x_coords, y_coords = zip(*con)
             plt.plot(x_coords, y_coords, marker = 'o', linestyle = '-')
 

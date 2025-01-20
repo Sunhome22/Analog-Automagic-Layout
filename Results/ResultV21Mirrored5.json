@@ -4,68 +4,149 @@
         "number_id": 0,
         "cell": "JNW_BKLE",
         "type": "ipin",
-        "name": "IBPS_2U"
+        "name": "IBPS_2U",
+        "layout": {
+            "layer": "",
+            "area": {
+                "x1": 0,
+                "y1": 0,
+                "x2": 0,
+                "y2": 0
+            }
+        }
     },
     {
         "instance": "Pin",
         "number_id": 1,
         "cell": "JNW_BKLE",
         "type": "ipin",
-        "name": "VSS"
+        "name": "VSS",
+        "layout": {
+            "layer": "",
+            "area": {
+                "x1": 0,
+                "y1": 0,
+                "x2": 0,
+                "y2": 0
+            }
+        }
     },
     {
         "instance": "Pin",
         "number_id": 2,
         "cell": "JNW_BKLE",
         "type": "opin",
-        "name": "IBNS_20U"
+        "name": "IBNS_20U",
+        "layout": {
+            "layer": "",
+            "area": {
+                "x1": 0,
+                "y1": 0,
+                "x2": 0,
+                "y2": 0
+            }
+        }
     },
     {
         "instance": "Pin",
         "number_id": 10,
         "cell": "COMP",
         "type": "ipin",
-        "name": "VSS"
+        "name": "VSS",
+        "layout": {
+            "layer": "",
+            "area": {
+                "x1": 0,
+                "y1": 0,
+                "x2": 0,
+                "y2": 0
+            }
+        }
     },
     {
         "instance": "Pin",
         "number_id": 11,
         "cell": "COMP",
         "type": "ipin",
-        "name": "VDD"
+        "name": "VDD",
+        "layout": {
+            "layer": "",
+            "area": {
+                "x1": 0,
+                "y1": 0,
+                "x2": 0,
+                "y2": 0
+            }
+        }
     },
     {
         "instance": "Pin",
         "number_id": 12,
         "cell": "COMP",
         "type": "ipin",
-        "name": "VIP"
+        "name": "VIP",
+        "layout": {
+            "layer": "",
+            "area": {
+                "x1": 0,
+                "y1": 0,
+                "x2": 0,
+                "y2": 0
+            }
+        }
     },
     {
         "instance": "Pin",
         "number_id": 13,
         "cell": "COMP",
         "type": "ipin",
-        "name": "VIN"
+        "name": "VIN",
+        "layout": {
+            "layer": "",
+            "area": {
+                "x1": 0,
+                "y1": 0,
+                "x2": 0,
+                "y2": 0
+            }
+        }
     },
     {
         "instance": "Pin",
         "number_id": 14,
         "cell": "COMP",
         "type": "opin",
-        "name": "VO"
+        "name": "VO",
+        "layout": {
+            "layer": "",
+            "area": {
+                "x1": 0,
+                "y1": 0,
+                "x2": 0,
+                "y2": 0
+            }
+        }
     },
     {
         "instance": "Pin",
         "number_id": 15,
         "cell": "COMP",
         "type": "ipin",
-        "name": "I_BIAS"
+        "name": "I_BIAS",
+        "layout": {
+            "layer": "",
+            "area": {
+                "x1": 0,
+                "y1": 0,
+                "x2": 0,
+                "y2": 0
+            }
+        }
     },
     {
         "instance": "Transistor",
         "number_id": 16,
-        "name": "MN7",
+        "name": "MN1",
         "type": "nmos",
         "cell": "COMP",
         "group": "diff1",
@@ -122,22 +203,26 @@
         "transform_matrix": {
             "a": 1,
             "b": 0,
-            "c": 1500,
+            "c": 924,
             "d": 0,
             "e": 1,
-            "f": 1600
+            "f": 1700
         },
         "bounding_box": {
             "x1": 0,
             "y1": 0,
             "x2": 576,
             "y2": 400
+        },
+        "overlap_distance": {
+            "x": 0,
+            "y": 0
         }
     },
     {
         "instance": "Transistor",
         "number_id": 17,
-        "name": "MN8",
+        "name": "MN2",
         "type": "nmos",
         "cell": "COMP",
         "group": "diff1",
@@ -194,16 +279,20 @@
         "transform_matrix": {
             "a": 1,
             "b": 0,
-            "c": 924,
+            "c": 1500,
             "d": 0,
             "e": 1,
-            "f": 1600
+            "f": 1700
         },
         "bounding_box": {
             "x1": 0,
             "y1": 0,
             "x2": 576,
             "y2": 400
+        },
+        "overlap_distance": {
+            "x": 0,
+            "y": 0
         }
     },
     {
@@ -266,16 +355,20 @@
         "transform_matrix": {
             "a": 1,
             "b": 0,
-            "c": 1500,
+            "c": 924,
             "d": 0,
             "e": 1,
-            "f": 200
+            "f": 300
         },
         "bounding_box": {
             "x1": 0,
             "y1": 0,
             "x2": 576,
             "y2": 400
+        },
+        "overlap_distance": {
+            "x": 0,
+            "y": 0
         }
     },
     {
@@ -338,16 +431,20 @@
         "transform_matrix": {
             "a": 1,
             "b": 0,
-            "c": 924,
+            "c": 1500,
             "d": 0,
             "e": 1,
-            "f": 200
+            "f": 300
         },
         "bounding_box": {
             "x1": 0,
             "y1": 0,
             "x2": 576,
             "y2": 400
+        },
+        "overlap_distance": {
+            "x": 0,
+            "y": 0
         }
     },
     {
@@ -413,13 +510,17 @@
             "c": 924,
             "d": 0,
             "e": 1,
-            "f": 1000
+            "f": 1100
         },
         "bounding_box": {
             "x1": 0,
             "y1": 0,
             "x2": 576,
             "y2": 400
+        },
+        "overlap_distance": {
+            "x": 0,
+            "y": 0
         }
     },
     {
@@ -485,19 +586,23 @@
             "c": 1500,
             "d": 0,
             "e": 1,
-            "f": 1000
+            "f": 1100
         },
         "bounding_box": {
             "x1": 0,
             "y1": 0,
             "x2": 576,
             "y2": 400
+        },
+        "overlap_distance": {
+            "x": 0,
+            "y": 0
         }
     },
     {
         "instance": "Transistor",
         "number_id": 22,
-        "name": "MN10",
+        "name": "MN3",
         "type": "nmos",
         "cell": "COMP",
         "group": "mirror2",
@@ -557,19 +662,23 @@
             "c": 924,
             "d": 0,
             "e": 1,
-            "f": 2400
+            "f": 2500
         },
         "bounding_box": {
             "x1": 0,
             "y1": 0,
             "x2": 576,
             "y2": 400
+        },
+        "overlap_distance": {
+            "x": 0,
+            "y": 0
         }
     },
     {
         "instance": "Transistor",
         "number_id": 23,
-        "name": "MN9",
+        "name": "MN4",
         "type": "nmos",
         "cell": "COMP",
         "group": "mirror2",
@@ -629,19 +738,23 @@
             "c": 1500,
             "d": 0,
             "e": 1,
-            "f": 2400
+            "f": 2500
         },
         "bounding_box": {
             "x1": 0,
             "y1": 0,
             "x2": 576,
             "y2": 400
+        },
+        "overlap_distance": {
+            "x": 0,
+            "y": 0
         }
     },
     {
         "instance": "Transistor",
         "number_id": 24,
-        "name": "MN11",
+        "name": "MN5",
         "type": "nmos",
         "cell": "COMP",
         "group": "mirror1",
@@ -698,22 +811,26 @@
         "transform_matrix": {
             "a": 1,
             "b": 0,
-            "c": 1500,
+            "c": 924,
             "d": 0,
             "e": 1,
-            "f": 2000
+            "f": 2100
         },
         "bounding_box": {
             "x1": 0,
             "y1": 0,
             "x2": 576,
             "y2": 400
+        },
+        "overlap_distance": {
+            "x": 0,
+            "y": 0
         }
     },
     {
         "instance": "Transistor",
         "number_id": 25,
-        "name": "MN12",
+        "name": "MN6",
         "type": "nmos",
         "cell": "COMP",
         "group": "mirror1",
@@ -770,16 +887,20 @@
         "transform_matrix": {
             "a": 1,
             "b": 0,
-            "c": 924,
+            "c": 1500,
             "d": 0,
             "e": 1,
-            "f": 2000
+            "f": 2100
         },
         "bounding_box": {
             "x1": 0,
             "y1": 0,
             "x2": 576,
             "y2": 400
+        },
+        "overlap_distance": {
+            "x": 0,
+            "y": 0
         }
     },
     {
@@ -842,16 +963,20 @@
         "transform_matrix": {
             "a": 1,
             "b": 0,
-            "c": 1500,
+            "c": 924,
             "d": 0,
             "e": 1,
-            "f": 600
+            "f": 700
         },
         "bounding_box": {
             "x1": 0,
             "y1": 0,
             "x2": 576,
             "y2": 400
+        },
+        "overlap_distance": {
+            "x": 0,
+            "y": 0
         }
     },
     {
@@ -914,16 +1039,20 @@
         "transform_matrix": {
             "a": 1,
             "b": 0,
-            "c": 924,
+            "c": 1500,
             "d": 0,
             "e": 1,
-            "f": 600
+            "f": 700
         },
         "bounding_box": {
             "x1": 0,
             "y1": 0,
             "x2": 576,
             "y2": 400
+        },
+        "overlap_distance": {
+            "x": 0,
+            "y": 0
         }
     }
 ]

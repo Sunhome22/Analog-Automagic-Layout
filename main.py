@@ -30,7 +30,7 @@ def main():
             objects = load_from_json(file_name="Results/ResultV21Mirrored4.json")
         print("[INFO]: Finished Linear Optimization")
         print("[INFO]: Starting Grid Generation")
-        grid, area, area_coordinates, used_area, port_coord = generate_grid(grid_size, objects)
+        grid,  area_coordinates, used_area, port_coord = generate_grid(grid_size, objects)
         print("[INFO]: Finished Grid Generation")
         print("[INFO]: Starting Initiate A*")
         path, path_names = initiate_astar(grid, connections, local_connections, objects, area_coordinates)
