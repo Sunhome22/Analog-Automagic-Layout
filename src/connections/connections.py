@@ -47,7 +47,7 @@ class ConnectionLists:
 
 
 
-    def local_connection_list(self):
+    def _local_connection_list(self):
 
         for obj in self.components:
             if not isinstance(obj, (Pin, CircuitCell)):
@@ -62,7 +62,7 @@ class ConnectionLists:
                                 self.local_connections.append(Connection(obj.number_id, key, obj.number_id, key1, ports[key]))
 
 
-    def connection_list(self):
+    def _connection_list(self):
 
         object_list = self.components
 
@@ -94,7 +94,7 @@ class ConnectionLists:
 
 
                             if not element_appended:
-                                self.single_connection[-1] =  Connection(object1.number_id, p1, "", "", object1[p1])
+                                self.single_connection.append(Connection(object1.number_id, p1, "", "", object1_ports[p1]))
 
     def _overlap_transistors(self):
         n_transistors = []
@@ -115,6 +115,13 @@ class ConnectionLists:
 
         self.overlap_dict["side"] = side + new_side
         self.overlap_dict["top"] = top + new_top
+    def initialize_connections(self):
+        self._local_connection_list()
+        self._connection_list()
+        self._overlap_transistors()
+
+        return self.single_connection, self.local_connections, self.connections, self.overlap_dict
+
 
 
 

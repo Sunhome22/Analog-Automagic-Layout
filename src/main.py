@@ -1,3 +1,4 @@
+#!/pri/leto/Analog-Automagic-Layout/venv/bin/python
 # ==================================================================================================================== #
 # Copyright (C) 2024 Bjørn K.T. Solheim, Leidulv Tønnesland
 # ==================================================================================================================== #
@@ -24,10 +25,10 @@ from circuit.circuit_components import Trace, RectAreaLayer, RectArea
 from astar.a_star import initiate_astar
 from draw_result.draw import draw_result
 from linear_optimization.linear_optimization import *
-from grid.generate_grid import generate_grid
+from grid.generate_grid import GridGeneration
 from connections.connections import *
 from traces.write_trace import write_traces
-
+import os
 # ========================================== Set-up classes and constants ==============================================
 
 # Define grid size and objects
@@ -45,6 +46,7 @@ class ProjectProperties:
     cell_name: str
     lib_name: str
     component_libraries: list[ComponentLibrary]
+    main_file_directory: str
 
 
 # Component libraries
@@ -56,7 +58,9 @@ misc_lib = ComponentLibrary(name="AALMISC", path="~/aicex/ip/jnw_bkle_sky130A/de
 project_properties = ProjectProperties(directory="~/aicex/ip/jnw_bkle_sky130A/",
                                        cell_name="JNW_BKLE",
                                        lib_name="JNW_BKLE_SKY130A",
-                                       component_libraries=[atr_lib, tr_lib, misc_lib])
+                                       component_libraries=[atr_lib, tr_lib, misc_lib],
+                                       main_file_directory=os.path.dirname(os.path.abspath(__file__))
+                                       )
 
 # ===================================================== Main ===========================================================
 
@@ -72,26 +76,31 @@ def main():
     # Update component attributes with information from it's associated Magic files
     components = MagicComponentsParser(project_properties=project_properties,
                                        components=components.get_info()).get_info()
-
+    components = load_from_json(file_name=f"{project_properties.main_file_directory}/RESULT/"
+                                          f""f"Comparator_OTA_complete_generation_data.json")
     # Algorithms
-    single_connection, local_connections, connections, overlap_dict = connection_list(components)
+    con_obj = ConnectionLists(components)
+    single_connection, local_connections, connections, overlap_dict = con_obj.initialize_connections()
 
-    result = LinearOptimizationSolver(components, connections, local_connections, grid_size, overlap_dict)
-    components = result.initiate_solver()
+    #result = LinearOptimizationSolver(components, connections, local_connections, grid_size, overlap_dict)
+    #components = result.initiate_solver()
 
-    grid, area_coordinates, used_area, port_coord = generate_grid(grid_size, components)
+
+    grid_object = GridGeneration(grid_size, components)
+    grid, area_coordinates, used_area, port_coord = grid_object.initialize_grid_generation()
     path, path_names = initiate_astar(grid, connections, local_connections, components, area_coordinates)
     components = write_traces(components, path, path_names, port_coord)
 
-    logger.info("Starting Drawing Results")
+    logger.info("Starting Drawing results")
     draw_result(grid_size, components, path, used_area)
-    logger.info("Finished Drawing Results")
+    logger.info("Finished Drawing results")
 
     # Create layout
     MagicLayoutCreator(project_properties=project_properties, components=components)
 
     # Save found components to JSON file
-    save_to_json(objects=components, file_name="json_tool/components.json")
+    save_to_json(objects=components, file_name=f"{project_properties.main_file_directory}/results/"
+                                          f"Comparator_OTA_complete_generation_data.json")
 
     # Debug log of all components
     logger.debug(f"Components registered: ")

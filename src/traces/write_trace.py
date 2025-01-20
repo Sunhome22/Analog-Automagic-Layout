@@ -141,9 +141,31 @@ def map_path_to_rectangles(path_segments, port_coord, path_name):
     return rectangles
 
 
+def trace_stretch(switch_bool: bool, trace_width: int, index: int, length: int) -> list[int]:
+
+    if index == 0 and length == 1:
+        return 0, 0
+    elif index == 0 and length > 1:
+
+        if switch_bool:
+            return -trace_width // 2, 0
+        else:
+            return 0, trace_width // 2
+
+    elif index == length - 1:
+        if switch_bool:
+            return 0, trace_width // 2
+        else:
+            return -trace_width // 2, 0
+    else:
+        return -trace_width // 2, trace_width // 2
+
+
+
 
 def write_traces(objects, path, path_names,  port_coord):
     trace_width = 30
+
     for index, p in enumerate(path):
         a_trace = Trace()
         a_trace.instance = a_trace.__class__.__name__  # Add instance type
@@ -154,28 +176,38 @@ def write_traces(objects, path, path_names,  port_coord):
         if len(segments) > 0:
             rectangles = map_path_to_rectangles(segments, port_coord, path_names[index])
 
-            for rect in rectangles:
+            for i, rect in enumerate(rectangles):
                 if rect[0] == rect[2]:  # Vertical
                     if rect[1] > rect[3]:  # Ensure y1 < y2
                         rect[1], rect[3] = rect[3], rect[1]
+                        switched_start_end = True
+                    else:
+                        switched_start_end = False
+
+                    added_length_start, added_length_end = trace_stretch(switched_start_end, trace_width, i, len(rectangles))
                     a_trace.segments.append(RectAreaLayer(
                         layer="m2",
                         area=RectArea(
                             x1=int(rect[0]) - trace_width // 2, #Adding width to trace
-                            y1=int(rect[1]),
+                            y1=int(rect[1] + added_length_start),
                             x2=int(rect[2]) + trace_width // 2,
-                            y2=int(rect[3])
+                            y2=int(rect[3] + added_length_end)
                         )
                     ))
                 elif rect[1] == rect[3]:  # Horizontal
                     if rect[0] > rect[2]:  # Ensure x1 < x2
                         rect[0], rect[2] = rect[2], rect[0]
+                        switched_start_end = True
+                    else:
+                        switched_start_end = False
+                    added_length_start, added_length_end = trace_stretch(switched_start_end, trace_width, i,
+                                                                         len(rectangles))
                     a_trace.segments.append(RectAreaLayer(
                         layer="m3",
                         area=RectArea(
-                            x1=int(rect[0]),
+                            x1=int(rect[0] + added_length_start),
                             y1=int(rect[1]) - trace_width // 2,
-                            x2=int(rect[2]),
+                            x2=int(rect[2] + added_length_end),
                             y2=int(rect[3]) + trace_width // 2
                         )
                     ))

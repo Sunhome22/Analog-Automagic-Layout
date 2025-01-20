@@ -120,9 +120,9 @@ def initiate_astar(grid, connections, local_connections, objects, area_coordinat
     seg_list = []
     path_names = []
 
-    spliced_list = {**connections, **local_connections}
+    spliced_list = connections+local_connections
 
-    for con in spliced_list.values():
+    for con in spliced_list:
         id_start = con.starting_comp
         id_end = con.end_comp
         start_area = con.starting_area[0]
@@ -133,13 +133,12 @@ def initiate_astar(grid, connections, local_connections, objects, area_coordinat
         for obj in objects:
 
             if not isinstance(obj, (Pin, CircuitCell)) and obj.number_id == id_start:
-                start = (
-                area_coordinates[str(id_start) + start_area][0][0], area_coordinates[str(id_start) + start_area][0][2])
+                start = (int(area_coordinates[str(id_start) + start_area][0][0]), int(area_coordinates[str(id_start) + start_area][0][2]))
 
                 start_found = True
 
             if not isinstance(obj, (Pin, CircuitCell)) and obj.number_id == id_end:
-                end = (area_coordinates[str(id_end) + end_area][0][0], area_coordinates[str(id_end) + end_area][0][2])
+                end = (int(area_coordinates[str(id_end) + end_area][0][0]), int(area_coordinates[str(id_end) + end_area][0][2]))
                 end_found = True
 
             if start_found and end_found:
@@ -149,6 +148,7 @@ def initiate_astar(grid, connections, local_connections, objects, area_coordinat
         path_names.append(string)
 
         #Start and end point walkable
+
         grid[start[1]][start[0]] = 0
         grid[end[1]][end[0]] = 0
 

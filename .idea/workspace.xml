@@ -46,7 +46,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "git-widget-placeholder": "Leidulv__v2",
-    "last_opened_file_path": "C:/Users/Leidu/Documents/GitHub/Analog-Automagic-Layout",
+    "last_opened_file_path": "D:/leto/Analog-Automagic-Layout",
     "settings.editor.selected.configurable": "preferences.pluginManager"
   }
 }]]></component>
@@ -57,14 +57,14 @@
       <recent name="D:\bjs1\Analog-Automagic-Layout\layout_manipulator" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\leto\Analog-Automagic-Layout\src" />
       <recent name="D:\bjs1\Analog-Automagic-Layout\misc" />
       <recent name="D:\bjs1\Analog-Automagic-Layout\results" />
       <recent name="D:\bjs1\Analog-Automagic-Layout" />
       <recent name="D:\bjs1\Analog-Automagic-Layout\utilities" />
-      <recent name="D:\bjs1\Analog-Automagic-Layout\circuit" />
     </key>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Python.circuit_spice_parser">
     <configuration name="circuit_spice_parser" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="Analog-Automagic-Layout" />
       <option name="ENV_FILES" value="" />
@@ -123,7 +123,7 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-python-sdk-495700d161d3-aa17d162503b-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-243.22562.220" />
+        <option value="bundled-python-sdk-98f27166c754-ba05f1cad1b1-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-242.21829.153" />
       </set>
     </attachedChunks>
   </component>

@@ -48,8 +48,8 @@ class GridGeneration:
         for obj in self.objects:
             if not isinstance(obj, (Pin, CircuitCell)):
                 for port in obj.layout_ports:
-                    x1 = (obj.transform_matrix.c + (port.area.x1 + port.area.x2)/2 - used_area[0] + self.LEEWAY_X)/32
-                    y1 = (obj.transform_matrix.f + (port.area.y1 + port.area.y2)/2 - used_area[1] + self.LEEWAY_Y)/32
+                    x1 = (obj.transform_matrix.c + (port.area.x1 + port.area.x2)/2 - self.used_area[0] + self.LEEWAY_X)/32
+                    y1 = (obj.transform_matrix.f + (port.area.y1 + port.area.y2)/2 - self.used_area[1] + self.LEEWAY_Y)/32
 
                     frac_x, int_x = math.modf(x1)
                     frac_y, int_y = math.modf(y1)
