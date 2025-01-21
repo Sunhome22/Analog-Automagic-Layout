@@ -20,8 +20,23 @@ import re
 from logger.logger import get_a_logger
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
+import re
+from collections import defaultdict
+from dataclasses import dataclass, field
+from typing import List, Dict
 # ================================================= DRC checker ========================================================
 
+
+@dataclass
+class Area:
+    x1: int
+    y1: int
+    x2: int
+    y2: int
+
+@dataclass
+class Rule:
+    rule: Dict[str, List[Area]] = field(default_factory=list)
 
 class DRCchecking:
 
@@ -33,15 +48,8 @@ class DRCchecking:
         self.logger = get_a_logger(__name__)
 
         self.__create_drc_log()
-        drc_log = self.__read_drc_log()
-
-        detailed_errors = drc_log[2]
-        new_detailed_errors = ""
-
-        for i in detailed_errors:
-            if i == "{{":
-                new_detailed_errors = detailed_errors.replace(" ", ",")
-        #print(new)
+        raw_drc_log = self.__read_drc_log()
+        self.__parse_drc_data(raw_data_log=raw_drc_log[2]) # item nr. 2 is the detailed raw log
 
 
         # Create a new figure and axis
@@ -79,6 +87,40 @@ class DRCchecking:
 
         except FileNotFoundError:
             self.logger.error(f"The file {work_directory}/drc_output.log was not found.")
+
+    def __parse_drc_data(self, raw_data_log):
+
+        # Regex patterns for constraints and coordinates
+        constraint_pattern = r"\{(.+?)\}\s*\{\{"
+        coordinates_pattern = r"\{(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\}"
+
+        # Parse constraints
+        constraints = re.findall(constraint_pattern, raw_data_log)
+
+        # Parse coordinate sets
+        all_coordinates = re.findall(r"\{.+?}\s*\{\{(.*?)}}", raw_data_log, re.DOTALL)
+        parsed_data = defaultdict(list)
+
+        for constraint, coord_block in zip(constraints, all_coordinates):
+            coords = re.findall(coordinates_pattern, coord_block)
+            parsed_data[constraint] = [{"x1": int(x1), "y1": int(y1), "x2": int(x2), "y2": int(y2)} for x1, y1, x2, y2
+                                       in coords]
+
+        data_log = dict(parsed_data)
+
+        rule_data = Rule(
+            rule={
+                rule_name: [Area(**constraint) for constraint in constraints]
+                for rule_name, constraints in data_log.items()
+            }
+        )
+
+        print(rule_data)
+
+        #print("First Rule Name:", first_rule_name)
+        #print("First Constraint:", first_constraint)
+        #print("First Constraint x1:", first_constraint.x1)
+
 
 
 

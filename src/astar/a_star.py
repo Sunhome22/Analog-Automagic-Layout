@@ -12,7 +12,7 @@
 # If not, see <https://www.gnu.org/licenses/>.
 # ==================================================================================================================== #
 
-from traces.write_trace import segment_path
+from traces.trace_generate import segment_path
 from circuit.circuit_components import CircuitCell, Pin
 from logger.logger import get_a_logger
 import heapq

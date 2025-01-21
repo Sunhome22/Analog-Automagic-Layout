@@ -21,4 +21,4 @@ src/logger/logger.py
 src/magic/magic_component_parser.py
 src/magic/magic_drawer.py
 src/magic/magic_layout_creator.py
-src/traces/write_trace.py
+src/traces/trace_generate.py

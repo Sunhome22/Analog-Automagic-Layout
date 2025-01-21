@@ -29,7 +29,7 @@ from draw_result.draw import draw_result
 from linear_optimization.linear_optimization import *
 from grid.generate_grid import generate_grid
 from connections.connections import *
-from traces.write_trace import write_traces
+from traces.trace_generate import write_traces
 from drc.drc_checker import DRCchecking
 import os
 # ========================================== Set-up classes and constants ==============================================
@@ -96,7 +96,7 @@ def main():
 
     # Save found components to JSON file
     components = load_from_json(file_name=f"{project_properties.main_file_directory}/results/"
-                                          f"Comparator_OTA_complete_generation_data.json")
+                                          f"Comparator_OTA_complete_generation_data 5.json")
 
     # Create layout
     MagicLayoutCreator(project_properties=project_properties, components=components)

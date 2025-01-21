@@ -7,7 +7,7 @@ select top cell
 puts -nonewline $log_file "Total DRC Errors: "
 puts $log_file [drc list count total]
 
-# Get top cell error descriptions and detailed top cell error descpritions.
+# Get top cell error descriptions and detailed top cell error descriptions.
 # Each detailed error is presented as a list of four values indicating the
 # bounding box of the error, as {llx lly urx ury} values in internal database units.
 
