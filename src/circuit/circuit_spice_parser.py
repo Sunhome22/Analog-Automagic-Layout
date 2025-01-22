@@ -47,7 +47,7 @@ class SPICEparser:
         self.__parse()
 
     def __generate_spice_file_for_schematic(self):
-        work_directory = os.path.expanduser(f"{self.project_directory}work/")
+        work_directory = os.path.expanduser(f"{self.project_directory}/work/")
 
         # Run SPICE generation command from work directory of project
         try:
@@ -61,7 +61,7 @@ class SPICEparser:
     def __read_spice_file(self):
 
         try:
-            spice_file_path = os.path.expanduser(f"{self.project_directory}work/xsch/{self.project_cell_name}.spice")
+            spice_file_path = os.path.expanduser(f"{self.project_directory}/work/xsch/{self.project_cell_name}.spice")
 
             # Copy each line of the file into a list
             with open(spice_file_path, "r") as spice_file:
@@ -76,7 +76,7 @@ class SPICEparser:
                 self.logger.info(f"SPICE content copied into program")
 
         except FileNotFoundError:
-            self.logger.error(f"The file {self.project_directory}work/xsch/"
+            self.logger.error(f"The file {self.project_directory}/work/xsch/"
                               f"{self.project_cell_name}.spice' was not found.")
 
     def __rebuild_spice_lines_with_plus_symbol(self):

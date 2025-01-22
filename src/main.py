@@ -58,7 +58,7 @@ tr_lib = ComponentLibrary(name="JNWTR", path="~/aicex/ip/jnw_bkle_sky130A/design
 misc_lib = ComponentLibrary(name="AALMISC", path="~/aicex/ip/jnw_bkle_sky130A/design/AAL_COMP_LIBS/AAL_MISC_SKY130A")
 
 
-project_properties = ProjectProperties(directory="~/aicex/ip/jnw_bkle_sky130A/",
+project_properties = ProjectProperties(directory="~/aicex/ip/jnw_bkle_sky130A",
                                        cell_name="JNW_BKLE",
                                        lib_name="JNW_BKLE_SKY130A",
                                        component_libraries=[atr_lib, tr_lib, misc_lib],

@@ -34,7 +34,7 @@ class MagicLayoutCreator:
         self.current_component_library_path = None
         self.components = components
         self.magic_file_lines = []
-        self.total_components_added = 0
+        self.total_functional_components_added = 0
         self.total_connection_points_added = 0
         self.total_traces_added = 0
         self.total_vias_added = 0
@@ -69,7 +69,7 @@ class MagicLayoutCreator:
             rect_area.set(box)
             self.magic_file_lines.append(f"rect {rect_area.x1} {rect_area.y1} {rect_area.x2} {rect_area.y2}")
 
-    def __place_box(self, layer: str, area: RectArea) -> object:
+    def __place_box(self, layer: str, area: RectArea):
         """Adds a box to the list of magic file lines"""
         self.magic_file_lines.extend([
             f"<< {layer} >>",
@@ -200,7 +200,7 @@ class MagicLayoutCreator:
 
     def __get_inbetween_via_layers(self, start_layer: str, end_layer: str, via_map: dict):
         """Returns a list of layers between a start layer and an end layer based on a map using
-           the Breath first search algorithm"""
+           the breath first search algorithm"""
 
         try:
             graph = {}
@@ -232,7 +232,7 @@ class MagicLayoutCreator:
         via_count = 0
         segment_count = 0
 
-        # Basic check if segments are valid (no DRC)
+        # Basic check if segments are valid for being displayed in magic: x1 < x2 and y1 < y2
         for segment in trace.segments:
             if segment.area.x2 < segment.area.x1 or segment.area.y2 < segment.area.y1:
                 self.logger.error(f"For trace '{trace.name}' segment area {segment.area} is invalid!")
@@ -244,15 +244,14 @@ class MagicLayoutCreator:
 
         # Add vias at intersection points between segments that move up/down in layers
         via_count += self.__add_trace_vias(trace=trace)
-        self.logger.info(f"{trace.instance} '{trace.name}' placed with segments: {segment_count}"
-                         f" vias: {via_count}")
 
+        self.logger.info(f"{trace.instance} '{trace.name}' placed with segments: {segment_count} vias: {via_count}")
         self.total_vias_added += via_count
         self.total_traces_added += 1
 
-    def __cell_creator(self, component):
+    def __functional_component_creator(self, component):
 
-        # Find library of current component
+        # Find library of current functional component
         self.current_component_library_path = next(
             (lib.path for lib in self.component_libraries if component.layout_library in lib.path), None)
 
@@ -264,10 +263,13 @@ class MagicLayoutCreator:
             f"box {component.bounding_box.x1} {component.bounding_box.y1} {component.bounding_box.x2}"
             f" {component.bounding_box.y2}"
         ])
-        self.total_components_added += 1
+        self.total_functional_components_added += 1
 
         self.logger.info(f"{component.instance} '{component.name} {component.layout_name}' "
                          f"placed with {component.transform_matrix}")
+
+    def __structural_component_creator(self, component):
+        print("TBD")
 
     def __magic_file_top_template(self):
         self.magic_file_lines.extend([
@@ -285,7 +287,7 @@ class MagicLayoutCreator:
         # Place functional components
         for component in self.components:
             if isinstance(component, (Transistor, Resistor, Capacitor)):
-                self.__cell_creator(component=component)
+                self.__functional_component_creator(component=component)
 
         # Place connection points
         for component in self.components:
@@ -310,14 +312,14 @@ class MagicLayoutCreator:
         self.__write_magic_file()
 
     def __write_magic_file(self):
-        magic_file_path = os.path.expanduser(f"{self.project_directory}design/"
+        magic_file_path = os.path.expanduser(f"{self.project_directory}/design/"
                                              f"{self.project_lib_name}/{self.project_cell_name}.mag")
 
         with open(magic_file_path, "w") as file:
             file.write("\n".join(self.magic_file_lines))
 
         self.logger.info(f"Process complete! File '{self.project_cell_name}.mag' was created. "
-                         f"| Functional Components: {self.total_components_added} | "
+                         f"| Functional Components: {self.total_functional_components_added} | "
                          f"Connection Points: {self.total_connection_points_added} | "
                          f"Traces: {self.total_traces_added} | Vias: {self.total_vias_added} |")
 

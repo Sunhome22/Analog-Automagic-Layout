@@ -140,6 +140,8 @@ class Trace:
     instance: str = field(default_factory=str)
     number_id: int = field(default_factory=int)
     name: str = field(default_factory=str)
+    cell: str = field(default_factory=str)
+    ports: str = field(default_factory=str)
     segments: List[RectAreaLayer] | dict = field(default_factory=list)
     vias: List[RectAreaLayer] | dict = field(default_factory=list)
 

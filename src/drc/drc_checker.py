@@ -15,15 +15,15 @@
 
 # ================================================== Libraries =========================================================
 import os
-import subprocess
 import re
-from logger.logger import get_a_logger
+import subprocess
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
-import re
-from collections import defaultdict
 from dataclasses import dataclass, field
 from typing import List, Dict
+from collections import defaultdict
+from logger.logger import get_a_logger
+
 # ================================================= DRC checker ========================================================
 
 
@@ -34,9 +34,11 @@ class Area:
     x2: int
     y2: int
 
+
 @dataclass
-class Rule:
+class RuleViolations:
     rule: Dict[str, List[Area]] = field(default_factory=list)
+
 
 class DRCchecking:
 
@@ -49,77 +51,92 @@ class DRCchecking:
 
         self.__create_drc_log()
         raw_drc_log = self.__read_drc_log()
-        self.__parse_drc_data(raw_data_log=raw_drc_log[2]) # item nr. 2 is the detailed raw log
 
+        # Item nr. 2 = detailed violations
+        drc_violations = self.__parse_out_detailed_drc_violations(raw_data_log=raw_drc_log[2])
 
-        # Create a new figure and axis
-        fig, ax = plt.subplots(figsize=(12, 12))
+        self.__plot_drc_violations(drc_violations=drc_violations)
 
-        # Save the plot to an image file
-        # plt.savefig('drc_erros_plot.png', dpi=300, bbox_inches='tight')  # Save as PNG with high resolution
 
     def __create_drc_log(self):
         """Runs a Tcl script that creates a result log from running a series of DRC related magic commands"""
 
         tcl_script_path = os.path.join(self.main_file_directory, 'drc/log_drc_info.tcl')
 
-        work_directory = os.path.expanduser(f"{self.project_directory}work/")
+        work_directory = os.path.expanduser(f"{self.project_directory}/work/")
 
         try:
             subprocess.run([f'magic ../design/{self.project_lib_name}/{self.project_cell_name}.mag '
                             f'-dnull -noconsole < {tcl_script_path}'],
                            stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                            text=True, check=True, shell=True, cwd=work_directory)
-            self.logger.info("DRC log created")
+            self.logger.info(f"DRC log created from executing 'magic ../design/{self.project_lib_name}/"
+                             f"{self.project_cell_name}.mag -dnull -noconsole < {tcl_script_path}'")
 
         except subprocess.CalledProcessError as e:
             self.logger.error(f"'magic ../design/{self.project_lib_name}/{self.project_cell_name}.mag "
                               f"-dnull -noconsole < {tcl_script_path}' failed with {e.stderr}")
 
     def __read_drc_log(self) -> list:
-        work_directory = os.path.expanduser(f"{self.project_directory}work/")
+        work_directory = os.path.expanduser(f"{self.project_directory}/work/")
         drc_log = []
         try:
-            with open(f"{work_directory}/drc_output.log", "r") as drc_output_log:
+            with open(f"{work_directory}drc_output.log", "r") as drc_output_log:
                 for text_line in drc_output_log:
                     drc_log.append(text_line)
+                self.logger.info(f"DRC log '{work_directory}drc_output.log' read")
                 return drc_log
 
         except FileNotFoundError:
             self.logger.error(f"The file {work_directory}/drc_output.log was not found.")
 
-    def __parse_drc_data(self, raw_data_log):
+    def __parse_out_detailed_drc_violations(self, raw_data_log) -> RuleViolations:
+        general_info_pattern = r"\{([^{}]*)\}"
+        all_data_listed = re.findall(general_info_pattern, raw_data_log)
 
-        # Regex patterns for constraints and coordinates
-        constraint_pattern = r"\{(.+?)\}\s*\{\{"
-        coordinates_pattern = r"\{(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\}"
+        rule_violations = RuleViolations(rule=defaultdict(list))
+        current_rule = None
 
-        # Parse constraints
-        constraints = re.findall(constraint_pattern, raw_data_log)
+        for item in all_data_listed:
+            # New rule
+            if any(char.isalpha() for char in item):
+                current_rule = item
 
-        # Parse coordinate sets
-        all_coordinates = re.findall(r"\{.+?}\s*\{\{(.*?)}}", raw_data_log, re.DOTALL)
-        parsed_data = defaultdict(list)
+            # Coordinates
+            else:
+                x1, y1, x2, y2 = map(int, item.split())
+                area = Area(x1=x1, y1=y1, x2=x2, y2=y2)
+                rule_violations.rule[current_rule].append(area)
 
-        for constraint, coord_block in zip(constraints, all_coordinates):
-            coords = re.findall(coordinates_pattern, coord_block)
-            parsed_data[constraint] = [{"x1": int(x1), "y1": int(y1), "x2": int(x2), "y2": int(y2)} for x1, y1, x2, y2
-                                       in coords]
+        self.logger.info("Detailed DRC violations parsed")
+        return rule_violations
 
-        data_log = dict(parsed_data)
+    def __plot_drc_violations(self, drc_violations: RuleViolations):
+        fig, ax = plt.subplots()
 
-        rule_data = Rule(
-            rule={
-                rule_name: [Area(**constraint) for constraint in constraints]
-                for rule_name, constraints in data_log.items()
-            }
-        )
+        # Add rectangles
+        for rule, areas in drc_violations.rule.items():
+            for area in areas:
+                rect = patches.Rectangle((area.x1, area.y1), area.x2 - area.x1, area.y2 - area.y1,
+                                         linewidth=0.1, edgecolor='black', facecolor='red')
+                ax.add_patch(rect)
 
-        print(rule_data)
+        # Set limits
+        ax.set_xlim([min(area.x1 for areas in drc_violations.rule.values() for area in areas),
+                     max(area.x2 for areas in drc_violations.rule.values() for area in areas)])
 
-        #print("First Rule Name:", first_rule_name)
-        #print("First Constraint:", first_constraint)
-        #print("First Constraint x1:", first_constraint.x1)
+        ax.set_ylim([min(area.y1 for areas in drc_violations.rule.values() for area in areas),
+                     max(area.y2 for areas in drc_violations.rule.values() for area in areas)])
+
+        ax.set_xlabel('X-axis')
+        ax.set_ylabel('Y-axis')
+        ax.set_title('DRC Violations')
+        self.logger.info(f"Detailed DRC violations plotted and saved to '{self.main_file_directory}/drc_erros_plot.png'")
+        plt.savefig(f"{self.main_file_directory}/drc/drc_erros_plot.png", dpi=500)
+
+
+
+
 
 
 
