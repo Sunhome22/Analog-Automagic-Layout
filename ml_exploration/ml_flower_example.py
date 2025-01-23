@@ -6,6 +6,11 @@ import matplotlib.pyplot as plt
 import pandas as pd
 from sklearn.model_selection import train_test_split
 
+
+# Install stuff:
+# https://pytorch.org/get-started/locally/
+
+
 # The following code is kinda like the "hello world" of Nerual Networks with pytorch.
 
 
@@ -30,8 +35,9 @@ class Model(nn.Module):
 
 
 def ml_flower_example():
-    # print(torch.__version__)
-    # print("CUDA available:", torch.cuda.is_available())
+    #print(torch.__version__)
+    #print("CUDA available:", torch.cuda.is_available())
+    #print(torch.cuda.get_device_name(0))
 
     torch.manual_seed(41)
     model = Model()
@@ -77,8 +83,8 @@ def ml_flower_example():
     optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
 
     # Train the model!
-    # An epoch is one run thru all the training data in our network.
-    # The data gets sendt thru layer 1 and layer 2 to the output within one epoch.
+    # An epoch is one run through all the training data in our network.
+    # The data gets send through layer 1 and layer 2 to the output within one epoch.
     epochs = 100
     losses = []  # keeping track for our losses
 

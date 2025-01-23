@@ -12,12 +12,12 @@
 # You should have received a copy of the GNU General Public License along with this program.
 # If not, see <https://www.gnu.org/licenses/>.
 # ==================================================================================================================== #
+from ml_exploration.object_placement import object_placement
 
 
 # ================================================== Libraries =========================================================
 
-from ml_exploration.ml_flower_example import ml_flower_example
-from ml_exploration.dqn_learning_example import ml_dqn_example
+
 
 # ========================================== Set-up classes and constants ==============================================
 
@@ -25,8 +25,7 @@ from ml_exploration.dqn_learning_example import ml_dqn_example
 
 
 def main():
-    ml_flower_example()
-    # ml_dqn_example()
+    object_placement()
 
 if __name__ == '__main__':
     main()
