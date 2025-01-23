@@ -183,7 +183,7 @@ class MagicLayoutCreator:
 
                             self.logger.info(f"Connection placed on port '{port.type}' of '{component.name}' "
                                              f"between layer '{port.layer}' and '{segment.layer}' "
-                                             f"for trace '{trace.name}'")
+                                             f"for trace '{trace.name}' of '{trace.cell}'")
 
     def get_inbetween_metal_layers(self, start_layer: str, end_layer: str, metal_layer_list: list):
         """Gets all metal layers, including start and end layer, and deals with if their positions are

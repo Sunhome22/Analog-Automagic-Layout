@@ -141,9 +141,8 @@ class Trace:
     number_id: int = field(default_factory=int)
     name: str = field(default_factory=str)
     cell: str = field(default_factory=str)
-    ports: str = field(default_factory=str)
     segments: List[RectAreaLayer] | dict = field(default_factory=list)
-    vias: List[RectAreaLayer] | dict = field(default_factory=list)
+    #vias: List[RectAreaLayer] | dict = field(default_factory=list)
 
     # Handling of JSON file input
     def __post_init__(self):
@@ -151,8 +150,8 @@ class Trace:
         if isinstance(self.segments, list):
             self.segments = [RectAreaLayer(**item) for item in self.segments]
 
-        if isinstance(self.vias, list):
-            self.vias = [RectAreaLayer(**item) for item in self.vias]
+        #if isinstance(self.vias, list):
+        #    self.vias = [RectAreaLayer(**item) for item in self.vias]
 
 
 @dataclass
