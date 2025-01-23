@@ -17,8 +17,6 @@ from ml_exploration.object_placement import object_placement
 
 # ================================================== Libraries =========================================================
 
-
-
 # ========================================== Set-up classes and constants ==============================================
 
 # ===================================================== Main ===========================================================
@@ -26,6 +24,7 @@ from ml_exploration.object_placement import object_placement
 
 def main():
     object_placement()
+
 
 if __name__ == '__main__':
     main()
