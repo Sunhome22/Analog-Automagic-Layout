@@ -14,101 +14,96 @@ from gymnasium import spaces
 from stable_baselines3 import PPO
 from stable_baselines3.common.vec_env import DummyVecEnv
 
- # This is some kind of begining. Now i need to understand what is happening here
 
+class ComponentPlacementEnv(gym.Env):
+    def __init__(self, grid_size=3000, chip_size=(576, 400), components_total=4, max_steps=1000):
+        super(ComponentPlacementEnv, self).__init__()
+        self.component_positions = None
+        self.np_random = None
+        self.steps = None
 
-# Define your environment class (already done in previous sections)
-class ChipFloorplanningEnv(gym.Env):
-    def __init__(self, grid_size=3000, chip_size=(567, 400), num_chips=4, max_steps=1000):
-        super(ChipFloorplanningEnv, self).__init__()
         self.grid_size = grid_size
         self.chip_size = chip_size
-        self.num_chips = num_chips
+        self.components_total = components_total
         self.max_steps = max_steps
 
-        # State: Chip positions on the grid (x, y) for each chip
+        # Spaces
         self.observation_space = gym.spaces.Box(
             low=0,
-            high=grid_size - max(chip_size),  # Ensure chips stay within the grid
-            shape=(num_chips, 2),
+            high=grid_size - max(chip_size),  # Ensure component stays within the grid
+            shape=(components_total, 2),
             dtype=np.int32,
         )
-
-        # Action: Move a chip (chip_index, dx, dy)
         self.action_space = gym.spaces.MultiDiscrete(
-            [num_chips, 3, 3]  # [chip_index, dx (-1, 0, 1), dy (-1, 0, 1)]
+            [components_total, 3, 3]  # [component_index, dx (-1, 0, 1), dy (-1, 0, 1)]
         )
 
-        self.reset()
+        self.reset(seed=None)
 
     def reset(self, seed=None):
-        # Accept the seed argument
-        self.np_random, _ = gym.utils.seeding.np_random(seed)
+        self.np_random, _ = gym.utils.seeding.np_random(seed) # random seed
 
-        # Initialize chips at random non-overlapping positions
-        self.chip_positions = []
-        for _ in range(self.num_chips):
+        # Place components at random non-overlapping positions
+        self.component_positions = []
+
+        for _ in range(self.components_total):
             while True:
-                # Use integers() instead of randint() for the random number generation
                 x = self.np_random.integers(0, self.grid_size - self.chip_size[0])
                 y = self.np_random.integers(0, self.grid_size - self.chip_size[1])
                 new_position = np.array([x, y])
-                if not any(self.check_overlap(new_position, pos) for pos in self.chip_positions):
-                    self.chip_positions.append(new_position)
+
+                if not any(self.check_overlap(new_position, pos) for pos in self.component_positions):
+                    self.component_positions.append(new_position)
                     break
-        self.chip_positions = np.array(self.chip_positions, dtype=np.int32)
+
+        self.component_positions = np.array(self.component_positions, dtype=np.int32)
         self.steps = 0
 
-        # Return observation and info (info can be empty for now)
-        return self.chip_positions, {}
+        return self.component_positions, {}
 
     def step(self, action):
-        chip_index, dx, dy = action
-        dx *= 10  # Scale movement for better granularity
+        component_index, dx, dy = action
+        dx *= 10
         dy *= 10
 
-        # Update the position of the selected chip
-        self.chip_positions[chip_index, 0] = np.clip(
-            self.chip_positions[chip_index, 0] + dx, 0, self.grid_size - self.chip_size[0]
+        # Update the position of the selected components
+        self.component_positions[component_index, 0] = np.clip(
+            self.component_positions[component_index, 0] + dx, 0, self.grid_size - self.chip_size[0]
         )
-        self.chip_positions[chip_index, 1] = np.clip(
-            self.chip_positions[chip_index, 1] + dy, 0, self.grid_size - self.chip_size[1]
+        self.component_positions[component_index, 1] = np.clip(
+            self.component_positions[component_index, 1] + dy, 0, self.grid_size - self.chip_size[1]
         )
 
-        # Compute the reward
-        reward = self.compute_reward()
-
-        # Increment steps and check if the episode is done
+        reward = self.reward()
         self.steps += 1
         done = self.steps >= self.max_steps
 
         # Truncate if necessary
-        truncated = False  # You can set this based on your specific requirements
+        truncated = False
 
-        # Return 5 values: observation, reward, done, truncated, and info
-        return self.chip_positions, reward, done, truncated, {}
+        return self.component_positions, reward, done, truncated, {}
 
-    def compute_reward(self):
+    def reward(self):
         reward = 0
 
-        # Penalize overlaps
-        for i in range(self.num_chips):
-            for j in range(i + 1, self.num_chips):
-                if self.check_overlap(self.chip_positions[i], self.chip_positions[j]):
+        # Overlaps are bad for now
+        for i in range(self.components_total):
+            for j in range(i + 1, self.components_total):
+                if self.check_overlap(self.component_positions[i], self.component_positions[j]):
                     reward -= 20  # Stronger penalty for overlap
 
-        # Minimize distance between all chips (example heuristic)
-        for i in range(self.num_chips):
-            for j in range(i + 1, self.num_chips):
-                dist = np.linalg.norm(self.chip_positions[i] - self.chip_positions[j])
+        # Minimize distance between all components
+        for i in range(self.components_total):
+            for j in range(i + 1, self.components_total):
+                dist = np.linalg.norm(self.component_positions[i] - self.component_positions[j])
                 reward -= dist / 500  # Normalize to keep the reward in a reasonable range
 
         return reward
 
     def check_overlap(self, pos1, pos2):
-        # Check if two chips overlap
         x1, y1 = pos1
         x2, y2 = pos2
+
         return not (
             x1 + self.chip_size[0] <= x2
             or x2 + self.chip_size[0] <= x1
@@ -117,14 +112,17 @@ class ChipFloorplanningEnv(gym.Env):
         )
 
 
-def plot_chip_placement(grid_size, chip_size, chip_positions):
+def plot_placement(grid_size, chip_size, chip_positions):
+    if len(chip_positions.shape) == 3:
+        chip_positions = chip_positions[0]
+
     fig, ax = plt.subplots(figsize=(8, 8))
 
     # Draw the grid boundary
     ax.set_xlim(0, grid_size)
     ax.set_ylim(0, grid_size)
     ax.set_aspect('equal')
-    ax.set_title("Chip Floorplanning Result", fontsize=16)
+    ax.set_title("Result", fontsize=16)
     ax.set_xlabel("X-axis", fontsize=12)
     ax.set_ylabel("Y-axis", fontsize=12)
     ax.grid(color='gray', linestyle='--', linewidth=0.5, alpha=0.7)
@@ -139,7 +137,7 @@ def plot_chip_placement(grid_size, chip_size, chip_positions):
         # Label the chips
         ax.text(
             x + chip_size[0] / 2, y + chip_size[1] / 2,
-            f"Transistor {i + 1}",
+            f"Component {i + 1}",
             color="black", fontsize=10, ha='center', va='center'
         )
 
@@ -148,32 +146,23 @@ def plot_chip_placement(grid_size, chip_size, chip_positions):
 
 
 def object_placement():
-    env = DummyVecEnv([lambda: ChipFloorplanningEnv()])
+    env = DummyVecEnv([lambda: ComponentPlacementEnv()])
 
-    # Initialize PPO agent
     model = PPO("MlpPolicy", env, verbose=1, device="cpu")
+    model.learn(total_timesteps=10)
+    model.save("ppo_model")
 
-    # Train the agent
-    model.learn(total_timesteps=100000)  # Adjust the number of timesteps based on your use case
-
-    # Save the trained model
-    model.save("ppo_chip_floorplanning")
-
-    # Optionally, load the trained model to evaluate or use later
-    obs = env.reset()  # Reset the environment to get the initial observation
+    observation = env.reset()  # Reset the environment to get the initial observation
     done = False
-
-    print("Initial Observation:", obs)  # Debugging line
+    print("Initial Observation:", observation)  # Debugging line
 
     for step in range(1000):
-        action, _states = model.predict(obs, deterministic=True)
+        action, _states = model.predict(observation, deterministic=True)
         print("Action:", action)  # Debugging line
-        obs, reward, done, truncated = env.step(action)
+        observation, reward, done, truncated = env.step(action)
         if done:
             break
 
-    print("Final Chip Positions:")
-    print(obs)
+    print(f"Placement positions: {observation}")
 
-    original_env = env.unwrapped
-    plot_chip_placement(original_env.grid_size, original_env.chip_size, obs)
+    plot_placement(3000, (576, 400),observation)
