@@ -96,7 +96,7 @@ def main():
 
     # Save found components to JSON file
     components = load_from_json(file_name=f"{project_properties.main_file_directory}/results/"
-                                          f"Comparator_OTA_complete_generation_data_6.json")
+                                          f"Comparator_OTA_complete_generation_data_8_hours.json")
 
     # Create layout
     MagicLayoutCreator(project_properties=project_properties, components=components)

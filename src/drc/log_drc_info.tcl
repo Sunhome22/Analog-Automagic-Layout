@@ -1,5 +1,5 @@
 # Initialize
-set log_file [open "drc_output.log" "w"]
+set log_file [open "drc/AAL_DRC_OUTPUT.log" "w"]
 drc catchup
 select top cell
 

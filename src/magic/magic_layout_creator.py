@@ -269,7 +269,12 @@ class MagicLayoutCreator:
                          f"placed with {component.transform_matrix}")
 
     def __structural_component_creator(self, component):
-        print("TBD")
+        self.magic_file_lines.extend([
+            f"flabel {component.layout.layer} s {component.layout.area.x1} {component.layout.area.y1} "
+            f"{component.layout.area.x2} {component.layout.area.y1} 0 FreeSans 400 0 0 0 {component.name}",
+            f"port {component.number_id} nsew signal bidirectional"
+        ])
+
 
     def __magic_file_top_template(self):
         self.magic_file_lines.extend([
@@ -299,9 +304,15 @@ class MagicLayoutCreator:
             if isinstance(component, Trace):
                 self.__trace_creator(trace=component)
 
-        # Labels and properties
+
+        # Place structural components
+        self.magic_file_lines.append("<< labels >>")
+        for component in self.components:
+            if isinstance(component, Pin):
+                self.__structural_component_creator(component=component)
+
+        # Properties
         self.magic_file_lines.extend([
-            "<< labels >>",
             "<< properties >>",
         ])
 

@@ -134,6 +134,10 @@ class Pin:
     name: str = field(default_factory=str)
     layout: RectAreaLayer = field(default_factory=RectAreaLayer)
 
+    # Handling of JSON file input
+    def __post_init__(self):
+        if isinstance(self.layout, dict):
+            self.layout = RectAreaLayer(**self.layout)
 
 @dataclass
 class Trace:

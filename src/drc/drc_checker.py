@@ -36,7 +36,7 @@ class Area:
 
 
 @dataclass
-class RuleViolations:
+class RuleErrors:
     rule: Dict[str, List[Area]] = field(default_factory=list)
 
 
@@ -53,10 +53,11 @@ class DRCchecking:
         raw_drc_log = self.__read_drc_log()
 
         # Item nr. 2 = detailed violations
-        drc_violations = self.__parse_out_detailed_drc_violations(raw_data_log=raw_drc_log[2])
+        drc_errors = self.__parse_out_detailed_drc_errors(raw_data_log=raw_drc_log[2])
 
-        self.__plot_drc_violations(drc_violations=drc_violations)
-
+        self.__plot_drc_errors(drc_errors=drc_errors)
+        self.logger.info(f"{raw_drc_log[0].rstrip()}")
+        self.logger.info(f"{raw_drc_log[1].rstrip()}")
 
     def __create_drc_log(self):
         """Runs a Tcl script that creates a result log from running a series of DRC related magic commands"""
@@ -78,23 +79,23 @@ class DRCchecking:
                               f"-dnull -noconsole < {tcl_script_path}' failed with {e.stderr}")
 
     def __read_drc_log(self) -> list:
-        work_directory = os.path.expanduser(f"{self.project_directory}/work/")
+        work_directory = os.path.expanduser(f"{self.project_directory}/work/drc")
         drc_log = []
         try:
-            with open(f"{work_directory}drc_output.log", "r") as drc_output_log:
+            with open(f"{work_directory}/AAL_DRC_OUTPUT.log", "r") as drc_output_log:
                 for text_line in drc_output_log:
                     drc_log.append(text_line)
-                self.logger.info(f"DRC log '{work_directory}drc_output.log' read")
+                self.logger.info(f"DRC log '{work_directory}/AAL_DRC_OUTPUT.log' read")
                 return drc_log
 
         except FileNotFoundError:
-            self.logger.error(f"The file {work_directory}/drc_output.log was not found.")
+            self.logger.error(f"The file {work_directory}/AAL_DRC_OUTPUT.log was not found.")
 
-    def __parse_out_detailed_drc_violations(self, raw_data_log) -> RuleViolations:
+    def __parse_out_detailed_drc_errors(self, raw_data_log) -> RuleErrors:
         general_info_pattern = r"\{([^{}]*)\}"
         all_data_listed = re.findall(general_info_pattern, raw_data_log)
 
-        rule_violations = RuleViolations(rule=defaultdict(list))
+        rule_errors = RuleErrors(rule=defaultdict(list))
         current_rule = None
 
         for item in all_data_listed:
@@ -106,33 +107,33 @@ class DRCchecking:
             else:
                 x1, y1, x2, y2 = map(int, item.split())
                 area = Area(x1=x1, y1=y1, x2=x2, y2=y2)
-                rule_violations.rule[current_rule].append(area)
+                rule_errors.rule[current_rule].append(area)
 
-        self.logger.info("Detailed DRC violations parsed")
-        return rule_violations
+        self.logger.info("Detailed DRC errors parsed")
+        return rule_errors
 
-    def __plot_drc_violations(self, drc_violations: RuleViolations):
+    def __plot_drc_errors(self, drc_errors: RuleErrors):
         fig, ax = plt.subplots()
 
         # Add rectangles
-        for rule, areas in drc_violations.rule.items():
+        for rule, areas in drc_errors.rule.items():
             for area in areas:
                 rect = patches.Rectangle((area.x1, area.y1), area.x2 - area.x1, area.y2 - area.y1,
                                          linewidth=0.1, edgecolor='black', facecolor='red')
                 ax.add_patch(rect)
 
         # Set limits
-        ax.set_xlim([min(area.x1 for areas in drc_violations.rule.values() for area in areas),
-                     max(area.x2 for areas in drc_violations.rule.values() for area in areas)])
+        ax.set_xlim([min(area.x1 for areas in drc_errors.rule.values() for area in areas),
+                     max(area.x2 for areas in drc_errors.rule.values() for area in areas)])
 
-        ax.set_ylim([min(area.y1 for areas in drc_violations.rule.values() for area in areas),
-                     max(area.y2 for areas in drc_violations.rule.values() for area in areas)])
+        ax.set_ylim([min(area.y1 for areas in drc_errors.rule.values() for area in areas),
+                     max(area.y2 for areas in drc_errors.rule.values() for area in areas)])
 
         ax.set_xlabel('X-axis')
         ax.set_ylabel('Y-axis')
-        ax.set_title('DRC Violations')
-        self.logger.info(f"Detailed DRC violations plotted and saved to '{self.main_file_directory}/drc_erros_plot.png'")
-        plt.savefig(f"{self.main_file_directory}/drc/drc_erros_plot.png", dpi=500)
+        ax.set_title('DRC Errors')
+        self.logger.info(f"Detailed DRC errors plotted and saved to '{self.main_file_directory}/drc_errors_plot.png'")
+        plt.savefig(f"{self.main_file_directory}/drc/drc_errors_plot.png", dpi=500)
 
 
 
