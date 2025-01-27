@@ -32,13 +32,18 @@ class LinearOptimizationSolver:
     OFFSET_X = 184
     OFFSET_Y = 128
 
+    ALPHA = 0.001
+    BETA = 100
+    THETA = 1
+
+
     MIRROR =True
     RUN = True
 
     def __init__(self, object_info, connections, local_connections, grid_size, overlap_dict):
         self.logger = get_a_logger(__name__)
         self.problem_space = pulp.LpProblem("ObjectPlacementWithSizes", pulp.LpMinimize)
-        self.solver = pulp.PULP_CBC_CMD(msg=True, threads=75, timeLimit=2* 30)
+        self.solver = pulp.PULP_CBC_CMD(msg=True, threads=75, timeLimit = 2* 60)
         self.object_info = object_info
         self.objects = []
         self.overlap_dict = overlap_dict
@@ -180,16 +185,16 @@ class LinearOptimizationSolver:
 
         for o in self.object_info:
 
-            if o.number_id == obj.starting_comp:
+            if o.number_id == int(obj.start_comp_id):
 
                 for p in o.layout_ports:
-                    if len(obj.starting_area) > 1:
-                        if p.type == obj.starting_area[0] or p.type == obj.starting_area[1]:
+                    if len(obj.start_area) > 1:
+                        if p.type == obj.start_area[0] or p.type == obj.start_area[1]:
                             port_parameter.append(p.area)
-                    elif p.type == obj.starting_area:
+                    elif p.type == obj.start_area:
                         port_parameter.append(p.area)
 
-            if o.number_id == obj.end_comp:
+            if o.number_id == int(obj.end_comp_id):
                 for p in o.layout_ports:
                     if len(obj.end_area) > 1:
 
@@ -202,34 +207,34 @@ class LinearOptimizationSolver:
 
     def _constraint_minimize_manhattan_distance(self):
         i = 0
-        for conn in self.connections.values():
+        for conn in self.connections:
 
-            if not conn.end_comp == '' and conn.starting_comp != conn.end_comp:
+            if not conn.end_comp_id == '' and conn.start_comp_id != conn.end_comp_id:
                 start_port_parameters, end_port_parameters = self._get_port_parameters(conn)
 
-                self.d_x[(conn.starting_comp, conn.end_comp)] = pulp.LpVariable(
-                    f"d_x_{conn.starting_comp}_{conn.end_comp}_{i}", 0, cat='Continuous')
-                self.d_y[(conn.starting_comp, conn.end_comp)] = pulp.LpVariable(
-                    f"d_y_{conn.starting_comp}_{conn.end_comp}_{i}", 0, cat='Continuous')
+                self.d_x[(conn.start_comp_id, conn.end_comp_id)] = pulp.LpVariable(
+                    f"d_x_{conn.start_comp_id}_{conn.end_comp_id}_{i}", 0, cat='Continuous')
+                self.d_y[(conn.start_comp_id, conn.end_comp_id)] = pulp.LpVariable(
+                    f"d_y_{conn.start_comp_id}_{conn.end_comp_id}_{i}", 0, cat='Continuous')
 
                 self.x_start_port = start_port_parameters[0].x2 - (start_port_parameters[0].x1 // 2)
                 self.y_start_port = start_port_parameters[0].y2 - (start_port_parameters[0].y1 // 2)
                 self.x_end_port = end_port_parameters[0].x2 - (end_port_parameters[0].x1 // 2)
                 self.y_end_port = end_port_parameters[0].y2 - (end_port_parameters[0].y1 // 2)
 
-                self.problem_space += self.d_x[(conn.starting_comp, conn.end_comp)] >= (
-                            self.coordinates_x[conn.starting_comp] + self.x_start_port) - (
-                                                  self.coordinates_x[conn.end_comp] + self.x_end_port)
-                self.problem_space += self.d_x[(conn.starting_comp, conn.end_comp)] >= (
-                            self.coordinates_x[conn.end_comp] + self.x_end_port) - (
-                                                  self.coordinates_x[conn.starting_comp] + self.x_start_port)
+                self.problem_space += self.d_x[(conn.start_comp_id, conn.end_comp_id)] >= (
+                            self.coordinates_x[int(conn.start_comp_id)] + self.x_start_port) - (
+                                                  self.coordinates_x[int(conn.end_comp_id)] + self.x_end_port)
+                self.problem_space += self.d_x[(conn.start_comp_id, conn.end_comp_id)] >= (
+                            self.coordinates_x[int(conn.end_comp_id)] + self.x_end_port) - (
+                                                  self.coordinates_x[int(conn.start_comp_id)] + self.x_start_port)
 
-                self.problem_space += self.d_y[(conn.starting_comp, conn.end_comp)] >= (
-                            self.coordinates_y[conn.starting_comp] + self.y_start_port) - (
-                                                  self.coordinates_y[conn.end_comp] + self.y_end_port)
-                self.problem_space += self.d_y[(conn.starting_comp, conn.end_comp)] >= (
-                            self.coordinates_y[conn.end_comp] + self.y_end_port) - (
-                                                  self.coordinates_y[conn.starting_comp] + self.y_start_port)
+                self.problem_space += self.d_y[(conn.start_comp_id, conn.end_comp_id)] >= (
+                            self.coordinates_y[int(conn.start_comp_id)] + self.y_start_port) - (
+                                                  self.coordinates_y[int(conn.end_comp_id)] + self.y_end_port)
+                self.problem_space += self.d_y[(conn.start_comp_id, conn.end_comp_id)] >= (
+                            self.coordinates_y[int(conn.end_comp_id)] + self.y_end_port) - (
+                                                  self.coordinates_y[int(conn.start_comp_id)] + self.y_start_port)
 
                 i += 1
 
@@ -294,11 +299,11 @@ class LinearOptimizationSolver:
 
     def _solve_linear_optimization_problem(self):
        # self.problem_space += pulp.lpSum(
-        #    [self.d_x[(o1.starting_comp, o1.end_comp)] + self.d_y[(o1.starting_comp, o1.end_comp)] for o1 in
+        #    [self.d_x[(o1.start_comp_id, o1.end_comp_id)] + self.d_y[(o1.start_comp_id, o1.end_comp_id)] for o1 in
          #    self.connections.values()]) + (self.x_max - self.x_min) * 10000000, "totalWireLength"
         self.problem_space += pulp.lpSum(
-            [self.d_x[(o1.starting_comp, o1.end_comp)] + self.d_y[(o1.starting_comp, o1.end_comp)] for o1 in
-            self.connections.values()])*0.001 +(self.x_max - self.x_min) *100  , "totalWireLength"
+            [self.d_x[(o1.start_comp_id, o1.end_comp_id)] + self.d_y[(o1.start_comp_id, o1.end_comp_id)] for o1 in
+            self.connections])*self.ALPHA +(self.x_max - self.x_min) *self.BETA + (self.y_max-self.y_min)*self.THETA , "totalWireLength"
         self.problem_space.solve(self.solver)
 
     def _print_status(self):

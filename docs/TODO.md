@@ -1,8 +1,13 @@
 ### Things to implement/fix
 - Traces:
-  - Make traces half the width longer in desired direction
+  - [x] Make traces half the width longer in desired direction :check: 
+  - [x] NAME instead of id number on trace name
 - Linear Optimization:
-  - Bulk connection logic is not entirely correct
+  - [x]Bulk connection logic is not entirely correct
 - Connections:
-  - Some functionality was lost, and now it generates too many connections.
+  - [x] Some functionality was lost, and now it generates too many connections. Fixed
 - UNIT TEST
+- ASTAR
+  - [x] Updates Astar, such that when connecting from areas that have local connections the two closes ports are chosen.
+  - [] Introduce constraints for how close each path is
+  - 

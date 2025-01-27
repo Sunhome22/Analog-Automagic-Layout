@@ -45,37 +45,35 @@ def heuristic(a, b):
     return abs(a[0] - b[0]) + abs(a[1] - b[1])
 
 
-def get_neighbors(node, grid, goal, seg_list, net):
+def get_neighbors(node, grid, goal, seg_list):
     """Get valid neighbors for the current node."""
+    x, y = node
     neighbors = []
     directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]  # Right, Down, Left, Up
     in_seg = False
-    index = "ph"
-    segment_net = "ph"
+    index = 0
 
-    if seg_list:
-        for s_net in seg_list:
-            for i, seg in enumerate(seg_list[s_net]):
-                if node in seg:
-                    in_seg = True
-                    index = i
-                    segment_net = s_net
-                    break
+    if len(seg_list) > 0:
+        for i, seg in enumerate(seg_list):
+            if node in seg:
+                in_seg = True
+                index = i
+                break
 
     for dx, dy in directions:
-        nx, ny = node[0] + dx, node[1] + dy
+        nx, ny = x + dx, y + dy
 
         if in_seg:
             # Check bounds and obstacles
-            if 0 <= nx < len(grid[0]) and 0 <= ny < len(grid) and grid[ny][nx] == 0 and ((nx, ny) not in seg_list[segment_net][index] or segment_net == net):
-                neighbors.append(((nx,ny), (dx,dy)))
+            if 0 <= nx < len(grid[0]) and 0 <= ny < len(grid) and grid[ny][nx] == 0 and (nx, ny) not in seg_list[index]:
+                neighbors.append((nx, ny))
             elif 0 <= nx < len(grid[0]) and 0 <= ny < len(grid) and grid[ny][nx] == goal:
-                neighbors.append(((nx,ny), (dx,dy)))
+                neighbors.append((nx, ny))
         else:
             if 0 <= nx < len(grid[0]) and 0 <= ny < len(grid) and grid[ny][nx] == 0:
-                neighbors.append(((nx,ny), (dx,dy)))
+                neighbors.append((nx, ny))
             elif 0 <= nx < len(grid[0]) and 0 <= ny < len(grid) and grid[ny][nx] == goal:
-                neighbors.append(((nx,ny), (dx,dy)))
+                neighbors.append((nx, ny))
 
     return neighbors
 
@@ -90,32 +88,30 @@ def reconstruct_path(came_from, current):
     return path
 
 
-def a_star(grid, start, goal, seg_list, net):
+def a_star(grid, start, goal, seg_list):
     open_set = PriorityQueue()
-    open_set.push((start,None),0)
+    open_set.push(start, 0)
 
     came_from = {}  # To reconstruct the path
     g_score = {start: 0}
     f_score = {start: heuristic(start, goal)}
 
     while not open_set.is_empty():
-        current, current_dir = open_set.pop()
+        current = open_set.pop()
 
         # Check if we reached the goal
         if current == goal:
             return reconstruct_path(came_from, current)
 
-        for neighbor, direction in get_neighbors(current, grid, goal, seg_list, net):
-            direction_change_penalty = 0 if current_dir is None or current_dir == direction else 1
-
-            tentative_g_score = g_score[current] + 1 + direction_change_penalty  # Cost from start to neighbor
+        for neighbor in get_neighbors(current, grid, goal, seg_list):
+            tentative_g_score = g_score[current] + 1  # Cost from start to neighbor
 
             if neighbor not in g_score or tentative_g_score < g_score[neighbor]:
                 # Update the best path to this neighbor
                 came_from[neighbor] = current
                 g_score[neighbor] = tentative_g_score
                 f_score[neighbor] = tentative_g_score + heuristic(neighbor, goal)
-                open_set.push((neighbor,direction), f_score[neighbor])
+                open_set.push(neighbor, f_score[neighbor])
 
     return None  # No path found
 
@@ -149,7 +145,7 @@ def initiate_astar(grid, connections, local_connections, objects, port_scaled_co
     logger.info("Starting Initiate A*")
 
     path = []
-    seg_list = {}
+    seg_list = []
     path_names = []
 
     spliced_list = local_connections + connections
@@ -187,18 +183,17 @@ def initiate_astar(grid, connections, local_connections, objects, port_scaled_co
         grid[start[1]][start[0]] = 0
         grid[end[1]][end[0]] = 0
 
-        path.append(a_star(grid, start, end, seg_list, con.net))
+        path.append(a_star(grid, start, end, seg_list))
 
         #Start and end point not walkable
         grid[start[1]][start[0]] = 1
         grid[end[1]][end[0]] = 1
 
         seg = segment_path(path[-1])
-        if con.net not in seg_list:
-            seg_list[con.net] = []
+
 
         for s in seg:
-            seg_list[con.net].append(s)
+            seg_list.append(s)
 
 
         add_grid_points = [sub[-1] for sub in seg]

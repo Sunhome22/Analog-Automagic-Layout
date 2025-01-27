@@ -21,6 +21,10 @@ from circuit.circuit_components import Trace, RectAreaLayer, RectArea
 from json_tool.json_converter import save_to_json
 from magic.magic_layout_creator import MagicLayoutCreator
 
+
+SCALE_FACTOR = 40
+
+
 def direction(p1, p2):
     dx = p2[0] - p1[0]
     dy = p2[1] - p1[1]
@@ -89,24 +93,13 @@ def calculate_directional_lengths(path_segments):
     return length_x, length_y
 
 
-def map_path_to_rectangles(path_segments, port_coord, path_name):
+def map_path_to_rectangles(path_segments, port_coord, connection_info):
     rectangles = []
     length_x, length_y = calculate_directional_lengths(path_segments)
 
-    pattern = r"(\d+)([a-zA-Z])-(\d+)([a-zA-Z])"
-    match = re.match(pattern, path_name)
-
-    if match:
-        start_id = int(match.group(1))
-        start_port = match.group(2)
-        end_id = int(match.group(3))
-        end_port = match.group(4)
-    else:
-        print("[ERROR]: Invalid path name, pattern not found")
-
     # Get the real-world start and end coordinates
-    start_real = port_coord[f"{start_id}{start_port}"][0]
-    end_real = port_coord[f"{end_id}{end_port}"][0]
+    start_real = port_coord[f"{connection_info.start_comp_id}{connection_info.start_area}"][0]
+    end_real = port_coord[f"{connection_info.end_comp_id}{connection_info.end_area}"][0]
 
     cumulative_x = 0
     cumulative_y = 0
@@ -170,8 +163,8 @@ def write_traces(objects, path, path_names,  port_coord):
         a_trace = Trace()
         a_trace.instance = a_trace.__class__.__name__  # Add instance type
         a_trace.number_id = index
-        a_trace.name = path_names[index]
-
+        a_trace.name = path_names[index].start_comp_name+path_names[index].start_area + "_"+path_names[index].end_comp_name+path_names[index].end_area
+        a_trace.cell = path_names[index].cell
         segments = segment_path(p)
         if len(segments) > 0:
             rectangles = map_path_to_rectangles(segments, port_coord, path_names[index])

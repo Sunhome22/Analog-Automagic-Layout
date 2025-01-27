@@ -16,7 +16,7 @@ from matplotlib import pyplot as plt, patches
 from circuit.circuit_components import Pin, CircuitCell, Trace
 
 
-def draw_result(grid_size, objects, connections, used_area):
+def draw_result(grid_size, objects, connections, used_area, scale_factor):
     connections2 =  [x for x in connections if x is not None]
     # set up plot
     fix, ax = plt.subplots(figsize=(10, 10))
@@ -38,11 +38,12 @@ def draw_result(grid_size, objects, connections, used_area):
             rect = patches.Rectangle((obj.transform_matrix.c, obj.transform_matrix.f), obj.bounding_box.x2, obj.bounding_box.y2, linewidth=1, edgecolor='blue', facecolor='red')
 
             ax.add_patch(rect)
+
             ax.text(obj.transform_matrix.c + (obj.bounding_box.x2 / 2), obj.transform_matrix.f + (obj.bounding_box.y2 / 2), obj.group+"_"+obj.name,
                 ha='center', va='center', fontsize=12, color='black')
 
     if not path:
-        for p in connections2.values():
+        for p in connections2:
             start = p.starting_comp
             end = p.end_comp
             x_values = []
@@ -67,7 +68,7 @@ def draw_result(grid_size, objects, connections, used_area):
     else:
         scaled_points = []
         for p in connections2:
-            scaled_points.append( [(used_area[0]-500 + x*32 , used_area[1]-500 + y*32 ) for x, y in p])
+            scaled_points.append( [(used_area[0]-500 + x*scale_factor , used_area[1]-500 + y*scale_factor ) for x, y in p])
         for con in scaled_points:
 
             x_coords, y_coords = zip(*con)
@@ -78,4 +79,4 @@ def draw_result(grid_size, objects, connections, used_area):
 
 
     plt.title('OBJ placement')
-    plt.savefig('results/proposed_placement_and_routing.png')
+    plt.savefig('results/Scale_8_min_2(1).png')

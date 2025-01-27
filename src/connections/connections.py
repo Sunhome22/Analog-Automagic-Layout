@@ -16,36 +16,50 @@ from dataclasses import dataclass
 from circuit.circuit_components import Pin, CircuitCell, Transistor
 from logger.logger import get_a_logger
 
-logger = get_a_logger(__name__)
+
 
 @dataclass
 class Connection:
-    starting_comp: str
-    starting_area: str
-    end_comp: str
+    start_comp_id: str
+    start_area: str
+    start_comp_name: str
+    end_comp_id: str
     end_area: str
+    end_comp_name: str
+    cell: str
     net: str
-    def __init__(self, starting_comp: str, starting_area: str, end_comp: str, end_area: str, net: str):
+    def __init__(self, start_comp_id: str, start_area: str, start_comp_name: str, end_comp_id: str, end_area: str, end_comp_name: str, cell: str, net: str):
 
-        self.starting_comp = starting_comp
-        self.starting_area = starting_area
-        self.end_comp = end_comp
+        self.start_comp_id = str(start_comp_id)
+        self.start_area = start_area
+        self.start_comp_name = start_comp_name
+        self.end_comp_id = str(end_comp_id)
         self.end_area = end_area
+        self.end_comp_name = end_comp_name
+        self.cell = cell
         self.net = net
 
 
 class ConnectionLists:
 
     def __init__(self, components):
+        self.logger = get_a_logger(__name__)
         self.components = components
 
 
         self.local_connections = []
-        self.connections = []
+        self.component_connections = []
         self.single_connection = []
         self.overlap_dict = {}
+        self.local_nets = {}
 
-
+    def _update_local_nets(self, object_id: int, start_port: str, end_port: str):
+        if object_id not in self.local_nets:
+            self.local_nets[object_id] = start_port + end_port
+        elif isinstance(self.local_nets[object_id],list):
+            self.local_nets[object_id].append(start_port+end_port)
+        else:
+            self.local_nets[object_id] = [self.local_nets[object_id], start_port+end_port]
 
     def _local_connection_list(self):
 
@@ -57,44 +71,67 @@ class ConnectionLists:
                     for key1 in ports:
 
                         if key != key1:
-                            entry = [Connection(obj.number_id, key, obj.number_id,key1,ports[key]), Connection(obj.number_id, key1, obj.number_id, key, ports[key])]
+                            entry = [Connection(obj.number_id, key, obj.name, obj.number_id, obj.name, obj.cell, key1,ports[key]),
+                                     Connection(obj.number_id, key1, obj.name, obj.number_id, key, obj.name, obj.cell, ports[key])]
                             if ports[key] == ports[key1] and not any(isinstance(obj, Connection) and obj == target for target in entry for obj in self.local_connections):
-                                self.local_connections.append(Connection(obj.number_id, key, obj.number_id, key1, ports[key]))
+                                self.local_connections.append(Connection(obj.number_id, key, obj.name, obj.number_id, key1, obj.name, obj.cell, ports[key]))
+                                self._update_local_nets(obj.number_id, key, key1)
+
 
 
     def _connection_list(self):
 
         object_list = self.components
-
-
-
-        i=0
+        test_run = 0
         for object1 in object_list:
             for object2 in object_list:
                 if not isinstance(object1, (Pin, CircuitCell)) and not isinstance(object2, (Pin,CircuitCell)):
 
-                    object1_ports = object1.schematic_connections
-                    object2_ports = object2.schematic_connections
-
-
                     if object1 != object2 and object1.cell == object2.cell:
+                        object1_ports = object1.schematic_connections
+                        object2_ports = object2.schematic_connections
 
                         for p1 in object1_ports:
                             element_appended = False
+                            local_net_obj1 = p1
+
                             for p2 in object2_ports:
+                                local_net_obj2 = p2
                                 if object1_ports[p1] == object2_ports[p2]:
 
-                                    entry = [Connection(object1.number_id, p1,  object2.number_id, p2,  object1_ports[p1]),Connection(object2.number_id, p2, object1.number_id, p1, object2_ports[p2])]
+                                    if object1.number_id in self.local_nets:
+                                        
+                                        if isinstance(self.local_nets[object1.number_id], list):
 
-                                    if not any(isinstance(obj, Connection) and obj == target for target in entry for obj in self.connections):
+                                            index = next((index for index, item in enumerate(self.local_nets[object1.number_id]) if p1 in item), None)
+                                            local_net_obj1 = self.local_nets[object1.number_id][index]
 
-                                        self.connections.append(Connection(object1.number_id,p1,object2.number_id, p2, object1_ports[p1]))
+                                        elif p1 in self.local_nets[object1.number_id]:
+                                            local_net_obj1 = self.local_nets[object1.number_id]
+                                        else:
+                                            local_net_obj1 = p1
+                                    if object2.number_id in self.local_nets:
+                                        if isinstance(self.local_nets[object2.number_id], list):
+                                            index = next((index for index, item in enumerate(self.local_nets[object2.number_id]) if p2 in item), None)
+                                            local_net_obj2 = self.local_nets[object2.number_id][index]
+                                        elif p2 in self.local_nets[object2.number_id]:
+                                            local_net_obj2 = self.local_nets[object2.number_id]
+                                        else:
+                                            local_net_obj2 = p2
+
+                                    entry = [Connection(object1.number_id, local_net_obj1, object1.name, object2.number_id, local_net_obj2, object2.name, object1.cell, object1_ports[p1]),
+                                             Connection(object2.number_id, local_net_obj2, object2.name, object1.number_id, local_net_obj1, object1.name, object1.cell, object2_ports[p2])]
+
+                                    if not any(isinstance(obj, Connection) and obj == target for target in entry for obj in self.component_connections):
+
+                                        self.component_connections.append(Connection(object1.number_id,local_net_obj1, object1.name, object2.number_id, local_net_obj2, object2.name, object1.cell, object1_ports[p1]))
 
                                         element_appended = True
 
 
+
                             if not element_appended:
-                                self.single_connection.append(Connection(object1.number_id, p1, "", "", object1_ports[p1]))
+                                self.single_connection.append(Connection(object1.number_id, p1, object1.name,"", "", "", object1.cell, object1_ports[p1]))
 
     def _overlap_transistors(self):
         n_transistors = []
@@ -107,20 +144,27 @@ class ConnectionLists:
                 elif obj.type== "nmos":
                     n_transistors.append(obj)
                 else:
-                    logger.error(f"Transistor type '{obj.type}' not handled yet")
+                    self.logger.error(f"Transistor type '{obj.type}' not handled yet")
 
 
-        top, side = overlap_pairs(n_transistors, n_transistors)
-        new_top, new_side = overlap_pairs(p_transistors,p_transistors)
+        top, side = overlap_pairs(n_transistors)
+        new_top, new_side = overlap_pairs(p_transistors)
 
         self.overlap_dict["side"] = side + new_side
         self.overlap_dict["top"] = top + new_top
+
+
+
     def initialize_connections(self):
+
         self._local_connection_list()
         self._connection_list()
         self._overlap_transistors()
 
-        return self.single_connection, self.local_connections, self.connections, self.overlap_dict
+
+
+
+        return self.single_connection, self.local_connections, self.component_connections, self.overlap_dict
 
 
 
@@ -138,25 +182,19 @@ def diff_components(components):
     return diff_pairs
 
 
-def overlap_pairs(list1, list2):
+def overlap_pairs(list1):
     top = []
     side = []
+    duplicated_list = list1[:]
     for i in list1:
-        for j in list2:
+        for j in duplicated_list:
             if i != j:
 
-                if (i.bounding_box.x2 - i.bounding_box.x1) == (j.bounding_box.x2 - j.bounding_box.x1):
+                if (i.bounding_box.x2 - i.bounding_box.x1) == (j.bounding_box.x2 - j.bounding_box.x1) and i.schematic_connections["B"] == j.schematic_connections["B"]:
                     top.append([i.number_id, j.number_id])
 
-                if (i.bounding_box.y2 - i.bounding_box.y1) == (j.bounding_box.y2 - j.bounding_box.y1):
+                if (i.bounding_box.y2 - i.bounding_box.y1) == (j.bounding_box.y2 - j.bounding_box.y1) and i.schematic_connections["B"] == j.schematic_connections["B"]:
                     side.append([i.number_id, j.number_id])
+        duplicated_list.remove(i)
     return top, side
 
-def _remove_duplicates_from_list(dictionary):
-    temp = {}
-
-    for key, value in dictionary.items():
-        if value not in temp.values():
-            temp[key] = value
-
-    return temp

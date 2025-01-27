@@ -22,13 +22,14 @@ class GridGeneration:
     LEEWAY_Y = 500
 
 
-    def __init__(self, grid_size, objects):
+
+    def __init__(self, grid_size, objects, scale):
 
         self.logger = get_a_logger(__name__)
         self.grid_size = grid_size
         self.objects = objects
         self.port_area = []
-        self.port_area = []
+        self.scale_factor = scale
         self.port_scaled_coord = {}
         self.port_coord = {}
         self.used_area = [grid_size, grid_size, 0, 0]
@@ -48,8 +49,8 @@ class GridGeneration:
         for obj in self.objects:
             if not isinstance(obj, (Pin, CircuitCell)):
                 for port in obj.layout_ports:
-                    x1 = (obj.transform_matrix.c + (port.area.x1 + port.area.x2)/2 - self.used_area[0] + self.LEEWAY_X)/32
-                    y1 = (obj.transform_matrix.f + (port.area.y1 + port.area.y2)/2 - self.used_area[1] + self.LEEWAY_Y)/32
+                    x1 = (obj.transform_matrix.c + (port.area.x1 + port.area.x2)/2 - self.used_area[0] + self.LEEWAY_X)/self.scale_factor
+                    y1 = (obj.transform_matrix.f + (port.area.y1 + port.area.y2)/2 - self.used_area[1] + self.LEEWAY_Y)/self.scale_factor
 
                     frac_x, int_x = math.modf(x1)
                     frac_y, int_y = math.modf(y1)
@@ -74,8 +75,8 @@ class GridGeneration:
 
         #port_area, area_coordinates, used_area, port_coord = _port_area(objects, grid_size, leeway_x, leeway_y)
 
-        scaled_grid_size_y = list(math.modf((self.used_area[3]-self.used_area[1]+2*self.LEEWAY_Y)/32))
-        scaled_grid_size_x = list(math.modf((self.used_area[2] - self.used_area[0] + 2 * self.LEEWAY_X)/32))
+        scaled_grid_size_y = list(math.modf((self.used_area[3]-self.used_area[1]+2*self.LEEWAY_Y)/self.scale_factor))
+        scaled_grid_size_x = list(math.modf((self.used_area[2] - self.used_area[0] + 2 * self.LEEWAY_X)/self.scale_factor))
 
         self.grid = [[0 for _ in range(int(scaled_grid_size_x[1]))] for _ in range(int(scaled_grid_size_y[1]))]
 
