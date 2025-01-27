@@ -6,8 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="a135f6d7-11a0-4bae-b20d-a00d3877ac06" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ml_exploration/object_placement.py" beforeDir="false" afterPath="$PROJECT_DIR$/ml_exploration/object_placement.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ppo_model.zip" beforeDir="false" afterPath="$PROJECT_DIR$/ppo_model.zip" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/shit_placement.png" beforeDir="false" afterPath="$PROJECT_DIR$/shit_placement.png" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -119,7 +119,7 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-python-sdk-98f27166c754-ba05f1cad1b1-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-242.21829.153" />
+        <option value="bundled-python-sdk-975db3bf15a3-31b6be0877a2-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-241.18034.82" />
       </set>
     </attachedChunks>
   </component>
