@@ -27,7 +27,7 @@ class ComponentPlacementEnvironment(gym.Env):
         self.observation_space = gym.spaces.Box(
             low=0,
             high=grid_size - max(component_size),
-            shape=(components_total, 2), # 2D array of components
+            shape=(components_total, 2),  # 2D array of components
             dtype=np.int32,
         )
         self.action_space = gym.spaces.MultiDiscrete(
@@ -56,10 +56,10 @@ class ComponentPlacementEnvironment(gym.Env):
 
         return self.component_positions, {}
 
-    def step(self, action) -> list:
+    def step(self, action):
         component_index, dx, dy = action
-        dx *= 100
-        dy *= 100
+        dx *= 1
+        dy *= 1
 
         # Update position of the selected component
         self.component_positions[component_index, 0] = np.clip(
@@ -136,19 +136,19 @@ def plot_placement(grid_size, component_size, component_positions, initial_compo
 
 
 def object_placement():
-    max_steps = 10000
-    grid_size = 3000
-    component_size = (576, 400)
+    max_steps = 1000
+    grid_size = 10 # 3000
+    component_size = (2, 2)  # (576, 400)
     components_total = 4
 
     environment = DummyVecEnv([lambda: ComponentPlacementEnvironment(grid_size=grid_size, component_size=component_size,
                                                              components_total=components_total, max_steps=max_steps)])
 
-    model = PPO("MlpPolicy", environment, verbose=1, device="cpu", learning_rate=0.001, ent_coef=1e-2)
-    model.learn(total_timesteps=200000)
+    model = PPO("MlpPolicy", environment, verbose=1, device="cpu", learning_rate=1, ent_coef=1e-2) #
+    model.learn(total_timesteps=100000)
     model.save("ppo_model")
 
-    #model.load("ppo_model")
+    model.load("ppo_model")
     placements = environment.reset()  # Reset the environment to get the initial observation
     initial_placements = placements
 
