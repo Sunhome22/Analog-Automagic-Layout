@@ -35,7 +35,8 @@ class ComponentPlacementEnvironment(gym.Env):
         )
         self.reset()
 
-    def reset(self, seed=None):
+    def reset(self, seed=None,):
+        super().reset(seed=seed)
         self.np_random, _ = gym.utils.seeding.np_random(seed)
 
         # Place components at random non-overlapping positions
@@ -58,8 +59,11 @@ class ComponentPlacementEnvironment(gym.Env):
 
     def step(self, action):
         component_index, dx, dy = action
-        dx *= 1
-        dy *= 1
+        dx -= 1
+        dy -= 1
+
+        dx *= 2
+        dy *= 2
 
         # Update position of the selected component
         self.component_positions[component_index, 0] = np.clip(
@@ -74,26 +78,25 @@ class ComponentPlacementEnvironment(gym.Env):
         self.steps += 1
         done = self.steps >= self.max_steps
 
-        truncated = False # not dealt with yet
+        # Unused
+        truncated = False
+        info = {}
 
-        return self.component_positions, reward, done, truncated, {}
+        return self.component_positions, reward, done, truncated, info
 
     def reward(self):
-        reward = 0
-
-        # Overlaps are bad for now
-        #for i in range(self.components_total):
-        #    for j in range(i + 1, self.components_total):
-        #        if self.check_overlap(self.component_positions[i], self.component_positions[j]):
-        #            reward -= 2  # Stronger penalty for overlap
         total_distance = 0
+        reward = 0
         # Minimize distance between all components
         for i in range(self.components_total):
             for j in range(i + 1, self.components_total):
-                dist = np.linalg.norm(self.component_positions[i] - self.component_positions[j])
-                total_distance += dist
+                total_distance += np.linalg.norm(self.component_positions[i] - self.component_positions[j]) # always pos.
 
-        reward = -total_distance
+        if total_distance == 0:
+            reward = 1
+        else:
+            reward = 11/total_distance
+
         return reward
 
     def check_overlap(self, pos1, pos2):
@@ -106,7 +109,6 @@ class ComponentPlacementEnvironment(gym.Env):
                 or y1 + self.component_size[1] <= y2
                 or y2 + self.component_size[1] <= y1
         )
-
 
 def plot_placement(grid_size, component_size, component_positions, initial_component_positions):
     # Plot config
@@ -144,7 +146,7 @@ def object_placement():
     environment = DummyVecEnv([lambda: ComponentPlacementEnvironment(grid_size=grid_size, component_size=component_size,
                                                              components_total=components_total, max_steps=max_steps)])
 
-    model = PPO("MlpPolicy", environment, verbose=1, device="cpu", learning_rate=1, ent_coef=1e-2) #
+    model = PPO("MlpPolicy", environment, verbose=1, device="cpu", learning_rate=0.003)  # ent_coef=1e-2)
     model.learn(total_timesteps=100000)
     model.save("ppo_model")
 
@@ -165,3 +167,4 @@ def object_placement():
     print(f"Initial Observation: {initial_placements}")
     plot_placement(grid_size=grid_size, component_size=component_size, component_positions=placements[0],
                    initial_component_positions=initial_placements[0])
+
