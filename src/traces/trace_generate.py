@@ -17,12 +17,10 @@ from dataclasses import dataclass
 import re
 import math
 
+
 from circuit.circuit_components import Trace, RectAreaLayer, RectArea
 from json_tool.json_converter import save_to_json
 from magic.magic_layout_creator import MagicLayoutCreator
-
-
-SCALE_FACTOR = 40
 
 
 def direction(p1, p2):
@@ -134,7 +132,7 @@ def map_path_to_rectangles(path_segments, port_coord, connection_info):
     return rectangles
 
 
-def trace_stretch(switch_bool: bool, trace_width: int, index: int, length: int) -> list[int]:
+def trace_stretch(switch_bool: bool, trace_width: int, index: int, length: int) -> tuple[int,int]:
 
     if index == 0 and length == 1:
         return 0, 0
@@ -153,19 +151,74 @@ def trace_stretch(switch_bool: bool, trace_width: int, index: int, length: int) 
     else:
         return -trace_width // 2, trace_width // 2
 
+def _remove_duplicates(my_list: list) -> list:
+    seen = set()
+    unique_data = []
+    for item in my_list:
+        # Normalize the tuple by sorting its elements
+        normalized = tuple(sorted(item))
+        if normalized not in seen:
+            seen.add(normalized)
+            unique_data.append(item)
+    return unique_data
 
 
 
-def write_traces(objects, path, path_names,  port_coord):
+def _eliminate_segments(seg_list, scale_factor, net_list):
+    spacing_m2 = 14 #vertical
+    spacing_m3 = 30 #horizontal
+    segment_list_vertical = {}
+    segment_list_horizontal = {}
+    for key in seg_list:
+        segments = seg_list[key][:]
+        segments_duplicate = seg_list[key][:]
+
+        for path_segment_1 in segments:
+            temp_seg_list =path_segment_1
+            index_list = []
+            direction_segment_1 = "v" if path_segment_1[0][0] != path_segment_1[0][1] else "h"
+            direction_index = 1 if path_segment_1[0][0] != path_segment_1[0][1] else 0
+            for index, path_segment_2 in enumerate(segments_duplicate):
+                direction_segment_2 = "v" if path_segment_1[0][0] != path_segment_1[0][1] else "h"
+                if direction_segment_1==direction_segment_2 and path_segment_1 != path_segment_2:
+                    if direction_segment_1 == "h" and path_segment_1[0][1]-path_segment_2[0][1] <=30+30/scale_factor: #horizontal, m3
+                        temp_seg_list.append(path_segment_2)
+                        index_list.append(index)
+                    elif direction_segment_1=="v" and path_segment_1[0][0] - path_segment_2[0][0] <= 30 + 14 / scale_factor:  # vertical, m2
+                        temp_seg_list.append(path_segment_2)
+                        index_list.append(index)
+
+            for i in index_list:
+                del segments_duplicate[i]
+
+            for i in range(1,temp_seg_list):
+                temp_seg_list[i][direction_index] = temp_seg_list[0][direction_index]
+
+            temp_seg_list = _remove_duplicates(temp_seg_list)
+
+            if direction_index:
+                segment_list_vertical.append(temp_seg_list)
+            else:
+                segment_list_horizontal.append(temp_seg_list)
+    segment_list_vertical.extend(segment_list_horizontal)
+    return segment_list_vertical
+
+def write_traces(objects, path, path_names,  port_coord, seg_list, scale_factor, net_list):
     trace_width = 30
-
-    for index, p in enumerate(path):
+    segment_list = _eliminate_segments(seg_list, scale_factor, net_list)
+    i = 0
+    segments = []
+    for net in net_list:
+        i+=1
         a_trace = Trace()
         a_trace.instance = a_trace.__class__.__name__  # Add instance type
-        a_trace.number_id = index
-        a_trace.name = path_names[index].start_comp_name+path_names[index].start_area + "_"+path_names[index].end_comp_name+path_names[index].end_area
-        a_trace.cell = path_names[index].cell
-        segments = segment_path(p)
+        a_trace.number_id = i
+        a_trace.name =net
+        #a_trace.cell = path_names[index].cell
+        for p in path:
+            if p[0] == net:
+                segments.extend(segment_path(p))
+
         if len(segments) > 0:
             rectangles = map_path_to_rectangles(segments, port_coord, path_names[index])
 
@@ -180,13 +233,13 @@ def write_traces(objects, path, path_names,  port_coord):
                     added_length_start, added_length_end = trace_stretch(switched_start_end, trace_width, i, len(rectangles))
                     a_trace.segments.append(RectAreaLayer(
                         layer="m2",
-                        area=RectArea(
-                            x1=int(rect[0]) - trace_width // 2, #Adding width to trace
-                            y1=int(rect[1] + added_length_start),
-                            x2=int(rect[2]) + trace_width // 2,
-                            y2=int(rect[3] + added_length_end)
-                        )
-                    ))
+                            area=RectArea(
+                                x1=int(rect[0]) - trace_width // 2, #Adding width to trace
+                                y1=int(rect[1] + added_length_start),
+                                x2=int(rect[2]) + trace_width // 2,
+                                y2=int(rect[3] + added_length_end)
+                            )
+                        ))
                 elif rect[1] == rect[3]:  # Horizontal
                     if rect[0] > rect[2]:  # Ensure x1 < x2
                         rect[0], rect[2] = rect[2], rect[0]
@@ -194,16 +247,16 @@ def write_traces(objects, path, path_names,  port_coord):
                     else:
                         switched_start_end = False
                     added_length_start, added_length_end = trace_stretch(switched_start_end, trace_width, i,
-                                                                         len(rectangles))
+                                                                             len(rectangles))
                     a_trace.segments.append(RectAreaLayer(
-                        layer="m3",
-                        area=RectArea(
-                            x1=int(rect[0] + added_length_start),
-                            y1=int(rect[1]) - trace_width // 2,
-                            x2=int(rect[2] + added_length_end),
-                            y2=int(rect[3]) + trace_width // 2
-                        )
-                    ))
+                            layer="m3",
+                            area=RectArea(
+                                x1=int(rect[0] + added_length_start),
+                                y1=int(rect[1]) - trace_width // 2,
+                                x2=int(rect[2] + added_length_end),
+                                y2=int(rect[3]) + trace_width // 2
+                            )
+                        ))
 
 
             objects.append(a_trace)

@@ -40,10 +40,10 @@ class LinearOptimizationSolver:
     MIRROR =True
     RUN = True
 
-    def __init__(self, object_info, connections, local_connections, grid_size, overlap_dict):
+    def __init__(self, object_info, connections, local_connections, grid_size, overlap_dict, time_limit):
         self.logger = get_a_logger(__name__)
         self.problem_space = pulp.LpProblem("ObjectPlacementWithSizes", pulp.LpMinimize)
-        self.solver = pulp.PULP_CBC_CMD(msg=True, threads=75, timeLimit = 2* 60)
+        self.solver = pulp.PULP_CBC_CMD(msg=True, threads=75, timeLimit = time_limit*60)
         self.object_info = object_info
         self.objects = []
         self.overlap_dict = overlap_dict

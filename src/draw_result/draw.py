@@ -16,7 +16,7 @@ from matplotlib import pyplot as plt, patches
 from circuit.circuit_components import Pin, CircuitCell, Trace
 
 
-def draw_result(grid_size, objects, connections, used_area, scale_factor):
+def draw_result(grid_size, objects, connections, used_area, scale_factor, draw_name):
     connections2 =  [x for x in connections if x is not None]
     # set up plot
     fix, ax = plt.subplots(figsize=(10, 10))
@@ -79,4 +79,4 @@ def draw_result(grid_size, objects, connections, used_area, scale_factor):
 
 
     plt.title('OBJ placement')
-    plt.savefig('results/Scale_8_min_2(1).png')
+    plt.savefig('results/'+draw_name+'.png')

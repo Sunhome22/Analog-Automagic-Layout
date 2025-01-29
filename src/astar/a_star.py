@@ -142,70 +142,73 @@ def check_start_end_port(con, port_scaled_coords: dict):
 
 
 
+def _place_holder(grid, connections, objects, port_scaled_coords, net_list):
+    print("hello")
 
 
 
-def initiate_astar(grid, connections, local_connections, objects, port_scaled_coords):
+def initiate_astar(grid, connections, local_connections, objects, port_scaled_coords, net_list):
     logger.info("Starting Initiate A*")
 
     path = []
     seg_list = {}
     path_names = []
+    done = []
 
     spliced_list = local_connections + connections
-    for con in spliced_list:
-        start_found = False
-        end_found = False
+    for net in net_list.applicable_nets:
+        for con in spliced_list:
+            if con.net == net or "local" in net and con not in done:
+                done.append(con)
+                start_found = False
+                end_found = False
 
 
-        for index, obj in enumerate(objects):
+                for index, obj in enumerate(objects):
 
-            if not isinstance(obj, (Pin, CircuitCell)) and obj.number_id == int(con.start_comp_id):
+                    if not isinstance(obj, (Pin, CircuitCell)) and obj.number_id == int(con.start_comp_id):
+                        start = (int(port_scaled_coords[con.start_comp_id + con.start_area[0]][0][0]), int(port_scaled_coords[con.start_comp_id + con.start_area[0]][0][2]))
+                        start_found = True
 
-                start = (int(port_scaled_coords[con.start_comp_id + con.start_area[0]][0][0]), int(port_scaled_coords[con.start_comp_id + con.start_area[0]][0][2]))
+                    if not isinstance(obj, (Pin, CircuitCell)) and obj.number_id == int(con.end_comp_id):
+                        end = (int(port_scaled_coords[con.end_comp_id + con.end_area[0]][0][0]), int(port_scaled_coords[con.end_comp_id + con.end_area[0]][0][2]))
+                        end_found = True
 
-                start_found = True
+                    if start_found and end_found:
+                        break
 
-            if not isinstance(obj, (Pin, CircuitCell)) and obj.number_id == int(con.end_comp_id):
-
-                end = (int(port_scaled_coords[con.end_comp_id + con.end_area[0]][0][0]), int(port_scaled_coords[con.end_comp_id + con.end_area[0]][0][2]))
-                end_found = True
-
-            if start_found and end_found:
-                break
-
-        if len(con.start_area)>=2 or len(con.end_area) >= 2:
-            start, con.start_area, end, con.end_area = check_start_end_port(con, port_scaled_coords)
+                if len(con.start_area)>=2 or len(con.end_area) >= 2:
+                    start, con.start_area, end, con.end_area = check_start_end_port(con, port_scaled_coords)
 
 
 
-        string = con
-        path_names.append(string)
+                string = con
+                path_names.append(string)
 
-        #Start and end point walkable
+                #Start and end point walkable
 
-        grid[start[1]][start[0]] = 0
-        grid[end[1]][end[0]] = 0
+                grid[start[1]][start[0]] = 0
+                grid[end[1]][end[0]] = 0
 
-        path.append(a_star(grid, start, end, seg_list, con.net))
+                path.append((con.net, a_star(grid, start, end, seg_list, con.net)))
 
-        #Start and end point not walkable
-        grid[start[1]][start[0]] = 1
-        grid[end[1]][end[0]] = 1
+                #Start and end point not walkable
+                grid[start[1]][start[0]] = 1
+                grid[end[1]][end[0]] = 1
 
-        seg = segment_path(path[-1])
-        if con.net not in seg_list:
-            seg_list[con.net] = []
+                seg = segment_path(path[-1])
+                if con.net not in seg_list:
+                    seg_list[con.net] = []
 
-        for s in seg:
-            seg_list[con.net].append(s)
+                for s in seg:
+                    seg_list[con.net].append(s)
 
 
-        add_grid_points = [sub[-1] for sub in seg]
+                add_grid_points = [sub[-1] for sub in seg]
 
-        for x, y in add_grid_points:
-            grid[y][x] = 1
+                for x, y in add_grid_points:
+                    grid[y][x] = 1
 
 
     logger.info("Finished A*")
-    return path, path_names
+    return path, path_names, seg_list
