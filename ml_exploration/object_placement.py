@@ -8,6 +8,9 @@ import gymnasium as gym
 from gymnasium import spaces
 from stable_baselines3 import PPO
 from stable_baselines3.common.vec_env import DummyVecEnv
+from stable_baselines3.common.env_util import make_vec_env
+import os
+from datetime import datetime
 
 
 class ComponentPlacementEnvironment(gym.Env):
@@ -35,7 +38,7 @@ class ComponentPlacementEnvironment(gym.Env):
         )
         self.reset()
 
-    def reset(self, seed=None,):
+    def reset(self, seed=None):
         super().reset(seed=seed)
         self.np_random, _ = gym.utils.seeding.np_random(seed)
 
@@ -62,8 +65,8 @@ class ComponentPlacementEnvironment(gym.Env):
         dx -= 1
         dy -= 1
 
-        dx *= 2
-        dy *= 2
+        #dx *= 2
+        #dy *= 2
 
         # Update position of the selected component
         self.component_positions[component_index, 0] = np.clip(
@@ -95,7 +98,7 @@ class ComponentPlacementEnvironment(gym.Env):
         if total_distance == 0:
             reward = 1
         else:
-            reward = 11/total_distance
+            reward = -1
 
         return reward
 
@@ -142,29 +145,49 @@ def object_placement():
     grid_size = 10 # 3000
     component_size = (2, 2)  # (576, 400)
     components_total = 4
+    time_steps = 10000
 
-    environment = DummyVecEnv([lambda: ComponentPlacementEnvironment(grid_size=grid_size, component_size=component_size,
-                                                             components_total=components_total, max_steps=max_steps)])
+    models_dir = f"ml_exploration/models/PPO-{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}"
+    log_dir = f"ml_exploration/logs/PPO-{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}"
 
-    model = PPO("MlpPolicy", environment, verbose=1, device="cpu", learning_rate=0.003)  # ent_coef=1e-2)
-    model.learn(total_timesteps=100000)
-    model.save("ppo_model")
+    train_model = False
 
-    model.load("ppo_model")
-    placements = environment.reset()  # Reset the environment to get the initial observation
-    initial_placements = placements
+    env = make_vec_env(ComponentPlacementEnvironment, n_envs=1,
+                               env_kwargs=dict(grid_size=grid_size, component_size=component_size,
+                                               components_total=components_total, max_steps=max_steps))
 
-    while True:
-        action, _states = model.predict(placements, deterministic=True)
-        #print("Action:", action)
-        placements, reward, completed, truncated = environment.step(action)
-        print("Reward:", reward)
 
-        if completed:
-            break
+    model = PPO("MlpPolicy", env, verbose=1, device="cpu", tensorboard_log=log_dir) # learning_rate=0.003, ent_coef=1e-2
 
-    print(f"Placement positions: {placements}")
-    print(f"Initial Observation: {initial_placements}")
-    plot_placement(grid_size=grid_size, component_size=component_size, component_positions=placements[0],
-                   initial_component_positions=initial_placements[0])
+    if train_model:
+        # Folder structure
+        if not os.path.exists(models_dir):
+            os.makedirs(models_dir)
 
+        if not os.path.exists(log_dir):
+            os.makedirs(log_dir)
+
+        for i in range(1,21):
+            model.learn(total_timesteps=time_steps, reset_num_timesteps=False, tb_log_name="PPO")
+            model.save(f"{models_dir}/{time_steps*i}")
+
+    else:
+        trained_model = PPO.load(f"ml_exploration/models/PPO-2025-01-29_16-41-45/200000", env=env)
+
+        placements = env.reset()
+        initial_placements = placements
+
+        for i in range(1, max_steps):
+            action, _states = trained_model.predict(placements, deterministic=True)
+            placements, reward, completed, truncated = env.step(action)
+
+            if i == max_steps - 1:
+                break
+
+        env.close()
+        print(f"Placement positions: {placements}")
+        print(f"Initial Observation: {initial_placements}")
+        plot_placement(grid_size=grid_size, component_size=component_size, component_positions=placements[0],
+                       initial_component_positions=initial_placements[0])
+
+    # tensorboard --logdir=ml_exploration/logs --bind_all
