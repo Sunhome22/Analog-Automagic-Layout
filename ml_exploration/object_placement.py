@@ -11,7 +11,7 @@ from stable_baselines3.common.vec_env import DummyVecEnv
 from stable_baselines3.common.env_util import make_vec_env
 import os
 from datetime import datetime
-
+import math
 
 class ComponentPlacementEnvironment(gym.Env):
     def __init__(self, grid_size, component_size, components_total, max_steps):
@@ -25,6 +25,7 @@ class ComponentPlacementEnvironment(gym.Env):
         self.component_size = component_size
         self.components_total = components_total
         self.max_steps = max_steps
+        self.previous_distance = 0
 
         # Observation and action spaces
         self.observation_space = gym.spaces.Box(
@@ -79,7 +80,7 @@ class ComponentPlacementEnvironment(gym.Env):
         reward = self.reward()
 
         self.steps += 1
-        done = self.steps >= self.max_steps
+        done = self.steps >= self.max_steps - 1
 
         # Unused
         truncated = False
@@ -97,9 +98,12 @@ class ComponentPlacementEnvironment(gym.Env):
 
         if total_distance == 0:
             reward = 1
+        elif total_distance < self.previous_distance:
+            reward = 0.5
         else:
-            reward = -1
+            reward = 0
 
+        self.previous_distance = total_distance
         return reward
 
     def check_overlap(self, pos1, pos2):
@@ -140,54 +144,63 @@ def plot_placement(grid_size, component_size, component_positions, initial_compo
     plt.savefig("shit_placement.png")
 
 
+def lr_schedule(progress_remaining):
+    initial_lr = 3e-3  # Start rate
+    final_lr = 3e-4 # Minimum rate
+    decay_rate = 2
+
+    # Exponentially decayed learning rate
+    return final_lr + (initial_lr - final_lr) * math.exp(-decay_rate * (1 - progress_remaining))
+
 def object_placement():
-    max_steps = 1000
-    grid_size = 10 # 3000
-    component_size = (2, 2)  # (576, 400)
+    max_steps = 10000
+    grid_size = 3000
+    component_size = (576, 400)  # (576, 400)
     components_total = 4
-    time_steps = 10000
+    time_steps = 100000
 
     models_dir = f"ml_exploration/models/PPO-{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}"
     log_dir = f"ml_exploration/logs/PPO-{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}"
 
-    train_model = False
 
-    env = make_vec_env(ComponentPlacementEnvironment, n_envs=1,
+    env = make_vec_env(ComponentPlacementEnvironment, n_envs=24,
                                env_kwargs=dict(grid_size=grid_size, component_size=component_size,
                                                components_total=components_total, max_steps=max_steps))
 
 
-    model = PPO("MlpPolicy", env, verbose=1, device="cpu", tensorboard_log=log_dir) # learning_rate=0.003, ent_coef=1e-2
+    model = PPO("MlpPolicy", env, verbose=1, device="cpu", tensorboard_log=log_dir, learning_rate=0.03)
 
-    if train_model:
-        # Folder structure
-        if not os.path.exists(models_dir):
-            os.makedirs(models_dir)
+    # Folder structure
+    if not os.path.exists(models_dir):
+        os.makedirs(models_dir)
 
-        if not os.path.exists(log_dir):
-            os.makedirs(log_dir)
+    if not os.path.exists(log_dir):
+        os.makedirs(log_dir)
 
-        for i in range(1,21):
-            model.learn(total_timesteps=time_steps, reset_num_timesteps=False, tb_log_name="PPO")
-            model.save(f"{models_dir}/{time_steps*i}")
+    for i in range(1,6):
+        model.learn(total_timesteps=time_steps, reset_num_timesteps=False, tb_log_name="PPO")
+        model.save(f"{models_dir}/{time_steps*i}")
 
-    else:
-        trained_model = PPO.load(f"ml_exploration/models/PPO-2025-01-29_16-41-45/200000", env=env)
+    trained_model = PPO.load(f"{models_dir}/200000", env=env)
 
-        placements = env.reset()
-        initial_placements = placements
+    next_placements = env.reset()
+    initial_placements = next_placements
+    placements = []
 
-        for i in range(1, max_steps):
-            action, _states = trained_model.predict(placements, deterministic=True)
-            placements, reward, completed, truncated = env.step(action)
+    while True:
+        action, _states = trained_model.predict(next_placements, deterministic=True)
+        next_placements, reward, completed, truncated = env.step(action)
 
-            if i == max_steps - 1:
-                break
+        if completed:
+            break
 
-        env.close()
-        print(f"Placement positions: {placements}")
-        print(f"Initial Observation: {initial_placements}")
-        plot_placement(grid_size=grid_size, component_size=component_size, component_positions=placements[0],
-                       initial_component_positions=initial_placements[0])
+        placements = next_placements # A hack to deal with SB3s auto reset when done = True
+
+    env.close()
+
+    print(f"Placement positions: {placements}")
+    print(f"Initial Observation: {initial_placements}")
+    plot_placement(grid_size=grid_size, component_size=component_size, component_positions=placements[0],
+                   initial_component_positions=initial_placements[0])
 
     # tensorboard --logdir=ml_exploration/logs --bind_all
