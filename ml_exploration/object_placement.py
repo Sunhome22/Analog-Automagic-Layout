@@ -65,7 +65,7 @@ class ComponentPlacementEnvironment(gym.Env):
         component_index, dx, dy = action
         dx -= 1
         dy -= 1
-
+        print(component_index, dx, dy)
         #dx *= 2
         #dy *= 2
 
@@ -90,20 +90,30 @@ class ComponentPlacementEnvironment(gym.Env):
 
     def reward(self):
         total_distance = 0
-        reward = 0
-        # Minimize distance between all components
+
+        # Compute pairwise distances
         for i in range(self.components_total):
             for j in range(i + 1, self.components_total):
-                total_distance += np.linalg.norm(self.component_positions[i] - self.component_positions[j]) # always pos.
+                total_distance += np.linalg.norm(self.component_positions[i] - self.component_positions[j])
 
-        if total_distance == 0:
-            reward = 1
-        elif total_distance < self.previous_distance:
-            reward = 0.5
-        else:
-            reward = 0
+        # Normalize the distance for stability
+        avg_distance = total_distance / (self.components_total * (self.components_total - 1) / 2 + 1)
 
+        # Compute bounding box area (assuming 2D objects)
+        x_coords = [pos[0] for pos in self.component_positions]
+        y_coords = [pos[1] for pos in self.component_positions]
+        bounding_box_area = (max(x_coords) - min(x_coords)) * (max(y_coords) - min(y_coords))
+
+        # Define reward as minimizing both distance and bounding box area
+        distance_reward = -avg_distance  # We want to minimize distances
+        area_penalty = -bounding_box_area  # We want to minimize the occupied area
+
+        # Combine rewards
+        reward = distance_reward + area_penalty
+
+        # Store previous distance for comparison
         self.previous_distance = total_distance
+
         return reward
 
     def check_overlap(self, pos1, pos2):
@@ -117,7 +127,7 @@ class ComponentPlacementEnvironment(gym.Env):
                 or y2 + self.component_size[1] <= y1
         )
 
-def plot_placement(grid_size, component_size, component_positions, initial_component_positions):
+def plot_placement(grid_size, component_size, component_positions, initial_component_positions, plot_name):
     # Plot config
     fig, ax = plt.subplots(figsize=(8, 8))
     ax.set_xlim(0, grid_size)
@@ -141,12 +151,12 @@ def plot_placement(grid_size, component_size, component_positions, initial_compo
         ax.text(x + component_size[0] / 2, y + component_size[1] / 2, f"{i + 1} initial",
                 color="black", fontsize=10, ha='center', va='center')
 
-    plt.savefig("shit_placement.png")
+    plt.savefig(plot_name)
 
 
 def lr_schedule(progress_remaining):
     initial_lr = 3e-3  # Start rate
-    final_lr = 3e-4 # Minimum rate
+    final_lr = 3e-5 # Minimum rate
     decay_rate = 2
 
     # Exponentially decayed learning rate
@@ -154,21 +164,21 @@ def lr_schedule(progress_remaining):
 
 def object_placement():
     max_steps = 10000
-    grid_size = 3000
-    component_size = (576, 400)  # (576, 400)
+    grid_size = 10
+    component_size = (2, 2)  # (576, 400)
     components_total = 4
-    time_steps = 100000
+    time_steps = 10000
 
     models_dir = f"ml_exploration/models/PPO-{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}"
     log_dir = f"ml_exploration/logs/PPO-{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}"
 
 
-    env = make_vec_env(ComponentPlacementEnvironment, n_envs=24,
+    env = make_vec_env(ComponentPlacementEnvironment, n_envs=2,
                                env_kwargs=dict(grid_size=grid_size, component_size=component_size,
                                                components_total=components_total, max_steps=max_steps))
 
 
-    model = PPO("MlpPolicy", env, verbose=1, device="cpu", tensorboard_log=log_dir, learning_rate=0.03)
+    model = PPO("MlpPolicy", env, verbose=1, device="cpu", tensorboard_log=log_dir, learning_rate=lr_schedule)
 
     # Folder structure
     if not os.path.exists(models_dir):
@@ -177,7 +187,7 @@ def object_placement():
     if not os.path.exists(log_dir):
         os.makedirs(log_dir)
 
-    for i in range(1,6):
+    for i in range(1,21):
         model.learn(total_timesteps=time_steps, reset_num_timesteps=False, tb_log_name="PPO")
         model.save(f"{models_dir}/{time_steps*i}")
 
@@ -190,8 +200,8 @@ def object_placement():
     while True:
         action, _states = trained_model.predict(next_placements, deterministic=True)
         next_placements, reward, completed, truncated = env.step(action)
-
-        if completed:
+        #print(next_placements)
+        if completed.any():
             break
 
         placements = next_placements # A hack to deal with SB3s auto reset when done = True
@@ -201,6 +211,9 @@ def object_placement():
     print(f"Placement positions: {placements}")
     print(f"Initial Observation: {initial_placements}")
     plot_placement(grid_size=grid_size, component_size=component_size, component_positions=placements[0],
-                   initial_component_positions=initial_placements[0])
+                   initial_component_positions=initial_placements[0], plot_name="placement_test_1")
+
+    plot_placement(grid_size=grid_size, component_size=component_size, component_positions=placements[1],
+                   initial_component_positions=initial_placements[1], plot_name="placement_test_2")
 
     # tensorboard --logdir=ml_exploration/logs --bind_all
