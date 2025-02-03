@@ -9,11 +9,14 @@ from gymnasium import spaces
 from stable_baselines3 import PPO
 from stable_baselines3.common.vec_env import DummyVecEnv
 from stable_baselines3.common.env_util import make_vec_env
+from functools import lru_cache
 import os
 from datetime import datetime
 import math
 
 class ComponentPlacementEnvironment(gym.Env):
+    """Utilizes Stable-Baselines3 with its skeleton functions to create a reinforcement learning environment"""
+
     def __init__(self, grid_size, component_size, components_total, max_steps):
         super(ComponentPlacementEnvironment, self).__init__()
 
@@ -63,11 +66,8 @@ class ComponentPlacementEnvironment(gym.Env):
 
     def step(self, action):
         component_index, dx, dy = action
-        dx -= 1
-        dy -= 1
-        print(component_index, dx, dy)
-        #dx *= 2
-        #dy *= 2
+        dx -= 1 # shift to (-1, 0, 1)
+        dy -= 1 # shift to (-1, 0, 1)
 
         # Update position of the selected component
         self.component_positions[component_index, 0] = np.clip(
@@ -78,6 +78,11 @@ class ComponentPlacementEnvironment(gym.Env):
         )
 
         reward = self.reward()
+
+        #print(f"id: {component_index}, dx: {dx}, dy: {dy}")
+        #print(f"x: {self.component_positions[component_index, 0]}, y: {self.component_positions[component_index, 1]}")
+        #print(f"reward: {reward}")
+        #print(f"positions: {self.component_positions}")
 
         self.steps += 1
         done = self.steps >= self.max_steps - 1
@@ -90,31 +95,48 @@ class ComponentPlacementEnvironment(gym.Env):
 
     def reward(self):
         total_distance = 0
-
+        overlap_reward = 0
         # Compute pairwise distances
         for i in range(self.components_total):
             for j in range(i + 1, self.components_total):
                 total_distance += np.linalg.norm(self.component_positions[i] - self.component_positions[j])
 
-        # Normalize the distance for stability
-        avg_distance = total_distance / (self.components_total * (self.components_total - 1) / 2 + 1)
+        # Normalized distances
+        avg_distance = total_distance / self.get_number_of_pairs(self.components_total)
 
-        # Compute bounding box area (assuming 2D objects)
-        x_coords = [pos[0] for pos in self.component_positions]
+        #print(f"total_distance {total_distance}")
+        #print(f"avg_distance {avg_distance}")
+
+        # Compute bounding box area
+        x_pos = [pos[0] for pos in self.component_positions]
         y_coords = [pos[1] for pos in self.component_positions]
-        bounding_box_area = (max(x_coords) - min(x_coords)) * (max(y_coords) - min(y_coords))
+        bounding_box_area = (max(x_pos) - min(x_pos)) * (max(y_coords) - min(y_coords))
+
+        # Check for overlap
+        for i in range(self.components_total):
+            for j in range(i + 1, self.components_total):
+                if self.check_overlap(self.component_positions[i], self.component_positions[j]):
+                    overlap_reward = -1
 
         # Define reward as minimizing both distance and bounding box area
-        distance_reward = -avg_distance  # We want to minimize distances
-        area_penalty = -bounding_box_area  # We want to minimize the occupied area
+        distance_reward = 1 / (avg_distance + 1)
+        area_reward= 1 / (bounding_box_area + 1)
 
-        # Combine rewards
-        reward = distance_reward + area_penalty
+        # Maybe weight this in the future?
 
-        # Store previous distance for comparison
-        self.previous_distance = total_distance
+        reward = distance_reward + bounding_box_area
+
+        #print(f"distance avg. : {avg_distance}")
+        print(f"distance reward: {distance_reward}")
+        #print(f"area penalty: {area_reward}")
+        print(f"overlap reward: {overlap_reward}")
+        print(f"reward total: {reward}")
 
         return reward
+
+    @lru_cache(maxsize=None)
+    def get_number_of_pairs(self, n):
+        return max(1, n * (n - 1) / 2)
 
     def check_overlap(self, pos1, pos2):
         x1, y1 = pos1
@@ -155,19 +177,20 @@ def plot_placement(grid_size, component_size, component_positions, initial_compo
 
 
 def lr_schedule(progress_remaining):
-    initial_lr = 3e-3  # Start rate
-    final_lr = 3e-5 # Minimum rate
-    decay_rate = 2
+    initial_lr = 1e-5  # Start rate
+    final_lr = 1e-6 # Minimum rate
+    decay_rate = 1.1
 
     # Exponentially decayed learning rate
     return final_lr + (initial_lr - final_lr) * math.exp(-decay_rate * (1 - progress_remaining))
 
 def object_placement():
-    max_steps = 10000
+    max_steps = 1000
     grid_size = 10
     component_size = (2, 2)  # (576, 400)
     components_total = 4
     time_steps = 10000
+    train = True
 
     models_dir = f"ml_exploration/models/PPO-{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}"
     log_dir = f"ml_exploration/logs/PPO-{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}"
@@ -180,25 +203,28 @@ def object_placement():
 
     model = PPO("MlpPolicy", env, verbose=1, device="cpu", tensorboard_log=log_dir, learning_rate=lr_schedule)
 
-    # Folder structure
-    if not os.path.exists(models_dir):
-        os.makedirs(models_dir)
+    if train:
+        # Folder structure
+        if not os.path.exists(models_dir):
+            os.makedirs(models_dir)
 
-    if not os.path.exists(log_dir):
-        os.makedirs(log_dir)
+        if not os.path.exists(log_dir):
+            os.makedirs(log_dir)
 
-    for i in range(1,21):
-        model.learn(total_timesteps=time_steps, reset_num_timesteps=False, tb_log_name="PPO")
-        model.save(f"{models_dir}/{time_steps*i}")
+        for i in range(1,21):
+            model.learn(total_timesteps=time_steps, reset_num_timesteps=False, tb_log_name="PPO")
+            model.save(f"{models_dir}/{time_steps*i}")
 
-    trained_model = PPO.load(f"{models_dir}/200000", env=env)
+    #
+    # ml_exploration/models/PPO-2025-02-03_11-45-47/200000
+    trained_model = PPO.load(f"{models_dir}/100000", env=env)
 
     next_placements = env.reset()
     initial_placements = next_placements
     placements = []
 
     while True:
-        action, _states = trained_model.predict(next_placements, deterministic=True)
+        action, _states = trained_model.predict(next_placements, deterministic=False)
         next_placements, reward, completed, truncated = env.step(action)
         #print(next_placements)
         if completed.any():
