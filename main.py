@@ -13,18 +13,17 @@
 # If not, see <https://www.gnu.org/licenses/>.
 # ==================================================================================================================== #
 from ml_exploration.object_placement import object_placement
-
-
+from gymnasium.envs.registration import register
+from custom_placement_algorithm.custom_placement_algorithm import CustomPlacement
 # ================================================== Libraries =========================================================
 
 # ========================================== Set-up classes and constants ==============================================
 
 # ===================================================== Main ===========================================================
 
-
 def main():
-    object_placement()
-
+    #object_placement()
+    CustomPlacement(components_total=4, component_size=(1,1), grid_size=10)
 
 if __name__ == '__main__':
     main()

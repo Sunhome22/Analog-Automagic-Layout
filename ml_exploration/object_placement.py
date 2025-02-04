@@ -110,14 +110,14 @@ class ComponentPlacementEnvironment(gym.Env):
 
         # Compute bounding box area
         x_pos = [pos[0] for pos in self.component_positions]
-        y_coords = [pos[1] for pos in self.component_positions]
-        bounding_box_area = (max(x_pos) - min(x_pos)) * (max(y_coords) - min(y_coords))
+        y_pos = [pos[1] for pos in self.component_positions]
+        bounding_box_area = (max(x_pos) - min(x_pos)) * (max(y_pos) - min(y_pos))
 
         # Check for overlap
         for i in range(self.components_total):
             for j in range(i + 1, self.components_total):
                 if self.check_overlap(self.component_positions[i], self.component_positions[j]):
-                    overlap_reward -= 1
+                    overlap_reward -= 0.2
 
         # Define reward as minimizing both distance and bounding box area
         distance_reward = 1 / (avg_distance + 1)
@@ -129,7 +129,7 @@ class ComponentPlacementEnvironment(gym.Env):
 
         # print(f"distance avg. : {avg_distance}")
         print(f"distance reward: {distance_reward}")
-        # print(f"area penalty: {area_reward}")
+        print(f"area penalty: {area_reward}")
         print(f"overlap reward: {overlap_reward}")
         print(f"reward total: {reward}")
 
@@ -188,12 +188,12 @@ def lr_schedule(progress_remaining):
 
 
 def object_placement():
-    max_steps = 10000
+    max_steps = 1000
     grid_size = 10
     component_size = (2, 2)  # (576, 400)
     components_total = 4
     time_steps = 10000
-    train = True
+    train = False
 
     models_dir = f"ml_exploration/models/PPO-{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}"
     log_dir = f"ml_exploration/logs/PPO-{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}"
@@ -202,7 +202,7 @@ def object_placement():
                                env_kwargs=dict(grid_size=grid_size, component_size=component_size,
                                                components_total=components_total, max_steps=max_steps))
 
-    model = PPO("MlpPolicy", env, verbose=1, device="cpu", tensorboard_log=log_dir, learning_rate=1e-3)
+    model = PPO("MlpPolicy", env, verbose=1, device="cpu", tensorboard_log=log_dir, learning_rate=1e-4)
 
     if train:
         # Folder structure
@@ -212,13 +212,13 @@ def object_placement():
         if not os.path.exists(log_dir):
             os.makedirs(log_dir)
 
-        for i in range(1, 101):
+        for i in range(1, 21):
             model.learn(total_timesteps=time_steps, reset_num_timesteps=False, tb_log_name="PPO")
             model.save(f"{models_dir}/{time_steps*i}")
 
+    #{models_dir}/200000
     #
-    # ml_exploration/models/PPO-2025-02-03_11-45-47/200000
-    trained_model = PPO.load(f"{models_dir}/1000000", env=env)
+    trained_model = PPO.load(f"ml_exploration/models/PPO-2025-02-04_11-12-22/200000", env=env)
 
     next_placements = env.reset()
     initial_placements = next_placements

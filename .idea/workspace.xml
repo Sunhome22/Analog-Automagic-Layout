@@ -46,23 +46,24 @@
     "Python.xschem.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "git-widget-placeholder": "Bjørn__ML__exploration",
-    "last_opened_file_path": "//wsl$/Ubuntu-22.04/home/bjorn/Analog-Automagic-Layout",
+    "last_opened_file_path": "D:/bjs1/Analog-Automagic-Layout/ml_exploration",
     "settings.editor.selected.configurable": "preferences.pluginManager"
   }
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\bjs1\Analog-Automagic-Layout\ml_exploration" />
       <recent name="\\wsl$\Ubuntu-22.04\home\bjorn\Analog-Automagic-Layout" />
       <recent name="D:\bjs1\Analog-Automagic-Layout\json_tool" />
       <recent name="D:\bjs1\Analog-Automagic-Layout\layout_creator" />
       <recent name="D:\bjs1\Analog-Automagic-Layout\layout_manipulator" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="\\wsl$\Ubuntu-22.04\home\bjorn\Analog-Automagic-Layout\ml_exploration" />
-      <recent name="\\wsl$\Ubuntu-22.04\home\bjorn\Analog-Automagic-Layout" />
-      <recent name="D:\bjs1\Analog-Automagic-Layout\misc" />
-      <recent name="D:\bjs1\Analog-Automagic-Layout\results" />
       <recent name="D:\bjs1\Analog-Automagic-Layout" />
+      <recent name="D:\bjs1\Analog-Automagic-Layout\rl-baselines3-zoo\custom_envs" />
+      <recent name="D:\bjs1\Analog-Automagic-Layout\rl-baselines3-zoo" />
+      <recent name="D:\bjs1\Analog-Automagic-Layout\ml_exploration" />
+      <recent name="\\wsl$\Ubuntu-22.04\home\bjorn\Analog-Automagic-Layout\ml_exploration" />
     </key>
   </component>
   <component name="RunManager" selected="Python.circuit_spice_parser">
