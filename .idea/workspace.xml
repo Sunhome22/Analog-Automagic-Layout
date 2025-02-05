@@ -5,14 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a135f6d7-11a0-4bae-b20d-a00d3877ac06" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/not_quite_as_intended.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ml_exploration/object_placement.py" beforeDir="false" afterPath="$PROJECT_DIR$/ml_exploration/object_placement.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/placement_test_1.png" beforeDir="false" afterPath="$PROJECT_DIR$/placement_test_1.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/placement_test_2.png" beforeDir="false" afterPath="$PROJECT_DIR$/placement_test_2.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ppo_model.zip" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ppo_model_1_hour_40.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/custom_placement_algorithm/custom_placement_algorithm.py" beforeDir="false" afterPath="$PROJECT_DIR$/custom_placement_algorithm/custom_placement_algorithm.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/custom_placement_algorithm/ok_placement.png" beforeDir="false" afterPath="$PROJECT_DIR$/custom_placement_algorithm/ok_placement.png" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -37,19 +33,19 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Python.SPICE_parser.executor": "Run",
-    "Python.circuit_spice_parser.executor": "Run",
-    "Python.main.executor": "Run",
-    "Python.test.executor": "Run",
-    "Python.xschem.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "Bjørn__ML__exploration",
-    "last_opened_file_path": "D:/bjs1/Analog-Automagic-Layout/ml_exploration",
-    "settings.editor.selected.configurable": "preferences.pluginManager"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Python.SPICE_parser.executor&quot;: &quot;Run&quot;,
+    &quot;Python.circuit_spice_parser.executor&quot;: &quot;Run&quot;,
+    &quot;Python.main.executor&quot;: &quot;Run&quot;,
+    &quot;Python.test.executor&quot;: &quot;Run&quot;,
+    &quot;Python.xschem.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;Bjørn__ML__exploration&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/bjs1/Analog-Automagic-Layout/ml_exploration&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="D:\bjs1\Analog-Automagic-Layout\ml_exploration" />

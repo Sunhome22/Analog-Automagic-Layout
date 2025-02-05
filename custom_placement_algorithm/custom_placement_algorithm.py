@@ -42,42 +42,62 @@ class CustomPlacement:
         #    self.component_positions.append(np.array([0, 0]))
         #self.component_positions = np.array(self.component_positions, dtype=np.int32)
 
-        n = 4
+        n = 8
         positions = self.generate_symmetric_grid(n)
         for pos in positions:
             self.component_positions.append(pos)
-        self.component_positions = np.array(self.component_positions, dtype=np.int32)
+        self.component_positions = np.array(self.component_positions, dtype=np.float32)
 
         # Debug
         self.plot_placement(plot_name="custom_placement_algorithm/ok_placement.png")
         print(self.component_positions)
 
-
     def generate_symmetric_grid(self, n):
         positions = []
-
-        # Determine the number of rows and columns
-        cols = math.ceil(math.sqrt(n))  # Approximate square grid
+        cols = math.ceil(math.sqrt(n))
         rows = math.ceil(n / cols)
-        print(rows)
-        print(cols)
+        start_row = 0
+        extra_cols = 0
+        divider = 2
+        divider_2 = 2
+        extra_row = 0
 
-        y_offset = (rows - 1) / 2
+        if n % 2 != 0:
+            positions.append((-0.5, 0))
+            start_row = 1
+
+        if n % 3 != 0:
+            extra_row = 1
+
+        if n % 5 == 0 or n % 7 == 0:
+            divider = 4
+
+        if n % 6 == 0:
+            extra_cols = 1
+            extra_row = 1
+            divider_2 = 4
+
+        if n % 9 == 0:
+            extra_row = 2
+
+        if n % 10 == 0:
+            start_row = -1
+            divider_2 = 4
+            divider = 4
+
 
         count = 0
-        for row in range(rows):
-            for col in range(-(cols // 2), (cols // 2) + 1):  # Symmetric range around 0
+        for row in range(start_row, rows + extra_row):
+            for col in range(-cols // divider + extra_cols, cols // divider_2 + extra_cols):
+                # prevent extra
                 if count >= n:
                     break
-
-                x = col
-                y = y_offset - row  # Inverted y to have (0,0) at center
-
-                # Add the point
-                positions.append((x, y))
+                positions.append((col, -row))
                 count += 1
 
         return positions
+
+
 
 
 
