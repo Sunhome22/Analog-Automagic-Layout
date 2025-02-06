@@ -11,11 +11,15 @@
 # You should have received a copy of the GNU General Public License along with this program.
 # If not, see <https://www.gnu.org/licenses/>.
 # ==================================================================================================================== #
+from itertools import combinations
 
+import pulp
 from traces.trace_generate import segment_path
 from circuit.circuit_components import CircuitCell, Pin
 from logger.logger import get_a_logger
 import heapq
+
+
 
 logger = get_a_logger(__name__)
 
@@ -41,35 +45,37 @@ def heuristic(a, b):
     return abs(a[0] - b[0]) + abs(a[1] - b[1])
 
 
-def get_neighbors(node, grid, goal, seg_list):
+def get_neighbors(node, grid, goal, seg_list, net):
     """Get valid neighbors for the current node."""
-    x, y = node
     neighbors = []
     directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]  # Right, Down, Left, Up
     in_seg = False
-    index = 0
+    index = "ph"
+    segment_net = "ph"
 
-    if len(seg_list) > 0:
-        for i, seg in enumerate(seg_list):
-            if node in seg:
-                in_seg = True
-                index = i
-                break
+    if seg_list:
+        for s_net in seg_list:
+            for i, seg in enumerate(seg_list[s_net]):
+                if node in seg:
+                    in_seg = True
+                    index = i
+                    segment_net = s_net
+                    break
 
     for dx, dy in directions:
-        nx, ny = x + dx, y + dy
+        nx, ny = node[0] + dx, node[1] + dy
 
         if in_seg:
             # Check bounds and obstacles
-            if 0 <= nx < len(grid[0]) and 0 <= ny < len(grid) and grid[ny][nx] == 0 and (nx, ny) not in seg_list[index]:
-                neighbors.append((nx, ny))
+            if 0 <= nx < len(grid[0]) and 0 <= ny < len(grid) and grid[ny][nx] == 0 and ((nx, ny) not in seg_list[segment_net][index] or segment_net == net):
+                neighbors.append(((nx,ny), (dx,dy)))
             elif 0 <= nx < len(grid[0]) and 0 <= ny < len(grid) and grid[ny][nx] == goal:
-                neighbors.append((nx, ny))
+                neighbors.append(((nx,ny), (dx,dy)))
         else:
             if 0 <= nx < len(grid[0]) and 0 <= ny < len(grid) and grid[ny][nx] == 0:
-                neighbors.append((nx, ny))
+                neighbors.append(((nx,ny), (dx,dy)))
             elif 0 <= nx < len(grid[0]) and 0 <= ny < len(grid) and grid[ny][nx] == goal:
-                neighbors.append((nx, ny))
+                neighbors.append(((nx,ny), (dx,dy)))
 
     return neighbors
 
@@ -84,91 +90,125 @@ def reconstruct_path(came_from, current):
     return path
 
 
-def a_star(grid, start, goal, seg_list):
+def a_star(grid, start, goal, seg_list, net):
     open_set = PriorityQueue()
-    open_set.push(start, 0)
+    open_set.push((start,None),0)
 
     came_from = {}  # To reconstruct the path
     g_score = {start: 0}
     f_score = {start: heuristic(start, goal)}
 
     while not open_set.is_empty():
-        current = open_set.pop()
+        current, current_dir = open_set.pop()
 
         # Check if we reached the goal
         if current == goal:
             return reconstruct_path(came_from, current)
 
-        for neighbor in get_neighbors(current, grid, goal, seg_list):
-            tentative_g_score = g_score[current] + 1  # Cost from start to neighbor
+        for neighbor, direction in get_neighbors(current, grid, goal, seg_list, net):
+            direction_change_penalty = 0 if current_dir is None or current_dir == direction else 1
+
+            tentative_g_score = g_score[current] + 1 + direction_change_penalty  # Cost from start to neighbor
 
             if neighbor not in g_score or tentative_g_score < g_score[neighbor]:
                 # Update the best path to this neighbor
                 came_from[neighbor] = current
                 g_score[neighbor] = tentative_g_score
                 f_score[neighbor] = tentative_g_score + heuristic(neighbor, goal)
-                open_set.push(neighbor, f_score[neighbor])
+                open_set.push((neighbor,direction), f_score[neighbor])
 
     return None  # No path found
 
+def check_start_end_port(con, port_scaled_coords: dict):
+    start_ports = con.start_area
+    end_ports = con.end_area
+    port_combinations = {}
 
-def initiate_astar(grid, connections, local_connections, objects, area_coordinates):
+    for x in start_ports:
+        for y in end_ports:
+
+            point1 = [port_scaled_coords[con.start_comp_id + x][0], port_scaled_coords[con.start_comp_id + x][2]]
+            point2 = [port_scaled_coords[con.end_comp_id + y][0], port_scaled_coords[con.end_comp_id + y][2]]
+            port_combinations[x+y]=sum(abs(a - b) for a, b in zip(point1, point2))
+
+    designated_ports = min(port_combinations, key = port_combinations.get)
+
+    start = (int(port_scaled_coords[con.start_comp_id + designated_ports[0]][0]),
+             int(port_scaled_coords[con.start_comp_id + designated_ports[0]][2]))
+    end = (int(port_scaled_coords[con.end_comp_id + designated_ports[1]][0]),
+             int(port_scaled_coords[con.end_comp_id + designated_ports[1]][2]))
+
+    return start, designated_ports[0], end, designated_ports[1]
+
+
+
+def _place_holder(grid, connections, objects, port_scaled_coords, net_list):
+    print("hello")
+
+
+
+def initiate_astar(grid, connections, local_connections, objects, port_scaled_coords, net_list):
     logger.info("Starting Initiate A*")
 
-    path = []
-    seg_list = []
-    path_names = []
+    path = {}
+    seg_list = {}
 
-    spliced_list = {**connections, **local_connections}
+    done = []
 
-    for con in spliced_list.values():
-        id_start = con.starting_comp
-        id_end = con.end_comp
-        start_area = con.starting_area[0]
-        end_area = con.end_area[0]
-        start_found = False
-        end_found = False
-
-        for obj in objects:
-
-            if not isinstance(obj, (Pin, CircuitCell)) and obj.number_id == id_start:
-                start = (
-                area_coordinates[str(id_start) + start_area][0][0], area_coordinates[str(id_start) + start_area][0][2])
-
-                start_found = True
-
-            if not isinstance(obj, (Pin, CircuitCell)) and obj.number_id == id_end:
-                end = (area_coordinates[str(id_end) + end_area][0][0], area_coordinates[str(id_end) + end_area][0][2])
-                end_found = True
-
-            if start_found and end_found:
-                break
-
-        string = str(id_start) + str(start_area) + "-" + str(id_end) + str(end_area)
-        path_names.append(string)
-
-        #Start and end point walkable
-        grid[start[1]][start[0]] = 0
-        grid[end[1]][end[0]] = 0
-
-        path.append(a_star(grid, start, end, seg_list))
-
-        #Start and end point not walkable
-        grid[start[1]][start[0]] = 1
-        grid[end[1]][end[0]] = 1
-
-        seg = segment_path(path[-1])
+    spliced_list = local_connections + connections
+    for net in net_list.applicable_nets:
+        for con in spliced_list:
+            if con.net == net or ("local" in net and con not in done):
+                done.append(con)
+                start_found = False
+                end_found = False
 
 
-        for s in seg:
-            seg_list.append(s)
+                for index, obj in enumerate(objects):
+
+                    if not isinstance(obj, (Pin, CircuitCell)) and obj.number_id == int(con.start_comp_id):
+                        start = (int(port_scaled_coords[con.start_comp_id + con.start_area[0]][0]), int(port_scaled_coords[con.start_comp_id + con.start_area[0]][2]))
+                        start_found = True
+
+                    if not isinstance(obj, (Pin, CircuitCell)) and obj.number_id == int(con.end_comp_id):
+                        end = (int(port_scaled_coords[con.end_comp_id + con.end_area[0]][0]), int(port_scaled_coords[con.end_comp_id + con.end_area[0]][2]))
+                        end_found = True
+
+                    if start_found and end_found:
+                        break
+
+                if len(con.start_area)>=2 or len(con.end_area) >= 2:
+                    start, con.start_area, end, con.end_area = check_start_end_port(con, port_scaled_coords)
 
 
-        add_grid_points = [sub[-1] for sub in seg]
 
-        for x, y in add_grid_points:
-            grid[y][x] = 1
+
+
+
+                #Start and end point walkable
+
+                grid[start[1]][start[0]] = 0
+                grid[end[1]][end[0]] = 0
+                p = a_star(grid, start, end, seg_list, con.net)
+                path.setdefault(con.net, []).append((con.start_comp_id+con.start_area + "_"+con.end_comp_id+con.end_area, p))
+
+                #Start and end point not walkable
+                grid[start[1]][start[0]] = 1
+                grid[end[1]][end[0]] = 1
+
+                seg = segment_path(p)
+                if con.net not in seg_list:
+                    seg_list[con.net] = []
+
+                for s in seg:
+                    seg_list[con.net].append(s)
+
+
+                add_grid_points = [sub[-1] for sub in seg]
+
+                for x, y in add_grid_points:
+                    grid[y][x] = 1
 
 
     logger.info("Finished A*")
-    return path, path_names
+    return path, seg_list

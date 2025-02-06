@@ -27,7 +27,7 @@ from circuit.circuit_components import Trace, RectAreaLayer, RectArea
 from astar.a_star import initiate_astar
 from draw_result.draw import draw_result
 from linear_optimization.linear_optimization import *
-from grid.generate_grid import generate_grid
+from grid.generate_grid import *
 from connections.connections import *
 from traces.trace_generate import write_traces
 from drc.drc_checker import DRCchecking
@@ -36,6 +36,9 @@ import os
 
 # Define grid size and objects
 grid_size = 3000
+scale_factor = 32
+time_limit = 0.4
+draw_name = 'Temporary_check'
 
 @dataclass
 class ComponentLibrary:
@@ -80,28 +83,29 @@ def main():
                                        components=components.get_info()).get_info()
 
     # Algorithms
-    #single_connection, local_connections, connections = connection_list(components)
-    #overlap_dict = overlap_transistors(components)
+    con_obj = ConnectionLists(components)
+    single_connection, local_connections, connections, overlap_dict, net_list = con_obj.initialize_connections()
 
-    #result = LinearOptimizationSolver(components, connections, local_connections, grid_size, overlap_dict)
-    #components = result.initiate_solver()
+    result = LinearOptimizationSolver(components, connections, local_connections, grid_size, overlap_dict, time_limit)
+    components = result.initiate_solver()
 
-    #grid, area_coordinates, used_area, port_coord = generate_grid(grid_size, components)
-    #path, path_names = initiate_astar(grid, connections, local_connections, components, area_coordinates)
-    #components = write_traces(components, path, path_names, port_coord)
+    grid_object = GridGeneration(grid_size, components, scale_factor)
+    grid, port_scaled_coords, used_area, port_coord = grid_object.initialize_grid_generation()
 
-    #logger.info("Starting Drawing Results")
-    #draw_result(grid_size, components, path, used_area)
-    #logger.info("Finished Drawing Results")
-
-    # Save found components to JSON file
-    components = load_from_json(file_name=f"{project_properties.main_file_directory}/results/"
-                                          f"Comparator_OTA_complete_generation_data_8_hours.json")
+    #path, seg_list = initiate_astar(grid, connections, local_connections, components, port_scaled_coords, net_list)
+    # components = initiate_write_traces(components, path, port_coord, seg_list, scale_factor, net_list)
+    path = []
+    logger.info("Starting Drawing results")
+    # path true:
+    draw_result(grid_size, components, path, used_area, scale_factor, draw_name, project_properties)
+    # path false:
+    # draw_result(grid_size, components, connections, used_area)
+    logger.info("Finished Drawing results")
 
     # Create layout
-    MagicLayoutCreator(project_properties=project_properties, components=components)
+    # MagicLayoutCreator(project_properties=project_properties, components=components)
 
-    DRCchecking(project_properties=project_properties)
+    # DRCchecking(project_properties=project_properties)
 
     # Debug log of all components
     logger.debug(f"Components registered: ")
