@@ -127,16 +127,16 @@ def check_start_end_port(con, port_scaled_coords: dict):
     for x in start_ports:
         for y in end_ports:
 
-            point1 = [port_scaled_coords[con.start_comp_id + x][0][0], port_scaled_coords[con.start_comp_id + x][0][2]]
-            point2 = [port_scaled_coords[con.end_comp_id + y][0][0], port_scaled_coords[con.end_comp_id + y][0][0]]
+            point1 = [port_scaled_coords[con.start_comp_id + x][0], port_scaled_coords[con.start_comp_id + x][2]]
+            point2 = [port_scaled_coords[con.end_comp_id + y][0], port_scaled_coords[con.end_comp_id + y][2]]
             port_combinations[x+y]=sum(abs(a - b) for a, b in zip(point1, point2))
 
     designated_ports = min(port_combinations, key = port_combinations.get)
 
-    start = (int(port_scaled_coords[con.start_comp_id + designated_ports[0]][0][0]),
-             int(port_scaled_coords[con.start_comp_id + designated_ports[0]][0][2]))
-    end = (int(port_scaled_coords[con.end_comp_id + designated_ports[1]][0][0]),
-             int(port_scaled_coords[con.end_comp_id + designated_ports[1]][0][2]))
+    start = (int(port_scaled_coords[con.start_comp_id + designated_ports[0]][0]),
+             int(port_scaled_coords[con.start_comp_id + designated_ports[0]][2]))
+    end = (int(port_scaled_coords[con.end_comp_id + designated_ports[1]][0]),
+             int(port_scaled_coords[con.end_comp_id + designated_ports[1]][2]))
 
     return start, designated_ports[0], end, designated_ports[1]
 
@@ -150,15 +150,15 @@ def _place_holder(grid, connections, objects, port_scaled_coords, net_list):
 def initiate_astar(grid, connections, local_connections, objects, port_scaled_coords, net_list):
     logger.info("Starting Initiate A*")
 
-    path = []
+    path = {}
     seg_list = {}
-    path_names = []
+
     done = []
 
     spliced_list = local_connections + connections
     for net in net_list.applicable_nets:
         for con in spliced_list:
-            if con.net == net or "local" in net and con not in done:
+            if con.net == net or ("local" in net and con not in done):
                 done.append(con)
                 start_found = False
                 end_found = False
@@ -167,11 +167,11 @@ def initiate_astar(grid, connections, local_connections, objects, port_scaled_co
                 for index, obj in enumerate(objects):
 
                     if not isinstance(obj, (Pin, CircuitCell)) and obj.number_id == int(con.start_comp_id):
-                        start = (int(port_scaled_coords[con.start_comp_id + con.start_area[0]][0][0]), int(port_scaled_coords[con.start_comp_id + con.start_area[0]][0][2]))
+                        start = (int(port_scaled_coords[con.start_comp_id + con.start_area[0]][0]), int(port_scaled_coords[con.start_comp_id + con.start_area[0]][2]))
                         start_found = True
 
                     if not isinstance(obj, (Pin, CircuitCell)) and obj.number_id == int(con.end_comp_id):
-                        end = (int(port_scaled_coords[con.end_comp_id + con.end_area[0]][0][0]), int(port_scaled_coords[con.end_comp_id + con.end_area[0]][0][2]))
+                        end = (int(port_scaled_coords[con.end_comp_id + con.end_area[0]][0]), int(port_scaled_coords[con.end_comp_id + con.end_area[0]][2]))
                         end_found = True
 
                     if start_found and end_found:
@@ -182,21 +182,21 @@ def initiate_astar(grid, connections, local_connections, objects, port_scaled_co
 
 
 
-                string = con
-                path_names.append(string)
+
+
 
                 #Start and end point walkable
 
                 grid[start[1]][start[0]] = 0
                 grid[end[1]][end[0]] = 0
-
-                path.append((con.net, a_star(grid, start, end, seg_list, con.net)))
+                p = a_star(grid, start, end, seg_list, con.net)
+                path.setdefault(con.net, []).append((con.start_comp_id+con.start_area + "_"+con.end_comp_id+con.end_area, p))
 
                 #Start and end point not walkable
                 grid[start[1]][start[0]] = 1
                 grid[end[1]][end[0]] = 1
 
-                seg = segment_path(path[-1])
+                seg = segment_path(p)
                 if con.net not in seg_list:
                     seg_list[con.net] = []
 
@@ -211,4 +211,4 @@ def initiate_astar(grid, connections, local_connections, objects, port_scaled_co
 
 
     logger.info("Finished A*")
-    return path, path_names, seg_list
+    return path, seg_list

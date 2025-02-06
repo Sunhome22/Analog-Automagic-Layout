@@ -17,7 +17,8 @@ from circuit.circuit_components import Pin, CircuitCell, Trace
 
 
 def draw_result(grid_size, objects, connections, used_area, scale_factor, draw_name):
-    connections2 =  [x for x in connections if x is not None]
+    connections2 =  [x for x in connections.values() if x is not None]
+
     # set up plot
     fix, ax = plt.subplots(figsize=(10, 10))
     ax.set_xlim(0, grid_size)
@@ -67,8 +68,16 @@ def draw_result(grid_size, objects, connections, used_area, scale_factor, draw_n
             plt.plot([grid_size//2, grid_size//2], [0, grid_size])
     else:
         scaled_points = []
-        for p in connections2:
-            scaled_points.append( [(used_area[0]-500 + x*scale_factor , used_area[1]-500 + y*scale_factor ) for x, y in p])
+        none = 0
+        for net in connections2:
+            for p in net:
+
+                if p[1] is not None:
+                    scaled_points.append( [(used_area[0]-500 + x*scale_factor , used_area[1]-500 + y*scale_factor ) for x, y in p[1]])
+                else:
+                    none += 1
+        print("Missing paths:")
+        print(none)
         for con in scaled_points:
 
             x_coords, y_coords = zip(*con)

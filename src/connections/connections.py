@@ -84,7 +84,7 @@ class ConnectionLists:
                                      Connection(obj.number_id, key1, obj.name, obj.number_id, key, obj.name, obj.cell, ports[key])]
                             if ports[key] == ports[key1] and not any(isinstance(obj, Connection) and obj == target for target in entry for obj in self.local_connections):
                                 self.local_connections.append(Connection(obj.number_id, key, obj.name, obj.number_id, key1, obj.name, obj.cell, "local:"+ports[key]))
-                                print("local:"+ports[key])
+
                                 self._update_local_nets(obj.number_id, key, key1)
 
 
@@ -115,7 +115,7 @@ class ConnectionLists:
                                         if isinstance(self.local_con_area[object1.number_id], list):
 
                                             index = next((index for index, item in enumerate(self.local_con_area[object1.number_id]) if p1 or "local:"+p1 in item), None)
-                                            print(index)
+
                                             local_net_obj1 = self.local_con_area[object1.number_id][index]
 
                                         elif p1 in self.local_con_area[object1.number_id]:
@@ -174,7 +174,7 @@ class ConnectionLists:
                     if port_net not in self.net_list.applicable_nets:
                         self.net_list.applicable_nets.append(port_net)
         self.net_list.applicable_nets = [item for item in self.net_list.applicable_nets if item not in self.net_list.pin_nets]
-        print(self.net_list)
+
 
 
     def initialize_connections(self):

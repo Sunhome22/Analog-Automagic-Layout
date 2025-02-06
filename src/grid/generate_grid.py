@@ -56,14 +56,8 @@ class GridGeneration:
                     frac_y, int_y = math.modf(y1)
 
                     self.port_area.append([int(int_x), int(int_y)])
-
-                    new_entry = {str(obj.number_id) + port.type: []}
-                    new_entry[str(obj.number_id) + port.type].append([int_x, frac_x, int_y, frac_y])
-                    new_entry2 = {str(obj.number_id) + port.type: []}
-
-                    new_entry2[str(obj.number_id) + port.type].append([int(obj.transform_matrix.c + (port.area.x1 + port.area.x2)/2), int(obj.transform_matrix.f + (port.area.y1 + port.area.y2)/2)])
-                    self.port_coord.update(new_entry2)
-                    self.port_scaled_coord.update(new_entry)
+                    self.port_coord.setdefault(str(obj.number_id) + port.type, []).extend([int(obj.transform_matrix.c + (port.area.x1 + port.area.x2)/2), int(obj.transform_matrix.f + (port.area.y1 + port.area.y2)/2)])
+                    self.port_scaled_coord.setdefault(str(obj.number_id)+port.type, []).extend([int_x, frac_x, int_y, frac_y])
 
 
 

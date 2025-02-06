@@ -18,7 +18,7 @@
 from circuit.circuit_spice_parser import SPICEparser
 from magic.magic_layout_creator import MagicLayoutCreator
 from magic.magic_component_parser import MagicComponentsParser
-from json_tool.json_converter import save_to_json
+from json_tool.json_converter import save_to_json, load_from_json
 from logger.logger import get_a_logger
 from astar.a_star import initiate_astar
 from draw_result.draw import draw_result
@@ -27,7 +27,7 @@ from grid.generate_grid import GridGeneration
 from connections.connections import *
 from circuit.circuit_components import Transistor
 from milp_test.obj_placement import object_placement
-from traces.trace_generate import write_traces
+from traces.trace_generate import initiate_write_traces
 import os
 
 # ========================================== Set-up classes and constants ==============================================
@@ -65,24 +65,21 @@ project_properties = ProjectProperties(directory="~/aicex/ip/jnw_bkle_sky130A/",
 # ===================================================== Main ===========================================================
 # Define grid size and objects
 grid_size = 3000
-scale_factor = 8
-time_limit = 4
+scale_factor = 16
+time_limit = 3
 draw_name = 'Temporary_check'
 def main():
 
     # Create a logger
     logger = get_a_logger(__name__)
-    object_placement()
-    return
 
     # Extracts component information from SPICE file
-    components = SPICEparser(project_properties=project_properties)
+    #components = SPICEparser(project_properties=project_properties)
 
     # Update component attributes with information from it's associated Magic files
-    components = MagicComponentsParser(project_properties=project_properties,
-                                       components=components.get_info()).get_info()
-    #components = load_from_json(file_name=f"{project_properties.main_file_directory}/RESULT/"
-     #                                     f""f"Comparator_OTA_complete_generation_data.json")
+    #components = MagicComponentsParser(project_properties=project_properties,
+                                      # components=components.get_info()).get_info()
+    components = load_from_json(file_name=f"{project_properties.main_file_directory}/results/"f""f"Full_test.json")
 
 
 
@@ -91,14 +88,15 @@ def main():
     single_connection, local_connections, connections, overlap_dict, net_list = con_obj.initialize_connections()
 
 
-    result = LinearOptimizationSolver(components, connections, local_connections, grid_size, overlap_dict, time_limit)
-    components = result.initiate_solver()
+ #   result = LinearOptimizationSolver(components, connections, local_connections, grid_size, overlap_dict, time_limit)
+    #components = result.initiate_solver()
 
 
     grid_object = GridGeneration(grid_size, components, scale_factor)
     grid, port_scaled_coords, used_area, port_coord = grid_object.initialize_grid_generation()
-    path, path_names, seg_list = initiate_astar(grid, connections, local_connections, components, port_scaled_coords, net_list)
-    components = write_traces(components, path, path_names, port_coord, seg_list, scale_factor, net_list)
+
+    path, seg_list = initiate_astar(grid, connections, local_connections, components, port_scaled_coords, net_list)
+    components = initiate_write_traces(components, path, port_coord, seg_list, scale_factor, net_list)
 
     logger.info("Starting Drawing results")
     #path true:
@@ -112,7 +110,7 @@ def main():
 
     # Save found components to JSON file
     save_to_json(objects=components, file_name=f"{project_properties.main_file_directory}/results/"
-                                          f"Full_test.json")
+                                          f"Full_test_traces.json")
 
     # Debug log of all components
     logger.debug(f"Components registered: ")

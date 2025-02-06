@@ -55,6 +55,8 @@ def load_from_json(file_name: str):
         with open(file_name, 'r') as file:
             json_data = json.load(file)
 
+
+
     except FileNotFoundError:
         logger.error(f"'{file_name}' could not be found")
 

@@ -13,6 +13,7 @@
 # ==================================================================================================================== #
 
 import re
+from curses.textpad import rectangle
 from dataclasses import dataclass
 import re
 import math
@@ -91,13 +92,14 @@ def calculate_directional_lengths(path_segments):
     return length_x, length_y
 
 
-def map_path_to_rectangles(path_segments, port_coord, connection_info):
+def map_path_to_rectangles(path_segments, port_coord, connection_name):
     rectangles = []
     length_x, length_y = calculate_directional_lengths(path_segments)
 
     # Get the real-world start and end coordinates
-    start_real = port_coord[f"{connection_info.start_comp_id}{connection_info.start_area}"][0]
-    end_real = port_coord[f"{connection_info.end_comp_id}{connection_info.end_area}"][0]
+    start_name, end_name = connection_name.split("_",1)
+    start_real = port_coord[start_name]
+    end_real = port_coord[end_name]
 
     cumulative_x = 0
     cumulative_y = 0
@@ -105,7 +107,7 @@ def map_path_to_rectangles(path_segments, port_coord, connection_info):
 
 
     for segment in path_segments:
-        start_x, start_y = start_real if not rectangles else (rectangles[-1][2], rectangles[-1][3])
+        start_x, start_y = start_real if  not rectangles else (rectangles[-1][2], rectangles[-1][3])
 
         if segment[0][0] == segment[-1][0]:  # Vertical segment
             segment_length = abs(segment[-1][1] - segment[0][1])
@@ -155,110 +157,136 @@ def _remove_duplicates(my_list: list) -> list:
     seen = set()
     unique_data = []
     for item in my_list:
-        # Normalize the tuple by sorting its elements
-        normalized = tuple(sorted(item))
-        if normalized not in seen:
-            seen.add(normalized)
-            unique_data.append(item)
+        if not type(item) == float or int:
+            # Normalize the tuple by sorting its elements
+            normalized = tuple(sorted(item))
+            if normalized not in seen:
+                seen.add(normalized)
+                unique_data.append(item)
     return unique_data
 
+def _rectangle_consolidation(rectangles, direction):
+    if direction == "h":
+        min_x = min(sublist[0] for sublist in rectangles)
+        max_x = max(sublist[2] for sublist in rectangles)
+        y = rectangles[0][1]
+        return [min_x, y, max_x, y]
+    else:
+        min_y = min(sublist[1] for sublist in rectangles)
+        max_y = max(sublist[3] for sublist in rectangles)
+        x = rectangles[0][0]
+        return [x, min_y, x, max_y]
 
-
-def _eliminate_segments(seg_list, scale_factor, net_list):
+def _eliminate_rectangles(rectangles, scale_factor, trace_width):
     spacing_m2 = 14 #vertical
     spacing_m3 = 30 #horizontal
-    segment_list_vertical = {}
-    segment_list_horizontal = {}
-    for key in seg_list:
-        segments = seg_list[key][:]
-        segments_duplicate = seg_list[key][:]
+    rectangle_list = []
 
-        for path_segment_1 in segments:
-            temp_seg_list =path_segment_1
-            index_list = []
-            direction_segment_1 = "v" if path_segment_1[0][0] != path_segment_1[0][1] else "h"
-            direction_index = 1 if path_segment_1[0][0] != path_segment_1[0][1] else 0
-            for index, path_segment_2 in enumerate(segments_duplicate):
-                direction_segment_2 = "v" if path_segment_1[0][0] != path_segment_1[0][1] else "h"
-                if direction_segment_1==direction_segment_2 and path_segment_1 != path_segment_2:
-                    if direction_segment_1 == "h" and path_segment_1[0][1]-path_segment_2[0][1] <=30+30/scale_factor: #horizontal, m3
-                        temp_seg_list.append(path_segment_2)
-                        index_list.append(index)
-                    elif direction_segment_1=="v" and path_segment_1[0][0] - path_segment_2[0][0] <= 30 + 14 / scale_factor:  # vertical, m2
-                        temp_seg_list.append(path_segment_2)
-                        index_list.append(index)
 
-            for i in index_list:
-                del segments_duplicate[i]
 
-            for i in range(1,temp_seg_list):
-                temp_seg_list[i][direction_index] = temp_seg_list[0][direction_index]
+    rectangles_duplicate = rectangles[:]
 
-            temp_seg_list = _remove_duplicates(temp_seg_list)
+    for i, path_rectangle_1 in enumerate(rectangles):
 
-            if direction_index:
-                segment_list_vertical.append(temp_seg_list)
+        index_list = []
+        temp_seg_list = []
+        temp_seg_list.append(path_rectangle_1)
+        direction_rectangle_1 = "v" if path_rectangle_1[0] != path_rectangle_1[1] else "h"
+       # direction_index = 1 if path_rectangle_1[0] != path_rectangle_1[1] else 0
+
+
+        for index, path_rectangle_2 in enumerate(rectangles_duplicate):
+
+
+            direction_rectangle_2 = "v" if path_rectangle_1[0] != path_rectangle_1[1] else "h"
+
+            if direction_rectangle_1==direction_rectangle_2 and path_rectangle_1 != path_rectangle_2:
+                conditions = {
+                    "v" : [direction_rectangle_1 == "v",
+                           abs(path_rectangle_1[0] - path_rectangle_2[0]) <= (trace_width + spacing_m2),
+                            min(path_rectangle_2[1], path_rectangle_2[3]) <=path_rectangle_1[1] <= max(path_rectangle_2[1], path_rectangle_2[3]) or min(path_rectangle_2[1], path_rectangle_2[3]) <=path_rectangle_1[3] <= max(path_rectangle_2[1], path_rectangle_2[3])
+                           ],
+                    "h" : [direction_rectangle_1 == "h",
+                           abs(path_rectangle_1[1] - path_rectangle_2[1]) <= (trace_width + spacing_m3),
+                            min(path_rectangle_2[0], path_rectangle_2[2]) <=path_rectangle_1[0] <= max(path_rectangle_2[0], path_rectangle_2[2]) or min(path_rectangle_2[0], path_rectangle_2[2]) <=path_rectangle_1[2] <= max(path_rectangle_2[0], path_rectangle_2[2])
+                           ]
+                }
+                if all(conditions["h"]) or all(conditions["v"]): #horizontal, m3
+                    print("True")
+                    temp_seg_list.append(path_rectangle_2)
+                    index_list.append(index)
+
+
+
+
+        for x in sorted(index_list, reverse=True) :
+            del rectangles_duplicate[x]
+
+        if len(temp_seg_list) > 1:
+
+            rectangle_list.append(_rectangle_consolidation(temp_seg_list, direction_rectangle_1))
+        else:
+
+            rectangle_list.append(temp_seg_list[0])
+
+
+    return rectangle_list
+
+def _write_traces(rectangles, trace_width, index, name):
+    a_trace = Trace()
+    a_trace.instance = a_trace.__class__.__name__
+    a_trace.number_id = index
+    a_trace.name = name
+
+    for i, rect in enumerate(rectangles):
+        if rect[0] == rect[2]:  # Vertical
+            if rect[1] > rect[3]:  # Ensure y1 < y2
+                rect[1], rect[3] = rect[3], rect[1]
+                switched_start_end = True
             else:
-                segment_list_horizontal.append(temp_seg_list)
-    segment_list_vertical.extend(segment_list_horizontal)
-    return segment_list_vertical
+                switched_start_end = False
 
-def write_traces(objects, path, path_names,  port_coord, seg_list, scale_factor, net_list):
+            added_length_start, added_length_end = trace_stretch(switched_start_end, trace_width, i, len(rectangles))
+            a_trace.segments.append(RectAreaLayer(
+                layer="m2",
+                area=RectArea(
+                    x1=int(rect[0]) - trace_width // 2,  # Adding width to trace
+                    y1=int(rect[1] + added_length_start),
+                    x2=int(rect[2]) + trace_width // 2,
+                    y2=int(rect[3] + added_length_end)
+                )
+            ))
+        elif rect[1] == rect[3]:  # Horizontal
+            if rect[0] > rect[2]:  # Ensure x1 < x2
+                rect[0], rect[2] = rect[2], rect[0]
+                switched_start_end = True
+            else:
+                switched_start_end = False
+            added_length_start, added_length_end = trace_stretch(switched_start_end, trace_width, i,
+                                                                 len(rectangles))
+            a_trace.segments.append(RectAreaLayer(
+                layer="m3",
+                area=RectArea(
+                    x1=int(rect[0] + added_length_start),
+                    y1=int(rect[1]) - trace_width // 2,
+                    x2=int(rect[2] + added_length_end),
+                    y2=int(rect[3]) + trace_width // 2
+                )
+            ))
+    return a_trace
+
+def initiate_write_traces(objects, all_paths,  port_coord, seg_list, scale_factor, net_list):
     trace_width = 30
-    segment_list = _eliminate_segments(seg_list, scale_factor, net_list)
     i = 0
-    segments = []
-    for net in net_list:
-        i+=1
-        a_trace = Trace()
-        a_trace.instance = a_trace.__class__.__name__  # Add instance type
-        a_trace.number_id = i
-        a_trace.name =net
-        #a_trace.cell = path_names[index].cell
-        for p in path:
-            if p[0] == net:
-                segments.extend(segment_path(p))
+    for index, net in enumerate(net_list.applicable_nets):
+        net_rectangles = []
+        for name, path in all_paths[net]:
+            segments = segment_path(path)
+            if len(segments) > 0:
+                net_rectangles.extend(map_path_to_rectangles(segments, port_coord, name))
 
-        if len(segments) > 0:
-            rectangles = map_path_to_rectangles(segments, port_coord, path_names[index])
+        net_rectangles = _eliminate_rectangles(net_rectangles, scale_factor, trace_width)
 
-            for i, rect in enumerate(rectangles):
-                if rect[0] == rect[2]:  # Vertical
-                    if rect[1] > rect[3]:  # Ensure y1 < y2
-                        rect[1], rect[3] = rect[3], rect[1]
-                        switched_start_end = True
-                    else:
-                        switched_start_end = False
-
-                    added_length_start, added_length_end = trace_stretch(switched_start_end, trace_width, i, len(rectangles))
-                    a_trace.segments.append(RectAreaLayer(
-                        layer="m2",
-                            area=RectArea(
-                                x1=int(rect[0]) - trace_width // 2, #Adding width to trace
-                                y1=int(rect[1] + added_length_start),
-                                x2=int(rect[2]) + trace_width // 2,
-                                y2=int(rect[3] + added_length_end)
-                            )
-                        ))
-                elif rect[1] == rect[3]:  # Horizontal
-                    if rect[0] > rect[2]:  # Ensure x1 < x2
-                        rect[0], rect[2] = rect[2], rect[0]
-                        switched_start_end = True
-                    else:
-                        switched_start_end = False
-                    added_length_start, added_length_end = trace_stretch(switched_start_end, trace_width, i,
-                                                                             len(rectangles))
-                    a_trace.segments.append(RectAreaLayer(
-                            layer="m3",
-                            area=RectArea(
-                                x1=int(rect[0] + added_length_start),
-                                y1=int(rect[1]) - trace_width // 2,
-                                x2=int(rect[2] + added_length_end),
-                                y2=int(rect[3]) + trace_width // 2
-                            )
-                        ))
-
-
-            objects.append(a_trace)
+        objects.append(_write_traces(net_rectangles, trace_width, index, net))
 
     return objects
