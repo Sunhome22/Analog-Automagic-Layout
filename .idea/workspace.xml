@@ -5,10 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a135f6d7-11a0-4bae-b20d-a00d3877ac06" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/custom_placement_algorithm/custom_placement_algorithm.py" beforeDir="false" afterPath="$PROJECT_DIR$/custom_placement_algorithm/custom_placement_algorithm.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/custom_placement_algorithm/ok_placement.png" beforeDir="false" afterPath="$PROJECT_DIR$/custom_placement_algorithm/ok_placement.png" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

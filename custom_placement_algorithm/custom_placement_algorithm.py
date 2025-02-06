@@ -43,7 +43,8 @@ class CustomPlacement:
         #self.component_positions = np.array(self.component_positions, dtype=np.int32)
 
         n = 8
-        positions = self.generate_symmetric_grid(n)
+        m = 1
+        positions = self.generate_symmetric_grid(cells=n, groups=m)
         for pos in positions:
             self.component_positions.append(pos)
         self.component_positions = np.array(self.component_positions, dtype=np.float32)
@@ -52,10 +53,12 @@ class CustomPlacement:
         self.plot_placement(plot_name="custom_placement_algorithm/ok_placement.png")
         print(self.component_positions)
 
-    def generate_symmetric_grid(self, n):
+    def generate_symmetric_grid(self, cells, groups):
         positions = []
-        cols = math.ceil(math.sqrt(n))
-        rows = math.ceil(n / cols)
+        cols = math.ceil(math.sqrt(cells))
+        rows = math.ceil(cells / cols)
+
+
         start_row = 0
         extra_cols = 0
         divider = 2
@@ -96,6 +99,8 @@ class CustomPlacement:
                 count += 1
 
         return positions
+
+
 
 
 
