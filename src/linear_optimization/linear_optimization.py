@@ -16,6 +16,7 @@ import pulp
 from circuit.circuit_components import Pin, CircuitCell, Transistor
 from logger.logger import get_a_logger
 import time
+import pickle
 import pyscipopt
 
 def _element_in_sublist(element, big_list):
@@ -44,14 +45,13 @@ class LinearOptimizationSolver:
     def __init__(self, object_info, connections, local_connections, grid_size, overlap_dict, time_limit):
         self.logger = get_a_logger(__name__)
         self.problem_space = pulp.LpProblem("ObjectPlacementWithSizes", pulp.LpMinimize)
-        self.solver = pulp.SCIP_PY(mip=True,msg=True) #, timeLimit=time_limit*60
+        self.solver = pulp.SCIP_PY(msg=True, warmStart=True, options=["limits/gap=0.05"]) # 5% tolerance early stopping
         self.object_info = object_info
         self.objects = []
         self.overlap_dict = overlap_dict
-        #pulp.pulpTestAll()
 
         for obj in self.object_info:
-            if not isinstance(obj, Pin) and not isinstance(obj, CircuitCell):
+            if not isinstance(obj, (Pin,CircuitCell)):
                 self.objects.append(obj.number_id)
 
         self.connections = connections
@@ -61,7 +61,6 @@ class LinearOptimizationSolver:
         self.height = {}
         if self.MIRROR:
             self.mirrored_objects = self._check_mirrored_components()
-
 
 
         self.x_pos, self.y_pos = self._extract_possible_positions()
@@ -86,7 +85,7 @@ class LinearOptimizationSolver:
         # ----------------------------------------------Part from constrain rotation ------------------------------------------------------------#
 
         for o1 in self.object_info:
-            if not isinstance(o1, Pin) and not isinstance(o1, CircuitCell):
+            if not isinstance(o1, (Pin, CircuitCell)):
                 self.width[o1.number_id] = o1.bounding_box.x2 - o1.bounding_box.x1
                 self.height[o1.number_id] = o1.bounding_box.y2 - o1.bounding_box.y1
 
@@ -97,10 +96,10 @@ class LinearOptimizationSolver:
         for obj in self.object_info:
             group = []
             for obj1 in comp:
-                if not isinstance(obj, Pin) and not isinstance(obj, CircuitCell) and not isinstance(obj1, Pin) and not isinstance(obj1, CircuitCell):
+                if not isinstance(obj, (Pin, CircuitCell)) and not isinstance(obj1, (Pin, CircuitCell)):
                     if obj.group == obj1.group and obj != obj1 and obj.group is not None:
-
                         group.append([obj,obj1])
+
             if len(group) == 1 and ([group[0][1],group[0][0]]) not in mirrored_objects:
                 mirrored_objects.append([group[0][0],group[0][1]])
                 comp.remove(group[0][0])
@@ -112,7 +111,7 @@ class LinearOptimizationSolver:
             group = []
             if not _element_in_sublist(obj, mirrored_objects):
                 for obj1 in comp:
-                    if not isinstance(obj, Pin) and not isinstance(obj, CircuitCell) and not isinstance(obj1,Pin) and not isinstance(obj1, CircuitCell):
+                    if not isinstance(obj, (Pin, CircuitCell)) and not isinstance(obj1, (Pin, CircuitCell)):
                         if [obj.number_id,obj1.number_id] in self.overlap_dict["top"] and [obj.number_id,obj1.number_id] in self.overlap_dict["side"]:
                             group.append([obj, obj1])
                             break
@@ -142,7 +141,7 @@ class LinearOptimizationSolver:
         y_intervals.append(self.UNIT_HEIGHT)
 
         for obj in self.object_info:
-            if not isinstance(obj, Pin) and not isinstance(obj, CircuitCell) and isinstance(obj, Transistor):
+            if isinstance(obj, Transistor):
                 h = obj.bounding_box.y2 - obj.bounding_box.y1
                 w = obj.bounding_box.x2 - obj.bounding_box.x1
                 if w not in x_intervals:
@@ -252,7 +251,7 @@ class LinearOptimizationSolver:
             self.coordinates_y[o1] = pulp.lpSum([yv * self.y[(o1, yv)] for yv in self.y_pos])
 
         for o1 in self.objects:
-            self.problem_space += self.coordinates_x[o1] + self.width[o1] + (self.OFFSET_X//2)   <= self.grid_size
+            self.problem_space += self.coordinates_x[o1] + self.width[o1] + (self.OFFSET_X//2) <= self.grid_size
             self.problem_space += self.coordinates_y[o1] + self.height[o1]  + (self.OFFSET_Y//2) <= self.grid_size
 
             self.problem_space += self.x_max >= self.coordinates_x[o1] + self.width[o1]
@@ -298,13 +297,35 @@ class LinearOptimizationSolver:
 
     def _solve_linear_optimization_problem(self):
        # self.problem_space += pulp.lpSum(
-        #    [self.d_x[(o1.start_comp_id, o1.end_comp_id)] + self.d_y[(o1.start_comp_id, o1.end_comp_id)] for o1 in
-         #    self.connections.values()]) + (self.x_max - self.x_min) * 10000000, "totalWireLength"
-        print(len(self.problem_space.constraints))
+       #    [self.d_x[(o1.start_comp_id, o1.end_comp_id)] + self.d_y[(o1.start_comp_id, o1.end_comp_id)] for o1 in
+       #    self.connections.values()]) + (self.x_max - self.x_min) * 10000000, "totalWireLength"
+       # print(len(self.problem_space.constraints))
+
         self.problem_space += pulp.lpSum(
             [self.d_x[(o1.start_comp_id, o1.end_comp_id)] + self.d_y[(o1.start_comp_id, o1.end_comp_id)] for o1 in
             self.connections])*self.ALPHA +(self.x_max - self.x_min) *self.BETA + (self.y_max-self.y_min)*self.THETA , "totalWireLength"
+
+        #print(self.problem_space)
+        self.warm_start_init()
         self.problem_space.solve(self.solver)
+
+        # Save the optimal solution
+        optimal_solution = {var.name: var.varValue for var in self.problem_space.variables()}
+        with open("optimal_solution.pkl", "wb") as f:
+            pickle.dump(optimal_solution, f)
+
+        #print("Optimal solution saved to optimal_solution.pkl")
+
+    def warm_start_init(self):
+        # Load previously stored solution
+        with open("optimal_solution.pkl", "rb") as f:
+            loaded_solution = pickle.load(f)
+
+        for var_name, var_value in loaded_solution.items():
+            if var_name in self.problem_space.variablesDict():
+                self.problem_space.variablesDict()[var_name].setInitialValue(round(var_value, 5))
+
+
 
     def _print_status(self):
         self.logger.info(f"Solution status: {pulp.LpStatus[self.problem_space.status]}")
@@ -317,7 +338,7 @@ class LinearOptimizationSolver:
 
     def _update_object_info(self):
         for obj in self.object_info:
-            if not isinstance(obj, Pin) and not isinstance(obj, CircuitCell):
+            if not isinstance(obj, (Pin, CircuitCell)):
                 obj.transform_matrix.a = 1
                 obj.transform_matrix.b = 0
                 obj.transform_matrix.c = int(pulp.value(self.coordinates_x[obj.number_id]))
