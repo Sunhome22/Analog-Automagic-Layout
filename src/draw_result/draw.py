@@ -69,15 +69,16 @@ def draw_result(grid_size, objects, connections, used_area, scale_factor, draw_n
     else:
         scaled_points = []
         none = 0
+        missing_paths = []
         for net in connections2:
             for p in net:
 
                 if p[1] is not None:
                     scaled_points.append( [(used_area[0]-500 + x*scale_factor , used_area[1]-500 + y*scale_factor ) for x, y in p[1]])
                 else:
+                    missing_paths.append(p[0])
                     none += 1
-        print("Missing paths:")
-        print(none)
+
         for con in scaled_points:
 
             x_coords, y_coords = zip(*con)

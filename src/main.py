@@ -65,7 +65,7 @@ project_properties = ProjectProperties(directory="~/aicex/ip/jnw_bkle_sky130A/",
 # ===================================================== Main ===========================================================
 # Define grid size and objects
 grid_size = 3000
-scale_factor = 16
+scale_factor =8
 time_limit = 3
 draw_name = 'Temporary_check'
 def main():
@@ -86,6 +86,7 @@ def main():
     # Algorithms
     con_obj = ConnectionLists(components)
     single_connection, local_connections, connections, overlap_dict, net_list = con_obj.initialize_connections()
+
 
 
  #   result = LinearOptimizationSolver(components, connections, local_connections, grid_size, overlap_dict, time_limit)

@@ -92,7 +92,7 @@ class ConnectionLists:
     def _connection_list(self):
 
         object_list = self.components
-        test_run = 0
+
         for object1 in object_list:
             for object2 in object_list:
 
@@ -111,25 +111,22 @@ class ConnectionLists:
                                 if object1_ports[p1] == object2_ports[p2]:
 
                                     if object1.number_id in self.local_con_area:
-                                        
-                                        if isinstance(self.local_con_area[object1.number_id], list):
 
-                                            index = next((index for index, item in enumerate(self.local_con_area[object1.number_id]) if p1 or "local:"+p1 in item), None)
 
+                                        index = next((index for index, item in enumerate(self.local_con_area[object1.number_id]) if p1 in item or ("local:" + p1) in item), None)
+
+                                        if index is not None:
                                             local_net_obj1 = self.local_con_area[object1.number_id][index]
 
-                                        elif p1 in self.local_con_area[object1.number_id]:
-                                            local_net_obj1 = self.local_con_area[object1.number_id]
-                                        else:
-                                            local_net_obj1 = p1
+
                                     if object2.number_id in self.local_con_area:
-                                        if isinstance(self.local_con_area[object2.number_id], list):
-                                            index = next((index for index, item in enumerate(self.local_con_area[object2.number_id]) if p2 or "local:"+p2 in item), None)
+
+                                        index = next((index for index, item in enumerate(self.local_con_area[object2.number_id]) if p2 in item or ("local:" + p2) in item), None)
+
+                                        if index is not None:
                                             local_net_obj2 = self.local_con_area[object2.number_id][index]
-                                        elif p2 in self.local_con_area[object2.number_id]:
-                                            local_net_obj2 = self.local_con_area[object2.number_id]
-                                        else:
-                                            local_net_obj2 = p2
+
+
 
                                     entry = [Connection(object1.number_id, local_net_obj1, object1.name, object2.number_id, local_net_obj2, object2.name, object1.cell, object1_ports[p1]),
                                              Connection(object2.number_id, local_net_obj2, object2.name, object1.number_id, local_net_obj1, object1.name, object1.cell, object2_ports[p2])]
