@@ -43,10 +43,10 @@ class RuleErrors:
 class DRCchecking:
 
     def __init__(self, project_properties):
+        self.current_file_directory = os.path.dirname(os.path.abspath(__file__))
         self.project_directory = project_properties.directory
         self.project_lib_name = project_properties.lib_name
         self.project_cell_name = project_properties.cell_name
-        self.main_file_directory = project_properties.main_file_directory
         self.logger = get_a_logger(__name__)
 
         self.__create_drc_log()
@@ -62,7 +62,7 @@ class DRCchecking:
     def __create_drc_log(self):
         """Runs a Tcl script that creates a result log from running a series of DRC related magic commands"""
 
-        tcl_script_path = os.path.join(self.main_file_directory, 'drc/log_drc_info.tcl')
+        tcl_script_path = os.path.join(self.current_file_directory, 'log_drc_info.tcl')
 
         work_directory = os.path.expanduser(f"{self.project_directory}/work/")
 
@@ -79,17 +79,17 @@ class DRCchecking:
                               f"-dnull -noconsole < {tcl_script_path}' failed with {e.stderr}")
 
     def __read_drc_log(self) -> list:
-        work_directory = os.path.expanduser(f"{self.project_directory}/work/drc")
+        work_drc_directory = os.path.expanduser(f"{self.project_directory}/work/drc")
         drc_log = []
         try:
-            with open(f"{work_directory}/AAL_DRC_OUTPUT.log", "r") as drc_output_log:
+            with open(f"{work_drc_directory}/AAL_DRC_OUTPUT.log", "r") as drc_output_log:
                 for text_line in drc_output_log:
                     drc_log.append(text_line)
-                self.logger.info(f"DRC log '{work_directory}/AAL_DRC_OUTPUT.log' read")
+                self.logger.info(f"DRC log '{work_drc_directory}/AAL_DRC_OUTPUT.log' read")
                 return drc_log
 
         except FileNotFoundError:
-            self.logger.error(f"The file {work_directory}/AAL_DRC_OUTPUT.log was not found.")
+            self.logger.error(f"The file {work_drc_directory}/AAL_DRC_OUTPUT.log was not found.")
 
     def __parse_out_detailed_drc_errors(self, raw_data_log) -> RuleErrors:
         general_info_pattern = r"\{([^{}]*)\}"
@@ -132,8 +132,8 @@ class DRCchecking:
         ax.set_xlabel('X-axis')
         ax.set_ylabel('Y-axis')
         ax.set_title('DRC Errors')
-        self.logger.info(f"Detailed DRC errors plotted and saved to '{self.main_file_directory}/drc_errors_plot.png'")
-        plt.savefig(f"{self.main_file_directory}/drc/drc_errors_plot.png", dpi=500)
+        self.logger.info(f"Detailed DRC errors plotted and saved to '{self.current_file_directory}/drc_errors_plot.png'")
+        plt.savefig(f"{self.current_file_directory}/drc_errors_plot.png", dpi=500)
 
 
 

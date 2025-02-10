@@ -1,0 +1,6 @@
+cmake -DReadline_INCLUDE_DIR=/usr/include/readline \
+      -DReadline_LIBRARY=/usr/lib/x86_64-linux-gnu/libreadline.so \
+      -DGMP_INCLUDE_DIRS=/usr/include \
+      -DGMP_LIBRARY=/lib64/libgmp.so \
+      -DGMP_LIBRARIES=/lib64/libgmp.so ..
+

@@ -52,7 +52,6 @@ class ProjectProperties:
     cell_name: str
     lib_name: str
     component_libraries: list[ComponentLibrary]
-    main_file_directory: str
 
 
 # Component libraries
@@ -64,8 +63,7 @@ misc_lib = ComponentLibrary(name="AALMISC", path="~/aicex/ip/jnw_bkle_sky130A/de
 project_properties = ProjectProperties(directory="~/aicex/ip/jnw_bkle_sky130A",
                                        cell_name="JNW_BKLE",
                                        lib_name="JNW_BKLE_SKY130A",
-                                       component_libraries=[atr_lib, tr_lib, misc_lib],
-                                       main_file_directory=os.path.dirname(os.path.abspath(__file__)))
+                                       component_libraries=[atr_lib, tr_lib, misc_lib])
 
 # ===================================================== Main ===========================================================
 
@@ -86,8 +84,15 @@ def main():
     con_obj = ConnectionLists(components)
     single_connection, local_connections, connections, overlap_dict, net_list = con_obj.initialize_connections()
 
-    result = LinearOptimizationSolver(components, connections, local_connections, grid_size, overlap_dict, time_limit)
-    components = result.initiate_solver()
+    # Update component placements from solving LP problem
+    components = LinearOptimizationSolver(
+        components=components,
+        connections=connections,
+        local_connections=local_connections,
+        grid_size=grid_size,
+        overlap_dict=overlap_dict
+    ).solve_placement()
+
 
     grid_object = GridGeneration(grid_size, components, scale_factor)
     grid, port_scaled_coords, used_area, port_coord = grid_object.initialize_grid_generation()
@@ -97,7 +102,7 @@ def main():
     path = []
     logger.info("Starting Drawing results")
     # path true:
-    draw_result(grid_size, components, path, used_area, scale_factor, draw_name, project_properties)
+    draw_result(grid_size, components, path, used_area, scale_factor, draw_name)
     # path false:
     # draw_result(grid_size, components, connections, used_area)
     logger.info("Finished Drawing results")
