@@ -40,6 +40,21 @@ def direction(p1, p2):
     return dx, dy
 
 
+def _check_net_constraint_vioaltion(netlist):
+    for net in netlist:
+        for net2 in netlist:
+            if net != net2:
+                for seg in net:
+                    for seg2 in net2:
+                        if seg.segment[0]-seg.segment[2] == 0 and seg2.segment[0]-seg2.segment[2] == 0:
+                            if seg.segment[0] - seg2.segment[2] <= 14+30 and (seg2.segment[1] <=seg.segment[1] <= seg2.segment[3] or seg2.segment[1] <=seg.segment[3] <= seg2.segment[3]) :
+                                print("ERROR")
+
+                        if seg.segment[1]-seg.segment[3] == 0 and seg2.segment[1]-seg2.segment[3] == 0:
+                            if seg.segment[1] - seg2.segment[3] <= 30+30 and (seg2.segment[0] <=seg.segment[0] <= seg2.segment[2] or seg2.segment[0] <=seg.segment[2] <= seg2.segment[2]) :
+                                print("ERROR")
+        return
+
 def segment_path(path):
     if path is None or len(path) < 2:
         return []  # No segments for a path with less than 2 points
@@ -222,9 +237,9 @@ def _eliminate_rectangles(rectangles, scale_factor, trace_width):
     rectangle_list = []
 
     rectangles_duplicate = rectangles[:]
-
+    checked_rectangle = []
     for i, path_rectangle_1 in enumerate(rectangles):
-
+        checked_rectangle.append(path_rectangle_1)
         index_list = []
         temp_seg_list = [path_rectangle_1]
         direction_rectangle_1 = "h" if path_rectangle_1[0] != path_rectangle_1[2] else "v"
@@ -235,7 +250,7 @@ def _eliminate_rectangles(rectangles, scale_factor, trace_width):
             direction_rectangle_2 = "h" if path_rectangle_2[0] != path_rectangle_2[2] else "v"
 
 
-            if direction_rectangle_1==direction_rectangle_2 and path_rectangle_1 != path_rectangle_2:
+            if direction_rectangle_1==direction_rectangle_2 and path_rectangle_1 != path_rectangle_2 and path_rectangle_2 not in checked_rectangle:
                 conditions = {
                     "v" : [direction_rectangle_1 == "v",
                            abs(path_rectangle_1[0] - path_rectangle_2[0]) <= (trace_width + spacing_m2),
@@ -249,6 +264,7 @@ def _eliminate_rectangles(rectangles, scale_factor, trace_width):
                 if all(conditions["h"]) or all(conditions["v"]): #horizontal, m3
                     temp_seg_list.append(path_rectangle_2)
                     index_list.append(index)
+                    checked_rectangle.append(path_rectangle_2)
 
         for x in sorted(index_list, reverse=True) :
             del rectangles_duplicate[x]
@@ -267,9 +283,9 @@ def _write_traces(rectangles, trace_width, index, name):
     a_trace.name = name
 
     for i, rect in enumerate(rectangles):
-        if rect[0] == rect[2]:  # Vertical
-            if rect[1] > rect[3]:  # Ensure y1 < y2
-                rect[1], rect[3] = rect[3], rect[1]
+        if rect.segment[0] == rect.segment[2]:  # Vertical
+            if rect.segment[1] > rect.segment[3]:  # Ensure y1 < y2
+                rect.segment[1], rect.segment[3] = rect.segment[3], rect.segment[1]
                 switched_start_end = True
             else:
                 switched_start_end = False
@@ -279,15 +295,15 @@ def _write_traces(rectangles, trace_width, index, name):
             a_trace.segments.append(RectAreaLayer(
                 layer="m2",
                 area=RectArea(
-                    x1=int(rect[0]) - trace_width // 2,  # Adding width to trace
-                    y1=int(rect[1] + added_length_start),
-                    x2=int(rect[2]) + trace_width // 2,
-                    y2=int(rect[3] + added_length_end)
+                    x1=int(rect.segment[0]) - trace_width // 2,  # Adding width to trace
+                    y1=int(rect.segment[1] + added_length_start),
+                    x2=int(rect.segment[2]) + trace_width // 2,
+                    y2=int(rect.segment[3] + added_length_end)
                 )
             ))
-        elif rect[1] == rect[3]:  # Horizontal
-            if rect[0] > rect[2]:  # Ensure x1 < x2
-                rect[0], rect[2] = rect[2], rect[0]
+        elif rect.segment[1] == rect.segment[3]:  # Horizontal
+            if rect.segment[0] > rect.segment[2]:  # Ensure x1 < x2
+                rect.segment[0], rect.segment[2] = rect.segment[2], rect.segment[0]
                 switched_start_end = True
             else:
                 switched_start_end = False
@@ -297,10 +313,10 @@ def _write_traces(rectangles, trace_width, index, name):
             a_trace.segments.append(RectAreaLayer(
                 layer="m3",
                 area=RectArea(
-                    x1=int(rect[0] + added_length_start),
-                    y1=int(rect[1]) - trace_width // 2,
-                    x2=int(rect[2] + added_length_end),
-                    y2=int(rect[3]) + trace_width // 2
+                    x1=int(rect.segment[0] + added_length_start),
+                    y1=int(rect.segment[1]) - trace_width // 2,
+                    x2=int(rect.segment[2] + added_length_end),
+                    y2=int(rect.segment[3]) + trace_width // 2
                 )
             ))
     return a_trace
@@ -311,10 +327,18 @@ def _check_for_lost_points(rectangles):
             if seg != next_segment:
 
                 for lost_point in next_segment.lost_points:
-                    if (seg[0], seg[1]) == lost_point:
-                        seg.segment[0], seg.segment[1] = lost_point
-                    elif (seg[2], seg[3]) == lost_point:
-                        seg.segment[2], seg.segment[3] = lost_point
+                    if (seg.segment[0], seg.segment[1]) == lost_point:
+
+                        if seg.segment[1]  == seg.segment[3] and next_segment.segment[0] == next_segment.segment[2]:
+
+                            seg.segment[0] = next_segment.segment[0]
+
+                    elif (seg.segment[2], seg.segment[3]) == lost_point:
+
+                        if seg.segment[1] == seg.segment[3] and next_segment.segment[0] == next_segment.segment[2]:
+
+
+                            seg.segment[0] = next_segment.segment[0]
 
 
 
@@ -325,7 +349,7 @@ def _check_for_lost_points(rectangles):
 
 def initiate_write_traces(objects, all_paths,  port_coord, seg_list, scale_factor, net_list):
     trace_width = 30
-
+    test = []
     for index, net in enumerate(all_paths):
         net_rectangles = []
         for name, path in all_paths[net]:
@@ -335,6 +359,8 @@ def initiate_write_traces(objects, all_paths,  port_coord, seg_list, scale_facto
 
         net_rectangles = _eliminate_rectangles(net_rectangles, scale_factor, trace_width)
         net_rectangles =_check_for_lost_points(net_rectangles)
+       # test.append(net_rectangles)
         objects.append(_write_traces(net_rectangles, trace_width, index, net))
+    _check_net_constraint_vioaltion(test)
 
     return objects

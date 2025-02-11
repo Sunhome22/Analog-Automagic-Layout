@@ -66,7 +66,7 @@ project_properties = ProjectProperties(directory="~/aicex/ip/jnw_bkle_sky130A/",
 # Define grid size and objects
 grid_size = 3000
 scale_factor =8
-time_limit = 3
+time_limit = 5
 draw_name = 'Temporary_check'
 def main():
 
@@ -74,11 +74,11 @@ def main():
     logger = get_a_logger(__name__)
 
     # Extracts component information from SPICE file
-    #components = SPICEparser(project_properties=project_properties)
+   # components = SPICEparser(project_properties=project_properties)
 
     # Update component attributes with information from it's associated Magic files
-    #components = MagicComponentsParser(project_properties=project_properties,
-                                      # components=components.get_info()).get_info()
+   # components = MagicComponentsParser(project_properties=project_properties,
+                                   #    components=components.get_info()).get_info()
     components = load_from_json(file_name=f"{project_properties.main_file_directory}/results/"f""f"Full_test.json")
 
 
@@ -89,8 +89,8 @@ def main():
 
 
 
- #   result = LinearOptimizationSolver(components, connections, local_connections, grid_size, overlap_dict, time_limit)
-    #components = result.initiate_solver()
+   # result = LinearOptimizationSolver(components, connections, local_connections, grid_size, overlap_dict, time_limit)
+   # components = result.initiate_solver()
 
 
     grid_object = GridGeneration(grid_size, components, scale_factor)

@@ -149,7 +149,8 @@ def check_start_end_port(con, port_scaled_coords: dict):
 
 def initiate_astar(grid, connections, local_connections, objects, port_scaled_coords, net_list):
     logger.info("Starting Initiate A*")
-
+    grid_vertical = grid
+    grid_horizontal = grid
     path = {}
     seg_list = {}
 
@@ -190,14 +191,13 @@ def initiate_astar(grid, connections, local_connections, objects, port_scaled_co
 
                 #Start and end point walkable
 
-                grid[start[1]][start[0]] = 0
-                grid[end[1]][end[0]] = 0
+                grid[start[1]][start[0]] = grid[end[1]][end[0]] = 0
                 p = a_star(grid, start, end, seg_list, con.net)
                 path.setdefault(con.net, []).append((con.start_comp_id+con.start_area + "_"+con.end_comp_id+con.end_area, p))
 
                 #Start and end point not walkable
-                grid[start[1]][start[0]] = 1
-                grid[end[1]][end[0]] = 1
+                grid[start[1]][start[0]] =  grid[end[1]][end[0]] = 1
+
 
                 seg = segment_path(p)
                 if con.net not in seg_list:
