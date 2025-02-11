@@ -239,6 +239,15 @@ class MagicLayoutCreator:
 
         # Add segments
         for segment in trace.segments:
+
+            if segment.layer == "m3":
+                segment.area.y1 += 5
+                segment.area.y2 -= 5
+
+            if segment.layer == "m2":
+                segment.area.x2 -= 5
+                segment.area.x1 += 5
+
             self.__place_box(layer=segment.layer, area=segment.area)
             segment_count += 1
 

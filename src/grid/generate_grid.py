@@ -21,13 +21,13 @@ class GridGeneration:
     LEEWAY_X = 500
     LEEWAY_Y = 500
 
-    def __init__(self, grid_size, objects, scale):
+    def __init__(self, grid_size, components, scale_factor):
 
         self.logger = get_a_logger(__name__)
         self.grid_size = grid_size
-        self.objects = objects
+        self.objects = components
         self.port_area = []
-        self.scale_factor = scale
+        self.scale_factor = scale_factor
         self.port_scaled_coord = {}
         self.port_coord = {}
         self.used_area = [grid_size, grid_size, 0, 0]

@@ -348,7 +348,7 @@ class SPICEparser:
         self.logger.info("Process complete! Components extracted from SPICE file: "
                          f"{len(self.components)}")
 
-    def get_info(self) -> list:
+    def get(self) -> list:
         return self.components
 
 

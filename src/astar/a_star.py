@@ -52,7 +52,7 @@ def get_neighbors(node, grid, goal, seg_list, net):
     in_seg = False
     index = "ph"
     segment_net = "ph"
-
+    s ="ph"
     if seg_list:
         for s_net in seg_list:
             for i, seg in enumerate(seg_list[s_net]):
@@ -61,13 +61,16 @@ def get_neighbors(node, grid, goal, seg_list, net):
                     index = i
                     segment_net = s_net
                     break
+    #Both segment_net and net the path is in can be "local", such as local:net1 and both can be just net1
+    if segment_net in net or net in segment_net:
+        s = net
 
     for dx, dy in directions:
         nx, ny = node[0] + dx, node[1] + dy
 
         if in_seg:
             # Check bounds and obstacles
-            if 0 <= nx < len(grid[0]) and 0 <= ny < len(grid) and grid[ny][nx] == 0 and ((nx, ny) not in seg_list[segment_net][index] or segment_net == net):
+            if 0 <= nx < len(grid[0]) and 0 <= ny < len(grid) and grid[ny][nx] == 0 and ((nx, ny) not in seg_list[segment_net][index] or s == net):
                 neighbors.append(((nx,ny), (dx,dy)))
             elif 0 <= nx < len(grid[0]) and 0 <= ny < len(grid) and grid[ny][nx] == goal:
                 neighbors.append(((nx,ny), (dx,dy)))
@@ -142,12 +145,9 @@ def check_start_end_port(con, port_scaled_coords: dict):
 
 
 
-def _place_holder(grid, connections, objects, port_scaled_coords, net_list):
-    print("hello")
 
 
-
-def initiate_astar(grid, connections, local_connections, objects, port_scaled_coords, net_list):
+def initiate_astar(grid, connections, local_connections, components, port_scaled_coords, net_list):
     logger.info("Starting Initiate A*")
 
     path = {}
@@ -156,15 +156,18 @@ def initiate_astar(grid, connections, local_connections, objects, port_scaled_co
     done = []
 
     spliced_list = local_connections + connections
+
     for net in net_list.applicable_nets:
         for con in spliced_list:
-            if con.net == net or ("local" in net and con not in done):
+
+            if con.net == net or ("local" in con.net and con not in done):
+
                 done.append(con)
                 start_found = False
                 end_found = False
 
 
-                for index, obj in enumerate(objects):
+                for index, obj in enumerate(components):
 
                     if not isinstance(obj, (Pin, CircuitCell)) and obj.number_id == int(con.start_comp_id):
                         start = (int(port_scaled_coords[con.start_comp_id + con.start_area[0]][0]), int(port_scaled_coords[con.start_comp_id + con.start_area[0]][2]))

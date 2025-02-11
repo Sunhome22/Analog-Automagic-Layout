@@ -20,12 +20,6 @@ import pickle
 import pyscipopt
 import os
 
-def _element_in_sublist(element, big_list):
-    for small_list in big_list:
-        if element in small_list:
-            return True
-    return False
-
 
 class LinearOptimizationSolver:
 
@@ -46,7 +40,7 @@ class LinearOptimizationSolver:
         self.logger = get_a_logger(__name__)
         self.current_file_directory = os.path.dirname(os.path.abspath(__file__))
         self.problem_space = pulp.LpProblem("ObjectPlacementWithSizes", pulp.LpMinimize)
-        self.solver = pulp.SCIP_PY(msg=False, warmStart=True, options=["limits/gap=0.05"]) # 5% tolerance early stopping
+        self.solver = pulp.SCIP_PY(msg=False, warmStart=True, options=["limits/gap=0.05"]) # early stopping tolerance
         self.components = components
         self.component_ids = []
         self.component_names = []
@@ -62,9 +56,9 @@ class LinearOptimizationSolver:
         self.grid_size = grid_size
         self.width = {}
         self.height = {}
+
         if self.MIRROR:
             self.mirrored_objects = self._check_mirrored_components()
-
 
         self.x_pos, self.y_pos = self._extract_possible_positions()
         self.x = pulp.LpVariable.dicts("x_bin", [(i, xv) for i in self.component_ids for xv in self.x_pos], cat="Binary")
@@ -72,7 +66,6 @@ class LinearOptimizationSolver:
 
         self.coordinates_x = {}
         self.coordinates_y = {}
-
         self.test_var = pulp.LpVariable("test_var", lowBound=0)
 
         # bounds
@@ -92,14 +85,14 @@ class LinearOptimizationSolver:
 
     def _check_mirrored_components(self):
         mirrored_objects = []
-        comp = self.components[:]
+        comp = self.components[:] # shallow copy
 
-        for obj in self.components:
+        for component in self.components:
             group = []
             for obj1 in comp:
-                if not isinstance(obj, (Pin, CircuitCell)) and not isinstance(obj1, (Pin, CircuitCell)):
-                    if obj.group == obj1.group and obj != obj1 and obj.group is not None:
-                        group.append([obj,obj1])
+                if not isinstance(component, (Pin, CircuitCell)) and not isinstance(obj1, (Pin, CircuitCell)):
+                    if component.group == obj1.group and component != obj1 and component.group is not None:
+                        group.append([component,obj1])
 
             if len(group) == 1 and ([group[0][1],group[0][0]]) not in mirrored_objects:
                 mirrored_objects.append([group[0][0],group[0][1]])
@@ -108,14 +101,14 @@ class LinearOptimizationSolver:
 
         #Faux mirrored objects:
 
-        for obj in self.components:
+        for component in self.components:
             group = []
-            if not _element_in_sublist(obj, mirrored_objects):
+            if not _element_in_sublist(component, mirrored_objects):
                 for obj1 in comp:
-                    if not isinstance(obj, (Pin, CircuitCell)) and not isinstance(obj1, (Pin, CircuitCell)):
-                        if ([obj.number_id,obj1.number_id] in self.overlap_dict["top"]
-                                and [obj.number_id,obj1.number_id] in self.overlap_dict["side"]):
-                            group.append([obj, obj1])
+                    if not isinstance(component, (Pin, CircuitCell)) and not isinstance(obj1, (Pin, CircuitCell)):
+                        if ([component.number_id,obj1.number_id] in self.overlap_dict["top"]
+                                and [component.number_id,obj1.number_id] in self.overlap_dict["side"]):
+                            group.append([component, obj1])
                             break
 
                 if len(group) == 1:
@@ -350,9 +343,9 @@ class LinearOptimizationSolver:
     def _print_status(self):
         self.logger.info(f"Solution status: {pulp.LpStatus[self.problem_space.status]}")
 
-        for number_id in self.component_ids:
+        for i, number_id in enumerate(self.component_ids):
 
-            self.logger.info(f"Component {self.component_names[number_id-7]} placed at (x={pulp.value(self.coordinates_x[number_id])}, "
+            self.logger.info(f"Component {self.component_names[i]} placed at (x={pulp.value(self.coordinates_x[number_id])}, "
                              f"y={pulp.value(self.coordinates_y[number_id])})")
 
         total_length = pulp.value(self.problem_space.objective)
@@ -384,7 +377,11 @@ class LinearOptimizationSolver:
         self.logger.info("Finished Linear Optimization")
         return self.components
 
-
+def _element_in_sublist(element, big_list):
+    for small_list in big_list:
+        if element in small_list:
+            return True
+    return False
 
 
 

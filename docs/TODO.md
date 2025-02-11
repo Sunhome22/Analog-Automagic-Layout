@@ -3,5 +3,6 @@
 - Mabye update found vias and inbetween placed metal layers to JSON file after layout creation has completed.
   (Don't think this really makes sense to do)
 - Handle bulks accidently overlapping for the diffpair of the original comparator circuit
-- Implement structural component creator and deal with pins4w4567890
+- Implement structural component creator and deal with pins 4w4567890
 - Create separate object for functional and structural components
+- Make config file for user input variables for linear optimization

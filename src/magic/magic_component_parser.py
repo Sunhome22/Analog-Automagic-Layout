@@ -36,7 +36,7 @@ class MagicComponentsParser:
         self.found_bounding_box = False
         self.transistor_well_size = RectArea
 
-    def get_info(self):
+    def get(self):
         return self.__read_magic_files()
 
     def __read_magic_files(self):
