@@ -1,3 +1,4 @@
+# =================================================== Overview =========================================================
 # pip3.12 install -e .
 [project]
 name = "Analog-Automagic-Layout"
@@ -14,5 +15,19 @@ dynamic = ["dependencies"]
 
 [tool.setuptools.dynamic]
 dependencies = {file = ["requirements.txt"]}
+
+# ===================================================== Configs ========================================================
+[linear_optimization]
+UNIT_HEIGHT = 100
+UNIT_WIDTH = 64
+OFFSET_X = 184
+OFFSET_Y = 128
+ALPHA = 0.001
+BETA = 100
+THETA = 1
+MIRROR = true
+RUN = true
+EARLY_STOP_TOLERANCE_GAP = 0.05
+
 
 

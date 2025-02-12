@@ -77,17 +77,18 @@ def main():
     # Updates component attributes with information from it's associated Magic files
     components = MagicComponentsParser(project_properties=project_properties, components=components.get()).get()
 
-    # Figures out connection types, nets and components that components can overlap
-    single_connection, local_connections, connections, overlap_dict, net_list = (
+    # Figures out connection types, nets and components that can overlap
+    single_connection, local_connections, connections, overlap_components, net_list = (
         ConnectionLists(components=components).initialize_connections())
 
-    # Finds optimal component placements from solving LP problem and updates information.
+
+    # Finds optimal structural component placements from solving LP problem
     components = LinearOptimizationSolver(
         components=components,
         connections=connections,
         local_connections=local_connections,
         grid_size=grid_size,
-        overlap_dict=overlap_dict
+        overlap_components=overlap_components
     ).solve_placement()
 
     # Generates grid
