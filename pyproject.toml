@@ -17,6 +17,18 @@ dynamic = ["dependencies"]
 dependencies = {file = ["requirements.txt"]}
 
 # ===================================================== Configs ========================================================
+
+# Linear optimization config options
+# -> Alpha - Constant for weighing the importance of total Manhattan distance between components in the objective function
+# -> Beta - Constant for weighing the importance of perimeter along the x-axis in the objective function
+# -> Theta - Constant for weighing the importance of perimeter along the y-axis in the objective function
+# -> Unit_width, Unit_height - Unit width and height are intervals of allowable placements along the x- and y-axis
+# -> Offset_x, Offset_y - Minimum offset along the x- and y-axis between components that can not overlap
+# -> Mirror - Boolean used for debugging. Turns on or off the mirroring constraint
+# -> Run - Boolean used for debugging. Turns on or off the execution of linear optimization
+# -> Stop_tolerance - MIP gap threshold percentage for when to stop searching with respect to the relative difference
+#                     between primal and dual solutions
+
 [linear_optimization]
 UNIT_HEIGHT = 100
 UNIT_WIDTH = 64
@@ -27,7 +39,7 @@ BETA = 100
 THETA = 1
 MIRROR = true
 RUN = true
-EARLY_STOP_TOLERANCE_GAP = 0.05
+STOP_TOLERANCE = 0.05
 
 
 

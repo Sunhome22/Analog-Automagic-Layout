@@ -34,7 +34,6 @@ from drc.drc_checker import DRCchecking
 import os
 # ========================================== Set-up classes and constants ==============================================
 
-# Define grid size and objects
 grid_size = 3000
 scale_factor = 8
 draw_name = 'Temporary_check'
@@ -81,7 +80,6 @@ def main():
     single_connection, local_connections, connections, overlap_components, net_list = (
         ConnectionLists(components=components).initialize_connections())
 
-
     # Finds optimal structural component placements from solving LP problem
     components = LinearOptimizationSolver(
         components=components,
@@ -106,6 +104,7 @@ def main():
         components=components,
         port_scaled_coords=port_scaled_coords,
         net_list=net_list)
+
     components = initiate_write_traces(components, path, port_coord, seg_list, scale_factor, net_list)
     path = []
     logger.info("Starting Drawing results")

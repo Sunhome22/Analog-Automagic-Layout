@@ -165,13 +165,16 @@ class MagicLayoutCreator:
 
                 # Iterate over all ports for every segment of the current trace
                 for port in component.layout_ports:
+                    print(port)
                     for segment in trace.segments:
+
 
                         # Get port position in finished layout by adding transform matrix coordinates
                         port_pos = RectArea(x1=port.area.x1 + component.transform_matrix.c,
                                             x2=port.area.x2 + component.transform_matrix.c,
                                             y1=port.area.y1 + component.transform_matrix.f,
                                             y2=port.area.y2 + component.transform_matrix.f)
+
 
                         # Check for overlap between the port and the segment and add vias accordingly
                         if not (segment.area.x2 < port_pos.x1 or segment.area.x1 > port_pos.x2 or
@@ -239,15 +242,6 @@ class MagicLayoutCreator:
 
         # Add segments
         for segment in trace.segments:
-
-            if segment.layer == "m3":
-                segment.area.y1 += 5
-                segment.area.y2 -= 5
-
-            if segment.layer == "m2":
-                segment.area.x2 -= 5
-                segment.area.x1 += 5
-
             self.__place_box(layer=segment.layer, area=segment.area)
             segment_count += 1
 

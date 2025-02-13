@@ -13,31 +13,16 @@
 # ==================================================================================================================== #
 
 import pulp
-from circuit.circuit_components import Pin, CircuitCell, Transistor, Trace
-from logger.logger import get_a_logger
 import time
 import pickle
 import pyscipopt
 import os
 import tomllib
+from circuit.circuit_components import Pin, CircuitCell, Transistor, Trace
+from logger.logger import get_a_logger
 
 
 class LinearOptimizationSolver:
-
-    # Load config
-    with open("pyproject.toml", "rb") as f:
-        config = tomllib.load(f)
-
-    UNIT_HEIGHT = config["linear_optimization"]["UNIT_HEIGHT"]
-    UNIT_WIDTH = config["linear_optimization"]["UNIT_WIDTH"]
-    OFFSET_X = config["linear_optimization"]["OFFSET_X"]
-    OFFSET_Y = config["linear_optimization"]["OFFSET_Y"]
-    ALPHA = config["linear_optimization"]["ALPHA"]
-    BETA = config["linear_optimization"]["BETA"]
-    THETA = config["linear_optimization"]["THETA"]
-    MIRROR = config["linear_optimization"]["MIRROR"]
-    RUN = config["linear_optimization"]["RUN"]
-    EARLY_STOP_TOLERANCE_GAP = config["linear_optimization"]["EARLY_STOP_TOLERANCE_GAP"]
 
     def __init__(self, components: list[object], connections: list, local_connections: list,
                  grid_size: int, overlap_components: dict):
@@ -45,20 +30,35 @@ class LinearOptimizationSolver:
         self.logger = get_a_logger(__name__)
         self.current_file_directory = os.path.dirname(os.path.abspath(__file__))
 
-        self.problem_space = pulp.LpProblem("ComponentPlacement", pulp.LpMinimize)
-        self.solver = pulp.SCIP_PY(msg=False, warmStart=True, options=[f"limits/gap={self.EARLY_STOP_TOLERANCE_GAP}"])
+        # Load config
+        self.config = self.__load_config()
+        self.ALPHA = self.config["linear_optimization"]["ALPHA"]
+        self.BETA = self.config["linear_optimization"]["BETA"]
+        self.THETA = self.config["linear_optimization"]["THETA"]
+        self.UNIT_HEIGHT = self.config["linear_optimization"]["UNIT_HEIGHT"]
+        self.UNIT_WIDTH = self.config["linear_optimization"]["UNIT_WIDTH"]
+        self.OFFSET_X = self.config["linear_optimization"]["OFFSET_X"]
+        self.OFFSET_Y = self.config["linear_optimization"]["OFFSET_Y"]
+        self.MIRROR = self.config["linear_optimization"]["MIRROR"]
+        self.RUN = self.config["linear_optimization"]["RUN"]
+        self.STOP_TOLERANCE = self.config["linear_optimization"]["STOP_TOLERANCE"]
 
+        # Setup of problem space and solver
+        self.problem_space = pulp.LpProblem("ComponentPlacement", pulp.LpMinimize)
+        self.solver = pulp.SCIP_PY(msg=False, warmStart=True, options=[f"limits/gap={self.STOP_TOLERANCE}"])
+
+        # Inputs
         self.components = components
         self.overlap_components = overlap_components
         self.connections = connections
         self.local_connections = local_connections
         self.grid_size = grid_size
 
+        # Data structures
         self.functional_components = []
         self.structural_components = []
         self.component_ids = []
         self.component_names = []
-
         self.coordinates_x = {}
         self.coordinates_y = {}
         self.width = {}
@@ -66,7 +66,7 @@ class LinearOptimizationSolver:
         self.d_x = {}
         self.d_y = {}
 
-        # Make list of functional components and structural components
+        # Make lists of functional components and structural components
         for component in self.components:
             if not isinstance(component, (Pin, CircuitCell, Trace)):
                 self.component_ids.append(component.number_id)
@@ -76,7 +76,7 @@ class LinearOptimizationSolver:
                 self.structural_components.append(component)
 
         # Constraints
-        self.x_possible, self.y_possible = self._extract_possible_positions()
+        self.x_possible, self.y_possible = self.__extract_possible_positions()
         self.x = pulp.LpVariable.dicts(f"x_bin", [(i, xv) for i in self.component_ids for xv in self.x_possible],
                                        cat="Binary")
         self.y = pulp.LpVariable.dicts(f"y_bin", [(i, yv) for i in self.component_ids for yv in self.y_possible],
@@ -94,9 +94,16 @@ class LinearOptimizationSolver:
 
         # Debugging
         if self.MIRROR:
-            self.mirrored_components = self._check_mirrored_components()
+            self.mirrored_components = self.__check_mirrored_components()
 
-    def _check_mirrored_components(self) -> list:
+    def __load_config(self, path="pyproject.toml"):
+        try:
+            with open(path, "rb") as f:
+                return tomllib.load(f)
+        except (FileNotFoundError, tomllib.TOMLDecodeError) as e:
+            self.logger.error(f"Error loading config: {e}")
+
+    def __check_mirrored_components(self) -> list:
         mirrored_objects = []
         components2 = self.functional_components[:] # shallow copy
 
@@ -114,7 +121,7 @@ class LinearOptimizationSolver:
         # Faux mirrored objects:
         for component in self.functional_components:
             group = []
-            if not self._element_in_sublist(component, mirrored_objects):
+            if not self.__element_in_sublist(component, mirrored_objects):
                 for component2 in components2:
                     if ([component.number_id,component2.number_id] in self.overlap_components["top"] and
                             [component.number_id,component2.number_id] in self.overlap_components["side"]):
@@ -127,7 +134,7 @@ class LinearOptimizationSolver:
                         mirrored_objects.append([group[0][0], group[0][1]])
         return mirrored_objects
 
-    def _constrain_mirror(self):
+    def __constrain_mirror(self):
         for component in self.mirrored_components:
             self.problem_space += (self.coordinates_x[component[0].number_id] + self.width[component[0].number_id]
                                    == self.grid_size - self.coordinates_x[component[1].number_id])
@@ -135,10 +142,10 @@ class LinearOptimizationSolver:
                                    == self.coordinates_y[component[1].number_id])
 
     @staticmethod
-    def _element_in_sublist(element: object, big_list: list) -> bool:
+    def __element_in_sublist(element: object, big_list: list) -> bool:
         return any(element in small_list for small_list in big_list)
 
-    def _extract_possible_positions(self) -> tuple:
+    def __extract_possible_positions(self) -> tuple:
         x = []
         y = []
         x_intervals = []
@@ -176,7 +183,7 @@ class LinearOptimizationSolver:
         y.sort()
         return x, y
 
-    def _get_port_parameters(self, component: object) -> tuple:
+    def __get_port_parameters(self, component: object) -> tuple:
         # staring off utilizing the first point in connections area as point of contact
         port_parameter = []
         port_parameter2 = []
@@ -199,12 +206,12 @@ class LinearOptimizationSolver:
                         port_parameter2.append(p.area)
         return port_parameter, port_parameter2
 
-    def _constraint_minimize_manhattan_distance(self):
+    def __constraint_minimize_manhattan_distance(self):
         i = 0
         for conn in self.connections:
 
             if not conn.end_comp_id == '' and conn.start_comp_id != conn.end_comp_id:
-                start_port_parameters, end_port_parameters = self._get_port_parameters(conn)
+                start_port_parameters, end_port_parameters = self.__get_port_parameters(conn)
 
                 self.d_x[(conn.start_comp_id, conn.end_comp_id)] = pulp.LpVariable(
                     f"d_x_{conn.start_comp_id}_{conn.end_comp_id}_{i}", 0, cat='Continuous')
@@ -230,7 +237,7 @@ class LinearOptimizationSolver:
                             self.coordinates_y[int(conn.start_comp_id)] + self.y_start_port)
                 i += 1
 
-    def _constraint_overlap(self):
+    def __constraint_overlap(self):
         component_list = self.component_ids[:]
 
         for c1 in self.component_ids:
@@ -300,14 +307,14 @@ class LinearOptimizationSolver:
 
             component_list.remove(c1)
 
-    def _solve_linear_optimization_problem(self):
+    def __solve_linear_optimization_problem(self):
         self.problem_space += (pulp.lpSum([self.d_x[(c1.start_comp_id, c1.end_comp_id)] +
                                            self.d_y[(c1.start_comp_id, c1.end_comp_id)] for c1 in self.connections])
                                * self.ALPHA + (self.x_max - self.x_min)
                                * self.BETA + (self.y_max - self.y_min) * self.THETA , "totalWireLength")
         # Warm start
         placement_solution_file = f"{self.current_file_directory}/previous_placement_solution.pkl"
-        self.warm_start(file=placement_solution_file)
+        self.__warm_start(file=placement_solution_file)
 
         # Solving
         start_solving_time = time.time()
@@ -321,7 +328,7 @@ class LinearOptimizationSolver:
 
         self.logger.info(f"Found solution saved to '{placement_solution_file}'")
 
-    def warm_start(self, file: str):
+    def __warm_start(self, file: str):
         """Attempt to use previous solution to speed up solving"""
         try:
             with open(file, "rb") as f:
@@ -336,7 +343,7 @@ class LinearOptimizationSolver:
         except FileNotFoundError:
             self.logger.warning(f"Could not locate '{file}'. Solving time will likely be longer!")
 
-    def _log_results(self):
+    def __log_results(self):
         self.logger.info(f"Solution status: {pulp.LpStatus[self.problem_space.status]}")
 
         for i, number_id in enumerate(self.component_ids):
@@ -347,7 +354,7 @@ class LinearOptimizationSolver:
         total_length = pulp.value(self.problem_space.objective)
         self.logger.info(f"Total wire length: {round(total_length/10,2)}um")
 
-    def _update_component_info(self):
+    def __update_component_info(self):
         for component in self.functional_components:
             component.transform_matrix.set([1, 0, int(pulp.value(self.coordinates_x[component.number_id])), 0, 1,
                                             int(pulp.value(self.coordinates_y[component.number_id]))])
@@ -355,16 +362,16 @@ class LinearOptimizationSolver:
     def solve_placement(self) -> list[object]:
         self.logger.info("Starting Linear Optimization")
 
-        self._constraint_overlap()
-        self._constraint_minimize_manhattan_distance()
+        self.__constraint_overlap()
+        self.__constraint_minimize_manhattan_distance()
 
         if self.MIRROR:
-            self._constrain_mirror()
+            self.__constrain_mirror()
 
         if self.RUN:
-            self._solve_linear_optimization_problem()
-            self._log_results()
-            self._update_component_info()
+            self.__solve_linear_optimization_problem()
+            self.__log_results()
+            self.__update_component_info()
 
         self.logger.info("Finished Linear Optimization")
 
