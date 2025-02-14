@@ -1,3 +1,5 @@
+from curses.textpad import rectangle
+
 import numpy as np
 class Nets:
     applicable_nets:list
@@ -8,21 +10,19 @@ class Nets:
         self.pin_nets = pin_nets
 
 def main():
-    net_list = Nets(applicable_nets=[], pin_nets=[])
 
-    net_list.applicable_nets = ["net1", "net2", "net3"]
-    net_list.pin_nets = ["VDD", "VSS", "Pin1", "Pin2"]
+    rectangles = [[6, 7, 4, 1]]
+    start_real = (3,2)
+    start_x, start_y = start_real if not rectangles else (rectangles[-1][2], rectangles[-1][3])
 
-
-
-    net_example = ["net1", "net2", "local:net1", "local:net2", "local:VDD", "Local:VSS"]
-
-
+    print(start_x)
+    print(start_y)
 
 
 
 
 if __name__ == '__main__':
     main()
+
 
 

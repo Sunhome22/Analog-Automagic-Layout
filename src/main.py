@@ -65,8 +65,8 @@ project_properties = ProjectProperties(directory="~/aicex/ip/jnw_bkle_sky130A/",
 # ===================================================== Main ===========================================================
 # Define grid size and objects
 grid_size = 3000
-scale_factor =8
-time_limit = 5
+scale_factor =1
+time_limit = 2
 draw_name = 'Temporary_check'
 def main():
 
@@ -77,8 +77,8 @@ def main():
    # components = SPICEparser(project_properties=project_properties)
 
     # Update component attributes with information from it's associated Magic files
-   # components = MagicComponentsParser(project_properties=project_properties,
-                                   #    components=components.get_info()).get_info()
+    #components = MagicComponentsParser(project_properties=project_properties,
+     #                                  components=components.get_info()).get_info()
     components = load_from_json(file_name=f"{project_properties.main_file_directory}/results/"f""f"Full_test.json")
 
 
@@ -93,8 +93,11 @@ def main():
    # components = result.initiate_solver()
 
 
-    grid_object = GridGeneration(grid_size, components, scale_factor)
-    grid, port_scaled_coords, used_area, port_coord = grid_object.initialize_grid_generation()
+    grid, port_scaled_coords, used_area, port_coord = GridGeneration(grid_size=grid_size,
+                                                                     objects=components,
+                                                                     scale=scale_factor
+                                                                     ).initialize_grid_generation()
+
 
     path, seg_list = initiate_astar(grid, connections, local_connections, components, port_scaled_coords, net_list)
     components = initiate_write_traces(components, path, port_coord, seg_list, scale_factor, net_list)

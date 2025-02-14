@@ -45,40 +45,32 @@ def heuristic(a, b):
     return abs(a[0] - b[0]) + abs(a[1] - b[1])
 
 
-def get_neighbors(node, grid, goal, seg_list, net):
+def get_neighbors(node, grid_vertical, grid_horizontal, goal):
     """Get valid neighbors for the current node."""
     neighbors = []
-    directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]  # Right, Down, Left, Up
-    in_seg = False
-    index = "ph"
-    segment_net = "ph"
-    s ="ph"
-    if seg_list:
-        for s_net in seg_list:
-            for i, seg in enumerate(seg_list[s_net]):
-                if node in seg:
-                    in_seg = True
-                    index = i
-                    segment_net = s_net
-                    break
-    #Both segment_net and net the path is in can be "local", such as local:net1 and both can be just net1
-    if segment_net in net or net in segment_net:
-        s = net
+    h_dir = [(1, 0), (-1, 0)]
+    v_dir = [ (0, 1), (0, -1)]
 
-    for dx, dy in directions:
-        nx, ny = node[0] + dx, node[1] + dy
 
-        if in_seg:
+    for hdx, hdy in h_dir:
+        hx, hy = node[0] + hdx, node[1] + hdy
+
+
             # Check bounds and obstacles
-            if 0 <= nx < len(grid[0]) and 0 <= ny < len(grid) and grid[ny][nx] == 0 and ((nx, ny) not in seg_list[segment_net][index] or s == net):
-                neighbors.append(((nx,ny), (dx,dy)))
-            elif 0 <= nx < len(grid[0]) and 0 <= ny < len(grid) and grid[ny][nx] == goal:
-                neighbors.append(((nx,ny), (dx,dy)))
-        else:
-            if 0 <= nx < len(grid[0]) and 0 <= ny < len(grid) and grid[ny][nx] == 0:
-                neighbors.append(((nx,ny), (dx,dy)))
-            elif 0 <= nx < len(grid[0]) and 0 <= ny < len(grid) and grid[ny][nx] == goal:
-                neighbors.append(((nx,ny), (dx,dy)))
+        if 0 <= hx < len(grid_horizontal[0]) and 0 <= hy < len(grid_horizontal) and grid_horizontal[hy][hx] == 0:
+            neighbors.append(((hx,hy), (hdx,hdy)))
+        elif 0 <= hx < len(grid_horizontal[0]) and 0 <= hy < len(grid_horizontal) and grid_horizontal[hy][hx] == goal:
+            neighbors.append(((hx,hy), (hdx,hdy)))
+
+
+    for vdx, vdy in v_dir:
+        vx, vy = node[0] + vdx, node[1] + vdy
+
+        if 0 <= vx < len(grid_vertical[0]) and 0 <= vy < len(grid_vertical) and grid_vertical[vy][vx] == 0:
+            neighbors.append(((vx,vy), (vdx,vdy)))
+        elif 0 <= vx < len(grid_vertical[0]) and 0 <= vy < len(grid_vertical) and grid_vertical[vy][vx] == goal:
+            neighbors.append(((vx,vy), (vdx,vdy)))
+
 
     return neighbors
 
@@ -93,7 +85,7 @@ def reconstruct_path(came_from, current):
     return path
 
 
-def a_star(grid, start, goal, seg_list, net):
+def a_star(grid_vertical, grid_horizontal, start, goal, seg_list, net):
     open_set = PriorityQueue()
     open_set.push((start,None),0)
 
@@ -108,7 +100,7 @@ def a_star(grid, start, goal, seg_list, net):
         if current == goal:
             return reconstruct_path(came_from, current)
 
-        for neighbor, direction in get_neighbors(current, grid, goal, seg_list, net):
+        for neighbor, direction in get_neighbors(current,grid_vertical, grid_horizontal, goal):
             direction_change_penalty = 0 if current_dir is None or current_dir == direction else 1
 
             tentative_g_score = g_score[current] + 1 + direction_change_penalty  # Cost from start to neighbor
@@ -145,12 +137,11 @@ def check_start_end_port(con, port_scaled_coords: dict):
 
 
 
-
-
 def initiate_astar(grid, connections, local_connections, objects, port_scaled_coords, net_list):
     logger.info("Starting Initiate A*")
     grid_vertical = grid
     grid_horizontal = grid
+    local_paths = {}
     path = {}
     seg_list = {}
 
@@ -159,6 +150,22 @@ def initiate_astar(grid, connections, local_connections, objects, port_scaled_co
     spliced_list = local_connections + connections
 
     for net in net_list.applicable_nets:
+
+        #Adds local net to grid
+        if len(done) > 0:
+            for n in done:
+
+                if net in n.net:
+                    for segment in seg_list[n.net]:
+                        if segment[0][0] - segment[-1][0] == 0:
+
+                            for x, y in segment:
+                                grid_vertical[y][x] = 1
+
+                        elif segment[0][1] - segment[-1][1] == 0:
+                            for x, y in segment:
+                                grid_horizontal[y][x] = 1
+
         for con in spliced_list:
 
             if con.net == net or ("local" in con.net and con not in done):
@@ -191,27 +198,45 @@ def initiate_astar(grid, connections, local_connections, objects, port_scaled_co
 
                 #Start and end point walkable
 
-                grid[start[1]][start[0]] = grid[end[1]][end[0]] = 0
-                p = a_star(grid, start, end, seg_list, con.net)
+                grid_vertical[start[1]][start[0]] = grid_vertical[end[1]][end[0]] = grid_horizontal[start[1]][start[0]] = grid_horizontal[end[1]][end[0]] =0
+                p = a_star(grid_vertical, grid_horizontal, start, end, seg_list, con.net)
                 path.setdefault(con.net, []).append((con.start_comp_id+con.start_area + "_"+con.end_comp_id+con.end_area, p))
 
                 #Start and end point not walkable
-                grid[start[1]][start[0]] =  grid[end[1]][end[0]] = 1
+                grid_vertical[start[1]][start[0]] = grid_vertical[end[1]][end[0]] = grid_horizontal[start[1]][
+                    start[0]] = grid_horizontal[end[1]][end[0]] = 1
 
 
                 seg = segment_path(p)
                 if con.net not in seg_list:
                     seg_list[con.net] = []
 
+
                 for s in seg:
                     seg_list[con.net].append(s)
 
 
-                add_grid_points = [sub[-1] for sub in seg]
 
-                for x, y in add_grid_points:
-                    grid[y][x] = 1
+        print(f"Done with net: {net}")
+        for seg in seg_list[net]:
+            #vertical
+            if seg[0][0] - seg[-1][0] == 0:
+
+                for x, y in seg:
+                    for i in range(-50, 51):
+                        grid_vertical[y][x+i] = 1
+                print("Updated Grid Vertical")
 
 
+            #horizontal
+            elif seg[0][1] - seg[-1][1] == 0:
+                for x, y in seg:
+                    for i in range(-29,30):
+                        grid_horizontal[y+i][x] = 1
+                print("Updated Grid Horizontal")
+
+
+    print("Path")
+    print(path)
     logger.info("Finished A*")
     return path, seg_list

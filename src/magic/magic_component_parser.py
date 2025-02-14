@@ -63,7 +63,7 @@ class MagicComponentsParser:
                             self.__get_component_bounding_box_info(text_line=text_line, component=component)
                             self.__get_component_port_info(text_line=text_line, component=component)
                             self.__get_overlap_difference_for_cmos_transistors(text_line=text_line, component=component)
-
+                        self.__adjust_port_sizes(component=component)
                         self.__basic_component_is_valid_check(component=component)
 
                 except FileNotFoundError:
@@ -102,6 +102,29 @@ class MagicComponentsParser:
                 self.found_bounding_box = False
 
         self.found_bounding_box = False
+
+    def __adjust_port_sizes(self, component: object):
+        port_areas = []
+        ports = []
+        port_with_minimum_area = None
+
+        # Find the port with the smallest area
+        for port in component.layout_ports:
+            new_area = (port.area.x2 - port.area.x1) * (port.area.y2 - port.area.y1)
+            port_areas.append(new_area)
+            for area in port_areas:
+                if len(port_areas) == 1:
+                    port_with_minimum_area = port
+                elif new_area < area:
+                    port_with_minimum_area = port
+
+        minimum_x_size = port_with_minimum_area.area.x2 - port_with_minimum_area.area.x1
+        minimum_y_size = port_with_minimum_area.area.y2 - port_with_minimum_area.area.y1
+
+        # Adjust port sizes to become the same as the area of the smallest port
+        for port in component.layout_ports:
+            port.area.x2 = port.area.x1 + minimum_x_size
+            port.area.y2 = port.area.y1 + minimum_y_size
 
     def __get_component_bounding_box_info(self, text_line: str, component: object):
 
