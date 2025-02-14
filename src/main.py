@@ -31,6 +31,7 @@ from grid.generate_grid import *
 from connections.connections import *
 from traces.trace_generate import initiate_write_traces
 from drc.drc_checker import DRCchecking
+from lvs.lvs_checker import LVSchecking
 import os
 # ========================================== Set-up classes and constants ==============================================
 
@@ -77,48 +78,52 @@ def main():
     components = MagicComponentsParser(project_properties=project_properties, components=components.get()).get()
 
     # Figures out connection types, nets and components that can overlap
-    single_connection, local_connections, connections, overlap_components, net_list = (
-        ConnectionLists(components=components).initialize_connections())
+    #single_connection, local_connections, connections, overlap_components, net_list = (
+    #    ConnectionLists(components=components).initialize_connections())
 
     # Finds optimal structural component placements from solving LP problem
-    components = LinearOptimizationSolver(
-        components=components,
-        connections=connections,
-        local_connections=local_connections,
-        grid_size=grid_size,
-        overlap_components=overlap_components
-    ).solve_placement()
+    #components = LinearOptimizationSolver(
+    #    components=components,
+    #    connections=connections,
+    #    local_connections=local_connections,
+    #    grid_size=grid_size,
+    #    overlap_components=overlap_components
+    #).solve_placement()
 
     # Generates grid
-    grid, port_scaled_coords, used_area, port_coord = GridGeneration(
-        grid_size=grid_size,
-        components=components,
-        scale_factor=scale_factor
-    ).initialize_grid_generation()
+    #grid, port_scaled_coords, used_area, port_coord = GridGeneration(
+    #    grid_size=grid_size,
+    #    components=components,
+    #    scale_factor=scale_factor
+    #).initialize_grid_generation()
 
 
-    path, seg_list = initiate_astar(
-        grid=grid,
-        connections=connections,
-        local_connections=local_connections,
-        components=components,
-        port_scaled_coords=port_scaled_coords,
-        net_list=net_list)
+    #path, seg_list = initiate_astar(
+    #    grid=grid,
+    #    connections=connections,
+    #    local_connections=local_connections,
+    #    components=components,
+    #    port_scaled_coords=port_scaled_coords,
+    #    net_list=net_list)
 
-    components = initiate_write_traces(components, path, port_coord, seg_list, scale_factor, net_list)
-    path = []
-    logger.info("Starting Drawing results")
+    #components = initiate_write_traces(components, path, port_coord, seg_list, scale_factor, net_list)
+    #path = []
+    #logger.info("Starting Drawing results")
     # path true:
-    draw_result(grid_size, components, path, used_area, scale_factor, draw_name)
+    #draw_result(grid_size, components, path, used_area, scale_factor, draw_name)
     # path false:
     # draw_result(grid_size, components, connections, used_area)
-    logger.info("Finished Drawing results")
+    #logger.info("Finished Drawing results")
 
     # Create layout
-    MagicLayoutCreator(project_properties=project_properties, components=components)
+    # MagicLayoutCreator(project_properties=project_properties, components=components)
 
     # DRC handling
     # DRCchecking(project_properties=project_properties)
+
+    # LVS handling
+    LVSchecking(project_properties=project_properties)
+
 
     # Debug log of all components
     logger.debug(f"Components registered: ")

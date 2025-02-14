@@ -23,6 +23,7 @@ WHITE = "\033[0m"
 GREY = "\033[38;2;128;128;128m"
 GREEN = "\033[38;2;0;153;76m"
 LIGHT_GREEN = "\033[38;2;102;204;0m"
+DARK_GREEN = "\033[38;2;0;102;0m"
 RED = "\033[38;2;255;51;51m"
 BLUE = "\033[38;2;59;92;222m"
 LIGHT_BLUE = "\033[38;2;51;153;255m"
@@ -48,7 +49,8 @@ def get_a_logger(name):
         "connections.connections": CYAN,
         "astar.a_star": BLUE,
         "grid.generate_grid": PINK,
-        "drc.drc_checker": DARK_CYAN
+        "drc.drc_checker": DARK_CYAN,
+        "lvs.lvs_checker": DARK_GREEN
     }
 
     file_spcific_color = color_table.get(name, WHITE)

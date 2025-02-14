@@ -137,13 +137,15 @@ class MagicComponentsParser:
                 elif new_area < area:
                     port_with_minimum_area = port
 
-        minimum_x_size = port_with_minimum_area.area.x2 - port_with_minimum_area.area.x1
-        minimum_y_size = port_with_minimum_area.area.y2 - port_with_minimum_area.area.y1
+        minimum_x_length = port_with_minimum_area.area.x2 - port_with_minimum_area.area.x1
+        minimum_y_length = port_with_minimum_area.area.y2 - port_with_minimum_area.area.y1
 
-        # Adjust port sizes to become the same as the area of the smallest port
+        # Adjust port sizes to become the same as the area of the smallest port and center them
         for port in component.layout_ports:
-            port.area.x2 = port.area.x1 + minimum_x_size
-            port.area.y2 = port.area.y1 + minimum_y_size
+            port.area.x1 = ((port.area.x2 - port.area.x1) // 2) + port.area.x1 - (minimum_x_length // 2)
+            port.area.y1 = ((port.area.y2 - port.area.y1) // 2) + port.area.y1 - (minimum_y_length // 2)
+            port.area.x2 = port.area.x1 + minimum_x_length
+            port.area.y2 = port.area.y1 + minimum_y_length
 
     def __basic_component_is_valid_check(self, component: object):
 
