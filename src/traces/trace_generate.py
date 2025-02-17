@@ -19,7 +19,7 @@ import re
 import math
 
 
-from circuit.circuit_components import Trace, RectAreaLayer, RectArea
+from circuit.circuit_components import TraceNet, RectAreaLayer, RectArea
 from json_converter.json_converter import save_to_json
 from magic.magic_layout_creator import MagicLayoutCreator
 
@@ -277,7 +277,7 @@ def _eliminate_rectangles(rectangles, scale_factor, trace_width):
     return rectangle_list
 
 def _write_traces(rectangles, trace_width, index, name):
-    a_trace = Trace()
+    a_trace = TraceNet()
     a_trace.instance = a_trace.__class__.__name__
     a_trace.number_id = index
     a_trace.name = name

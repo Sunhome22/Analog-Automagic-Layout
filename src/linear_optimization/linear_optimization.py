@@ -18,7 +18,7 @@ import pickle
 import pyscipopt
 import os
 import tomllib
-from circuit.circuit_components import Pin, CircuitCell, Transistor, Trace
+from circuit.circuit_components import Pin, CircuitCell, Transistor, TraceNet
 from logger.logger import get_a_logger
 
 
@@ -68,7 +68,7 @@ class LinearOptimizationSolver:
 
         # Make lists of functional components and structural components
         for component in self.components:
-            if not isinstance(component, (Pin, CircuitCell, Trace)):
+            if not isinstance(component, (Pin, CircuitCell, TraceNet)):
                 self.component_ids.append(component.number_id)
                 self.component_names.append(component.name)
                 self.functional_components.append(component)

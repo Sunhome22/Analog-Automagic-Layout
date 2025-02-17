@@ -140,7 +140,7 @@ class Pin:
             self.layout = RectAreaLayer(**self.layout)
 
 @dataclass
-class Trace:
+class TraceNet:
     instance: str = field(default_factory=str)
     number_id: int = field(default_factory=int)
     name: str = field(default_factory=str)
@@ -165,6 +165,16 @@ class CircuitCell:
     name: str = field(default_factory=str)
     cell: str = field(default_factory=str)
     schematic_connections: dict = field(default_factory=dict)
+    transform_matrix: TransformMatrix | dict = field(default_factory=TransformMatrix)
+    bounding_box: RectArea | dict = field(default_factory=RectArea)
+
+    # Handling of JSON file input
+    def __post_init__(self):
+        if isinstance(self.bounding_box, dict):
+            self.bounding_box = RectArea(**self.bounding_box)
+
+        if isinstance(self.transform_matrix, dict):
+            self.transform_matrix = TransformMatrix(**self.transform_matrix)
 
 
 

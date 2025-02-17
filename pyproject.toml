@@ -41,5 +41,12 @@ MIRROR = true
 RUN = true
 STOP_TOLERANCE = 0.05
 
+# Magic layout creator config options
+# -> Via padding - defines how much padding in units of 1e-7m should be added around all vias
+
+[magic_layout_creator]
+VIA_PADDING = 7
+
+
 
 

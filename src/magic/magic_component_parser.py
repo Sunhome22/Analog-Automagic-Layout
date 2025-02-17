@@ -15,7 +15,7 @@
 # ================================================== Libraries =========================================================
 import os
 import re
-from circuit.circuit_components import LayoutPort, RectArea, Pin, CircuitCell, Trace
+from circuit.circuit_components import LayoutPort, RectArea, Pin, CircuitCell, TraceNet
 from logger.logger import get_a_logger
 from dataclasses import fields
 
@@ -24,7 +24,6 @@ from dataclasses import fields
 
 class MagicComponentsParser:
     def __init__(self, project_properties, components):
-        self.project_cell_name = project_properties.cell_name
         self.project_directory = project_properties.directory
         self.component_libraries = project_properties.component_libraries
         self.current_component_library_path = None
@@ -45,8 +44,8 @@ class MagicComponentsParser:
         # Iterate over all components
         for component in self.components:
 
-            # Filter out pins, circuit cells and traces
-            if not isinstance(component, (Pin, CircuitCell, Trace)):
+            # Filter out pins, circuit cells and trace nets
+            if not isinstance(component, (Pin, CircuitCell, TraceNet)):
                 updated_components += 1
 
                 # Find library of current component

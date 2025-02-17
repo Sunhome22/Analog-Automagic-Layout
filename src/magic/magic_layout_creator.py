@@ -15,10 +15,11 @@
 # ================================================== Libraries =========================================================
 import os
 import time
-from circuit.circuit_components import RectArea, Transistor, Capacitor, Resistor, Pin, CircuitCell, Trace
+from circuit.circuit_components import RectArea, Transistor, Capacitor, Resistor, Pin, CircuitCell, TraceNet
 from magic.magic_drawer import get_pixel_boxes_from_text, get_black_white_pixel_boxes_from_image
 from logger.logger import get_a_logger
 from collections import deque
+import tomllib
 
 # ============================================== Magic layout creator ==================================================
 
@@ -27,7 +28,8 @@ class MagicLayoutCreator:
 
     def __init__(self, project_properties, components):
         self.project_properties = project_properties
-        self.project_cell_name = project_properties.cell_name
+        self.project_top_cell_name = project_properties.top_cell_name
+        self.project_sub_cell_names = project_properties.sub_cell_names
         self.project_lib_name = project_properties.lib_name
         self.project_directory = project_properties.directory
         self.component_libraries = project_properties.component_libraries
@@ -36,11 +38,22 @@ class MagicLayoutCreator:
         self.magic_file_lines = []
         self.total_functional_components_added = 0
         self.total_connection_points_added = 0
-        self.total_traces_added = 0
+        self.total_trace_nets_added = 0
         self.total_vias_added = 0
+        self.total_circuit_cells_added = 0
 
+        self.config = self.__load_config()
+        self.VIA_PADDING = self.config["magic_layout_creator"]["VIA_PADDING"]
         self.logger = get_a_logger(__name__)
-        self.__file_creator()
+        self.__generate_magic_files()
+
+
+    def __load_config(self, path="pyproject.toml"):
+        try:
+            with open(path, "rb") as f:
+                return tomllib.load(f)
+        except (FileNotFoundError, tomllib.TOMLDecodeError) as e:
+            self.logger.error(f"Error loading config: {e}")
 
     def place_black_white_picture(self, image_path: str):
         """Not used"""
@@ -79,8 +92,6 @@ class MagicLayoutCreator:
     def __via_placer(self, start_layer: str, end_layer: str, area: RectArea):
         """Adds via(s) and potentially necessary metal layers between a top layer and a bottom layer"""
 
-        VIA_OFFSET = 7  # Needs to be handled in the future, but works for now.
-
         via_map = {
             ('locali', 'm1'): 'viali',
             ('m1', 'locali'): 'viali',
@@ -100,8 +111,8 @@ class MagicLayoutCreator:
         # Metal area is increased with an offset to compensate for the via if via is present
         metal_area = RectArea(x1=area.x1, y1=area.y1, x2=area.x2, y2=area.y2)
         if via_layers is not None:
-            metal_area = RectArea(x1=area.x1 - VIA_OFFSET, y1=area.y1 - VIA_OFFSET,
-                                  x2=area.x2 + VIA_OFFSET, y2=area.y2 + VIA_OFFSET)
+            metal_area = RectArea(x1=area.x1 - self.VIA_PADDING, y1=area.y1 - self.VIA_PADDING,
+                                  x2=area.x2 + self.VIA_PADDING, y2=area.y2 + self.VIA_PADDING)
 
         # Place all required metal(s)
         if metal_layers is not None:
@@ -113,13 +124,13 @@ class MagicLayoutCreator:
             for via_layer in via_layers:
                 self.__place_box(layer=via_layer, area=area)
 
-    def __add_trace_vias(self, trace: Trace) -> int:
-        """Checks for overlap between segments of a trace in different layers and adds vias."""
+    def __add_trace_net_vias(self, trace_net: TraceNet) -> int:
+        """Checks for overlap between segments of a trace net in different layers and adds vias"""
         last_segment_layer = None
         previous_segment = None
         via_count = 0
 
-        for segment in trace.segments:
+        for segment in trace_net.segments:
 
             if last_segment_layer != segment.layer:
                 last_segment_layer = segment.layer
@@ -155,18 +166,17 @@ class MagicLayoutCreator:
 
         return via_count
 
-    def __add_trace_connection_point(self, trace: Trace):
-        """Creates a connection point based on which layer a trace wants to connect to a port.
+    def __add_trace_net_connection_point(self, trace_net: TraceNet):
+        """Creates a connection point based on which layer a trace segment wants to connect to a port.
         Multiple connections to a port will show as the connection point being added multiple times"""
 
         # Iterate over all components and filter out things that does not have ports
         for component in self.components:
-            if not isinstance(component, (Pin, CircuitCell, Trace)):
+            if not isinstance(component, (Pin, CircuitCell, TraceNet)):
 
-                # Iterate over all ports for every segment of the current trace
+                # Iterate over all ports for every segment of the current trace net
                 for port in component.layout_ports:
-                    print(port)
-                    for segment in trace.segments:
+                    for segment in trace_net.segments:
 
 
                         # Get port position in finished layout by adding transform matrix coordinates
@@ -186,7 +196,7 @@ class MagicLayoutCreator:
 
                             self.logger.info(f"Connection placed on port '{port.type}' of '{component.name}' "
                                              f"between layer '{port.layer}' and '{segment.layer}' "
-                                             f"for trace '{trace.name}' of '{trace.cell}'")
+                                             f"for trace net '{trace_net.name}' of '{trace_net.cell}'")
 
     def get_inbetween_metal_layers(self, start_layer: str, end_layer: str, metal_layer_list: list):
         """Gets all metal layers, including start and end layer, and deals with if their positions are
@@ -231,26 +241,26 @@ class MagicLayoutCreator:
         except ValueError:
             self.logger.error(f"Could not get layers inbetween '{start_layer}' to '{end_layer}'")
 
-    def __trace_creator(self, trace: Trace):
+    def __trace_net_creator(self, trace_net: TraceNet):
         via_count = 0
         segment_count = 0
 
         # Basic check if segments are valid for being displayed in magic: x1 < x2 and y1 < y2
-        for segment in trace.segments:
+        for segment in trace_net.segments:
             if segment.area.x2 < segment.area.x1 or segment.area.y2 < segment.area.y1:
-                self.logger.error(f"For trace '{trace.name}' segment area {segment.area} is invalid!")
+                self.logger.error(f"For trace '{trace_net.name}' segment area {segment.area} is invalid!")
 
         # Add segments
-        for segment in trace.segments:
+        for segment in trace_net.segments:
             self.__place_box(layer=segment.layer, area=segment.area)
             segment_count += 1
 
         # Add vias at intersection points between segments that move up/down in layers
-        via_count += self.__add_trace_vias(trace=trace)
+        via_count += self.__add_trace_net_vias(trace_net=trace_net)
 
-        self.logger.info(f"{trace.instance} '{trace.name}' placed with segments: {segment_count} vias: {via_count}")
+        self.logger.info(f"Trace net '{trace_net.name}' placed with segments: {segment_count} vias: {via_count}")
         self.total_vias_added += via_count
-        self.total_traces_added += 1
+        self.total_trace_nets_added += 1
 
     def __functional_component_creator(self, component):
 
@@ -278,6 +288,18 @@ class MagicLayoutCreator:
             f"port {component.number_id} nsew signal bidirectional"
         ])
 
+    def __circuit_cell_component_creator(self, component):
+
+        self.magic_file_lines.extend([
+            f"use {component.name} {component.name} ",
+            f"transform {component.transform_matrix.a} {component.transform_matrix.b}"
+            f" {component.transform_matrix.c} {component.transform_matrix.d}"
+            f" {component.transform_matrix.e} {component.transform_matrix.f}",
+            f"box {component.bounding_box.x1} {component.bounding_box.y1} {component.bounding_box.x2}"
+            f" {component.bounding_box.y2}"
+        ])
+
+        self.total_circuit_cells_added += 1
 
     def __magic_file_top_template(self):
         self.magic_file_lines.extend([
@@ -288,29 +310,57 @@ class MagicLayoutCreator:
             "<< checkpaint >>",
             "rect 0 0 0 0"  # Rectangle completely covering everything in the cell. TBD!
         ])
+    def __generate_magic_files(self):
+        cells = self.project_sub_cell_names + [self.project_top_cell_name]
 
-    def __file_creator(self):
+        for cell in cells:
+
+            cell_name = ""
+            cell_components = []
+            self.magic_file_lines = []
+            self.total_functional_components_added = 0
+            self.total_connection_points_added = 0
+            self.total_trace_nets_added = 0
+            self.total_vias_added = 0
+            self.total_circuit_cells_added = 0
+
+            for component in self.components:
+                if component.cell == cell:
+                    cell_name = component.cell
+                    cell_components.append(component)
+
+            # Create file if component list is not empty
+            if cell_components:
+                self.__magic_file_creator(components=cell_components, file_name=cell_name)
+
+        self.logger.info("Process complete!")
+
+    def __magic_file_creator(self, components, file_name):
         self.__magic_file_top_template()
 
         # Place functional components
-        for component in self.components:
+        for component in components:
             if isinstance(component, (Transistor, Resistor, Capacitor)):
                 self.__functional_component_creator(component=component)
 
         # Place connection points
-        for component in self.components:
-            if isinstance(component, Trace):
-                self.__add_trace_connection_point(trace=component)
+        for component in components:
+            if isinstance(component, TraceNet):
+                self.__add_trace_net_connection_point(trace_net=component)
 
-        # Place traces
-        for component in self.components:
-            if isinstance(component, Trace):
-                self.__trace_creator(trace=component)
+        # Place trace nets
+        for component in components:
+            if isinstance(component, TraceNet):
+                self.__trace_net_creator(trace_net=component)
 
+        # Place circuit cells
+        for component in components:
+            if isinstance(component, CircuitCell):
+                self.__circuit_cell_component_creator(component=component)
 
         # Place structural components
         self.magic_file_lines.append("<< labels >>")
-        for component in self.components:
+        for component in components:
             if isinstance(component, Pin):
                 self.__structural_component_creator(component=component)
 
@@ -323,19 +373,20 @@ class MagicLayoutCreator:
         self.magic_file_lines.append("<< end >>")
 
         # Write everything to file
-        self.__write_magic_file()
+        self.__write_magic_file(file_name=file_name)
 
-    def __write_magic_file(self):
+    def __write_magic_file(self, file_name):
         magic_file_path = os.path.expanduser(f"{self.project_directory}/design/"
-                                             f"{self.project_lib_name}/{self.project_cell_name}.mag")
+                                             f"{self.project_lib_name}/{file_name}.mag")
 
         with open(magic_file_path, "w") as file:
             file.write("\n".join(self.magic_file_lines))
 
-        self.logger.info(f"Process complete! File '{self.project_cell_name}.mag' was created. "
+        self.logger.info(f"File '{file_name}.mag' was created. "
                          f"| Functional Components: {self.total_functional_components_added} | "
                          f"Connection Points: {self.total_connection_points_added} | "
-                         f"Traces: {self.total_traces_added} | Vias: {self.total_vias_added} |")
+                         f"Trace nets: {self.total_trace_nets_added} | Vias: {self.total_vias_added} | "
+                         f"Circuit cells: {self.total_circuit_cells_added}")
 
 
 

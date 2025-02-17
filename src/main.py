@@ -23,7 +23,7 @@ from dataclasses import dataclass, asdict
 from magic.magic_component_parser import MagicComponentsParser
 from json_converter.json_converter import save_to_json, load_from_json
 from logger.logger import get_a_logger
-from circuit.circuit_components import Trace, RectAreaLayer, RectArea
+from circuit.circuit_components import TraceNet, RectAreaLayer, RectArea
 from astar.a_star import initiate_astar
 from draw_result.draw import draw_result
 from linear_optimization.linear_optimization import *
@@ -48,7 +48,8 @@ class ComponentLibrary:
 @dataclass
 class ProjectProperties:
     directory: str
-    cell_name: str
+    top_cell_name: str
+    sub_cell_names: list[str]
     lib_name: str
     component_libraries: list[ComponentLibrary]
 
@@ -60,7 +61,8 @@ misc_lib = ComponentLibrary(name="AALMISC", path="~/aicex/ip/jnw_bkle_sky130A/de
 
 
 project_properties = ProjectProperties(directory="~/aicex/ip/jnw_bkle_sky130A",
-                                       cell_name="JNW_BKLE",
+                                       top_cell_name="JNW_BKLE",
+                                       sub_cell_names=["COMP"],
                                        lib_name="JNW_BKLE_SKY130A",
                                        component_libraries=[atr_lib, tr_lib, misc_lib])
 
@@ -72,10 +74,10 @@ def main():
     logger = get_a_logger(__name__)
 
     # Extracts component information from SPICE file
-    components = SPICEparser(project_properties=project_properties)
+    #components = SPICEparser(project_properties=project_properties)
 
     # Updates component attributes with information from it's associated Magic files
-    components = MagicComponentsParser(project_properties=project_properties, components=components.get()).get()
+    #components = MagicComponentsParser(project_properties=project_properties, components=components.get()).get()
 
     # Figures out connection types, nets and components that can overlap
     #single_connection, local_connections, connections, overlap_components, net_list = (
@@ -111,12 +113,13 @@ def main():
     #logger.info("Starting Drawing results")
     # path true:
     #draw_result(grid_size, components, path, used_area, scale_factor, draw_name)
-    # path false:
-    # draw_result(grid_size, components, connections, used_area)
     #logger.info("Finished Drawing results")
 
+    #save_to_json(objects=components, file_name="src/json_converter/components.json")
+    components = load_from_json(file_name="src/json_converter/components.json")
+
     # Create layout
-    # MagicLayoutCreator(project_properties=project_properties, components=components)
+    MagicLayoutCreator(project_properties=project_properties, components=components)
 
     # DRC handling
     # DRCchecking(project_properties=project_properties)

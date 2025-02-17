@@ -13,7 +13,7 @@
 # ==================================================================================================================== #
 
 from matplotlib import pyplot as plt, patches
-from circuit.circuit_components import Pin, CircuitCell, Trace
+from circuit.circuit_components import Pin, CircuitCell, TraceNet
 import os
 
 
