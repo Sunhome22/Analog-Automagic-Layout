@@ -63,7 +63,7 @@ class MagicComponentsParser:
                             self.__get_component_port_info(text_line=text_line, component=component)
                             self.__get_overlap_difference_for_cmos_transistors(text_line=text_line, component=component)
 
-                        self.__adjust_port_sizes(component=component)
+                        #self.__adjust_port_sizes_to_minimum(component=component)
                         self.__basic_component_is_valid_check(component=component)
 
                 except FileNotFoundError:
@@ -121,9 +121,10 @@ class MagicComponentsParser:
 
             component.layout_ports.append(layout_port)
 
-    def __adjust_port_sizes(self, component: object):
+    @staticmethod
+    def __adjust_port_sizes_to_minimum(component: object):
+        """Adjust port sizes to the smallest one found. This is no longer in use"""
         port_areas = []
-        ports = []
         port_with_minimum_area = None
 
         # Find the port with the smallest area

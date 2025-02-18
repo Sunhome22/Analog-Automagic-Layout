@@ -7,3 +7,12 @@
 - Create separate object for functional and structural components 
 - Make config file for user input variables for linear optimization [V]
 - Number ID begins at zero again when dealing with trace nets. Maybe fix?
+
+
+## Notes
+- Vias get turned into multiple smaller ones when converting to GDSII. Always want atleast two, however
+  Carsten is not allways following this rule.
+
+
+- Designeren kan lage transistoren sann som han vil. Deretter definera han "label" areal for G, S, D og B. 
+- Kvifor bruker vi dei transistorane vi gjer
