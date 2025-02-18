@@ -197,42 +197,36 @@ def _rectangle_consolidation(rectangles, segment_direction):
     seg = NewSegment(segment = [],lost_points = [])
     if segment_direction == "h":
 
-        min_x = min(min(sublist.segment[0], sublist.segment[2]) for sublist in rectangles)
-        max_x = max(max(sublist.segment[0], sublist.segment[2]) for sublist in rectangles)
-        y = rectangles[0].segment[1]
+        min_x = min(min(sublist[0], sublist[2]) for sublist in rectangles)
+        max_x = max(max(sublist[0], sublist[2]) for sublist in rectangles)
+        y = rectangles[0][1]
 
         seg.segment.extend([min_x, y, max_x, y])
 
         for sublist in rectangles:
 
-            if (sublist.segment[0], sublist.segment[1]) != (min_x, y) and (sublist.segment[0], sublist.segment[1]) != (max_x, y):
-                seg.lost_points.append((sublist.segment[0],sublist.segment[1]))
+            if (sublist[0], sublist[1]) != (min_x, y) and (sublist[0], sublist[1]) != (max_x, y):
+                seg.lost_points.append((sublist[0],sublist[1]))
 
-            elif (sublist.segment[2], sublist.segment[3]) != (min_x, y) and (sublist.segment[2], sublist.segment[3]) != (max_x, y):
-                seg.lost_points.append((sublist.segment[2], sublist.segment[3]))
-
-            if len(sublist.lost_points) > 0:
-                seg.lost_points.extend(sublist.lost_points)
+            elif (sublist[2], sublist[3]) != (min_x, y) and (sublist[2], sublist[3]) != (max_x, y):
+                seg.lost_points.append((sublist[2], sublist[3]))
 
 
     elif segment_direction == "v":
 
-        min_y = min(min(sublist.segment[1], sublist.segment[3]) for sublist in rectangles)
-        max_y = max(max(sublist.segment[1], sublist.segment[3]) for sublist in rectangles)
-        x = rectangles[0].segment[0]
+        min_y = min(min(sublist[1], sublist[3]) for sublist in rectangles)
+        max_y = max(max(sublist[1], sublist[3]) for sublist in rectangles)
+        x = rectangles[0][0]
 
         seg.segment.extend([x, min_y, x, max_y])
 
         for sublist in rectangles:
 
-            if (sublist.segment[0], sublist.segment[1]) != (x, min_y) and (sublist.segment[0], sublist.segment[1]) != (x, max_y):
-                seg.lost_points.append((sublist.segment[0], sublist.segment[1]))
+            if (sublist[0], sublist[1]) != (x, min_y) and (sublist[0], sublist[1]) != (x, max_y):
+                seg.lost_points.append((sublist[0], sublist[1]))
 
-            elif (sublist.segment[2], sublist.segment[3]) != (x, min_y) and (sublist.segment[2], sublist.segment[3]) != (x, max_y):
-                seg.lost_points.append((sublist.segment[2], sublist.segment[3]))
-
-            if len(sublist.lost_points) > 0:
-                seg.lost_points.extend(sublist.lost_points)
+            elif (sublist[2], sublist[3]) != (x, min_y) and (sublist[2], sublist[3]) != (x, max_y):
+                seg.lost_points.append((sublist[2], sublist[3]))
 
     else:
         print("[ERROR] Direction invalid")
@@ -242,70 +236,72 @@ def _rectangle_consolidation(rectangles, segment_direction):
 def _eliminate_rectangles(rectangles, trace_width):
     spacing_m2 = 14 #horizontal
     spacing_m3 = 30 #vertical
-    print("Rectangles length")
-    print(len(rectangles))
+    p = 0
+    first_rectangle_list = []
+    last_rectangle_list = []
+    illegal_placement = True
+    while  illegal_placement:
+        rectangle_list = []
 
-    rectangles_duplicate = rectangles[:]
-    checked_rectangle = []
-    rectangle_list = []
-    for i, path_rectangle_1 in enumerate(rectangles):
+        rectangles_duplicate = rectangles[:]
+        checked_rectangle = []
+        for i, path_rectangle_1 in enumerate(rectangles):
+            path_rectangle_1 = path_rectangle_1.segment
+            index_list = []
+            temp_seg_list = [path_rectangle_1]
 
-        index_list = []
-        temp_seg_list = [path_rectangle_1]
+            #Change to .x1 and .x2
+            direction_rectangle_1 = "h" if path_rectangle_1[0] != path_rectangle_1[2] else "v"
 
-        #Change to .x1 and .x2
-        direction_rectangle_1 = "h" if path_rectangle_1.segment[0] != path_rectangle_1.segment[2] else "v"
+            for index, path_rectangle_2 in enumerate(rectangles_duplicate):
+                path_rectangle_2 = path_rectangle_2.segment
 
-        for index, path_rectangle_2 in enumerate(rectangles_duplicate):
-
-
-            direction_rectangle_2 = "h" if path_rectangle_2.segment[0] != path_rectangle_2.segment[2] else "v"
-
-            conditions = {
-                    "general" : [direction_rectangle_1==direction_rectangle_2,
-                                 path_rectangle_1.segment != path_rectangle_2.segment,
-                                 path_rectangle_1.segment not in checked_rectangle,
-                                 path_rectangle_2.segment not in checked_rectangle
-                                 ],
-                    "v" : [direction_rectangle_1 == "v",
-                           abs(path_rectangle_1.segment[0] - path_rectangle_2.segment[0]) <= (trace_width + spacing_m3 ),
-                           (min(int(path_rectangle_2.segment[1]), int(path_rectangle_2.segment[3])) <=int(path_rectangle_1.segment[1]) <= max(int(path_rectangle_2.segment[1]), int(path_rectangle_2.segment[3]))) or (min(int(path_rectangle_2.segment[1]), int(path_rectangle_2.segment[3])) <=int(path_rectangle_1.segment[3]) <= max(int(path_rectangle_2.segment[1]), int(path_rectangle_2.segment[3])))
-                           ],
-                    "h" : [direction_rectangle_1 == "h",
-                           abs(path_rectangle_1.segment[1] - path_rectangle_2.segment[1]) <= (trace_width + spacing_m2 ),
-                           (min(int(path_rectangle_2.segment[0]), int(path_rectangle_2.segment[2])) <=int(path_rectangle_1.segment[0]) <= max(int(path_rectangle_2.segment[0]), int(path_rectangle_2.segment[2]))) or (min(int(path_rectangle_2.segment[0]), int(path_rectangle_2.segment[2])) <=int(path_rectangle_1.segment[2]) <= max(int(path_rectangle_2.segment[0]), int(path_rectangle_2.segment[2])))
-                           ]
-                }
-            if all(conditions["general"]) and (all(conditions["h"]) or all(conditions["v"])):
-
-                temp_seg_list.append(path_rectangle_2)
-                index_list.append(index)
-                checked_rectangle.append(path_rectangle_2.segment)
+                direction_rectangle_2 = "h" if path_rectangle_2[0] != path_rectangle_2[2] else "v"
 
 
+                if direction_rectangle_1==direction_rectangle_2 and path_rectangle_1 != path_rectangle_2 and path_rectangle_2 not in checked_rectangle and path_rectangle_1 not in checked_rectangle:
+                    print("THIS IS TRUE")
+                    conditions = {
+                        "v" : [direction_rectangle_1 == "v",
+                               abs(path_rectangle_1[0] - path_rectangle_2[0]) <= (trace_width + spacing_m3 ),
+                               (min(int(path_rectangle_2[1]), int(path_rectangle_2[3])) <=int(path_rectangle_1[1]) <= max(int(path_rectangle_2[1]), int(path_rectangle_2[3]))) or (min(int(path_rectangle_2[1]), int(path_rectangle_2[3])) <=int(path_rectangle_1[3]) <= max(int(path_rectangle_2[1]), int(path_rectangle_2[3])))
+                               ],
+                        "h" : [direction_rectangle_1 == "h",
+                               abs(path_rectangle_1[1] - path_rectangle_2[1]) <= (trace_width + spacing_m2 ),
+                               (min(int(path_rectangle_2[0]), int(path_rectangle_2[2])) <=int(path_rectangle_1[0]) <= max(int(path_rectangle_2[0]), int(path_rectangle_2[2]))) or (min(int(path_rectangle_2[0]), int(path_rectangle_2[2])) <=int(path_rectangle_1[2]) <= max(int(path_rectangle_2[0]), int(path_rectangle_2[2])))
+                               ]
+                    }
+                    if all(conditions["h"]) or all(conditions["v"]):
+                        print("ALL CONDITIONS SATISFIED")#horizontal, m3
+                        temp_seg_list.append(path_rectangle_2)
+                        index_list.append(index)
+                        checked_rectangle.append(path_rectangle_2)
+            checked_rectangle.append(path_rectangle_1)
+            for x in sorted(index_list, reverse=True) :
+                del rectangles_duplicate[x]
 
-        for x in sorted(index_list, reverse=True) :
-            del rectangles_duplicate[x]
-
-        if len(temp_seg_list) > 1:
-
-            rectangles.append(_rectangle_consolidation(temp_seg_list, direction_rectangle_1))
-
-            rectangles_duplicate.append(rectangles[-1])
-           # rectangle_list.append(rectangles[-1])
-
-            if path_rectangle_1.segment != rectangles[-1].segment:
-                checked_rectangle.append(path_rectangle_1.segment)
+            if len(temp_seg_list) > 1:
+                rectangle_list.append(_rectangle_consolidation(temp_seg_list, direction_rectangle_1))
+                rectangles_duplicate.append(rectangle_list[-1])
+            else:
+                rectangle_list.append(NewSegment(segment=temp_seg_list[0], lost_points=[]))
 
 
-        elif path_rectangle_1.segment not in checked_rectangle:
+        illegal_placement = _check_illegal_trace(rectangle_list)
+        if illegal_placement:
+            rectangles = rectangle_list
+        p+= 1
+        print(i)
+        if p == 1:
+            first_rectangle_list = rectangle_list
+        if p >= 100:
+            illegal_placement = False
 
-            rectangle_list.append(path_rectangle_1)
-            checked_rectangle.append(path_rectangle_1.segment)
+            print("First")
+            print(first_rectangle_list)
+            print("Last")
+            print(rectangle_list)
 
-
-    print("Rectangles length")
-    print(len(rectangle_list))
     return rectangle_list
 
 def _write_traces(rectangles, trace_width, index, name):
@@ -313,7 +309,6 @@ def _write_traces(rectangles, trace_width, index, name):
     a_trace.instance = a_trace.__class__.__name__
     a_trace.number_id = index
     a_trace.name = name
-
 
     for i, rect in enumerate(rectangles):
         if rect.segment[0] == rect.segment[2]:  # Vertical
@@ -362,16 +357,9 @@ def _check_for_lost_points(rectangles):
                     if (seg.segment[0], seg.segment[1]) == lost_point:
                         if seg.segment[1]  == seg.segment[3] and next_segment.segment[0] == next_segment.segment[2]:
                             seg.segment[0] = next_segment.segment[0]
-                        elif seg.segment[0] == seg.segment[2] and next_segment.segment[1] == next_segment.segment[3]:
-                            seg.segment[1] = next_segment.segment[1]
-
-
-
                     elif (seg.segment[2], seg.segment[3]) == lost_point:
                         if seg.segment[1] == seg.segment[3] and next_segment.segment[0] == next_segment.segment[2]:
-                            seg.segment[2] = next_segment.segment[2]
-                        elif seg.segment[0] == seg.segment[2] and next_segment.segment[1] == next_segment.segment[3]:
-                            seg.segment[3] = next_segment.segment[3]
+                            seg.segment[0] = next_segment.segment[0]
     # Må bruke segmentet og ikke lost_point direkte og finne ut av hvilket av de to punktene i next_segment som skal tas i bruk
 
     return rectangles
@@ -404,8 +392,7 @@ def initiate_write_traces(objects, all_paths,  port_coord, seg_list, scale_facto
     test = []
 
     for index, net in enumerate(all_paths):
-       # if not net == "local:net1" and not net =="local:net2" and not net == "local:VDD" and not net == "local:net3" and not net == "local:VSS" and not net == "local:I_BIAS" and not net == "local:net4" and not net == "local:net4" and not net == "net3" and not net == "net1":
-        if not net == "net3" and not net == "net1" and not net == "net2" and not net == "net4":
+        if not net == "local:net1" and not net =="local:net2" and not net == "local:VDD" and not net == "local:net3" and not net == "local:VSS" and not net == "local:I_BIAS" and not net == "local:net4" and not net == "local:net4" and not net == "net3" and not net == "net1" :
 
             net_rectangles = []
             for name, path in all_paths[net]:
@@ -425,6 +412,6 @@ def initiate_write_traces(objects, all_paths,  port_coord, seg_list, scale_facto
                 #net_rectangles = _eliminate_rectangles(net_rectangles, trace_width)
             objects.append(_write_traces(net_rectangles, trace_width, index, net))
 
-      #  _check_net_constraint_vioaltion(test)
+  #  _check_net_constraint_vioaltion(test)
 
     return objects

@@ -2,6 +2,7 @@
 - Traces:
   - [x] Make traces half the width longer in desired direction :check: 
   - [x] NAME instead of id number on trace name
+  - [] Index of trace should count up from already established number ids
 - Linear Optimization:
   - [x] Bulk connection logic is not entirely correct
 - Connections:
@@ -9,7 +10,9 @@
 - UNIT TEST
 - ASTAR
   - [x] Updates Astar, such that when connecting from areas that have local connections the two closes ports are chosen.
-  - [] Introduce constraints for how close each path is
+  - [x] Introduce constraints for how close each path is
+  - [] Introduce constraints for how close each path is to via
+  - [] Find out what is happening to net4
   - [] VSS in locali and VDD in m1
 
 
