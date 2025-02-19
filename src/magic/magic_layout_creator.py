@@ -172,7 +172,9 @@ class MagicLayoutCreator:
                                             x2=port.area.x2 + component.transform_matrix.c,
                                             y1=port.area.y1 + component.transform_matrix.f,
                                             y2=port.area.y2 + component.transform_matrix.f)
-
+                        # Hinder placement of connection points on bulks since they are always connected in 'locali'
+                        if port.type == "B":
+                            continue
                         # Check for overlap between the port and the segment and add vias accordingly
                         if not (segment.area.x2 < port_pos.x1 or segment.area.x1 > port_pos.x2 or
                                 segment.area.y2 < port_pos.y1 or segment.area.y1 > port_pos.y2):

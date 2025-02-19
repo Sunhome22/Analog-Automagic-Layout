@@ -15,6 +15,11 @@
 from circuit.circuit_components import Pin, CircuitCell
 from logger.logger import get_a_logger
 import math
+import numpy as np
+import matplotlib.pyplot as plt
+from draw_result.visualize_grid import visualize_grid, heatmap_test
+
+
 
 
 class GridGeneration:
@@ -34,6 +39,7 @@ class GridGeneration:
         self.port_coord = {}
         self.used_area = [grid_size, grid_size, 0, 0]
 
+
         self.grid = None
 
 
@@ -47,17 +53,25 @@ class GridGeneration:
                 self.used_area[3] = max(self.used_area[3], obj.transform_matrix.f + obj.bounding_box.y2)
 
         for obj in self.objects:
+
             if not isinstance(obj, (Pin, CircuitCell)):
+
+
                 for port in obj.layout_ports:
+
+                    if port.type == "B":
+                        continue
+
                     x1 = (obj.transform_matrix.c + (port.area.x1 + port.area.x2)/2 - self.used_area[0] + self.LEEWAY_X)/self.scale_factor
                     y1 = (obj.transform_matrix.f + (port.area.y1 + port.area.y2)/2 - self.used_area[1] + self.LEEWAY_Y)/self.scale_factor
 
                     frac_x, int_x = math.modf(x1)
                     frac_y, int_y = math.modf(y1)
 
-                    self.port_area.append([int(int_x), int(int_y)])
+                    self.port_area.append([round(int_x), round(int_y)])
                     self.port_coord.setdefault(str(obj.number_id) + port.type, []).extend([int(obj.transform_matrix.c + (port.area.x1 + port.area.x2)/2), int(obj.transform_matrix.f + (port.area.y1 + port.area.y2)/2)])
                     self.port_scaled_coord.setdefault(str(obj.number_id)+port.type, []).extend([int_x, frac_x, int_y, frac_y])
+
 
 
 
@@ -75,12 +89,15 @@ class GridGeneration:
         self.grid = [[0 for _ in range(int(scaled_grid_size_x[1]))] for _ in range(int(scaled_grid_size_y[1]))]
 
         for x,y in self.port_area:
-            self.grid[y][x] = 1
+            for i in range(y-2, y+3):
+                for j in range(x-3, x+4):
+                    self.grid[i][j] = 1
+
 
         self.logger.info("Finished Grid Generation")
 
     def initialize_grid_generation(self):
         self._port_area()
         self.generate_grid()
-        
+
         return self.grid, self.port_scaled_coord, self.used_area, self.port_coord

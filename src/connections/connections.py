@@ -83,64 +83,68 @@ class ConnectionLists:
                             entry = [Connection(obj.number_id, key, obj.name, obj.number_id, obj.name, obj.cell, key1,ports[key]),
                                      Connection(obj.number_id, key1, obj.name, obj.number_id, key, obj.name, obj.cell, ports[key])]
                             if ports[key] == ports[key1] and not any(isinstance(obj, Connection) and obj == target for target in entry for obj in self.local_connections):
-                                self.local_connections.append(Connection(obj.number_id, key, obj.name, obj.number_id, key1, obj.name, obj.cell, "local:"+ports[key]))
-
+                                self.local_connections.append(Connection(obj.number_id, key, obj.name, obj.number_id, key1, obj.name, obj.cell, ports[key]))
                                 self._update_local_nets(obj.number_id, key, key1)
 
+
+    def _get_local_connection_area(self, object_id, port):
+
+        if object_id in self.local_con_area:
+
+            index = next((index for index, item in enumerate(self.local_con_area[object_id]) if
+                          port in item or ("local:" + port) in item), None)
+
+            if index is not None:
+                local_area = self.local_con_area[object_id][index]
+
+                return port if "B" in local_area else local_area
+            else:
+                return port
 
 
     def _connection_list(self):
 
         object_list = self.components
 
-        for object1 in object_list:
-            for object2 in object_list:
+        for component_1 in object_list:
+            for component_2 in object_list:
+                conditions = [
+                            not isinstance(component_1, (Pin, CircuitCell)),
+                            not isinstance(component_2, (Pin,CircuitCell)),
+                            component_1 != component_2,
+                            component_1.cell == component_2.cell
+                              ]
 
-                if not isinstance(object1, (Pin, CircuitCell)) and not isinstance(object2, (Pin,CircuitCell)):
+                if all(conditions):
 
-                    if object1 != object2 and object1.cell == object2.cell:
-                        object1_ports = object1.schematic_connections
-                        object2_ports = object2.schematic_connections
+                    for port_1 in component_1.schematic_connections:
+                        if port_1 == "B":
+                            continue
 
-                        for p1 in object1_ports:
-                            element_appended = False
-                            local_net_obj1 = p1
+                        element_appended = False
+                        for port_2 in component_2.schematic_connections:
+                            if port_2 == "B":
+                                continue
+                            if component_1.schematic_connections[port_1] == component_2.schematic_connections[port_2]:
+                                net = component_1.schematic_connections[port_1]
+                                cell = component_1.cell
 
-                            for p2 in object2_ports:
-                                local_net_obj2 = p2
-                                if object1_ports[p1] == object2_ports[p2]:
-
-                                    if object1.number_id in self.local_con_area:
-
-
-                                        index = next((index for index, item in enumerate(self.local_con_area[object1.number_id]) if p1 in item or ("local:" + p1) in item), None)
-
-                                        if index is not None:
-                                            local_net_obj1 = self.local_con_area[object1.number_id][index]
-
-
-                                    if object2.number_id in self.local_con_area:
-
-                                        index = next((index for index, item in enumerate(self.local_con_area[object2.number_id]) if p2 in item or ("local:" + p2) in item), None)
-
-                                        if index is not None:
-                                            local_net_obj2 = self.local_con_area[object2.number_id][index]
+                                port_1_area = self._get_local_connection_area(component_1.number_id, port_1)
+                                port_2_area = self._get_local_connection_area(component_2.number_id, port_2)
 
 
+                                entry = [Connection(component_1.number_id, port_1_area, component_1.name, component_2.number_id, port_2_area, component_2.name, cell, net),
+                                         Connection(component_2.number_id, port_2_area, component_2.name, component_1.number_id, port_1_area, component_1.name, cell, net)]
 
-                                    entry = [Connection(object1.number_id, local_net_obj1, object1.name, object2.number_id, local_net_obj2, object2.name, object1.cell, object1_ports[p1]),
-                                             Connection(object2.number_id, local_net_obj2, object2.name, object1.number_id, local_net_obj1, object1.name, object1.cell, object2_ports[p2])]
+                                if not any(isinstance(obj, Connection) and obj == target for target in entry for obj in self.component_connections):
 
-                                    if not any(isinstance(obj, Connection) and obj == target for target in entry for obj in self.component_connections):
-
-                                        self.component_connections.append(Connection(object1.number_id,local_net_obj1, object1.name, object2.number_id, local_net_obj2, object2.name, object1.cell, object1_ports[p1]))
-
-                                        element_appended = True
+                                    self.component_connections.append(entry[0])
+                                    element_appended = True
 
 
 
-                            if not element_appended:
-                                self.single_connection.append(Connection(object1.number_id, p1, object1.name,"", "", "", object1.cell, object1_ports[p1]))
+                        if not element_appended:
+                            self.single_connection.append(Connection(component_1.number_id, port_1, component_1.name,"", "", "", component_1.cell, component_1.schematic_connections[port_1]))
 
     def _overlap_transistors(self):
         n_transistors = []

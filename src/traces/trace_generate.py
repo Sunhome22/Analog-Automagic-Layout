@@ -129,18 +129,21 @@ def map_path_to_rectangles(path_segments, port_coord, connection_name):
 
     cumulative_x = 0
     cumulative_y = 0
-
+   # minimum_segment_length = 170
 
 
     for segment in path_segments:
         start_x, start_y = start_real if not rectangles else (rectangles[-1].segment[2], rectangles[-1].segment[3])
 
         if segment[0][0] == segment[-1][0]:  # Vertical segment
-            segment_length = abs(segment[-1][1] - segment[0][1])
-            cumulative_y += segment_length
+            segment_length = segment[-1][1] - segment[0][1]
+            cumulative_y += abs(segment_length)
             end_x = start_x
             if end_real[1] > start_real[1]:
                 end_y = start_real[1] + (end_real[1] - start_real[1]) * (cumulative_y / length_y)
+    #        elif end_real[1] == start_real[1]:
+     #           minimum_segment_length = minimum_segment_length * (-1 if segment_length < 0 else 1)
+      #          end_y = start_real[1] + minimum_segment_length * (cumulative_y / length_y)
             else:
                 end_y = start_real[1] - (start_real[1]- end_real[1]) * (cumulative_y / length_y)
         elif segment[0][1] == segment[-1][1]:  # Horizontal segment
@@ -258,7 +261,6 @@ def _eliminate_rectangles(rectangles, trace_width):
 
         for index, path_rectangle_2 in enumerate(rectangles_duplicate):
 
-
             direction_rectangle_2 = "h" if path_rectangle_2.segment[0] != path_rectangle_2.segment[2] else "v"
 
             conditions = {
@@ -288,9 +290,7 @@ def _eliminate_rectangles(rectangles, trace_width):
             del rectangles_duplicate[x]
 
         if len(temp_seg_list) > 1:
-
             rectangles.append(_rectangle_consolidation(temp_seg_list, direction_rectangle_1))
-
             rectangles_duplicate.append(rectangles[-1])
            # rectangle_list.append(rectangles[-1])
 
@@ -404,26 +404,27 @@ def initiate_write_traces(objects, all_paths,  port_coord, seg_list, scale_facto
     test = []
 
     for index, net in enumerate(all_paths):
-       # if not net == "local:net1" and not net =="local:net2" and not net == "local:VDD" and not net == "local:net3" and not net == "local:VSS" and not net == "local:I_BIAS" and not net == "local:net4" and not net == "local:net4" and not net == "net3" and not net == "net1":
-        if not net == "net3" and not net == "net1" and not net == "net2" and not net == "net4":
+        #if not net == "local:net1" and not net =="local:net2" and not net == "local:VDD" and not net == "local:net3" and not net == "local:VSS" and not net == "local:I_BIAS" and not net == "local:net4" and not net == "net4" and not net == "net3" and not net == "net1":
+        #if not net == "net1" and not net == "net2" and not net == "net3" :
+      #  if not net == "net3" and not net == "net1" and not net == "net2" and not net == "net4":
 
-            net_rectangles = []
-            for name, path in all_paths[net]:
-                segments = segment_path(path)
-                if len(segments) > 0:
-                    net_rectangles.extend(map_path_to_rectangles(segments, port_coord, name))
-            print("Stuck at _delete_duplicate")
-            net_rectangles = _delete_duplicate_rectangles(net_rectangles)
-            print("Stuck at _eliminate_rectangles")
-            net_rectangles = _eliminate_rectangles(net_rectangles, trace_width)
-            print("Stuck at _check_for_lost_points")
-            net_rectangles =_check_for_lost_points(net_rectangles)
+        net_rectangles = []
+        for name, path in all_paths[net]:
+            segments = segment_path(path)
+            if len(segments) > 0:
+                net_rectangles.extend(map_path_to_rectangles(segments, port_coord, name))
+        print("Stuck at _delete_duplicate")
+        #net_rectangles = _delete_duplicate_rectangles(net_rectangles)
+        print("Stuck at _eliminate_rectangles")
+        #net_rectangles = _eliminate_rectangles(net_rectangles, trace_width)
+        print("Stuck at _check_for_lost_points")
+        #net_rectangles =_check_for_lost_points(net_rectangles)
 
-           # test.append(net_rectangles)
+       # test.append(net_rectangles)
 
-            #if test_redo == True:
-                #net_rectangles = _eliminate_rectangles(net_rectangles, trace_width)
-            objects.append(_write_traces(net_rectangles, trace_width, index, net))
+        #if test_redo == True:
+            #net_rectangles = _eliminate_rectangles(net_rectangles, trace_width)
+        objects.append(_write_traces(net_rectangles, trace_width, index, net))
 
       #  _check_net_constraint_vioaltion(test)
 

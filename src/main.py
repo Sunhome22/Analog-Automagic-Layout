@@ -65,7 +65,7 @@ project_properties = ProjectProperties(directory="~/aicex/ip/jnw_bkle_sky130A/",
 # ===================================================== Main ===========================================================
 # Define grid size and objects
 grid_size = 3000
-scale_factor =1
+scale_factor =16
 time_limit = 2
 draw_name = 'Temporary_check'
 def main():
@@ -86,6 +86,13 @@ def main():
     # Algorithms
     con_obj = ConnectionLists(components)
     single_connection, local_connections, connections, overlap_dict, net_list = con_obj.initialize_connections()
+
+    print("Single Connections")
+    print(single_connection)
+    print("local_connections")
+    print(local_connections)
+    print("connections")
+    print(connections)
 
 
 

@@ -21,6 +21,8 @@ import heapq
 
 
 
+from draw_result.visualize_grid import heatmap_test
+
 logger = get_a_logger(__name__)
 
 class PriorityQueue:
@@ -45,11 +47,13 @@ def heuristic(a, b):
     return abs(a[0] - b[0]) + abs(a[1] - b[1])
 
 
-def get_neighbors(node, grid_vertical, grid_horizontal, goal):
+def get_neighbors(node, grid_vertical, grid_horizontal, goal, current_dir, seg_length):
     """Get valid neighbors for the current node."""
     neighbors = []
     h_dir = [(1, 0), (-1, 0)]
     v_dir = [ (0, 1), (0, -1)]
+
+
 
 
     for hdx, hdy in h_dir:
@@ -87,22 +91,30 @@ def reconstruct_path(came_from, current):
 
 def a_star(grid_vertical, grid_horizontal, start, goal, seg_list, net):
     open_set = PriorityQueue()
-    open_set.push((start,None),0)
+    open_set.push((start,None, 0),0)
 
     came_from = {}  # To reconstruct the path
     g_score = {start: 0}
     f_score = {start: heuristic(start, goal)}
 
+    minimum_seg_length = 5
     while not open_set.is_empty():
-        current, current_dir = open_set.pop()
+        current, current_dir, seg_length = open_set.pop()
 
         # Check if we reached the goal
         if current == goal:
             return reconstruct_path(came_from, current)
 
-        for neighbor, direction in get_neighbors(current,grid_vertical, grid_horizontal, goal):
+        for neighbor, direction in get_neighbors(current,grid_vertical, grid_horizontal, goal, current_dir, seg_length):
             direction_change_penalty = 0 if current_dir is None or current_dir == direction else 1
+            if current_dir is None or current_dir == direction:
 
+                new_seg_length = seg_length + 1
+            else:
+
+                if seg_length < minimum_seg_length:
+                    continue
+                new_seg_length = 1
             tentative_g_score = g_score[current] + 1 + direction_change_penalty  # Cost from start to neighbor
 
             if neighbor not in g_score or tentative_g_score < g_score[neighbor]:
@@ -110,7 +122,7 @@ def a_star(grid_vertical, grid_horizontal, start, goal, seg_list, net):
                 came_from[neighbor] = current
                 g_score[neighbor] = tentative_g_score
                 f_score[neighbor] = tentative_g_score + heuristic(neighbor, goal)
-                open_set.push((neighbor,direction), f_score[neighbor])
+                open_set.push((neighbor,direction, new_seg_length), f_score[neighbor])
 
     return None  # No path found
 
@@ -135,40 +147,37 @@ def check_start_end_port(con, port_scaled_coords: dict):
 
     return start, designated_ports[0], end, designated_ports[1]
 
+def _lock_or_unlock_port(grid_vertical, grid_horizontal, start, end, lock):
 
 
+    for y in range(end[1] - 2, end[1] + 3):
+        for x in range(end[0] - 3, end[0] + 4):
+            grid_vertical[y][x] = lock
+            grid_horizontal[y][x] = lock
+
+    for y in range(start[1] - 2, start[1] + 3):
+        for x in range(start[0] - 3, start[0] + 4):
+            grid_horizontal[y][x] = lock
+            grid_vertical[y][x] = lock
+
+    return grid_vertical, grid_horizontal
 def initiate_astar(grid, connections, local_connections, objects, port_scaled_coords, net_list):
     logger.info("Starting Initiate A*")
-    grid_vertical = grid
-    grid_horizontal = grid
+    grid_vertical = [row[:] for row in grid[:]]
+    grid_horizontal = [row[:] for row in grid[:]]
     local_paths = {}
     path = {}
     seg_list = {}
 
     done = []
 
-    spliced_list = local_connections + connections
+    #spliced_list = local_connections + connections
 
     for net in net_list.applicable_nets:
 
-        #Adds local net to grid
-        if len(done) > 0:
-            for n in done:
+        for con in connections:
 
-                if net in n.net:
-                    for segment in seg_list[n.net]:
-                        if segment[0][0] - segment[-1][0] == 0:
-
-                            for x, y in segment:
-                                grid_vertical[y][x] = 1
-
-                        elif segment[0][1] - segment[-1][1] == 0:
-                            for x, y in segment:
-                                grid_horizontal[y][x] = 1
-
-        for con in spliced_list:
-
-            if con.net == net or ("local" in con.net and con not in done):
+            if con.net == net:
 
                 done.append(con)
                 start_found = False
@@ -180,6 +189,7 @@ def initiate_astar(grid, connections, local_connections, objects, port_scaled_co
                     if not isinstance(obj, (Pin, CircuitCell)) and obj.number_id == int(con.start_comp_id):
                         start = (int(port_scaled_coords[con.start_comp_id + con.start_area[0]][0]), int(port_scaled_coords[con.start_comp_id + con.start_area[0]][2]))
                         start_found = True
+
 
                     if not isinstance(obj, (Pin, CircuitCell)) and obj.number_id == int(con.end_comp_id):
                         end = (int(port_scaled_coords[con.end_comp_id + con.end_area[0]][0]), int(port_scaled_coords[con.end_comp_id + con.end_area[0]][2]))
@@ -198,13 +208,16 @@ def initiate_astar(grid, connections, local_connections, objects, port_scaled_co
 
                 #Start and end point walkable
 
-                grid_vertical[start[1]][start[0]] = grid_vertical[end[1]][end[0]] = grid_horizontal[start[1]][start[0]] = grid_horizontal[end[1]][end[0]] =0
+
+
+                grid_vertical, grid_horizontal = _lock_or_unlock_port(grid_vertical, grid_horizontal, start, end, 0)
+
+
                 p = a_star(grid_vertical, grid_horizontal, start, end, seg_list, con.net)
                 path.setdefault(con.net, []).append((con.start_comp_id+con.start_area + "_"+con.end_comp_id+con.end_area, p))
 
                 #Start and end point not walkable
-                grid_vertical[start[1]][start[0]] = grid_vertical[end[1]][end[0]] = grid_horizontal[start[1]][
-                    start[0]] = grid_horizontal[end[1]][end[0]] = 1
+                grid_vertical, grid_horizontal = _lock_or_unlock_port(grid_vertical, grid_horizontal, start, end, 1)
 
 
                 seg = segment_path(p)
@@ -217,26 +230,31 @@ def initiate_astar(grid, connections, local_connections, objects, port_scaled_co
 
 
 
-        print(f"Done with net: {net}")
+
         for seg in seg_list[net]:
             #vertical
             if seg[0][0] - seg[-1][0] == 0:
 
-                for x, y in seg:
-                    for i in range(-50, 51):
-                        grid_vertical[y][x+i] = 1
-                print("Updated Grid Vertical")
+                # for x, y in seg:
+                #     for i in range(-1, 2):
+                #         grid_vertical[y][x+i] = 1
+                for x,y in seg:
+                    grid_vertical[y][x] = 0.2
 
 
             #horizontal
-            elif seg[0][1] - seg[-1][1] == 0:
-                for x, y in seg:
-                    for i in range(-29,30):
-                        grid_horizontal[y+i][x] = 1
-                print("Updated Grid Horizontal")
+            if seg[0][1] - seg[-1][1] == 0:
+                # for x, y in seg:
+                #                 #     for i in range(-1,2):
+                #                 #         grid_horizontal[y+i][x] = 1
 
+                for x,y in seg:
+                    grid_horizontal[y][x] = 0.9
 
-    print("Path")
-    print(path)
+    heatmap_test(grid_vertical, "vertical")
+    heatmap_test(grid_horizontal, "horizontal")
+
+    print("Net4")
+    print(seg_list["net4"])
     logger.info("Finished A*")
     return path, seg_list

@@ -1,6 +1,7 @@
 from curses.textpad import rectangle
 
 import numpy as np
+import matplotlib.pyplot as plt
 class Nets:
     applicable_nets:list
     pin_nets: list
@@ -10,14 +11,21 @@ class Nets:
         self.pin_nets = pin_nets
 
 def main():
+    grid = [
+        [0, 1, 0, 1],
+        [1, 0, 1, 0],
+        [0, 1, 0, 1],
+        [1, 0, 1, 0]
+    ]
 
-    rectangles = [[6, 7, 4, 1]]
-    start_real = (3,2)
-    start_x, start_y = start_real if not rectangles else (rectangles[-1][2], rectangles[-1][3])
+    # Convert the nested list into a NumPy array
+    data = np.array(grid)
 
-    print(start_x)
-    print(start_y)
-
+    # Display the grid as an image
+    plt.imshow(data, cmap='viridis', interpolation='nearest')
+    plt.colorbar()  # Optional: adds a color bar legend
+    plt.title("Grid Visualization")
+    plt.show()
 
 
 
