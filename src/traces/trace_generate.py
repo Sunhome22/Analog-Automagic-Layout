@@ -281,6 +281,7 @@ def _write_traces(rectangles, trace_width, index, name):
     a_trace.instance = a_trace.__class__.__name__
     a_trace.number_id = index
     a_trace.name = name
+    a_trace.cell = "COMP" # quick hack
 
     for i, rect in enumerate(rectangles):
         if rect.segment[0] == rect.segment[2]:  # Vertical

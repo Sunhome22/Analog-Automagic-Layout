@@ -154,8 +154,7 @@ def initiate_astar(grid, connections, local_connections, components, port_scaled
     seg_list = {}
 
     done = []
-
-    spliced_list = local_connections + connections
+    spliced_list = connections + local_connections
 
     for net in net_list.applicable_nets:
         for con in spliced_list:
@@ -193,7 +192,14 @@ def initiate_astar(grid, connections, local_connections, components, port_scaled
                 grid[start[1]][start[0]] = 0
                 grid[end[1]][end[0]] = 0
                 p = a_star(grid, start, end, seg_list, con.net)
+
                 path.setdefault(con.net, []).append((con.start_comp_id+con.start_area + "_"+con.end_comp_id+con.end_area, p))
+
+
+
+                # Handling of local connections
+                #path.setdefault(con.net, []).append(
+                #    (con.start_comp_id + con.start_area + "_" + con.end_comp_id + con.end_area, p))
 
                 #Start and end point not walkable
                 grid[start[1]][start[0]] = 1

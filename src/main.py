@@ -29,9 +29,12 @@ from draw_result.draw import draw_result
 from linear_optimization.linear_optimization import *
 from grid.generate_grid import *
 from connections.connections import *
+from traces import trace_generator
 from traces.trace_generate import initiate_write_traces
 from drc.drc_checker import DRCchecking
 from lvs.lvs_checker import LVSchecking
+
+from traces.trace_generator import *
 import os
 # ========================================== Set-up classes and constants ==============================================
 
@@ -49,7 +52,6 @@ class ComponentLibrary:
 class ProjectProperties:
     directory: str
     top_cell_name: str
-    sub_cell_names: list[str]
     lib_name: str
     component_libraries: list[ComponentLibrary]
 
@@ -62,7 +64,6 @@ misc_lib = ComponentLibrary(name="AALMISC", path="~/aicex/ip/jnw_bkle_sky130A/de
 
 project_properties = ProjectProperties(directory="~/aicex/ip/jnw_bkle_sky130A",
                                        top_cell_name="JNW_BKLE",
-                                       sub_cell_names=["COMP"],
                                        lib_name="JNW_BKLE_SKY130A",
                                        component_libraries=[atr_lib, tr_lib, misc_lib])
 
@@ -72,66 +73,75 @@ project_properties = ProjectProperties(directory="~/aicex/ip/jnw_bkle_sky130A",
 def main():
     # Create a logger
     logger = get_a_logger(__name__)
+    run = False
 
-    # Extracts component information from SPICE file
-    #components = SPICEparser(project_properties=project_properties)
+    if run:
+        # Extracts component information from SPICE file
+        components = SPICEparser(project_properties=project_properties)
 
-    # Updates component attributes with information from it's associated Magic files
-    #components = MagicComponentsParser(project_properties=project_properties, components=components.get()).get()
+        # Updates component attributes with information from it's associated Magic files
+        components = MagicComponentsParser(project_properties=project_properties, components=components.get()).get()
 
-    # Figures out connection types, nets and components that can overlap
-    #single_connection, local_connections, connections, overlap_components, net_list = (
-    #    ConnectionLists(components=components).initialize_connections())
+        # Figures out connection types, nets and components that can overlap
+        single_connection, local_connections, connections, overlap_components, net_list = (
+            ConnectionLists(components=components).initialize_connections())
 
-    # Finds optimal structural component placements from solving LP problem
-    #components = LinearOptimizationSolver(
-    #    components=components,
-    #    connections=connections,
-    #    local_connections=local_connections,
-    #    grid_size=grid_size,
-    #    overlap_components=overlap_components
-    #).solve_placement()
+        # Finds optimal structural component placements from solving LP problem
+        components = LinearOptimizationSolver(
+            components=components,
+            connections=connections,
+            local_connections=local_connections,
+            grid_size=grid_size,
+            overlap_components=overlap_components
+        ).solve_placement()
 
-    # Generates grid
-    #grid, port_scaled_coords, used_area, port_coord = GridGeneration(
-    #    grid_size=grid_size,
-    #    components=components,
-    #    scale_factor=scale_factor
-    #).initialize_grid_generation()
-
-
-    #path, seg_list = initiate_astar(
-    #    grid=grid,
-    #    connections=connections,
-    #    local_connections=local_connections,
-    #    components=components,
-    #    port_scaled_coords=port_scaled_coords,
-    #    net_list=net_list)
-
-    #components = initiate_write_traces(components, path, port_coord, seg_list, scale_factor, net_list)
-    #path = []
-    #logger.info("Starting Drawing results")
-    # path true:
-    #draw_result(grid_size, components, path, used_area, scale_factor, draw_name)
-    #logger.info("Finished Drawing results")
-
-    #save_to_json(objects=components, file_name="src/json_converter/components.json")
-    components = load_from_json(file_name="src/json_converter/components.json")
-
-    # Create layout
-    MagicLayoutCreator(project_properties=project_properties, components=components)
-
-    # DRC handling
-    # DRCchecking(project_properties=project_properties)
-
-    # LVS handling
-    LVSchecking(project_properties=project_properties)
+        # Generates grid
+        grid, port_scaled_coords, used_area, port_coord = GridGeneration(
+            grid_size=grid_size,
+            components=components,
+            scale_factor=scale_factor
+        ).initialize_grid_generation()
 
 
-    # Debug log of all components
-    logger.debug(f"Components registered: ")
-    for component in components:
-        logger.debug(f"- {component}")
+        path, seg_list = initiate_astar(
+            grid=grid,
+            connections=connections,
+           local_connections=local_connections,
+            components=components,
+            port_scaled_coords=port_scaled_coords,
+            net_list=net_list)
+
+        components = initiate_write_traces(components, path, port_coord, seg_list, scale_factor, net_list)
+        MagicLayoutCreator(project_properties=project_properties, components=components)
+
+    else:
+        #path = []
+        #logger.info("Starting Drawing results")
+        # path true:
+        #draw_result(grid_size, components, path, used_area, scale_factor, draw_name)
+        #logger.info("Finished Drawing results")
+
+        #save_to_json(objects=components, file_name="src/json_converter/components.json")
+
+        components = load_from_json(file_name="src/json_converter/components.json")
+
+        # Update components with trace information
+        components = TraceGenerator(components=components, project_properties=project_properties).get()
+
+        # Create layout
+        MagicLayoutCreator(project_properties=project_properties, components=components)
+
+        # DRC handling
+        # DRCchecking(project_properties=project_properties)
+
+        # LVS handling
+        # LVSchecking(project_properties=project_properties)
+
+
+        # Debug log of all components
+        logger.debug(f"Components registered: ")
+        for component in components:
+            logger.debug(f"- {component}")
 
 
 if __name__ == '__main__':

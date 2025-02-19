@@ -29,7 +29,6 @@ class MagicLayoutCreator:
     def __init__(self, project_properties, components):
         self.project_properties = project_properties
         self.project_top_cell_name = project_properties.top_cell_name
-        self.project_sub_cell_names = project_properties.sub_cell_names
         self.project_lib_name = project_properties.lib_name
         self.project_directory = project_properties.directory
         self.component_libraries = project_properties.component_libraries
@@ -84,6 +83,7 @@ class MagicLayoutCreator:
 
     def __place_box(self, layer: str, area: RectArea):
         """Adds a box to the list of magic file lines"""
+
         self.magic_file_lines.extend([
             f"<< {layer} >>",
             f"rect {area.x1} {area.y1} {area.x2} {area.y2}"
@@ -104,7 +104,7 @@ class MagicLayoutCreator:
         }
         metal_layer_list = ['locali', 'm1', 'm2', 'm3', 'm4']
 
-        metal_layers = self.get_inbetween_metal_layers(start_layer=start_layer, end_layer=end_layer,
+        metal_layers = self.__get_inbetween_metal_layers(start_layer=start_layer, end_layer=end_layer,
                                                        metal_layer_list=metal_layer_list)
         via_layers = self.__get_inbetween_via_layers(start_layer=start_layer, end_layer=end_layer, via_map=via_map)
 
@@ -185,6 +185,9 @@ class MagicLayoutCreator:
                                             y1=port.area.y1 + component.transform_matrix.f,
                                             y2=port.area.y2 + component.transform_matrix.f)
 
+                        # Hinder placement of connection points to bulks since they are always connected in 'locali'
+                        if port.type == "B" or segment.layer == 'locali':
+                            continue
 
                         # Check for overlap between the port and the segment and add vias accordingly
                         if not (segment.area.x2 < port_pos.x1 or segment.area.x1 > port_pos.x2 or
@@ -198,7 +201,7 @@ class MagicLayoutCreator:
                                              f"between layer '{port.layer}' and '{segment.layer}' "
                                              f"for trace net '{trace_net.name}' of '{trace_net.cell}'")
 
-    def get_inbetween_metal_layers(self, start_layer: str, end_layer: str, metal_layer_list: list):
+    def __get_inbetween_metal_layers(self, start_layer: str, end_layer: str, metal_layer_list: list):
         """Gets all metal layers, including start and end layer, and deals with if their positions are
             effectively swapped in the metal layer list"""
 
@@ -310,30 +313,6 @@ class MagicLayoutCreator:
             "<< checkpaint >>",
             "rect 0 0 0 0"  # Rectangle completely covering everything in the cell. TBD!
         ])
-    def __generate_magic_files(self):
-        cells = self.project_sub_cell_names + [self.project_top_cell_name]
-
-        for cell in cells:
-
-            cell_name = ""
-            cell_components = []
-            self.magic_file_lines = []
-            self.total_functional_components_added = 0
-            self.total_connection_points_added = 0
-            self.total_trace_nets_added = 0
-            self.total_vias_added = 0
-            self.total_circuit_cells_added = 0
-
-            for component in self.components:
-                if component.cell == cell:
-                    cell_name = component.cell
-                    cell_components.append(component)
-
-            # Create file if component list is not empty
-            if cell_components:
-                self.__magic_file_creator(components=cell_components, file_name=cell_name)
-
-        self.logger.info("Process complete!")
 
     def __magic_file_creator(self, components, file_name):
         self.__magic_file_top_template()
@@ -387,6 +366,46 @@ class MagicLayoutCreator:
                          f"Connection Points: {self.total_connection_points_added} | "
                          f"Trace nets: {self.total_trace_nets_added} | Vias: {self.total_vias_added} | "
                          f"Circuit cells: {self.total_circuit_cells_added}")
+
+    def __generate_magic_files(self):
+        sub_cells = []
+
+        # Retrieve all sub cells
+        for component in self.components:
+            if isinstance(component, CircuitCell):
+                sub_cells.append(component.name)
+
+        cells = sub_cells + [self.project_top_cell_name]
+
+        # Iterate over found cells and generate .mag files for each one
+        for cell in cells:
+            cell_name = None
+            cell_components = []
+            self.magic_file_lines = []
+            self.total_functional_components_added = 0
+            self.total_connection_points_added = 0
+            self.total_trace_nets_added = 0
+            self.total_vias_added = 0
+            self.total_circuit_cells_added = 0
+
+            for component in self.components:
+                if component.cell == "":
+                    self.logger.error(f"{component.name} is missing a cell name")
+                    continue
+
+                if component.cell != cell:
+                    continue
+
+                if cell_name is None:
+                    cell_name = component.cell
+
+                cell_components.append(component)
+
+            # Create file if component list is not empty
+            self.__magic_file_creator(components=cell_components, file_name=cell_name)
+
+        self.logger.info("Process complete!")
+
 
 
 
