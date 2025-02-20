@@ -159,5 +159,15 @@ class CircuitCell:
     cell: str = field(default_factory=str)
     schematic_connections: dict = field(default_factory=dict)
 
+    transform_matrix: TransformMatrix = field(default_factory=TransformMatrix)  # | dict
+    bounding_box: RectArea = field(default_factory=RectArea)  # | dict
 
+    # Handling of JSON file input
+    def __post_init__(self):
+
+        if isinstance(self.bounding_box, dict):
+            self.bounding_box = RectArea(**self.bounding_box)
+
+        if isinstance(self.transform_matrix, dict):
+            self.transform_matrix = TransformMatrix(**self.transform_matrix)
 

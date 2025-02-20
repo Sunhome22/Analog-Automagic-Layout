@@ -87,13 +87,9 @@ def main():
     con_obj = ConnectionLists(components)
     single_connection, local_connections, connections, overlap_dict, net_list = con_obj.initialize_connections()
 
-    print("Single Connections")
-    print(single_connection)
-    print("local_connections")
-    print(local_connections)
-    print("connections")
-    print(connections)
-
+    for con in connections:
+        if con.net == "net2":
+            print(con)
 
 
    # result = LinearOptimizationSolver(components, connections, local_connections, grid_size, overlap_dict, time_limit)

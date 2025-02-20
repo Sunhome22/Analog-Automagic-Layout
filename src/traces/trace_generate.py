@@ -34,6 +34,10 @@ class NewSegment:
         self.lost_points = lost_points
 
 
+
+
+
+
 def direction(p1, p2):
     dx = p2[0] - p1[0]
     dy = p2[1] - p1[1]
@@ -285,7 +289,6 @@ def _eliminate_rectangles(rectangles, trace_width):
                 checked_rectangle.append(path_rectangle_2.segment)
 
 
-
         for x in sorted(index_list, reverse=True) :
             del rectangles_duplicate[x]
 
@@ -297,6 +300,8 @@ def _eliminate_rectangles(rectangles, trace_width):
             if path_rectangle_1.segment != rectangles[-1].segment:
                 checked_rectangle.append(path_rectangle_1.segment)
 
+            if rectangles[-1].segment in checked_rectangle:
+                rectangle_list.append(rectangles[-1])
 
         elif path_rectangle_1.segment not in checked_rectangle:
 
@@ -304,8 +309,7 @@ def _eliminate_rectangles(rectangles, trace_width):
             checked_rectangle.append(path_rectangle_1.segment)
 
 
-    print("Rectangles length")
-    print(len(rectangle_list))
+
     return rectangle_list
 
 def _write_traces(rectangles, trace_width, index, name):
@@ -405,26 +409,30 @@ def initiate_write_traces(objects, all_paths,  port_coord, seg_list, scale_facto
 
     for index, net in enumerate(all_paths):
         #if not net == "local:net1" and not net =="local:net2" and not net == "local:VDD" and not net == "local:net3" and not net == "local:VSS" and not net == "local:I_BIAS" and not net == "local:net4" and not net == "net4" and not net == "net3" and not net == "net1":
-        #if not net == "net1" and not net == "net2" and not net == "net3" :
+        if not net == "net1" and not net == "net3" and not net == "net4" :
       #  if not net == "net3" and not net == "net1" and not net == "net2" and not net == "net4":
 
-        net_rectangles = []
-        for name, path in all_paths[net]:
-            segments = segment_path(path)
-            if len(segments) > 0:
-                net_rectangles.extend(map_path_to_rectangles(segments, port_coord, name))
-        print("Stuck at _delete_duplicate")
-        #net_rectangles = _delete_duplicate_rectangles(net_rectangles)
-        print("Stuck at _eliminate_rectangles")
-        #net_rectangles = _eliminate_rectangles(net_rectangles, trace_width)
-        print("Stuck at _check_for_lost_points")
-        #net_rectangles =_check_for_lost_points(net_rectangles)
+            net_rectangles = []
+            for name, path in all_paths[net]:
+                segments = segment_path(path)
+                if len(segments) > 0:
+                    net_rectangles.extend(map_path_to_rectangles(segments, port_coord, name))
+            print(f"Length of net rectangles before delete duplicate: {len(net_rectangles)}")
+            print("Stuck at _delete_duplicate")
+            net_rectangles = _delete_duplicate_rectangles(net_rectangles)
 
-       # test.append(net_rectangles)
+            print(f"Length of net rectangles before eliminate rectangles: {len(net_rectangles)}")
+            net_rectangles = _eliminate_rectangles(net_rectangles, trace_width)
+            print("Stuck at _check_for_lost_points")
+            print(f"Length of net rectangles before lost points: {len(net_rectangles)}")
+            net_rectangles =_check_for_lost_points(net_rectangles)
+            print(f"Length of net rectangles end: {len(net_rectangles)}")
 
-        #if test_redo == True:
-            #net_rectangles = _eliminate_rectangles(net_rectangles, trace_width)
-        objects.append(_write_traces(net_rectangles, trace_width, index, net))
+           # test.append(net_rectangles)
+
+            #if test_redo == True:
+                #net_rectangles = _eliminate_rectangles(net_rectangles, trace_width)
+            objects.append(_write_traces(net_rectangles, trace_width, index, net))
 
       #  _check_net_constraint_vioaltion(test)
 

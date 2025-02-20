@@ -97,7 +97,7 @@ def a_star(grid_vertical, grid_horizontal, start, goal, seg_list, net):
     g_score = {start: 0}
     f_score = {start: heuristic(start, goal)}
 
-    minimum_seg_length = 5
+    minimum_seg_length = 10
     while not open_set.is_empty():
         current, current_dir, seg_length = open_set.pop()
 
@@ -147,16 +147,20 @@ def check_start_end_port(con, port_scaled_coords: dict):
 
     return start, designated_ports[0], end, designated_ports[1]
 
-def _lock_or_unlock_port(grid_vertical, grid_horizontal, start, end, lock):
+def _lock_or_unlock_port(grid_vertical, grid_horizontal, start, start_port, end, end_port, lock):
 
+    h = 2
+    w = 2 if end_port == "G" else 4
 
-    for y in range(end[1] - 2, end[1] + 3):
-        for x in range(end[0] - 3, end[0] + 4):
+    for y in range(end[1]-h, end[1]+h+1):
+        for x in range(end[0]-w, end[0]+w+1):
             grid_vertical[y][x] = lock
             grid_horizontal[y][x] = lock
 
-    for y in range(start[1] - 2, start[1] + 3):
-        for x in range(start[0] - 3, start[0] + 4):
+
+    w = 2 if start_port == "G" else 4
+    for y in range(start[1] - h, start[1] +h+1):
+        for x in range(start[0] - w, start[0] + w +1):
             grid_horizontal[y][x] = lock
             grid_vertical[y][x] = lock
 
@@ -171,7 +175,6 @@ def initiate_astar(grid, connections, local_connections, objects, port_scaled_co
 
     done = []
 
-    #spliced_list = local_connections + connections
 
     for net in net_list.applicable_nets:
 
@@ -210,14 +213,14 @@ def initiate_astar(grid, connections, local_connections, objects, port_scaled_co
 
 
 
-                grid_vertical, grid_horizontal = _lock_or_unlock_port(grid_vertical, grid_horizontal, start, end, 0)
+                grid_vertical, grid_horizontal = _lock_or_unlock_port(grid_vertical, grid_horizontal, start, con.start_area, end, con.end_area, 0)
 
 
                 p = a_star(grid_vertical, grid_horizontal, start, end, seg_list, con.net)
                 path.setdefault(con.net, []).append((con.start_comp_id+con.start_area + "_"+con.end_comp_id+con.end_area, p))
 
                 #Start and end point not walkable
-                grid_vertical, grid_horizontal = _lock_or_unlock_port(grid_vertical, grid_horizontal, start, end, 1)
+                grid_vertical, grid_horizontal = _lock_or_unlock_port(grid_vertical, grid_horizontal, start, con.start_area, end,con.end_area, 1)
 
 
                 seg = segment_path(p)
@@ -235,26 +238,25 @@ def initiate_astar(grid, connections, local_connections, objects, port_scaled_co
             #vertical
             if seg[0][0] - seg[-1][0] == 0:
 
-                # for x, y in seg:
-                #     for i in range(-1, 2):
-                #         grid_vertical[y][x+i] = 1
-                for x,y in seg:
-                    grid_vertical[y][x] = 0.2
+                for x, y in seg:
+                    for i in range(-1, 2):
+                        grid_vertical[y][x+i] = 1
+                # for x,y in seg:
+                #     grid_vertical[y][x] = 0.2
 
 
             #horizontal
             if seg[0][1] - seg[-1][1] == 0:
-                # for x, y in seg:
-                #                 #     for i in range(-1,2):
-                #                 #         grid_horizontal[y+i][x] = 1
+                for x, y in seg:
+                    for i in range(-1,2):
+                        grid_horizontal[y+i][x] = 1
 
-                for x,y in seg:
-                    grid_horizontal[y][x] = 0.9
+                # for x,y in seg:
+                #     grid_horizontal[y][x] = 0.9
 
     heatmap_test(grid_vertical, "vertical")
     heatmap_test(grid_horizontal, "horizontal")
 
-    print("Net4")
-    print(seg_list["net4"])
+
     logger.info("Finished A*")
     return path, seg_list
