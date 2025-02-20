@@ -96,6 +96,7 @@ def main():
         ).solve_placement()
 
         # Generates grid
+
         grid, port_scaled_coords, used_area, port_coord = GridGeneration(
             grid_size=grid_size,
             components=components,

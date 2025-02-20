@@ -19,3 +19,11 @@
 - Why are we using the transistor we are?
 
 - Would be nice if A* logged out what trace it is currently solving
+
+- Alf has been told by Carsten to always connect bulk to VSS/VDD
+
+## Notes on running multiple cells
+- Spice parsing and magic layout parsing will happen once also. 
+- MagicLayoutCreator is going to be ran once on all components.
+- Trace generator will run multiple times for each cell. There shall only be one CircuitCell in it every time.
+- A lot of filtering is gonna be happening here. 
