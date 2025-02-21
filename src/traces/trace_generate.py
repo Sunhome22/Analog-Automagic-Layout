@@ -23,14 +23,16 @@ from circuit.circuit_components import Trace, RectAreaLayer, RectArea
 from json_tool.json_converter import save_to_json
 from magic.magic_layout_creator import MagicLayoutCreator
 
+from circuit.circuit_components import CircuitCell, Pin, RectArea
+
 lost_start_end_points = []
 @dataclass
-class NewSegment:
-    segment:list
+class TraceRectangle:
+    area: RectArea
     lost_points:list
 
-    def __init__(self, segment:list, lost_points:list):
-        self.segment = segment
+    def __init__(self, area:RectArea, lost_points:list):
+        self.area = area
         self.lost_points = lost_points
 
 
@@ -85,6 +87,7 @@ def segment_path(path):
     if current_segment:
         segments.append(current_segment)
 
+
     return segments
 def calculate_segment_length(segment):
     return sum(
@@ -105,9 +108,8 @@ def calculate_directional_lengths(path_segments):
 
     length_x = 0
     length_y = 0
-
+    print(path_segments)
     for segment in path_segments:
-        segment = segment
         if segment[0][0] == segment[-1][0]:  # Vertical segment
             length_y += abs(segment[-1][1] - segment[0][1])  # Vertical length
         elif segment[0][1] == segment[-1][1]:  # Horizontal segment
@@ -122,7 +124,7 @@ def calculate_directional_lengths(path_segments):
     return length_x, length_y
 
 
-def map_path_to_rectangles(path_segments, port_coord, connection_name):
+def map_segments_to_rectangles(path_segments, port_coord, connection_name):
     rectangles = []
     length_x, length_y = calculate_directional_lengths(path_segments)
 
@@ -137,7 +139,7 @@ def map_path_to_rectangles(path_segments, port_coord, connection_name):
 
 
     for segment in path_segments:
-        start_x, start_y = start_real if not rectangles else (rectangles[-1].segment[2], rectangles[-1].segment[3])
+        start_x, start_y = start_real if not rectangles else (rectangles[-1].area.x2, rectangles[-1].area.y2)
 
         if segment[0][0] == segment[-1][0]:  # Vertical segment
             segment_length = segment[-1][1] - segment[0][1]
@@ -145,9 +147,9 @@ def map_path_to_rectangles(path_segments, port_coord, connection_name):
             end_x = start_x
             if end_real[1] > start_real[1]:
                 end_y = start_real[1] + (end_real[1] - start_real[1]) * (cumulative_y / length_y)
-    #        elif end_real[1] == start_real[1]:
-     #           minimum_segment_length = minimum_segment_length * (-1 if segment_length < 0 else 1)
-      #          end_y = start_real[1] + minimum_segment_length * (cumulative_y / length_y)
+            # elif end_real[1] == start_real[1]:
+            #     minimum_segment_length = minimum_segment_length * (-1 if segment_length < 0 else 1)
+            #     end_y = start_real[1] + minimum_segment_length * (cumulative_y / length_y)
             else:
                 end_y = start_real[1] - (start_real[1]- end_real[1]) * (cumulative_y / length_y)
         elif segment[0][1] == segment[-1][1]:  # Horizontal segment
@@ -161,10 +163,62 @@ def map_path_to_rectangles(path_segments, port_coord, connection_name):
 
         else:
             print("ERROR: Invalid segment, must be either vertical or horizontal")
+            return
 
-        rectangles.append(NewSegment(segment = [start_x, start_y, end_x, end_y], lost_points=[]))
+        rectangles.append(Segment(area=RectArea(x1=start_x, y1=start_y, x2=end_x, y2=end_y), lost_points=[]))
 
     return rectangles
+
+def _adjust_rectangle_port_overlap(rec, name, objects, trace_width):
+    pattern = r"^(\d+)([A-Za-z])_(\d+)([A-Za-z])$"
+
+    match = re.match(pattern, name)
+    if match:
+        start_object_id = match.group(1)
+        start_object_port = match.group(2)
+        end_object_id = match.group(3)
+        end_object_port = match.group(4)
+    else:
+
+        #Should be logger
+        print("[ERROR] INVALID PATH NAME")
+        return
+    for obj in objects:
+        if not isinstance(obj, (Pin, CircuitCell)):
+            for ports in obj.layout_ports:
+                conditions = {
+                    "start" : [obj.number_id == start_object_id, ports.type == start_object_port],
+                    "end" :   [obj.number_id == end_object_id, ports.type == end_object_port]
+                    }
+                if all(conditions["start"]) or all(conditions["end"]):
+                    continue
+
+                for seg in rec:
+                    conditions = {
+                        "vertical_x" : [ports.area.x1 <= seg.segment[0] <= ports.area.x2,
+                                      ports.area.x1 <= seg.segment[0] - trace_width/2 <= ports.area.x2,
+                                      ports.area.x1 <= seg.segment[0] + trace_width/2 <= ports.area.x2],
+
+                        "vertical_y" : [ports.area.y1 >= min(seg.segment[1], seg.segment[3]) and ports.area.y2<= max(seg.segment[1], seg.segment[3]),
+                                        ports.area.y1 <= seg.segment[1] <= ports.area.y2,
+                                        ports.area.y1 <= seg.segment[3] <= ports.area.y2
+                                        ],
+
+                        "horizontal_x" : [ports.area.y1 <= seg.segment[1] <= ports.area.y2,
+                                      ports.area.y1 <= seg.segment[1] - trace_width/2 <= ports.area.y2,
+                                      ports.area.y1 <= seg.segment[1] + trace_width/2 <= ports.area.y2],
+
+                        "horizontal_y" : [ports.area.x1 >= min(seg.segment[0], seg.segment[2]) and ports.area.x2<= max(seg.segment[0], seg.segment[2]),
+                                        ports.area.x1 <= seg.segment[0] <= ports.area.x2,
+                                        ports.area.x1 <= seg.segment[2] <= ports.area.x2
+                                        ]
+                    }
+
+                    if seg.area.x1 - seg.area.x2 == 0: # vertical
+                        print("Vertical")
+
+
+    return
 
 
 def trace_stretch(switch_bool: bool, trace_width: int, index: int, length: int) -> tuple[int,int]:
@@ -201,7 +255,8 @@ def trace_stretch(switch_bool: bool, trace_width: int, index: int, length: int) 
 
 def _rectangle_consolidation(rectangles, segment_direction):
 
-    seg = NewSegment(segment = [],lost_points = [])
+    seg = TraceRectangle(area = RectArea(), lost_points=[])
+
     if segment_direction == "h":
 
         min_x = min(min(sublist.segment[0], sublist.segment[2]) for sublist in rectangles)
@@ -403,7 +458,7 @@ def _check_illegal_trace(trace_list):
     print("False")
     return False
 
-def initiate_write_traces(objects, all_paths,  port_coord, seg_list, scale_factor, net_list):
+def initiate_write_traces(objects, all_paths,  port_coordinates, seg_list, scale_factor, net_list):
     trace_width = 30
     test = []
 
@@ -416,7 +471,10 @@ def initiate_write_traces(objects, all_paths,  port_coord, seg_list, scale_facto
             for name, path in all_paths[net]:
                 segments = segment_path(path)
                 if len(segments) > 0:
-                    net_rectangles.extend(map_path_to_rectangles(segments, port_coord, name))
+                    rec = map_segments_to_rectangles(segments, port_coordinates, name)
+
+                    net_rectangles.extend(_adjust_rectangle_port_overlap(rec, name, objects))
+
             print(f"Length of net rectangles before delete duplicate: {len(net_rectangles)}")
             print("Stuck at _delete_duplicate")
             net_rectangles = _delete_duplicate_rectangles(net_rectangles)
