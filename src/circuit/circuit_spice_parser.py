@@ -203,13 +203,16 @@ class SPICEparser:
         if re.match(r'^[^*.]', spice_line):
             line_words = spice_line.split()
 
+            # Remove first letter string containing group + name as a general rule
+            line_words[0] = line_words[0][1:]
+
             # Component name = characters after underscore if underscore is present
             filtered_name = (lambda x: re.search(r'_(.*)', x).group(1) if re.search(
                 r'_(.*)', x) else x)(line_words[0])
 
-            # Component group = characters until underscore if underscore is present
-            filtered_group = (lambda x: re.search(r'^[^_]+(?=_)', x).group() if re.search(
-                r'^[^_]+(?=_)', x) else None)(line_words[0])
+            # Component group = characters until underscore if underscore is present. First char is skipped
+            filtered_group = (lambda x: re.search(r'^[^_]+(?=_)', x[:]).group() if re.search(
+                r'^[^_]+(?=_)', x[1:]) else None)(line_words[0])
 
             # Component category and type
             component_category, component_type = self.__get_component_category_and_type(filtered_name)

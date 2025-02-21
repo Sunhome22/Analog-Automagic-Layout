@@ -13,11 +13,11 @@
             "VSS": "net6"
         },
         "transform_matrix": {
-            "a": 0,
+            "a": 1,
             "b": 0,
             "c": 0,
             "d": 0,
-            "e": 0,
+            "e": 1,
             "f": 0
         },
         "bounding_box": {
@@ -66,12 +66,12 @@
         "type": "ipin",
         "name": "VIP",
         "layout": {
-            "layer": "",
+            "layer": "locali",
             "area": {
                 "x1": 0,
                 "y1": 0,
-                "x2": 0,
-                "y2": 0
+                "x2": 100,
+                "y2": 100
             }
         }
     },
@@ -82,12 +82,12 @@
         "type": "ipin",
         "name": "VIN",
         "layout": {
-            "layer": "",
+            "layer": "locali",
             "area": {
                 "x1": 0,
                 "y1": 0,
-                "x2": 0,
-                "y2": 0
+                "x2": 100,
+                "y2": 100
             }
         }
     },
@@ -98,12 +98,12 @@
         "type": "opin",
         "name": "VO",
         "layout": {
-            "layer": "",
+            "layer": "locali",
             "area": {
                 "x1": 0,
                 "y1": 0,
-                "x2": 0,
-                "y2": 0
+                "x2": 100,
+                "y2": 100
             }
         }
     },
@@ -114,12 +114,12 @@
         "type": "ipin",
         "name": "I_BIAS",
         "layout": {
-            "layer": "",
+            "layer": "locali",
             "area": {
                 "x1": 0,
                 "y1": 0,
-                "x2": 0,
-                "y2": 0
+                "x2": 100,
+                "y2": 100
             }
         }
     },

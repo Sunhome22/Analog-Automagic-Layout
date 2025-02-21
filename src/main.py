@@ -115,14 +115,14 @@ def main():
         components = initiate_write_traces(components, path, port_coord, seg_list, scale_factor, net_list)
         MagicLayoutCreator(project_properties=project_properties, components=components)
 
+        save_to_json(objects=components, file_name="src/json_converter/components.json")
+
     else:
         #path = []
         #logger.info("Starting Drawing results")
         # path true:
         #draw_result(grid_size, components, path, used_area, scale_factor, draw_name)
         #logger.info("Finished Drawing results")
-
-        #save_to_json(objects=components, file_name="src/json_converter/components.json")
 
         components = load_from_json(file_name="src/json_converter/components.json")
 
@@ -136,7 +136,7 @@ def main():
         # DRCchecking(project_properties=project_properties)
 
         # LVS handling
-        # LVSchecking(project_properties=project_properties)
+        LVSchecking(project_properties=project_properties)
 
 
         # Debug log of all components

@@ -21,6 +21,13 @@
 - Would be nice if A* logged out what trace it is currently solving
 
 - Alf has been told by Carsten to always connect bulk to VSS/VDD
+- Carsten is going to add nsubstratendiff and pstubstreatepdiff layers to cic that I can use
+- Place nsubstratendiff and pstubstreatepdiff around a group of transistors and place locali metal on top and bottom. 
+  Afterwards connet it to VSS or VDD.
+- It is very possible to have multiple VDDs. That should just be added to the ring outside. 
+- All rails should be in m1 so you can connect from either below or above
+- You need to write an "x" at the front of names in the schematic
+- Were the ports should be, could be a specification like top, bottom, left, right of cell.
 
 ## Notes on running multiple cells
 - Spice parsing and magic layout parsing will happen once also. 

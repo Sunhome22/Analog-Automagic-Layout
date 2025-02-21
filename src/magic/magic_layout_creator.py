@@ -21,6 +21,9 @@ from logger.logger import get_a_logger
 from collections import deque
 import tomllib
 
+from sympy.integrals.heurisch import components
+
+
 # ============================================== Magic layout creator ==================================================
 
 
@@ -272,7 +275,7 @@ class MagicLayoutCreator:
             (lib.path for lib in self.component_libraries if component.layout_library in lib.path), None)
 
         self.magic_file_lines.extend([
-            f"use {component.layout_name} {component.name} {self.current_component_library_path}",
+            f"use {component.layout_name} {component.group}_{component.name} {self.current_component_library_path}",
             f"transform {component.transform_matrix.a} {component.transform_matrix.b}"
             f" {component.transform_matrix.c} {component.transform_matrix.d}"
             f" {component.transform_matrix.e} {component.transform_matrix.f}",
@@ -284,10 +287,13 @@ class MagicLayoutCreator:
         self.logger.info(f"{component.instance} '{component.name} {component.layout_name}' "
                          f"placed with {component.transform_matrix}")
 
-    def __structural_component_creator(self, component):
+        if isinstance(component, Transistor):
+            print(component.group)
+
+    def __pin_component_creator(self, component):
         self.magic_file_lines.extend([
             f"flabel {component.layout.layer} s {component.layout.area.x1} {component.layout.area.y1} "
-            f"{component.layout.area.x2} {component.layout.area.y1} 0 FreeSans 400 0 0 0 {component.name}",
+            f"{component.layout.area.x2} {component.layout.area.y2} 0 FreeSans 400 0 0 0 {component.name}",
             f"port {component.number_id} nsew signal bidirectional"
         ])
 
@@ -337,11 +343,11 @@ class MagicLayoutCreator:
             if isinstance(component, CircuitCell):
                 self.__circuit_cell_component_creator(component=component)
 
-        # Place structural components
+        # Place pins
         self.magic_file_lines.append("<< labels >>")
         for component in components:
             if isinstance(component, Pin):
-                self.__structural_component_creator(component=component)
+                self.__pin_component_creator(component=component)
 
         # Properties
         self.magic_file_lines.extend([

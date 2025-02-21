@@ -61,7 +61,7 @@ class MagicComponentsParser:
                         for text_line in magic_file:
                             self.__get_component_bounding_box_info(text_line=text_line, component=component)
                             self.__get_component_port_info(text_line=text_line, component=component)
-                            self.__get_overlap_difference_for_cmos_transistors(text_line=text_line, component=component)
+                            self.__get_overlap_difference_for_atr_lib_cmos(text_line=text_line, component=component)
 
                         #self.__adjust_port_sizes_to_minimum(component=component)
                         self.__basic_component_is_valid_check(component=component)
@@ -74,7 +74,7 @@ class MagicComponentsParser:
 
         return self.components
 
-    def __get_overlap_difference_for_cmos_transistors(self, text_line: str, component: object):
+    def __get_overlap_difference_for_atr_lib_cmos(self, text_line: str, component: object):
 
         if component.type == "nmos" or component.type == "pmos":
 

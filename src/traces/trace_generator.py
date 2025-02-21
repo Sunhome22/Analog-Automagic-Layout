@@ -23,6 +23,7 @@ from collections import deque
 import tomllib
 import re
 from dataclasses import dataclass
+from collections import defaultdict
 
 
 # =============================================== Trace Generator ======================================================
@@ -33,9 +34,6 @@ class LocalConnection:
     connection_net_name_pair: list[str]
 
 class TraceGenerator:
-
-    RAIL_OFFSET = 150
-    RAIL_WIDTH = 80
 
     def __init__(self, project_properties, components):
         self.project_properties = project_properties
@@ -64,21 +62,19 @@ class TraceGenerator:
             if isinstance(component, CircuitCell):
                 self.circuit_cell = component
 
-        self.__generate_rails(rail_offset=self.RAIL_OFFSET, rail_width=self.RAIL_WIDTH)
-        self.__generate_local_traces_for_cmos_transistors()
+        self.__generate_rails()
+        self.__generate_local_traces_for_atr_lib_cmos()
+        self.__find_end_point_cmos_atr_lib_components()
 
-
-    def __generate_local_traces_for_cmos_transistors(self):
+    def __generate_local_traces_for_atr_lib_cmos(self):
         """This works with Carsten Wulff's ATR library. A certain port setup in layout is required"""
         for component in self.transistor_components:
             if component.schematic_connections['B'] == component.schematic_connections['S']:
-                self.__local_bulk_to_source_connection(component=component)
+                self.__local_bulk_to_source_connection_for_atr_lib_cmos(component=component)
             if component.schematic_connections['G'] == component.schematic_connections['D']:
-                self.__local_gate_to_drain_connection(component=component)
-            if component.schematic_connections['B'] == 'VDD':
-                self.__local_bulk_to_vdd_connection(component=component)
+                self.__local_gate_to_drain_connection_for_atr_lib_cmos(component=component)
 
-    def __local_bulk_to_source_connection(self, component: object):
+    def __local_bulk_to_source_connection_for_atr_lib_cmos(self, component: object):
         trace = TraceNet(name=f"{component.name}_B_S", cell=component.cell)
         trace.instance = trace.__class__.__name__
 
@@ -93,7 +89,7 @@ class TraceGenerator:
                                                                     y2=source_y2 + component.transform_matrix.f))]
         self.components.append(trace)
 
-    def __local_gate_to_drain_connection(self, component: object):
+    def __local_gate_to_drain_connection_for_atr_lib_cmos(self, component: object):
         trace = TraceNet(name=f"{component.name}_G_D", cell=component.cell)
         trace.instance = trace.__class__.__name__
 
@@ -110,45 +106,74 @@ class TraceGenerator:
         self.components.append(trace)
 
 
-    def __generate_trace_box_around_cell(self, name: str, layer: str, offset: int, width: int):
+    def __generate_trace_box_around_cell(self, component, offset: int, width: int, layer: str):
         """Width extends outwards from offset"""
 
-        trace = TraceNet(name=name, cell=self.circuit_cell.name)
+        trace = TraceNet(name=component.name, cell=self.circuit_cell.name)
         trace.instance = trace.__class__.__name__
 
-        trace.segments = [
-            # Left
-            RectAreaLayer(layer=layer, area=RectArea(x1=self.circuit_cell.bounding_box.x1 - offset - width,
-                                                     y1=self.circuit_cell.bounding_box.y1 - offset,
-                                                     x2=self.circuit_cell.bounding_box.x1 - offset,
-                                                     y2=self.circuit_cell.bounding_box.y2 + offset)),
-            # Right
-            RectAreaLayer(layer=layer, area=RectArea(x1=self.circuit_cell.bounding_box.x2 + offset,
-                                                     y1=self.circuit_cell.bounding_box.y1 - offset,
-                                                     x2=self.circuit_cell.bounding_box.x2 + offset + width,
-                                                     y2=self.circuit_cell.bounding_box.y2 + offset)),
-            # Top
-            RectAreaLayer(layer=layer, area=RectArea(x1=self.circuit_cell.bounding_box.x1 - offset - width,
-                                                     y1=self.circuit_cell.bounding_box.y2 + offset,
-                                                     x2=self.circuit_cell.bounding_box.x2 + offset + width,
-                                                     y2=self.circuit_cell.bounding_box.y2 + offset + width)),
-            # Bottom
-            RectAreaLayer(layer=layer, area=RectArea(x1=self.circuit_cell.bounding_box.x1 - offset - width,
-                                                     y1=self.circuit_cell.bounding_box.y1 - offset - width,
-                                                     x2=self.circuit_cell.bounding_box.x2 + offset + width,
-                                                     y2=self.circuit_cell.bounding_box.y1 - offset))
-        ]
+        left_segment = RectArea(x1=self.circuit_cell.bounding_box.x1 - offset - width,
+                               y1=self.circuit_cell.bounding_box.y1 - offset,
+                               x2=self.circuit_cell.bounding_box.x1 - offset,
+                               y2=self.circuit_cell.bounding_box.y2 + offset)
+
+        right_segment = RectArea(x1=self.circuit_cell.bounding_box.x2 + offset,
+                                 y1=self.circuit_cell.bounding_box.y1 - offset,
+                                 x2=self.circuit_cell.bounding_box.x2 + offset + width,
+                                 y2=self.circuit_cell.bounding_box.y2 + offset)
+
+        top_segment = RectArea(x1=self.circuit_cell.bounding_box.x1 - offset - width,
+                               y1=self.circuit_cell.bounding_box.y2 + offset,
+                               x2=self.circuit_cell.bounding_box.x2 + offset + width,
+                               y2=self.circuit_cell.bounding_box.y2 + offset + width)
+
+        bottom_segment = RectArea(x1=self.circuit_cell.bounding_box.x1 - offset - width,
+                                  y1=self.circuit_cell.bounding_box.y1 - offset - width,
+                                  x2=self.circuit_cell.bounding_box.x2 + offset + width,
+                                  y2=self.circuit_cell.bounding_box.y1 - offset)
+
+        trace.segments = [RectAreaLayer(layer=layer, area=left_segment),
+                          RectAreaLayer(layer=layer, area=right_segment),
+                          RectAreaLayer(layer=layer, area=top_segment),
+                          RectAreaLayer(layer=layer, area=bottom_segment)]
+
         self.components.append(trace)
+        component.layout = RectAreaLayer(layer=layer, area=top_segment)
 
-    def __generate_rails(self, rail_offset, rail_width):
-        self.__generate_trace_box_around_cell(name='VDD_RAIL', layer='locali', offset=rail_offset, width=rail_width)
-        self.__generate_trace_box_around_cell(name='VSS_RAIL', layer='m1', offset=rail_offset, width=rail_width)
+    def __generate_rails(self):
+        # Automated adding of VDD/VSS ring nets around cell based on found pins
+        rail_number = 0
+        for component in self.structural_components:
+            if re.search(r".*VDD.*", component.name) or re.search(r".*VSS.*", component.name):
+                self.__generate_trace_box_around_cell(component, offset=150 + 100*rail_number, width=50, layer="m1")
+                rail_number += 1
+
+    def __find_end_point_cmos_atr_lib_components(self):
+        """Truly cursed naming scheme here"""
+        groups = []
+        for component in self.transistor_components:
+            if component.group:
+                groups.append(component.group)
+
+        grouped = defaultdict(list)
+        for group in groups:
+            grouped[group].append(group)
+
+        for group_lists in list(grouped.values()):
+            for group_name in group_lists:
+                for component in self.transistor_components:
+                    if component.group == group_name:
+                        print(component.transform_matrix)
 
 
-    def __local_bulk_to_vdd_connection(self, component):
-        for component in self.components:
-            if component.name == 'VDD_RAIL':
-                print(component)
+
+    #def __place_atr_lib_end_pieces(self, component):
+        #print(component)
+
+        # Place CMOS ATR library end-pieces
+        #for component in components:
+        #    if isinstance(component, Transistor):
+        #        self.__place_atr_lib_end_pieces(component=component)
 
     def get(self):
         return self.components
