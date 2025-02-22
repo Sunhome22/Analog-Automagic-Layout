@@ -33,6 +33,7 @@ class LocalConnection:
     connection_type_pair: list[str]
     connection_net_name_pair: list[str]
 
+
 class TraceGenerator:
 
     def __init__(self, project_properties, components):
@@ -64,7 +65,7 @@ class TraceGenerator:
 
         self.__generate_rails()
         self.__generate_local_traces_for_atr_lib_cmos()
-        self.__find_end_point_cmos_atr_lib_components()
+        self.__get_end_points_for_cmos_atr_lib_components()
 
     def __generate_local_traces_for_atr_lib_cmos(self):
         """This works with Carsten Wulff's ATR library. A certain port setup in layout is required"""
@@ -105,7 +106,6 @@ class TraceGenerator:
                                                                       y2=gate_y2 + component.transform_matrix.f))]
         self.components.append(trace)
 
-
     def __generate_trace_box_around_cell(self, component, offset: int, width: int, layer: str):
         """Width extends outwards from offset"""
 
@@ -113,9 +113,9 @@ class TraceGenerator:
         trace.instance = trace.__class__.__name__
 
         left_segment = RectArea(x1=self.circuit_cell.bounding_box.x1 - offset - width,
-                               y1=self.circuit_cell.bounding_box.y1 - offset,
-                               x2=self.circuit_cell.bounding_box.x1 - offset,
-                               y2=self.circuit_cell.bounding_box.y2 + offset)
+                                y1=self.circuit_cell.bounding_box.y1 - offset,
+                                x2=self.circuit_cell.bounding_box.x1 - offset,
+                                y2=self.circuit_cell.bounding_box.y2 + offset)
 
         right_segment = RectArea(x1=self.circuit_cell.bounding_box.x2 + offset,
                                  y1=self.circuit_cell.bounding_box.y1 - offset,
@@ -148,32 +148,86 @@ class TraceGenerator:
                 self.__generate_trace_box_around_cell(component, offset=150 + 100*rail_number, width=50, layer="m1")
                 rail_number += 1
 
-    def __find_end_point_cmos_atr_lib_components(self):
-        """Truly cursed naming scheme here"""
-        groups = []
+    def __get_end_points_for_cmos_atr_lib_components(self):
+        component_group_sets = defaultdict(list)
+        min_y_components = list(defaultdict(list))
+        max_y_components = list(defaultdict(list))
+
+        # Make sets of component groups
         for component in self.transistor_components:
             if component.group:
-                groups.append(component.group)
+                component_group_sets[component.group].append(component)
 
-        grouped = defaultdict(list)
-        for group in groups:
-            grouped[group].append(group)
+        # Iterate over each set and their components within and get max- and min y position for each.
+        for group, components in component_group_sets.items():
+            components_y_placement = defaultdict(list)
 
-        for group_lists in list(grouped.values()):
-            for group_name in group_lists:
-                for component in self.transistor_components:
-                    if component.group == group_name:
-                        print(component.transform_matrix)
+            for component in components:
+                components_y_placement[component.transform_matrix.f].append(component)
 
+            min_y_components.append(min(components_y_placement.items()))
+            max_y_components.append(max(components_y_placement.items()))
 
+        # Check for overlap of y-minimum components
+        prev_y_min = None
+        y_min_overlap_components_to_remove = []
 
-    #def __place_atr_lib_end_pieces(self, component):
-        #print(component)
+        for i, (y, components) in enumerate(min_y_components):
 
-        # Place CMOS ATR library end-pieces
-        #for component in components:
-        #    if isinstance(component, Transistor):
-        #        self.__place_atr_lib_end_pieces(component=component)
+            if prev_y_min is not None:
+                for component in components:
+                    if abs(y - prev_y_min) <= component.bounding_box.y2:
+
+                        # Take the maximum of the last two components that compared a y-distance to be
+                        # less/equal to the bounding box.
+                        y_min_overlap_components_to_remove.append(max(min_y_components[i - 1], min_y_components[i],
+                                                                      key=lambda distance: (distance[0])))
+            prev_y_min = y
+
+        # Check for overlap of y-maximum components
+        prev_y_max = None
+        y_max_overlap_components_to_remove = []
+
+        for i, (y, components) in enumerate(max_y_components):
+
+            if prev_y_max is not None:
+                for component in components:
+                    # Maybe there are some edge case here!
+                    if abs(y - prev_y_max) <= component.bounding_box.y2:
+                        # Take the minimum of the last two components that compared a y-distance to be
+                        # less/equal to the bounding box.
+                        y_max_overlap_components_to_remove.append(min(max_y_components[i - 1], max_y_components[i],
+                                                                      key=lambda distance: (distance[0])))
+            prev_y_max = y
+
+        # Filter out y-minimum components that have been found to be overlapping
+        for _, overlap_components in y_min_overlap_components_to_remove:
+            min_y_components = [(y, [component for component in components if component not in overlap_components])
+                                for y, components in min_y_components]
+        min_y_components = [(y, components) for y, components in min_y_components if components]  # remove empty tuples
+
+        # Filter out y-maximum components that have been found to be overlapping
+        for _, overlap_components in y_max_overlap_components_to_remove:
+            max_y_components = [(y, [component for component in components if component not in overlap_components])
+                                for y, components in max_y_components]
+        max_y_components = [(y, components) for y, components in max_y_components if components]  # remove empty tuples
+
+        # Update transistor components with end point information
+        for component in self.components:
+            if isinstance(component, Transistor):
+
+                for _, components in min_y_components:
+                    for comp in components:
+                        if comp == component:
+                            component.group_end_point = "bottom"
+
+                for _, components in max_y_components:
+                    for comp in components:
+                        if comp == component:
+                            if component.group_end_point == "bottom":
+                                component.group_end_point = "top/bottom"
+                            else:
+                                component.group_end_point = "top"
 
     def get(self):
         return self.components

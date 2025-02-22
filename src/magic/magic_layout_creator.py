@@ -20,9 +20,7 @@ from magic.magic_drawer import get_pixel_boxes_from_text, get_black_white_pixel_
 from logger.logger import get_a_logger
 from collections import deque
 import tomllib
-
-from sympy.integrals.heurisch import components
-
+import re
 
 # ============================================== Magic layout creator ==================================================
 
@@ -287,8 +285,21 @@ class MagicLayoutCreator:
         self.logger.info(f"{component.instance} '{component.name} {component.layout_name}' "
                          f"placed with {component.transform_matrix}")
 
+        # Handle end points for Carsten's ATR cmos transistors
+        # WORK IN PROGRESS
         if isinstance(component, Transistor):
-            print(component.group)
+            if component.group_end_point == "top":
+                layout_name = re.sub(r".{3}$", "TAP", component.layout_name)
+
+                self.magic_file_lines.extend([
+                    f"use {layout_name} {component.group}_{component.name}_TAP {self.current_component_library_path}",
+                    f"transform {component.transform_matrix.a} {component.transform_matrix.b}"
+                    f" {component.transform_matrix.c} {component.transform_matrix.d}"
+                    f" {component.transform_matrix.e} {component.transform_matrix.f + component.bounding_box.y2}",
+                    f"box {component.bounding_box.x1} {component.bounding_box.y1} {component.bounding_box.x2}"
+                    f" {component.bounding_box.y2} - 160"
+                ])
+                # Try to extract information here in the future from file
 
     def __pin_component_creator(self, component):
         self.magic_file_lines.extend([

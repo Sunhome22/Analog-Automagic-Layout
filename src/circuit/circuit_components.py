@@ -111,8 +111,8 @@ class FunctionalComponent:
 @dataclass
 class Transistor(FunctionalComponent):
     overlap_distance: OverlapDistance = field(default_factory=OverlapDistance)
-    group_end_point: str = field(default_factory=str) # None, top, bottom
-
+    group_end_point: str = field(default_factory=str)  # None, top, bottom
+    group_end_point_bounding_box: RectArea | dict = field(default_factory=RectArea)
 
 @dataclass
 class Resistor(FunctionalComponent):

@@ -34,12 +34,12 @@
         "type": "ipin",
         "name": "VSS",
         "layout": {
-            "layer": "",
+            "layer": "m1",
             "area": {
-                "x1": 0,
-                "y1": 0,
-                "x2": 0,
-                "y2": 0
+                "x1": 724,
+                "y1": 3050,
+                "x2": 2276,
+                "y2": 3100
             }
         }
     },
@@ -50,12 +50,12 @@
         "type": "ipin",
         "name": "VDD",
         "layout": {
-            "layer": "",
+            "layer": "m1",
             "area": {
-                "x1": 0,
-                "y1": 0,
-                "x2": 0,
-                "y2": 0
+                "x1": 624,
+                "y1": 3150,
+                "x2": 2376,
+                "y2": 3200
             }
         }
     },
@@ -192,12 +192,13 @@
             "x1": 0,
             "y1": 0,
             "x2": 576,
-            "y2": 400
+            "y2": 401
         },
         "overlap_distance": {
             "x": 92,
             "y": 64
-        }
+        },
+        "group_end_point": "top/bottom"
     },
     {
         "instance": "Transistor",
@@ -273,7 +274,8 @@
         "overlap_distance": {
             "x": 92,
             "y": 64
-        }
+        },
+        "group_end_point": "top/bottom"
     },
     {
         "instance": "Transistor",
@@ -349,7 +351,8 @@
         "overlap_distance": {
             "x": 92,
             "y": 64
-        }
+        },
+        "group_end_point": "top"
     },
     {
         "instance": "Transistor",
@@ -425,7 +428,8 @@
         "overlap_distance": {
             "x": 92,
             "y": 64
-        }
+        },
+        "group_end_point": "top"
     },
     {
         "instance": "Transistor",
@@ -501,7 +505,8 @@
         "overlap_distance": {
             "x": 92,
             "y": 64
-        }
+        },
+        "group_end_point": "bottom"
     },
     {
         "instance": "Transistor",
@@ -577,7 +582,8 @@
         "overlap_distance": {
             "x": 92,
             "y": 64
-        }
+        },
+        "group_end_point": "bottom"
     },
     {
         "instance": "Transistor",
@@ -653,7 +659,8 @@
         "overlap_distance": {
             "x": 92,
             "y": 64
-        }
+        },
+        "group_end_point": "bottom"
     },
     {
         "instance": "Transistor",
@@ -729,7 +736,8 @@
         "overlap_distance": {
             "x": 92,
             "y": 64
-        }
+        },
+        "group_end_point": "bottom"
     },
     {
         "instance": "Transistor",
@@ -805,7 +813,8 @@
         "overlap_distance": {
             "x": 92,
             "y": 64
-        }
+        },
+        "group_end_point": "top"
     },
     {
         "instance": "Transistor",
@@ -881,7 +890,8 @@
         "overlap_distance": {
             "x": 92,
             "y": 64
-        }
+        },
+        "group_end_point": "top"
     },
     {
         "instance": "Transistor",
@@ -957,7 +967,8 @@
         "overlap_distance": {
             "x": 92,
             "y": 64
-        }
+        },
+        "group_end_point": ""
     },
     {
         "instance": "Transistor",
@@ -1033,6 +1044,7 @@
         "overlap_distance": {
             "x": 92,
             "y": 64
-        }
+        },
+        "group_end_point": ""
     }
 ]

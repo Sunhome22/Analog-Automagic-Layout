@@ -203,7 +203,11 @@ class SPICEparser:
         if re.match(r'^[^*.]', spice_line):
             line_words = spice_line.split()
 
-            # Remove first letter string containing group + name as a general rule
+            # Simple start letter convension check. A custom and unchecked convesion is being used for this project!
+            if not line_words[0][0] == "x":
+                self.logger.error(f"Are you naming components in your schematic correctly?")
+
+            # Remove first letter of string containing group + name as a general rule
             line_words[0] = line_words[0][1:]
 
             # Component name = characters after underscore if underscore is present
@@ -214,7 +218,6 @@ class SPICEparser:
             filtered_group = (lambda x: re.search(r'^[^_]+(?=_)', x[:]).group() if re.search(
                 r'^[^_]+(?=_)', x[1:]) else None)(line_words[0])
 
-            # Component category and type
             component_category, component_type = self.__get_component_category_and_type(filtered_name)
 
             # --- MOS Transistor ---

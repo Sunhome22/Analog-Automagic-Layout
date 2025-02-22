@@ -57,7 +57,6 @@ class MagicComponentsParser:
 
                 try:
                     with open(layout_file_path, "r") as magic_file:
-
                         for text_line in magic_file:
                             self.__get_component_bounding_box_info(text_line=text_line, component=component)
                             self.__get_component_port_info(text_line=text_line, component=component)

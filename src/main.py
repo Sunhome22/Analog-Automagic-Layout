@@ -115,7 +115,7 @@ def main():
         components = initiate_write_traces(components, path, port_coord, seg_list, scale_factor, net_list)
         MagicLayoutCreator(project_properties=project_properties, components=components)
 
-        save_to_json(objects=components, file_name="src/json_converter/components.json")
+        #save_to_json(objects=components, file_name="src/json_converter/components.json")
 
     else:
         #path = []
@@ -137,7 +137,7 @@ def main():
 
         # LVS handling
         LVSchecking(project_properties=project_properties)
-
+        #save_to_json(components, file_name="src/json_converter/components.json")
 
         # Debug log of all components
         logger.debug(f"Components registered: ")
