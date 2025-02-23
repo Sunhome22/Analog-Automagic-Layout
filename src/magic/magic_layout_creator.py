@@ -21,6 +21,7 @@ from logger.logger import get_a_logger
 from collections import deque
 import tomllib
 import re
+import libraries.atr_sky130a_lib as ATR
 
 # ============================================== Magic layout creator ==================================================
 
@@ -30,7 +31,7 @@ class MagicLayoutCreator:
     def __init__(self, project_properties, components):
         self.project_properties = project_properties
         self.project_top_cell_name = project_properties.top_cell_name
-        self.project_lib_name = project_properties.lib_name
+        self.project_top_lib_name = project_properties.top_lib_name
         self.project_directory = project_properties.directory
         self.component_libraries = project_properties.component_libraries
         self.current_component_library_path = None
@@ -46,7 +47,6 @@ class MagicLayoutCreator:
         self.VIA_PADDING = self.config["magic_layout_creator"]["VIA_PADDING"]
         self.logger = get_a_logger(__name__)
         self.__generate_magic_files()
-
 
     def __load_config(self, path="pyproject.toml"):
         try:
@@ -179,7 +179,6 @@ class MagicLayoutCreator:
                 for port in component.layout_ports:
                     for segment in trace_net.segments:
 
-
                         # Get port position in finished layout by adding transform matrix coordinates
                         port_pos = RectArea(x1=port.area.x1 + component.transform_matrix.c,
                                             x2=port.area.x2 + component.transform_matrix.c,
@@ -285,21 +284,9 @@ class MagicLayoutCreator:
         self.logger.info(f"{component.instance} '{component.name} {component.layout_name}' "
                          f"placed with {component.transform_matrix}")
 
-        # Handle end points for Carsten's ATR cmos transistors
-        # WORK IN PROGRESS
-        if isinstance(component, Transistor):
-            if component.group_end_point == "top":
-                layout_name = re.sub(r".{3}$", "TAP", component.layout_name)
-
-                self.magic_file_lines.extend([
-                    f"use {layout_name} {component.group}_{component.name}_TAP {self.current_component_library_path}",
-                    f"transform {component.transform_matrix.a} {component.transform_matrix.b}"
-                    f" {component.transform_matrix.c} {component.transform_matrix.d}"
-                    f" {component.transform_matrix.e} {component.transform_matrix.f + component.bounding_box.y2}",
-                    f"box {component.bounding_box.x1} {component.bounding_box.y1} {component.bounding_box.x2}"
-                    f" {component.bounding_box.y2} - 160"
-                ])
-                # Try to extract information here in the future from file
+        # ATR SKY130A LIB component handling
+        if any(lib for lib in self.component_libraries if re.search(r"ATR", lib.name)):
+            ATR.place_transistor_end_points_for_atr_sky130a_lib(self=self, component=component)
 
     def __pin_component_creator(self, component):
         self.magic_file_lines.extend([
@@ -373,7 +360,7 @@ class MagicLayoutCreator:
 
     def __write_magic_file(self, file_name):
         magic_file_path = os.path.expanduser(f"{self.project_directory}/design/"
-                                             f"{self.project_lib_name}/{file_name}.mag")
+                                             f"{self.project_top_lib_name}/{file_name}.mag")
 
         with open(magic_file_path, "w") as file:
             file.write("\n".join(self.magic_file_lines))

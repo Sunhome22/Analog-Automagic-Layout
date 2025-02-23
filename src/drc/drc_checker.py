@@ -45,7 +45,7 @@ class DRCchecking:
     def __init__(self, project_properties):
         self.current_file_directory = os.path.dirname(os.path.abspath(__file__))
         self.project_directory = project_properties.directory
-        self.project_lib_name = project_properties.lib_name
+        self.project_top_lib_name = project_properties.top_lib_name
         self.project_top_cell_name = project_properties.top_cell_name
         self.logger = get_a_logger(__name__)
 
@@ -67,15 +67,15 @@ class DRCchecking:
         work_directory = os.path.expanduser(f"{self.project_directory}/work/")
 
         try:
-            subprocess.run([f'magic ../design/{self.project_lib_name}/{self.project_top_cell_name}.mag '
+            subprocess.run([f'magic ../design/{self.project_top_lib_name}/{self.project_top_cell_name}.mag '
                             f'-dnull -noconsole < {tcl_script_path}'],
                            stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                            text=True, check=True, shell=True, cwd=work_directory)
-            self.logger.info(f"DRC log created from executing 'magic ../design/{self.project_lib_name}/"
+            self.logger.info(f"DRC log created from executing 'magic ../design/{self.project_top_lib_name}/"
                              f"{self.project_top_cell_name}.mag -dnull -noconsole < {tcl_script_path}'")
 
         except subprocess.CalledProcessError as e:
-            self.logger.error(f"'magic ../design/{self.project_lib_name}/{self.project_top_cell_name}.mag "
+            self.logger.error(f"'magic ../design/{self.project_top_lib_name}/{self.project_top_cell_name}.mag "
                               f"-dnull -noconsole < {tcl_script_path}' failed with {e.stderr}")
 
     def __read_drc_log(self) -> list:

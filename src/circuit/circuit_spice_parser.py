@@ -203,7 +203,7 @@ class SPICEparser:
         if re.match(r'^[^*.]', spice_line):
             line_words = spice_line.split()
 
-            # Simple start letter convension check. A custom and unchecked convesion is being used for this project!
+            # First letter convension check. A custom and unchecked convesion is being used for this project!
             if not line_words[0][0] == "x":
                 self.logger.error(f"Are you naming components in your schematic correctly?")
 

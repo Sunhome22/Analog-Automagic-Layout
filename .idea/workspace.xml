@@ -5,12 +5,24 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f7791a66-c797-4448-a536-1f4db186a974" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/Analog-Automagic-Layout.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Analog-Automagic-Layout.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/astar/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/circuit/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/connections/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/draw_result/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/drc/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/grid/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/json_converter/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/libraries/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/libraries/atr_sky130a_lib.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/linear_optimization/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/logger/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/lvs/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/magic/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/traces/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/circuit/circuit_components.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/circuit/circuit_components.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/circuit/circuit_spice_parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/circuit/circuit_spice_parser.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/json_converter/components.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/json_converter/components.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/drc/drc_checker.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/drc/drc_checker.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lvs/lvs_checker.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/lvs/lvs_checker.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/magic/magic_component_parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/magic/magic_component_parser.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/magic/magic_layout_creator.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/magic/magic_layout_creator.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.py" afterDir="false" />
@@ -43,18 +55,22 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Python.Test.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;Bjørn__v2&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/bjs1/Analog-Automagic-Layout/src/results&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Python.Test.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "Bjørn__v2",
+    "last_opened_file_path": "//wsl$/Ubuntu-22.04/home/bjorn/Analog-Automagic-Layout/src/traces",
+    "settings.editor.selected.configurable": "preferences.lookFeel"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="D:\bjs1\Analog-Automagic-Layout\src\results" />
+      <recent name="\\wsl$\Ubuntu-22.04\home\bjorn\Analog-Automagic-Layout\src\traces" />
+      <recent name="\\wsl$\Ubuntu-22.04\home\bjorn\Analog-Automagic-Layout\src\magic" />
+      <recent name="\\wsl$\Ubuntu-22.04\home\bjorn\Analog-Automagic-Layout\src\lvs" />
+      <recent name="\\wsl$\Ubuntu-22.04\home\bjorn\Analog-Automagic-Layout\src\logger" />
+      <recent name="\\wsl$\Ubuntu-22.04\home\bjorn\Analog-Automagic-Layout\src\linear_optimization" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="D:\bjs1\Analog-Automagic-Layout\src\results" />

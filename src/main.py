@@ -52,7 +52,7 @@ class ComponentLibrary:
 class ProjectProperties:
     directory: str
     top_cell_name: str
-    lib_name: str
+    top_lib_name: str
     component_libraries: list[ComponentLibrary]
 
 
@@ -64,7 +64,7 @@ misc_lib = ComponentLibrary(name="AALMISC", path="~/aicex/ip/jnw_bkle_sky130A/de
 
 project_properties = ProjectProperties(directory="~/aicex/ip/jnw_bkle_sky130A",
                                        top_cell_name="JNW_BKLE",
-                                       lib_name="JNW_BKLE_SKY130A",
+                                       top_lib_name="JNW_BKLE_SKY130A",
                                        component_libraries=[atr_lib, tr_lib, misc_lib])
 
 # ===================================================== Main ===========================================================

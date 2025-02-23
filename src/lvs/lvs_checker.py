@@ -31,7 +31,7 @@ class LVSchecking:
     def __init__(self, project_properties):
         self.current_file_directory = os.path.dirname(os.path.abspath(__file__))
         self.project_directory = project_properties.directory
-        self.project_lib_name = project_properties.lib_name
+        self.project_top_lib_name = project_properties.top_lib_name
         self.project_cell_name = project_properties.top_cell_name
         self.logger = get_a_logger(__name__)
         self.__run_lvs_checker()
