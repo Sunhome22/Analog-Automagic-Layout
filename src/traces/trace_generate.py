@@ -24,6 +24,7 @@ from json_tool.json_converter import save_to_json
 from magic.magic_layout_creator import MagicLayoutCreator
 
 from circuit.circuit_components import CircuitCell, Pin, RectArea
+from numpy.ma.core import append
 
 lost_start_end_points = []
 @dataclass
@@ -165,64 +166,185 @@ def map_segments_to_rectangles(path_segments, port_coord, connection_name):
             print("ERROR: Invalid segment, must be either vertical or horizontal")
             return
 
-        rectangles.append(Segment(area=RectArea(x1=start_x, y1=start_y, x2=end_x, y2=end_y), lost_points=[]))
+        rectangles.append(TraceRectangle(area=RectArea(x1=start_x, y1=start_y, x2=end_x, y2=end_y), lost_points=[]))
 
     return rectangles
 
-def _adjust_rectangle_port_overlap(rec, name, objects, trace_width):
-    pattern = r"^(\d+)([A-Za-z])_(\d+)([A-Za-z])$"
+def _adjust_rectangle_port_overlap(overlapping_port_rectangle, non_overlapping_rectangles, all_rectangles):
 
+    adjusted_rectangles = []
+    test = []
+    old_start = (None, None)
+    old_end = (None, None)
+    for obj, port, overlapping_rectangle in overlapping_port_rectangle:
+
+
+
+
+        old_start = (overlapping_rectangle.area.x1,overlapping_rectangle.area.y1)
+        old_end = (overlapping_rectangle.area.x2,overlapping_rectangle.area.y2)
+
+        rectangle_direction = 1 if overlapping_rectangle.area.x1 != overlapping_rectangle.area.x2 else 0
+
+        if rectangle_direction:
+            direction_change = obj.transform_matrix.f + port.area.y2 + 60 if obj.transform_matrix.f + (port.area.y2+port.area.y1) // 2 <= overlapping_rectangle.area.y1 else obj.transform_matrix.f+port.area.y1-60
+            overlapping_rectangle.area.y1 = overlapping_rectangle.area.y2 = direction_change
+        else:
+            direction_change = obj.transform_matrix.c + port.area.x2 + 60 if obj.transform_matrix.c + (port.area.x2 + port.area.x1) // 2 <= overlapping_rectangle.area.x1 else obj.transform_matrix.c + port.area.x1 - 60
+            overlapping_rectangle.area.x1 = overlapping_rectangle.area.x2 = direction_change
+        test.append(overlapping_rectangle)
+        adjusted_rectangles.append(overlapping_rectangle)
+        for rectangles in non_overlapping_rectangles:
+
+            adjustment_conditions = {
+                "start_point" : [
+                                 rectangles.area.x1 == old_start[0],
+                                 rectangles.area.y1 == old_start[1]
+                                 ],
+                "start_point2": [
+                    rectangles.area.x2 == old_start[0],
+                    rectangles.area.y2 == old_start[1]
+                ],
+                "end_point" : [
+                               rectangles.area.x2 == old_end[0],
+                               rectangles.area.y2 == old_end[1]
+                               ],
+                "end_point2": [
+                    rectangles.area.x1 == old_end[0],
+                    rectangles.area.y1 == old_end[1]
+                ]
+
+                              }
+
+
+
+            if all(adjustment_conditions["start_point"]):
+                rectangles.area.x1 = overlapping_rectangle.area.x1
+                rectangles.area.y1 = overlapping_rectangle.area.y1
+
+            if all(adjustment_conditions["start_point2"]):
+                rectangles.area.x2 = overlapping_rectangle.area.x1
+                rectangles.area.y2= overlapping_rectangle.area.y1
+
+            if all(adjustment_conditions["end_point"]):
+                rectangles.area.x2 = overlapping_rectangle.area.x2
+                rectangles.area.y2 = overlapping_rectangle.area.y2
+            if all(adjustment_conditions["end_point2"]):
+                rectangles.area.x1 = overlapping_rectangle.area.x2
+                rectangles.area.y1 = overlapping_rectangle.area.y2
+
+
+
+            adjusted_rectangles.append(rectangles)
+
+
+
+    return adjusted_rectangles
+
+
+
+
+
+
+
+
+def _check_rectangle_port_overlap(rectangles, name, objects, trace_width):
+    pattern = r"^(\d+)([A-Za-z])_(\d+)([A-Za-z])$"
+    non_overlapping_rectangles = []
+    overlapping_port_rectangles = []
     match = re.match(pattern, name)
+
     if match:
-        start_object_id = match.group(1)
+        start_object_id = int(match.group(1))
         start_object_port = match.group(2)
-        end_object_id = match.group(3)
+        end_object_id = int(match.group(3))
         end_object_port = match.group(4)
     else:
 
         #Should be logger
         print("[ERROR] INVALID PATH NAME")
         return
+
+
     for obj in objects:
         if not isinstance(obj, (Pin, CircuitCell)):
             for ports in obj.layout_ports:
-                conditions = {
+
+                allowed_overlap_conditions = {
                     "start" : [obj.number_id == start_object_id, ports.type == start_object_port],
-                    "end" :   [obj.number_id == end_object_id, ports.type == end_object_port]
+                    "end" :   [obj.number_id == end_object_id, ports.type == end_object_port],
+                    "B" :     [ports.type == "B", ports.type == "b"]
                     }
-                if all(conditions["start"]) or all(conditions["end"]):
+                if all(allowed_overlap_conditions["start"]) or all(allowed_overlap_conditions["end"]) or any(allowed_overlap_conditions["B"]):
                     continue
 
-                for seg in rec:
-                    conditions = {
-                        "vertical_x" : [ports.area.x1 <= seg.segment[0] <= ports.area.x2,
-                                      ports.area.x1 <= seg.segment[0] - trace_width/2 <= ports.area.x2,
-                                      ports.area.x1 <= seg.segment[0] + trace_width/2 <= ports.area.x2],
-
-                        "vertical_y" : [ports.area.y1 >= min(seg.segment[1], seg.segment[3]) and ports.area.y2<= max(seg.segment[1], seg.segment[3]),
-                                        ports.area.y1 <= seg.segment[1] <= ports.area.y2,
-                                        ports.area.y1 <= seg.segment[3] <= ports.area.y2
+                for seg in rectangles:
+                    overlap_conditions = {
+                        "vertical_x" : [
+                                        obj.transform_matrix.c + ports.area.x1 <= seg.area.x1 <= obj.transform_matrix.c + ports.area.x2,
+                                        obj.transform_matrix.c + ports.area.x1 <= seg.area.x1 - trace_width -30 <= obj.transform_matrix.c+ ports.area.x2,
+                                        obj.transform_matrix.c + ports.area.x1 <= seg.area.x1 + trace_width +30 <= obj.transform_matrix.c + ports.area.x2
                                         ],
 
-                        "horizontal_x" : [ports.area.y1 <= seg.segment[1] <= ports.area.y2,
-                                      ports.area.y1 <= seg.segment[1] - trace_width/2 <= ports.area.y2,
-                                      ports.area.y1 <= seg.segment[1] + trace_width/2 <= ports.area.y2],
+                        "vertical_y" : [
+                                        obj.transform_matrix.f + ports.area.y1 >= min(seg.area.y1, seg.area.y2) and obj.transform_matrix.f + ports.area.y2 <= max(seg.area.y1, seg.area.y2),
+                                        obj.transform_matrix.f + ports.area.y1 <= seg.area.y1 <= obj.transform_matrix.f + ports.area.y2,
+                                        obj.transform_matrix.f + ports.area.y1 <= seg.area.y2 <= obj.transform_matrix.f + ports.area.y2
+                                        ],
 
-                        "horizontal_y" : [ports.area.x1 >= min(seg.segment[0], seg.segment[2]) and ports.area.x2<= max(seg.segment[0], seg.segment[2]),
-                                        ports.area.x1 <= seg.segment[0] <= ports.area.x2,
-                                        ports.area.x1 <= seg.segment[2] <= ports.area.x2
-                                        ]
+                        "horizontal_y" : [
+                                          obj.transform_matrix.f + ports.area.y1 <= seg.area.y1 <= obj.transform_matrix.f + ports.area.y2,
+                                          obj.transform_matrix.f + ports.area.y1 <= seg.area.y1 - trace_width -30 <= obj.transform_matrix.f + ports.area.y2,
+                                          obj.transform_matrix.f + ports.area.y1 <= seg.area.y1 + trace_width +30 <= obj.transform_matrix.f + ports.area.y2
+                                          ],
+
+                        "horizontal_x" : [
+                                          obj.transform_matrix.c + ports.area.x1 >= min(seg.area.x1, seg.area.x2) and obj.transform_matrix.c + ports.area.x2<= max(seg.area.x1, seg.area.x2),
+                                          obj.transform_matrix.c + ports.area.x1 <= seg.area.x1 <= obj.transform_matrix.c + ports.area.x2,
+                                          obj.transform_matrix.c + ports.area.x1 <= seg.area.x2 <= obj.transform_matrix.c + ports.area.x2
+                                          ]
                     }
 
-                    if seg.area.x1 - seg.area.x2 == 0: # vertical
-                        print("Vertical")
+                    if (seg.area.x1 - seg.area.x2 == 0 and any(overlap_conditions["vertical_x"]) and any(overlap_conditions["vertical_y"])) or (seg.area.y1 - seg.area.y2 == 0 and any(overlap_conditions["horizontal_x"]) and any(overlap_conditions["horizontal_y"])):
+                            # print("overlap found")
+                            # print(obj.number_id)
+                            # print(obj.name)
+                            # print(f"Object placement: x: {obj.transform_matrix.c}, y: {obj.transform_matrix.f}")
+                            # print(f"Port: {ports.type} x1:{obj.transform_matrix.c + ports.area.x1}, y1:{obj.transform_matrix.f + ports.area.y1}, x2:{obj.transform_matrix.c + ports.area.x2}, y2:{obj.transform_matrix.f + ports.area.y2}")
+                            # print(name)
+                            # print(f"Rectangle x1:{seg.area.x1}, y1:{seg.area.y1}, x2:{seg.area.x2}, y2:{seg.area.y2}")
+
+                            overlapping_port_rectangles.append([obj, ports, seg])
 
 
-    return
+
+
+
+
+    if len(overlapping_port_rectangles) >= 1:
+
+        for rect in rectangles:
+            overlapping_bool = False
+            for overlapping_entry in overlapping_port_rectangles:
+
+                if overlapping_entry[2] == rect:
+                    overlapping_bool = True
+            if not overlapping_bool:
+                non_overlapping_rectangles.append(rect)
+
+        non_overlapping_rectangles = _adjust_rectangle_port_overlap(overlapping_port_rectangles, non_overlapping_rectangles, rectangles)
+
+
+
+
+
+    return non_overlapping_rectangles
+
+
 
 
 def trace_stretch(switch_bool: bool, trace_width: int, index: int, length: int) -> tuple[int,int]:
-
+    return 0,0
     if index == 0 and length == 1:
         return 0, 0
     elif index == 0 and length > 1:
@@ -240,66 +362,55 @@ def trace_stretch(switch_bool: bool, trace_width: int, index: int, length: int) 
     else:
         return -trace_width // 2, trace_width // 2
 
-#Denne ser ikke ut til å bli brukt
-# def _remove_duplicates(my_list: list) -> list:
-#     seen = set()
-#     unique_data = []
-#     for item in my_list:
-#         if not type(item) == float or int:
-#             # Normalize the tuple by sorting its elements
-#             normalized = tuple(sorted(item))
-#             if normalized not in seen:
-#                 seen.add(normalized)
-#                 unique_data.append(item)
-#     return unique_data
+
 
 def _rectangle_consolidation(rectangles, segment_direction):
 
-    seg = TraceRectangle(area = RectArea(), lost_points=[])
+    new_rectangle = TraceRectangle(area = RectArea(), lost_points=[])
 
     if segment_direction == "h":
 
-        min_x = min(min(sublist.segment[0], sublist.segment[2]) for sublist in rectangles)
-        max_x = max(max(sublist.segment[0], sublist.segment[2]) for sublist in rectangles)
-        y = rectangles[0].segment[1]
+        min_x = min(min(sublist.area.x1, sublist.area.x2) for sublist in rectangles)
+        max_x = max(max(sublist.area.x1, sublist.area.x2) for sublist in rectangles)
+        y = rectangles[0].area.y1
 
-        seg.segment.extend([min_x, y, max_x, y])
+        new_rectangle.area = RectArea(x1 = min_x, y1 = y, x2 = max_x, y2 = y)
 
         for sublist in rectangles:
 
-            if (sublist.segment[0], sublist.segment[1]) != (min_x, y) and (sublist.segment[0], sublist.segment[1]) != (max_x, y):
-                seg.lost_points.append((sublist.segment[0],sublist.segment[1]))
+            if (sublist.area.x1, sublist.area.y1) != (min_x, y) and (sublist.area.x1, sublist.area.y1) != (max_x, y):
+                new_rectangle.lost_points.append((sublist.area.x1,sublist.area.y1))
 
-            elif (sublist.segment[2], sublist.segment[3]) != (min_x, y) and (sublist.segment[2], sublist.segment[3]) != (max_x, y):
-                seg.lost_points.append((sublist.segment[2], sublist.segment[3]))
+            elif (sublist.area.x2, sublist.area.y2) != (min_x, y) and (sublist.area.x2, sublist.area.y2) != (max_x, y):
+                new_rectangle.lost_points.append((sublist.area.x2, sublist.area.y2))
 
             if len(sublist.lost_points) > 0:
-                seg.lost_points.extend(sublist.lost_points)
+                new_rectangle.lost_points.extend(sublist.lost_points)
 
 
     elif segment_direction == "v":
 
-        min_y = min(min(sublist.segment[1], sublist.segment[3]) for sublist in rectangles)
-        max_y = max(max(sublist.segment[1], sublist.segment[3]) for sublist in rectangles)
-        x = rectangles[0].segment[0]
+        min_y = min(min(sublist.area.y1, sublist.area.y2) for sublist in rectangles)
+        max_y = max(max(sublist.area.y1, sublist.area.y2) for sublist in rectangles)
+        x = rectangles[0].area.x1
 
-        seg.segment.extend([x, min_y, x, max_y])
+        new_rectangle.area = RectArea(x1=x, y1=min_y, x2=x, y2=max_y)
 
         for sublist in rectangles:
 
-            if (sublist.segment[0], sublist.segment[1]) != (x, min_y) and (sublist.segment[0], sublist.segment[1]) != (x, max_y):
-                seg.lost_points.append((sublist.segment[0], sublist.segment[1]))
+            if (sublist.area.x1, sublist.area.y1) != (x, min_y) and (sublist.area.x1, sublist.area.y1) != (x, max_y):
+                new_rectangle.lost_points.append((sublist.area.x1, sublist.area.y1))
 
-            elif (sublist.segment[2], sublist.segment[3]) != (x, min_y) and (sublist.segment[2], sublist.segment[3]) != (x, max_y):
-                seg.lost_points.append((sublist.segment[2], sublist.segment[3]))
+            elif (sublist.area.x2, sublist.area.y2) != (x, min_y) and (sublist.area.x2, sublist.area.y2) != (x, max_y):
+                new_rectangle.lost_points.append((sublist.area.x2, sublist.area.y2))
 
             if len(sublist.lost_points) > 0:
-                seg.lost_points.extend(sublist.lost_points)
+                new_rectangle.lost_points.extend(sublist.lost_points)
 
     else:
         print("[ERROR] Direction invalid")
 
-    return seg
+    return new_rectangle
 
 def _eliminate_rectangles(rectangles, trace_width):
     spacing_m2 = 14 #horizontal
@@ -316,32 +427,32 @@ def _eliminate_rectangles(rectangles, trace_width):
         temp_seg_list = [path_rectangle_1]
 
         #Change to .x1 and .x2
-        direction_rectangle_1 = "h" if path_rectangle_1.segment[0] != path_rectangle_1.segment[2] else "v"
+        direction_rectangle_1 = "h" if path_rectangle_1.area.x1 != path_rectangle_1.area.x2 else "v"
 
         for index, path_rectangle_2 in enumerate(rectangles_duplicate):
 
-            direction_rectangle_2 = "h" if path_rectangle_2.segment[0] != path_rectangle_2.segment[2] else "v"
+            direction_rectangle_2 = "h" if path_rectangle_2.area.x1 != path_rectangle_2.area.x2 else "v"
 
             conditions = {
                     "general" : [direction_rectangle_1==direction_rectangle_2,
-                                 path_rectangle_1.segment != path_rectangle_2.segment,
-                                 path_rectangle_1.segment not in checked_rectangle,
-                                 path_rectangle_2.segment not in checked_rectangle
+                                 path_rectangle_1.area != path_rectangle_2.area,
+                                 path_rectangle_1.area not in checked_rectangle,
+                                 path_rectangle_2.area not in checked_rectangle
                                  ],
                     "v" : [direction_rectangle_1 == "v",
-                           abs(path_rectangle_1.segment[0] - path_rectangle_2.segment[0]) <= (trace_width + spacing_m3 ),
-                           (min(int(path_rectangle_2.segment[1]), int(path_rectangle_2.segment[3])) <=int(path_rectangle_1.segment[1]) <= max(int(path_rectangle_2.segment[1]), int(path_rectangle_2.segment[3]))) or (min(int(path_rectangle_2.segment[1]), int(path_rectangle_2.segment[3])) <=int(path_rectangle_1.segment[3]) <= max(int(path_rectangle_2.segment[1]), int(path_rectangle_2.segment[3])))
+                           abs(path_rectangle_1.area.x1 - path_rectangle_2.area.x1) <= (trace_width + spacing_m3 ),
+                           (min(int(path_rectangle_2.area.y1), int(path_rectangle_2.area.y2)) <=int(path_rectangle_1.area.y1) <= max(int(path_rectangle_2.area.y1), int(path_rectangle_2.area.y2))) or (min(int(path_rectangle_2.area.y1), int(path_rectangle_2.area.y2)) <=int(path_rectangle_1.area.y2) <= max(int(path_rectangle_2.area.y1), int(path_rectangle_2.area.y2)))
                            ],
                     "h" : [direction_rectangle_1 == "h",
-                           abs(path_rectangle_1.segment[1] - path_rectangle_2.segment[1]) <= (trace_width + spacing_m2 ),
-                           (min(int(path_rectangle_2.segment[0]), int(path_rectangle_2.segment[2])) <=int(path_rectangle_1.segment[0]) <= max(int(path_rectangle_2.segment[0]), int(path_rectangle_2.segment[2]))) or (min(int(path_rectangle_2.segment[0]), int(path_rectangle_2.segment[2])) <=int(path_rectangle_1.segment[2]) <= max(int(path_rectangle_2.segment[0]), int(path_rectangle_2.segment[2])))
+                           abs(path_rectangle_1.area.y1 - path_rectangle_2.area.y1) <= (trace_width + spacing_m2 ),
+                           (min(int(path_rectangle_2.area.x1), int(path_rectangle_2.area.x2)) <=int(path_rectangle_1.area.x1) <= max(int(path_rectangle_2.area.x1), int(path_rectangle_2.area.x2))) or (min(int(path_rectangle_2.area.x1), int(path_rectangle_2.area.x2)) <=int(path_rectangle_1.area.x2) <= max(int(path_rectangle_2.area.x1), int(path_rectangle_2.area.x2)))
                            ]
                 }
             if all(conditions["general"]) and (all(conditions["h"]) or all(conditions["v"])):
 
                 temp_seg_list.append(path_rectangle_2)
                 index_list.append(index)
-                checked_rectangle.append(path_rectangle_2.segment)
+                checked_rectangle.append(path_rectangle_2.area)
 
 
         for x in sorted(index_list, reverse=True) :
@@ -352,16 +463,16 @@ def _eliminate_rectangles(rectangles, trace_width):
             rectangles_duplicate.append(rectangles[-1])
            # rectangle_list.append(rectangles[-1])
 
-            if path_rectangle_1.segment != rectangles[-1].segment:
-                checked_rectangle.append(path_rectangle_1.segment)
+            if path_rectangle_1.area != rectangles[-1].area:
+                checked_rectangle.append(path_rectangle_1.area)
 
-            if rectangles[-1].segment in checked_rectangle:
+            if rectangles[-1].area in checked_rectangle:
                 rectangle_list.append(rectangles[-1])
 
-        elif path_rectangle_1.segment not in checked_rectangle:
+        elif path_rectangle_1.area not in checked_rectangle:
 
             rectangle_list.append(path_rectangle_1)
-            checked_rectangle.append(path_rectangle_1.segment)
+            checked_rectangle.append(path_rectangle_1.area)
 
 
 
@@ -375,9 +486,9 @@ def _write_traces(rectangles, trace_width, index, name):
 
 
     for i, rect in enumerate(rectangles):
-        if rect.segment[0] == rect.segment[2]:  # Vertical
-            if rect.segment[1] > rect.segment[3]:  # Ensure y1 < y2
-                rect.segment[1], rect.segment[3] = rect.segment[3], rect.segment[1]
+        if rect.area.x1 == rect.area.x2:  # Vertical
+            if rect.area.y1 > rect.area.y2:  # Ensure y1 < y2
+                rect.area.y1, rect.area.y2 = rect.area.y2, rect.area.y1
                 switched_start_end = True
             else:
                 switched_start_end = False
@@ -387,15 +498,15 @@ def _write_traces(rectangles, trace_width, index, name):
             a_trace.segments.append(RectAreaLayer(
                 layer="m3",
                 area=RectArea(
-                    x1=int(rect.segment[0]) - trace_width // 2,  # Adding width to trace
-                    y1=int(rect.segment[1] + added_length_start),
-                    x2=int(rect.segment[2]) + trace_width // 2,
-                    y2=int(rect.segment[3] + added_length_end)
+                    x1=int(rect.area.x1) - trace_width // 2,  # Adding width to trace
+                    y1=int(rect.area.y1 + added_length_start),
+                    x2=int(rect.area.x2) + trace_width // 2,
+                    y2=int(rect.area.y2 + added_length_end)
                 )
             ))
-        elif rect.segment[1] == rect.segment[3]:  # Horizontal
-            if rect.segment[0] > rect.segment[2]:  # Ensure x1 < x2
-                rect.segment[0], rect.segment[2] = rect.segment[2], rect.segment[0]
+        elif rect.area.y1 == rect.area.y2:  # Horizontal
+            if rect.area.x1 > rect.area.x2:  # Ensure x1 < x2
+                rect.area.x1, rect.area.x2 = rect.area.x2, rect.area.x1
                 switched_start_end = True
             else:
                 switched_start_end = False
@@ -405,10 +516,10 @@ def _write_traces(rectangles, trace_width, index, name):
             a_trace.segments.append(RectAreaLayer(
                 layer="m2",
                 area=RectArea(
-                    x1=int(rect.segment[0] + added_length_start),
-                    y1=int(rect.segment[1]) - trace_width // 2,
-                    x2=int(rect.segment[2] + added_length_end),
-                    y2=int(rect.segment[3]) + trace_width // 2
+                    x1=int(rect.area.x1 + added_length_start),
+                    y1=int(rect.area.y1) - trace_width // 2,
+                    x2=int(rect.area.x2 + added_length_end),
+                    y2=int(rect.area.y2) + trace_width // 2
                 )
             ))
     return a_trace
@@ -418,19 +529,19 @@ def _check_for_lost_points(rectangles):
         for next_segment in rectangles:
             if seg != next_segment:
                 for lost_point in next_segment.lost_points:
-                    if (seg.segment[0], seg.segment[1]) == lost_point:
-                        if seg.segment[1]  == seg.segment[3] and next_segment.segment[0] == next_segment.segment[2]:
-                            seg.segment[0] = next_segment.segment[0]
-                        elif seg.segment[0] == seg.segment[2] and next_segment.segment[1] == next_segment.segment[3]:
-                            seg.segment[1] = next_segment.segment[1]
+                    if (seg.area.x1, seg.area.y1) == lost_point:
+                        if seg.area.y1  == seg.area.y2 and next_segment.area.x1 == next_segment.area.x2:
+                            seg.area.x1 = next_segment.area.x1
+                        elif seg.area.x1 == seg.area.x2 and next_segment.area.y1 == next_segment.area.y2:
+                            seg.area.y1 = next_segment.area.y1
 
 
 
-                    elif (seg.segment[2], seg.segment[3]) == lost_point:
-                        if seg.segment[1] == seg.segment[3] and next_segment.segment[0] == next_segment.segment[2]:
-                            seg.segment[2] = next_segment.segment[2]
-                        elif seg.segment[0] == seg.segment[2] and next_segment.segment[1] == next_segment.segment[3]:
-                            seg.segment[3] = next_segment.segment[3]
+                    elif (seg.area.x2, seg.area.y2) == lost_point:
+                        if seg.area.y1 == seg.area.y2 and next_segment.area.x1 == next_segment.area.x2:
+                            seg.area.x2 = next_segment.area.x2
+                        elif seg.area.x1 == seg.area.x2 and next_segment.area.y1 == next_segment.area.y2:
+                            seg.area.y2 = next_segment.area.y2
     # Må bruke segmentet og ikke lost_point direkte og finne ut av hvilket av de to punktene i next_segment som skal tas i bruk
 
     return rectangles
@@ -446,13 +557,13 @@ def _check_illegal_trace(trace_list):
     for seg in trace_list:
         for seg2 in trace_list:
             if seg != seg2:
-                if seg.segment[0] - seg.segment[2] == 0 and seg2.segment[0] - seg2.segment[2] == 0:
-                    if abs(seg.segment[0] - seg2.segment[0]) <= 60 and (min(seg2.segment[1], seg2.segment[3]) <= seg.segment[1] <= max(seg2.segment[1], seg2.segment[3]) or min(seg2.segment[1], seg2.segment[3]) <= seg.segment[3] <= max(seg2.segment[1], seg2.segment[3])):
+                if seg.area.x1 - seg.area.x2 == 0 and seg2.area.x1 - seg2.area.x2 == 0:
+                    if abs(seg.area.x1 - seg2.area.x1) <= 60 and (min(seg2.area.y1, seg2.area.y2) <= seg.area.y1 <= max(seg2.area.y1, seg2.area.y2) or min(seg2.area.y1, seg2.area.y2) <= seg.area.y2 <= max(seg2.area.y1, seg2.area.y2)):
                         print("True")
                         return True
 
-                elif seg.segment[1] - seg.segment[3] == 0 and seg2.segment[1] - seg2.segment[3] == 0:
-                    if abs(seg.segment[1] - seg2.segment[1]) <= 44 and (min(seg2.segment[0], seg2.segment[2]) <= seg.segment[0] <= max(seg2.segment[2], seg2.segment[0]) or min(seg2.segment[0], seg2.segment[2]) <= seg.segment[2] <= max(seg2.segment[2], seg2.segment[0])):
+                elif seg.area.y1 - seg.area.y2 == 0 and seg2.area.y1 - seg2.area.y2 == 0:
+                    if abs(seg.area.y1 - seg2.area.y1) <= 44 and (min(seg2.area.x1, seg2.area.x2) <= seg.area.x1 <= max(seg2.area.x2, seg2.area.x1) or min(seg2.area.x1, seg2.area.x2) <= seg.area.x2 <= max(seg2.area.x2, seg2.area.x1)):
                         print("True")
                         return True
     print("False")
@@ -469,21 +580,27 @@ def initiate_write_traces(objects, all_paths,  port_coordinates, seg_list, scale
 
             net_rectangles = []
             for name, path in all_paths[net]:
-                segments = segment_path(path)
-                if len(segments) > 0:
-                    rec = map_segments_to_rectangles(segments, port_coordinates, name)
 
-                    net_rectangles.extend(_adjust_rectangle_port_overlap(rec, name, objects))
+                segments = segment_path(path)
+
+
+                if len(segments) > 0:
+
+                    mapped_rectangles = map_segments_to_rectangles(segments, port_coordinates, name)
+
+
+                    net_rectangles.extend(_check_rectangle_port_overlap(mapped_rectangles, name, objects, trace_width))
+                    break
 
             print(f"Length of net rectangles before delete duplicate: {len(net_rectangles)}")
             print("Stuck at _delete_duplicate")
-            net_rectangles = _delete_duplicate_rectangles(net_rectangles)
+           # net_rectangles = _delete_duplicate_rectangles(net_rectangles)
 
             print(f"Length of net rectangles before eliminate rectangles: {len(net_rectangles)}")
-            net_rectangles = _eliminate_rectangles(net_rectangles, trace_width)
+           # net_rectangles = _eliminate_rectangles(net_rectangles, trace_width)
             print("Stuck at _check_for_lost_points")
             print(f"Length of net rectangles before lost points: {len(net_rectangles)}")
-            net_rectangles =_check_for_lost_points(net_rectangles)
+            #net_rectangles =_check_for_lost_points(net_rectangles)
             print(f"Length of net rectangles end: {len(net_rectangles)}")
 
            # test.append(net_rectangles)
