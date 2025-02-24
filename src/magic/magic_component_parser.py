@@ -77,8 +77,6 @@ class MagicComponentsParser:
 
         return self.components
 
-
-
     def __get_component_bounding_box_info(self, text_line: str, component: object):
 
         if re.search(r'string FIXED_BBOX', text_line):

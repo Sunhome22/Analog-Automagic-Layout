@@ -193,3 +193,4 @@ def place_transistor_end_points_for_atr_sky130a_lib(self, component):
                 f"box {component.bounding_box.x1} {component.bounding_box.y1} {component.bounding_box.x2}"
                 f" {component.bounding_box.y2} - 160"
             ])
+

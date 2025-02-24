@@ -8,6 +8,7 @@
 - [x] Make config file for user input variables for linear optimization
 - [ ] Number ID begins at zero again when dealing with trace nets. Maybe fix?
 - [ ] There is likely some bug with connection points still, resulting in to many being created on top of each other.
+- [ ] Fix <<>> and rect in .mag file. Reduce <<>> count
 
 
 ## Notes
@@ -28,6 +29,7 @@
 - All rails should be in m1 so you can connect from either below or above
 - You need to write an "x" at the front of names in the schematic
 - Were the ports should be, could be a specification like top, bottom, left, right of cell.
+- Is it safe to say that all components always will have a FIXED_BBOX parameter?
 
 ## Notes on running multiple cells
 - Spice parsing and magic layout parsing will happen once also. 
