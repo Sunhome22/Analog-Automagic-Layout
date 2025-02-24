@@ -107,12 +107,17 @@ class FunctionalComponent:
         if isinstance(self.transform_matrix, dict):
             self.transform_matrix = TransformMatrix(**self.transform_matrix)
 
+        if isinstance(self.group_endpoint_bounding_box, dict):
+            self.group_endpoint_bounding_box = RectArea(**self.group_endpoint_bounding_box)
+
 
 @dataclass
 class Transistor(FunctionalComponent):
     overlap_distance: OverlapDistance = field(default_factory=OverlapDistance)
     group_end_point: str = field(default_factory=str)  # None, top, bottom
-    group_end_point_bounding_box: RectArea | dict = field(default_factory=RectArea)
+    group_endpoint_bounding_box: RectArea | dict = field(default_factory=RectArea)
+
+
 
 @dataclass
 class Resistor(FunctionalComponent):
@@ -133,7 +138,7 @@ class Pin:
     cell: str = field(default_factory=str)
     type: str = field(default_factory=str)
     name: str = field(default_factory=str)
-    layout: RectAreaLayer = field(default_factory=RectAreaLayer)
+    layout: List[RectAreaLayer] | dict = field(default_factory=list)
 
     # Handling of JSON file input
     def __post_init__(self):

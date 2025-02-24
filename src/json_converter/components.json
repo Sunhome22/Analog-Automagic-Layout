@@ -21,10 +21,10 @@
             "f": 0
         },
         "bounding_box": {
-            "x1": 924,
-            "y1": 100,
-            "x2": 2076,
-            "y2": 2900
+            "x1": 1674,
+            "y1": 50,
+            "x2": 2826,
+            "y2": 3850
         }
     },
     {
@@ -33,15 +33,7 @@
         "cell": "COMP",
         "type": "ipin",
         "name": "VSS",
-        "layout": {
-            "layer": "m1",
-            "area": {
-                "x1": 724,
-                "y1": 3050,
-                "x2": 2276,
-                "y2": 3100
-            }
-        }
+        "layout": []
     },
     {
         "instance": "Pin",
@@ -49,15 +41,7 @@
         "cell": "COMP",
         "type": "ipin",
         "name": "VDD",
-        "layout": {
-            "layer": "m1",
-            "area": {
-                "x1": 624,
-                "y1": 3150,
-                "x2": 2376,
-                "y2": 3200
-            }
-        }
+        "layout": []
     },
     {
         "instance": "Pin",
@@ -65,15 +49,7 @@
         "cell": "COMP",
         "type": "ipin",
         "name": "VIP",
-        "layout": {
-            "layer": "locali",
-            "area": {
-                "x1": 0,
-                "y1": 0,
-                "x2": 100,
-                "y2": 100
-            }
-        }
+        "layout": []
     },
     {
         "instance": "Pin",
@@ -81,15 +57,7 @@
         "cell": "COMP",
         "type": "ipin",
         "name": "VIN",
-        "layout": {
-            "layer": "locali",
-            "area": {
-                "x1": 0,
-                "y1": 0,
-                "x2": 100,
-                "y2": 100
-            }
-        }
+        "layout": []
     },
     {
         "instance": "Pin",
@@ -97,15 +65,7 @@
         "cell": "COMP",
         "type": "opin",
         "name": "VO",
-        "layout": {
-            "layer": "locali",
-            "area": {
-                "x1": 0,
-                "y1": 0,
-                "x2": 100,
-                "y2": 100
-            }
-        }
+        "layout": []
     },
     {
         "instance": "Pin",
@@ -113,15 +73,7 @@
         "cell": "COMP",
         "type": "ipin",
         "name": "I_BIAS",
-        "layout": {
-            "layer": "locali",
-            "area": {
-                "x1": 0,
-                "y1": 0,
-                "x2": 100,
-                "y2": 100
-            }
-        }
+        "layout": []
     },
     {
         "instance": "Transistor",
@@ -183,22 +135,28 @@
         "transform_matrix": {
             "a": 1,
             "b": 0,
-            "c": 924,
+            "c": 1674,
             "d": 0,
             "e": 1,
-            "f": 1100
+            "f": 1550
         },
         "bounding_box": {
             "x1": 0,
             "y1": 0,
             "x2": 576,
-            "y2": 401
+            "y2": 400
         },
         "overlap_distance": {
             "x": 92,
             "y": 64
         },
-        "group_end_point": "top/bottom"
+        "group_end_point": "",
+        "group_endpoint_bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 576,
+            "y2": 240
+        }
     },
     {
         "instance": "Transistor",
@@ -260,10 +218,10 @@
         "transform_matrix": {
             "a": 1,
             "b": 0,
-            "c": 1500,
+            "c": 2250,
             "d": 0,
             "e": 1,
-            "f": 1100
+            "f": 1550
         },
         "bounding_box": {
             "x1": 0,
@@ -275,7 +233,13 @@
             "x": 92,
             "y": 64
         },
-        "group_end_point": "top/bottom"
+        "group_end_point": "",
+        "group_endpoint_bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 576,
+            "y2": 240
+        }
     },
     {
         "instance": "Transistor",
@@ -337,10 +301,10 @@
         "transform_matrix": {
             "a": 1,
             "b": 0,
-            "c": 1500,
+            "c": 2250,
             "d": 0,
             "e": 1,
-            "f": 2500
+            "f": 3450
         },
         "bounding_box": {
             "x1": 0,
@@ -352,7 +316,13 @@
             "x": 92,
             "y": 64
         },
-        "group_end_point": "top"
+        "group_end_point": "",
+        "group_endpoint_bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 576,
+            "y2": 240
+        }
     },
     {
         "instance": "Transistor",
@@ -414,10 +384,10 @@
         "transform_matrix": {
             "a": 1,
             "b": 0,
-            "c": 924,
+            "c": 1674,
             "d": 0,
             "e": 1,
-            "f": 2500
+            "f": 3450
         },
         "bounding_box": {
             "x1": 0,
@@ -429,7 +399,13 @@
             "x": 92,
             "y": 64
         },
-        "group_end_point": "top"
+        "group_end_point": "",
+        "group_endpoint_bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 576,
+            "y2": 240
+        }
     },
     {
         "instance": "Transistor",
@@ -491,10 +467,10 @@
         "transform_matrix": {
             "a": 1,
             "b": 0,
-            "c": 924,
+            "c": 1674,
             "d": 0,
             "e": 1,
-            "f": 1700
+            "f": 2650
         },
         "bounding_box": {
             "x1": 0,
@@ -506,7 +482,13 @@
             "x": 92,
             "y": 64
         },
-        "group_end_point": "bottom"
+        "group_end_point": "",
+        "group_endpoint_bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 576,
+            "y2": 240
+        }
     },
     {
         "instance": "Transistor",
@@ -568,10 +550,10 @@
         "transform_matrix": {
             "a": 1,
             "b": 0,
-            "c": 1500,
+            "c": 2250,
             "d": 0,
             "e": 1,
-            "f": 1700
+            "f": 2650
         },
         "bounding_box": {
             "x1": 0,
@@ -583,7 +565,13 @@
             "x": 92,
             "y": 64
         },
-        "group_end_point": "bottom"
+        "group_end_point": "",
+        "group_endpoint_bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 576,
+            "y2": 240
+        }
     },
     {
         "instance": "Transistor",
@@ -645,10 +633,10 @@
         "transform_matrix": {
             "a": 1,
             "b": 0,
-            "c": 924,
+            "c": 1674,
             "d": 0,
             "e": 1,
-            "f": 100
+            "f": 50
         },
         "bounding_box": {
             "x1": 0,
@@ -660,7 +648,13 @@
             "x": 92,
             "y": 64
         },
-        "group_end_point": "bottom"
+        "group_end_point": "",
+        "group_endpoint_bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 576,
+            "y2": 240
+        }
     },
     {
         "instance": "Transistor",
@@ -722,10 +716,10 @@
         "transform_matrix": {
             "a": 1,
             "b": 0,
-            "c": 1500,
+            "c": 2250,
             "d": 0,
             "e": 1,
-            "f": 100
+            "f": 50
         },
         "bounding_box": {
             "x1": 0,
@@ -737,7 +731,13 @@
             "x": 92,
             "y": 64
         },
-        "group_end_point": "bottom"
+        "group_end_point": "",
+        "group_endpoint_bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 576,
+            "y2": 240
+        }
     },
     {
         "instance": "Transistor",
@@ -799,10 +799,10 @@
         "transform_matrix": {
             "a": 1,
             "b": 0,
-            "c": 1500,
+            "c": 2250,
             "d": 0,
             "e": 1,
-            "f": 500
+            "f": 450
         },
         "bounding_box": {
             "x1": 0,
@@ -814,7 +814,13 @@
             "x": 92,
             "y": 64
         },
-        "group_end_point": "top"
+        "group_end_point": "",
+        "group_endpoint_bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 576,
+            "y2": 240
+        }
     },
     {
         "instance": "Transistor",
@@ -876,10 +882,10 @@
         "transform_matrix": {
             "a": 1,
             "b": 0,
-            "c": 924,
+            "c": 1674,
             "d": 0,
             "e": 1,
-            "f": 500
+            "f": 450
         },
         "bounding_box": {
             "x1": 0,
@@ -891,7 +897,13 @@
             "x": 92,
             "y": 64
         },
-        "group_end_point": "top"
+        "group_end_point": "",
+        "group_endpoint_bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 576,
+            "y2": 240
+        }
     },
     {
         "instance": "Transistor",
@@ -953,10 +965,10 @@
         "transform_matrix": {
             "a": 1,
             "b": 0,
-            "c": 1500,
+            "c": 2250,
             "d": 0,
             "e": 1,
-            "f": 2100
+            "f": 3050
         },
         "bounding_box": {
             "x1": 0,
@@ -968,7 +980,13 @@
             "x": 92,
             "y": 64
         },
-        "group_end_point": ""
+        "group_end_point": "",
+        "group_endpoint_bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 576,
+            "y2": 240
+        }
     },
     {
         "instance": "Transistor",
@@ -1030,10 +1048,10 @@
         "transform_matrix": {
             "a": 1,
             "b": 0,
-            "c": 924,
+            "c": 1674,
             "d": 0,
             "e": 1,
-            "f": 2100
+            "f": 3050
         },
         "bounding_box": {
             "x1": 0,
@@ -1045,6 +1063,12 @@
             "x": 92,
             "y": 64
         },
-        "group_end_point": ""
+        "group_end_point": "",
+        "group_endpoint_bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 576,
+            "y2": 240
+        }
     }
 ]

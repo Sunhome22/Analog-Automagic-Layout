@@ -42,10 +42,10 @@ class LinearOptimizationSolver:
         self.MIRROR = self.config["linear_optimization"]["MIRROR"]
         self.RUN = self.config["linear_optimization"]["RUN"]
         self.STOP_TOLERANCE = self.config["linear_optimization"]["STOP_TOLERANCE"]
-
+        self.SOLVER_MSG = self.config["linear_optimization"]["SOLVER_MSG"]
         # Setup of problem space and solver
         self.problem_space = pulp.LpProblem("ComponentPlacement", pulp.LpMinimize)
-        self.solver = pulp.SCIP_PY(msg=False, warmStart=True, options=[f"limits/gap={self.STOP_TOLERANCE}"])
+        self.solver = pulp.SCIP_PY(msg=self.SOLVER_MSG, warmStart=True, options=[f"limits/gap={self.STOP_TOLERANCE}"])
 
         # Inputs
         self.components = components
@@ -356,8 +356,8 @@ class LinearOptimizationSolver:
 
     def __update_component_info(self):
         for component in self.functional_components:
-            component.transform_matrix.set([1, 0, int(pulp.value(self.coordinates_x[component.number_id])), 0, 1,
-                                            int(pulp.value(self.coordinates_y[component.number_id]))])
+            component.transform_matrix.set([1, 0, int(round(pulp.value(self.coordinates_x[component.number_id]))), 0, 1,
+                                            int(round(pulp.value(self.coordinates_y[component.number_id])))])
 
     def solve_placement(self) -> list[object]:
         self.logger.info("Starting Linear Optimization")

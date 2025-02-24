@@ -33,19 +33,34 @@ dependencies = {file = ["requirements.txt"]}
 UNIT_HEIGHT = 100
 UNIT_WIDTH = 64
 OFFSET_X = 184
-OFFSET_Y = 128
+OFFSET_Y = 700
 ALPHA = 0.001
 BETA = 100
 THETA = 1
 MIRROR = true
 RUN = true
+
 STOP_TOLERANCE = 0.05
+SOLVER_MSG = true
 
 # Magic layout creator config options
 # -> Via padding - defines how much padding in units of 1e-7m should be added around all vias
 
 [magic_layout_creator]
 VIA_PADDING = 7
+
+# Trace generator config options
+# -> Init rail ring offset - offset from cells defined bounding box
+# -> rail ring offset - distance from the outside of one ring to the outside of the next
+# -> rail width -
+
+[trace_generator]
+INIT_RAIL_RING_OFFSET = 350
+RAIL_RING_OFFSET = 100
+RAIL_RING_WIDTH = 50
+
+
+
 
 
 

@@ -286,14 +286,17 @@ class MagicLayoutCreator:
 
         # ATR SKY130A LIB component handling
         if any(lib for lib in self.component_libraries if re.search(r"ATR", lib.name)):
-            ATR.place_transistor_end_points_for_atr_sky130a_lib(self=self, component=component)
+            ATR.place_transistor_endpoints_for_atr_sky130a_lib(self=self, component=component)
 
     def __pin_component_creator(self, component):
-        self.magic_file_lines.extend([
-            f"flabel {component.layout.layer} s {component.layout.area.x1} {component.layout.area.y1} "
-            f"{component.layout.area.x2} {component.layout.area.y2} 0 FreeSans 400 0 0 0 {component.name}",
-            f"port {component.number_id} nsew signal bidirectional"
-        ])
+        if component.layout:
+            # If we have multiple layout areas for a single pin select the first one
+            component.layout = component.layout[0]
+            self.magic_file_lines.extend([
+                f"flabel {component.layout.layer} s {component.layout.area.x1} {component.layout.area.y1} "
+                f"{component.layout.area.x2} {component.layout.area.y2} 0 FreeSans 400 0 0 0 {component.name}",
+                f"port {component.number_id} nsew signal bidirectional"
+            ])
 
     def __circuit_cell_component_creator(self, component):
 

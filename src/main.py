@@ -38,7 +38,7 @@ from traces.trace_generator import *
 import os
 # ========================================== Set-up classes and constants ==============================================
 
-grid_size = 3000
+grid_size = 4500
 scale_factor = 8
 draw_name = 'Temporary_check'
 
@@ -102,26 +102,27 @@ def main():
             components=components,
             scale_factor=scale_factor
         ).initialize_grid_generation()
+        print(used_area)
 
+        # path, seg_list = initiate_astar(
+        #     grid=grid,
+        #     connections=connections,
+        #    local_connections=local_connections,
+        #     components=components,
+        #     port_scaled_coords=port_scaled_coords,
+        #     net_list=net_list)
 
-        path, seg_list = initiate_astar(
-            grid=grid,
-            connections=connections,
-           local_connections=local_connections,
-            components=components,
-            port_scaled_coords=port_scaled_coords,
-            net_list=net_list)
-
-        components = initiate_write_traces(components, path, port_coord, seg_list, scale_factor, net_list)
-        MagicLayoutCreator(project_properties=project_properties, components=components)
-
-        #save_to_json(objects=components, file_name="src/json_converter/components.json")
+        #components = initiate_write_traces(components, path, port_coord, seg_list, scale_factor, net_list)
+        #MagicLayoutCreator(project_properties=project_properties, components=components)
+        #draw_result(grid_size=grid_size, objects=components, used_area=used_area, scale_factor=scale_factor,
+        #            draw_name=draw_name)
+        save_to_json(objects=components, file_name="src/json_converter/components.json")
 
     else:
         #path = []
         #logger.info("Starting Drawing results")
         # path true:
-        #draw_result(grid_size, components, path, used_area, scale_factor, draw_name)
+        #
         #logger.info("Finished Drawing results")
 
         components = load_from_json(file_name="src/json_converter/components.json")
@@ -133,10 +134,10 @@ def main():
         MagicLayoutCreator(project_properties=project_properties, components=components)
 
         # DRC handling
-        # DRCchecking(project_properties=project_properties)
+        DRCchecking(project_properties=project_properties)
 
         # LVS handling
-        LVSchecking(project_properties=project_properties)
+        #LVSchecking(project_properties=project_properties)
         #save_to_json(components, file_name="src/json_converter/components.json")
 
         # Debug log of all components

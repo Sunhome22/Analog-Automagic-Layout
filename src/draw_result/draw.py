@@ -17,7 +17,7 @@ from circuit.circuit_components import Pin, CircuitCell, TraceNet
 import os
 
 
-def draw_result(grid_size, objects, connections, used_area, scale_factor, draw_name):
+def draw_result(grid_size, objects, used_area, scale_factor, draw_name):
     current_file_directory = os.path.dirname(os.path.abspath(__file__))
     # set up plot
     fix, ax = plt.subplots(figsize=(10, 10))
@@ -30,7 +30,7 @@ def draw_result(grid_size, objects, connections, used_area, scale_factor, draw_n
         ax.axvline(i, lw=0.5, color='gray', zorder=0)
 
     for obj in objects:
-        if not isinstance(obj, (Pin, CircuitCell, Trace)):
+        if not isinstance(obj, (Pin, CircuitCell, TraceNet)):
 
             rect = patches.Rectangle((obj.transform_matrix.c, obj.transform_matrix.f),
                                      obj.bounding_box.x2, obj.bounding_box.y2,

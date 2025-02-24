@@ -12,7 +12,7 @@
 # If not, see <https://www.gnu.org/licenses/>.
 # ==================================================================================================================== #
 
-# ================================================== Libraries =========================================================
+# ===================================================== Libraries ======================================================
 import os
 import re
 import subprocess
@@ -25,47 +25,24 @@ from logger.logger import get_a_logger
 from circuit.circuit_components import (RectArea, RectAreaLayer, Transistor, Capacitor, Resistor, Pin, CircuitCell,
                                         TraceNet, RectAreaLayer)
 
-# ============================================= ATR SKY130A handling ===================================================
+# ======================================================================================================================
+# ================================================ ATR SKY130A handling ================================================
+# ======================================================================================================================
 
 
-def get_overlap_difference_for_atr_sky130a_lib(self, text_line: str, component: object):
-    if component.type == "nmos" or component.type == "pmos":
-
-        if self.found_transistor_well:
-            line_words = text_line.split()
-            self.transistor_well_size = RectArea(x1=int(line_words[1]), y1=int(line_words[2]), x2=int(line_words[3]),
-                                                 y2=int(line_words[4]))
-            self.found_transistor_well = False
-
-        elif re.search(r'<< nwell >>', text_line) or re.search(r'<< pwell >>', text_line):
-            # Next line contains well size info
-            self.found_transistor_well = True
-
-        # Calculate overlap difference after bounding box has been set
-        elif self.found_bounding_box:
-
-            x_difference = int((abs(self.transistor_well_size.x1) + abs(self.transistor_well_size.x2)
-                                - (abs(component.bounding_box.x1) + abs(component.bounding_box.x2))) / 2)
-            y_difference = int((abs(self.transistor_well_size.y1) + abs(self.transistor_well_size.y2)
-                                - (abs(component.bounding_box.y1) + abs(component.bounding_box.y2))) / 2)
-
-            component.overlap_distance.x = x_difference
-            component.overlap_distance.y = y_difference
-
-            self.found_bounding_box = False
-
-    self.found_bounding_box = False
-
-
-def generate_local_traces_for_atr_sky130a_lib(self):
+# ============================================= Trace generator functions ==============================================
+def generate_local_traces_for_atr_sky130a_lib(self: object):
     for component in self.transistor_components:
         if component.schematic_connections['B'] == component.schematic_connections['S']:
             __local_bulk_to_source_connection_for_atr_sky130a_lib(self=self, component=component)
+
         if component.schematic_connections['G'] == component.schematic_connections['D']:
             __local_gate_to_drain_connection_for_sky130a_lib(self=self, component=component)
 
+        if re.search(r".*VDD.*", component.schematic_connections['B']):
+            __local_bulk_to_vdd_connection_for_sky130a_lib(self=self, component=component)
 
-def __local_bulk_to_source_connection_for_atr_sky130a_lib(self, component: object):
+def __local_bulk_to_source_connection_for_atr_sky130a_lib(self: object, component: object):
     trace = TraceNet(name=f"{component.name}_B_S", cell=component.cell)
     trace.instance = trace.__class__.__name__
 
@@ -81,7 +58,7 @@ def __local_bulk_to_source_connection_for_atr_sky130a_lib(self, component: objec
     self.components.append(trace)
 
 
-def __local_gate_to_drain_connection_for_sky130a_lib(self, component: object):
+def __local_gate_to_drain_connection_for_sky130a_lib(self: object, component: object):
     trace = TraceNet(name=f"{component.name}_G_D", cell=component.cell)
     trace.instance = trace.__class__.__name__
 
@@ -97,8 +74,29 @@ def __local_gate_to_drain_connection_for_sky130a_lib(self, component: object):
                                                                   y2=gate_y2 + component.transform_matrix.f))]
     self.components.append(trace)
 
+def __local_bulk_to_vdd_connection_for_sky130a_lib(self: object, component: object):
+    trace = TraceNet(name=f"{component.name}_B_VDD", cell=component.cell)
+    trace.instance = trace.__class__.__name__
 
-def get_component_group_end_points_for_atr_sky130a_lib(self):
+    # Calculate distance from bulk to VDD ring and select the one closes
+    for structural_component in self.structural_components:
+        if re.search(r".*VDD.*", structural_component.name):
+            bulk_y1_pos = (next((port.area.y1 for port in component.layout_ports if port.type == 'B')) +
+                           component.transform_matrix.f)
+
+            distances = []
+            for pin_layout_area in structural_component.layout:
+                distance = abs(bulk_y1_pos - pin_layout_area.area.y1)
+
+                distances.append(distance, pin_layout_area)
+
+            print(min(distances))
+
+
+
+
+
+def get_component_group_end_points_for_atr_sky130a_lib(self: object):
     component_group_sets = defaultdict(list)
     min_y_components = list(defaultdict(list))
     max_y_components = list(defaultdict(list))
@@ -180,17 +178,116 @@ def get_component_group_end_points_for_atr_sky130a_lib(self):
                             component.group_end_point = "top"
 
 
-def place_transistor_end_points_for_atr_sky130a_lib(self, component):
+# ========================================== Magic layout creator functions ============================================
+
+def place_transistor_endpoints_for_atr_sky130a_lib(self: object, component: object):
     if isinstance(component, Transistor):
+        layout_name = re.sub(r".{3}$", "TAP", component.layout_name)
+
         if component.group_end_point == "top":
-            layout_name = re.sub(r".{3}$", "TAP", component.layout_name)
 
             self.magic_file_lines.extend([
                 f"use {layout_name} {component.group}_{component.name}_TAP {self.current_component_library_path}",
                 f"transform {component.transform_matrix.a} {component.transform_matrix.b}"
                 f" {component.transform_matrix.c} {component.transform_matrix.d}"
                 f" {component.transform_matrix.e} {component.transform_matrix.f + component.bounding_box.y2}",
-                f"box {component.bounding_box.x1} {component.bounding_box.y1} {component.bounding_box.x2}"
-                f" {component.bounding_box.y2} - 160"
+                f"box {component.group_endpoint_bounding_box.x1} {component.group_endpoint_bounding_box.y1} "
+                f"{component.group_endpoint_bounding_box.x2} {component.group_endpoint_bounding_box.y2}"
             ])
+
+        if component.group_end_point == "bottom":
+
+            self.magic_file_lines.extend([
+                f"use {layout_name} {component.group}_{component.name}_TAP {self.current_component_library_path}",
+                f"transform {component.transform_matrix.a} {component.transform_matrix.b}"
+                f" {component.transform_matrix.c} {component.transform_matrix.d}"
+                f" {component.transform_matrix.e} {component.transform_matrix.f - component.group_endpoint_bounding_box.y2}",
+                f"box {component.group_endpoint_bounding_box.x1} {component.group_endpoint_bounding_box.y1} "
+                f"{component.group_endpoint_bounding_box.x2} {component.group_endpoint_bounding_box.y2}"
+            ])
+
+        if component.group_end_point == "top/bottom":
+
+            self.magic_file_lines.extend([
+                f"use {layout_name} {component.group}_{component.name}_TAP {self.current_component_library_path}",
+                f"transform {component.transform_matrix.a} {component.transform_matrix.b}"
+                f" {component.transform_matrix.c} {component.transform_matrix.d}"
+                f" {component.transform_matrix.e} {component.transform_matrix.f - component.group_endpoint_bounding_box.y2}",
+                f"box {component.group_endpoint_bounding_box.x1} {component.group_endpoint_bounding_box.y1} "
+                f"{component.group_endpoint_bounding_box.x2} {component.group_endpoint_bounding_box.y2}"
+            ])
+
+            self.magic_file_lines.extend([
+                f"use {layout_name} {component.group}_{component.name}_TAP {self.current_component_library_path}",
+                f"transform {component.transform_matrix.a} {component.transform_matrix.b}"
+                f" {component.transform_matrix.c} {component.transform_matrix.d}"
+                f" {component.transform_matrix.e} {component.transform_matrix.f + component.bounding_box.y2}",
+                f"box {component.group_endpoint_bounding_box.x1} {component.group_endpoint_bounding_box.y1} "
+                f"{component.group_endpoint_bounding_box.x2} {component.group_endpoint_bounding_box.y2}"
+            ])
+
+# ========================================== Magic component parser functions ==========================================
+
+def get_overlap_difference_for_atr_sky130a_lib(self: object, text_line: str, component: object):
+    if component.type == "nmos" or component.type == "pmos":
+
+        if self.found_transistor_well:
+            line_words = text_line.split()
+            self.transistor_well_size = RectArea(x1=int(line_words[1]), y1=int(line_words[2]), x2=int(line_words[3]),
+                                                 y2=int(line_words[4]))
+            self.found_transistor_well = False
+
+        elif re.search(r'<< nwell >>', text_line) or re.search(r'<< pwell >>', text_line):
+            # Next line contains well size info
+            self.found_transistor_well = True
+
+        # Calculate overlap difference after bounding box has been set
+        elif self.found_bounding_box:
+
+            x_difference = int((abs(self.transistor_well_size.x1) + abs(self.transistor_well_size.x2)
+                                - (abs(component.bounding_box.x1) + abs(component.bounding_box.x2))) / 2)
+            y_difference = int((abs(self.transistor_well_size.y1) + abs(self.transistor_well_size.y2)
+                                - (abs(component.bounding_box.y1) + abs(component.bounding_box.y2))) / 2)
+
+            component.overlap_distance.x = x_difference
+            component.overlap_distance.y = y_difference
+
+            self.found_bounding_box = False
+
+    self.found_bounding_box = False
+
+def get_component_bounding_box_for_atr_sky130a_lib(self: object, text_line: str, component: object):
+
+    if re.search(r'string FIXED_BBOX', text_line):
+        text_line_words = text_line.split()
+        component.bounding_box.set(map(int, text_line_words[2:6]))
+        self.found_bounding_box = True
+
+def get_component_endpoint_bounding_box_for_atr_sky130a_lib(text_line: str, component: object):
+
+    if re.search(r'string FIXED_BBOX', text_line):
+        text_line_words = text_line.split()
+        component.group_endpoint_bounding_box.set(map(int, text_line_words[2:6]))
+
+def magic_component_parsing_for_atr_sky130a_lib(self: object, layout_file_path: str, component: object):
+    try:
+        with open(layout_file_path, "r") as magic_file:
+            for text_line in magic_file:
+                get_component_bounding_box_for_atr_sky130a_lib(text_line=text_line, component=component, self=self)
+                get_overlap_difference_for_atr_sky130a_lib(text_line=text_line, component=component, self=self)
+    except FileNotFoundError:
+        self.logger.error(f"The file {layout_file_path} was not found.")
+
+    transistor_endpoint_layout_name = re.sub(r".{3}$", "TAP", component.layout_name)
+    layout_file_path = os.path.expanduser(f"{self.current_component_library_path}/"
+                                          f"{transistor_endpoint_layout_name}.mag")
+    try:
+        with open(layout_file_path, "r") as magic_file:
+            for text_line in magic_file:
+                get_component_endpoint_bounding_box_for_atr_sky130a_lib(text_line=text_line, component=component)
+
+    except FileNotFoundError:
+        self.logger.error(f"The file {layout_file_path} was not found.")
+
+
 

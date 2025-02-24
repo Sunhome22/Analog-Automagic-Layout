@@ -15,10 +15,13 @@
 # ================================================== Libraries =========================================================
 import os
 import re
-from circuit.circuit_components import LayoutPort, RectArea, Pin, CircuitCell, TraceNet
+from circuit.circuit_components import LayoutPort, RectArea, Pin, CircuitCell, TraceNet, Transistor, Capacitor, Resistor
 from logger.logger import get_a_logger
 from dataclasses import fields
 import libraries.atr_sky130a_lib as ATR
+
+
+
 
 # ============================================= Magic component parser =================================================
 
@@ -36,6 +39,8 @@ class MagicComponentsParser:
         self.found_bounding_box = False
         self.transistor_well_size = RectArea
 
+
+
     def get(self):
         return self.__read_magic_files()
 
@@ -45,8 +50,7 @@ class MagicComponentsParser:
         # Iterate over all components
         for component in self.components:
 
-            # Filter out pins, circuit cells and trace nets
-            if not isinstance(component, (Pin, CircuitCell, TraceNet)):
+            if isinstance(component, (Transistor, Capacitor, Resistor)):
                 updated_components += 1
 
                 # Find library of current component
@@ -56,33 +60,26 @@ class MagicComponentsParser:
                 layout_file_path = os.path.expanduser(f"{self.current_component_library_path}/"
                                                       f"{component.layout_name}.mag")
 
+                # General component handling
                 try:
                     with open(layout_file_path, "r") as magic_file:
                         for text_line in magic_file:
-                            self.__get_component_bounding_box_info(text_line=text_line, component=component)
                             self.__get_component_port_info(text_line=text_line, component=component)
-
-                            # ATR SKY130A LIB component handling
-                            if any(lib for lib in self.component_libraries if re.search(r"ATR", lib.name)):
-                                ATR.get_overlap_difference_for_atr_sky130a_lib(self=self, text_line=text_line,
-                                                                               component=component)
-
-                        self.__check_component_is_valid(component=component)
-
                 except FileNotFoundError:
                     self.logger.error(f"The file {layout_file_path} was not found.")
+
+
+                # ATR SKY130A LIB component handling
+                if any(lib for lib in self.component_libraries if re.search(r"ATR", lib.name)):
+                    ATR.magic_component_parsing_for_atr_sky130a_lib(self=self, layout_file_path=layout_file_path,
+                                                                        component=component)
+
+                self.__check_component_is_valid(component=component)
 
         # Process complete
         self.logger.info(f"Process complete! Functional components updated: {updated_components}")
 
         return self.components
-
-    def __get_component_bounding_box_info(self, text_line: str, component: object):
-
-        if re.search(r'string FIXED_BBOX', text_line):
-            text_line_words = text_line.split()
-            component.bounding_box.set(map(int, text_line_words[2:6]))
-            self.found_bounding_box = True
 
     def __get_component_port_info(self, text_line: str, component: object):
 

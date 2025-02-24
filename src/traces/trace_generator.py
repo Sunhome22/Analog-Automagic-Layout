@@ -47,6 +47,12 @@ class TraceGenerator:
         self.functional_components = []
         self.components = components
         self.logger = get_a_logger(__name__)
+        
+        # Load config
+        self.config = self.__load_config()
+        self.INIT_RAIL_RING_OFFSET = self.config["trace_generator"]["INIT_RAIL_RING_OFFSET"]
+        self.RAIL_RING_OFFSET = self.config["trace_generator"]["RAIL_RING_OFFSET"]
+        self.RAIL_RING_WIDTH = self.config["trace_generator"]["RAIL_RING_WIDTH"]
 
         # Make lists of different component types
         for component in self.components:
@@ -69,6 +75,13 @@ class TraceGenerator:
         if any(lib for lib in self.component_libraries if re.search(r"ATR", lib.name)):
             ATR.generate_local_traces_for_atr_sky130a_lib(self=self)
             ATR.get_component_group_end_points_for_atr_sky130a_lib(self=self)
+
+    def __load_config(self, path="pyproject.toml"):
+        try:
+            with open(path, "rb") as f:
+                return tomllib.load(f)
+        except (FileNotFoundError, tomllib.TOMLDecodeError) as e:
+            self.logger.error(f"Error loading config: {e}")
 
     def __generate_trace_box_around_cell(self, component, offset: int, width: int, layer: str):
         """Width extends outwards from offset"""
@@ -102,15 +115,20 @@ class TraceGenerator:
                           RectAreaLayer(layer=layer, area=bottom_segment)]
 
         self.components.append(trace)
-        component.layout = RectAreaLayer(layer=layer, area=top_segment)
+        component.layout = [RectAreaLayer(layer=layer, area=top_segment),
+                            RectAreaLayer(layer=layer, area=bottom_segment)]
 
     def __generate_rails(self):
         # Automated adding of VDD/VSS ring nets around cell based on found pins
         rail_number = 0
         for component in self.structural_components:
             if re.search(r".*VDD.*", component.name) or re.search(r".*VSS.*", component.name):
-                self.__generate_trace_box_around_cell(component, offset=150 + 100*rail_number, width=50, layer="m1")
+                self.__generate_trace_box_around_cell(
+                    component, offset=self.INIT_RAIL_RING_OFFSET + self.RAIL_RING_OFFSET*rail_number,
+                    width=self.RAIL_RING_WIDTH, layer="m1"
+                )
                 rail_number += 1
+
 
     def get(self):
         return self.components
