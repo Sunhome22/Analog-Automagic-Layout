@@ -39,8 +39,9 @@ def generate_local_traces_for_atr_sky130a_lib(self: object):
         if component.schematic_connections['G'] == component.schematic_connections['D']:
             __local_gate_to_drain_connection_for_sky130a_lib(self=self, component=component)
 
-        if re.search(r".*VDD.*", component.schematic_connections['B']):
-            __local_bulk_to_vdd_connection_for_sky130a_lib(self=self, component=component)
+        #if re.search(r".*VDD.*", component.schematic_connections['B']):
+            #__local_bulk_to_vdd_connection_for_sky130a_lib(self=self, component=component)
+
 
 def __local_bulk_to_source_connection_for_atr_sky130a_lib(self: object, component: object):
     trace = TraceNet(name=f"{component.name}_B_S", cell=component.cell)
@@ -74,6 +75,7 @@ def __local_gate_to_drain_connection_for_sky130a_lib(self: object, component: ob
                                                                   y2=gate_y2 + component.transform_matrix.f))]
     self.components.append(trace)
 
+
 def __local_bulk_to_vdd_connection_for_sky130a_lib(self: object, component: object):
     trace = TraceNet(name=f"{component.name}_B_VDD", cell=component.cell)
     trace.instance = trace.__class__.__name__
@@ -91,9 +93,6 @@ def __local_bulk_to_vdd_connection_for_sky130a_lib(self: object, component: obje
                 distances.append(distance, pin_layout_area)
 
             print(min(distances))
-
-
-
 
 
 def get_component_group_end_points_for_atr_sky130a_lib(self: object):
@@ -177,8 +176,8 @@ def get_component_group_end_points_for_atr_sky130a_lib(self: object):
                         else:
                             component.group_end_point = "top"
 
-
 # ========================================== Magic layout creator functions ============================================
+
 
 def place_transistor_endpoints_for_atr_sky130a_lib(self: object, component: object):
     if isinstance(component, Transistor):
@@ -228,6 +227,7 @@ def place_transistor_endpoints_for_atr_sky130a_lib(self: object, component: obje
 
 # ========================================== Magic component parser functions ==========================================
 
+
 def get_overlap_difference_for_atr_sky130a_lib(self: object, text_line: str, component: object):
     if component.type == "nmos" or component.type == "pmos":
 
@@ -256,6 +256,7 @@ def get_overlap_difference_for_atr_sky130a_lib(self: object, text_line: str, com
 
     self.found_bounding_box = False
 
+
 def get_component_bounding_box_for_atr_sky130a_lib(self: object, text_line: str, component: object):
 
     if re.search(r'string FIXED_BBOX', text_line):
@@ -263,11 +264,13 @@ def get_component_bounding_box_for_atr_sky130a_lib(self: object, text_line: str,
         component.bounding_box.set(map(int, text_line_words[2:6]))
         self.found_bounding_box = True
 
+
 def get_component_endpoint_bounding_box_for_atr_sky130a_lib(text_line: str, component: object):
 
     if re.search(r'string FIXED_BBOX', text_line):
         text_line_words = text_line.split()
         component.group_endpoint_bounding_box.set(map(int, text_line_words[2:6]))
+
 
 def magic_component_parsing_for_atr_sky130a_lib(self: object, layout_file_path: str, component: object):
     try:

@@ -20,9 +20,6 @@ from logger.logger import get_a_logger
 from dataclasses import fields
 import libraries.atr_sky130a_lib as ATR
 
-
-
-
 # ============================================= Magic component parser =================================================
 
 
@@ -38,8 +35,6 @@ class MagicComponentsParser:
         self.found_transistor_well = False
         self.found_bounding_box = False
         self.transistor_well_size = RectArea
-
-
 
     def get(self):
         return self.__read_magic_files()
@@ -67,7 +62,6 @@ class MagicComponentsParser:
                             self.__get_component_port_info(text_line=text_line, component=component)
                 except FileNotFoundError:
                     self.logger.error(f"The file {layout_file_path} was not found.")
-
 
                 # ATR SKY130A LIB component handling
                 if any(lib for lib in self.component_libraries if re.search(r"ATR", lib.name)):

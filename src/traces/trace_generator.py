@@ -129,6 +129,5 @@ class TraceGenerator:
                 )
                 rail_number += 1
 
-
     def get(self):
         return self.components

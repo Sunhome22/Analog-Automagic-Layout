@@ -134,7 +134,7 @@ def main():
         MagicLayoutCreator(project_properties=project_properties, components=components)
 
         # DRC handling
-        DRCchecking(project_properties=project_properties)
+        #DRCchecking(project_properties=project_properties)
 
         # LVS handling
         #LVSchecking(project_properties=project_properties)
