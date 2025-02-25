@@ -50,7 +50,8 @@ class TraceGenerator:
         
         # Load config
         self.config = self.__load_config()
-        self.INIT_RAIL_RING_OFFSET = self.config["trace_generator"]["INIT_RAIL_RING_OFFSET"]
+        self.INIT_RAIL_RING_OFFSET_X = self.config["trace_generator"]["INIT_RAIL_RING_OFFSET_X"]
+        self.INIT_RAIL_RING_OFFSET_Y = self.config["trace_generator"]["INIT_RAIL_RING_OFFSET_Y"]
         self.RAIL_RING_OFFSET = self.config["trace_generator"]["RAIL_RING_OFFSET"]
         self.RAIL_RING_WIDTH = self.config["trace_generator"]["RAIL_RING_WIDTH"]
 
@@ -73,8 +74,10 @@ class TraceGenerator:
 
         # ATR SKY130A LIB component handling
         if any(lib for lib in self.component_libraries if re.search(r"ATR", lib.name)):
-            ATR.generate_local_traces_for_atr_sky130a_lib(self=self)
+            # Calling order is required
             ATR.get_component_group_end_points_for_atr_sky130a_lib(self=self)
+            ATR.generate_local_traces_for_atr_sky130a_lib(self=self)
+
 
     def __load_config(self, path="pyproject.toml"):
         try:
@@ -83,40 +86,42 @@ class TraceGenerator:
         except (FileNotFoundError, tomllib.TOMLDecodeError) as e:
             self.logger.error(f"Error loading config: {e}")
 
-    def __generate_trace_box_around_cell(self, component, offset: int, width: int, layer: str):
+    def __generate_trace_box_around_cell(self, component, offset_x: int, offset_y: int, width: int, layer: str):
         """Width extends outwards from offset"""
 
         trace = TraceNet(name=component.name, cell=self.circuit_cell.name)
         trace.instance = trace.__class__.__name__
 
-        left_segment = RectArea(x1=self.circuit_cell.bounding_box.x1 - offset - width,
-                                y1=self.circuit_cell.bounding_box.y1 - offset,
-                                x2=self.circuit_cell.bounding_box.x1 - offset,
-                                y2=self.circuit_cell.bounding_box.y2 + offset)
+        left_segment = RectArea(x1=self.circuit_cell.bounding_box.x1 - offset_x - width,
+                                y1=self.circuit_cell.bounding_box.y1 - offset_y,
+                                x2=self.circuit_cell.bounding_box.x1 - offset_x,
+                                y2=self.circuit_cell.bounding_box.y2 + offset_y)
 
-        right_segment = RectArea(x1=self.circuit_cell.bounding_box.x2 + offset,
-                                 y1=self.circuit_cell.bounding_box.y1 - offset,
-                                 x2=self.circuit_cell.bounding_box.x2 + offset + width,
-                                 y2=self.circuit_cell.bounding_box.y2 + offset)
+        right_segment = RectArea(x1=self.circuit_cell.bounding_box.x2 + offset_x,
+                                 y1=self.circuit_cell.bounding_box.y1 - offset_y,
+                                 x2=self.circuit_cell.bounding_box.x2 + offset_x + width,
+                                 y2=self.circuit_cell.bounding_box.y2 + offset_y)
 
-        top_segment = RectArea(x1=self.circuit_cell.bounding_box.x1 - offset - width,
-                               y1=self.circuit_cell.bounding_box.y2 + offset,
-                               x2=self.circuit_cell.bounding_box.x2 + offset + width,
-                               y2=self.circuit_cell.bounding_box.y2 + offset + width)
+        top_segment = RectArea(x1=self.circuit_cell.bounding_box.x1 - offset_x - width,
+                               y1=self.circuit_cell.bounding_box.y2 + offset_y,
+                               x2=self.circuit_cell.bounding_box.x2 + offset_x + width,
+                               y2=self.circuit_cell.bounding_box.y2 + offset_y + width)
 
-        bottom_segment = RectArea(x1=self.circuit_cell.bounding_box.x1 - offset - width,
-                                  y1=self.circuit_cell.bounding_box.y1 - offset - width,
-                                  x2=self.circuit_cell.bounding_box.x2 + offset + width,
-                                  y2=self.circuit_cell.bounding_box.y1 - offset)
+        bottom_segment = RectArea(x1=self.circuit_cell.bounding_box.x1 - offset_x - width,
+                                  y1=self.circuit_cell.bounding_box.y1 - offset_y - width,
+                                  x2=self.circuit_cell.bounding_box.x2 + offset_x + width,
+                                  y2=self.circuit_cell.bounding_box.y1 - offset_y)
 
-        trace.segments = [RectAreaLayer(layer=layer, area=left_segment),
-                          RectAreaLayer(layer=layer, area=right_segment),
-                          RectAreaLayer(layer=layer, area=top_segment),
-                          RectAreaLayer(layer=layer, area=bottom_segment)]
+        trace.segments = [RectAreaLayer(layer=layer, area=top_segment),
+                          RectAreaLayer(layer=layer, area=bottom_segment),
+                          RectAreaLayer(layer=layer, area=left_segment),
+                          RectAreaLayer(layer=layer, area=right_segment)]
 
         self.components.append(trace)
-        component.layout = [RectAreaLayer(layer=layer, area=top_segment),
-                            RectAreaLayer(layer=layer, area=bottom_segment)]
+
+        # Make top segment layout area for pin
+        component.layout = RectAreaLayer(layer=layer, area=top_segment)
+
 
     def __generate_rails(self):
         # Automated adding of VDD/VSS ring nets around cell based on found pins
@@ -124,7 +129,9 @@ class TraceGenerator:
         for component in self.structural_components:
             if re.search(r".*VDD.*", component.name) or re.search(r".*VSS.*", component.name):
                 self.__generate_trace_box_around_cell(
-                    component, offset=self.INIT_RAIL_RING_OFFSET + self.RAIL_RING_OFFSET*rail_number,
+                    component,
+                    offset_x=self.INIT_RAIL_RING_OFFSET_X + self.RAIL_RING_OFFSET * rail_number,
+                    offset_y=self.INIT_RAIL_RING_OFFSET_Y + self.RAIL_RING_OFFSET * rail_number,
                     width=self.RAIL_RING_WIDTH, layer="m1"
                 )
                 rail_number += 1

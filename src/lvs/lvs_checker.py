@@ -45,6 +45,5 @@ class LVSchecking:
                            check=True, shell=True, cwd=work_directory)
             self.logger.info("LVS checked")
 
-
         except subprocess.CalledProcessError as e:
             self.logger.warning(f"'make lvsall' command had problems: {e.stderr}")

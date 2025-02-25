@@ -114,7 +114,7 @@ class FunctionalComponent:
 @dataclass
 class Transistor(FunctionalComponent):
     overlap_distance: OverlapDistance = field(default_factory=OverlapDistance)
-    group_end_point: str = field(default_factory=str)  # None, top, bottom
+    group_endpoint: str = field(default_factory=str)  # None, top, bottom
     group_endpoint_bounding_box: RectArea | dict = field(default_factory=RectArea)
 
 
@@ -138,12 +138,7 @@ class Pin:
     cell: str = field(default_factory=str)
     type: str = field(default_factory=str)
     name: str = field(default_factory=str)
-    layout: List[RectAreaLayer] | dict = field(default_factory=list)
-
-    # Handling of JSON file input
-    def __post_init__(self):
-        if isinstance(self.layout, dict):
-            self.layout = RectAreaLayer(**self.layout)
+    layout: RectAreaLayer = field(default_factory=str)
 
 @dataclass
 class TraceNet:

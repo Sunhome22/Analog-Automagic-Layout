@@ -44,7 +44,7 @@ STOP_TOLERANCE = 0.05
 SOLVER_MSG = true
 
 # Magic layout creator config options
-# -> Via padding - defines how much padding in units of 1e-7m should be added around all vias
+# -> Via padding - defines how much padding in units of 1e-8m should be added around all vias
 
 [magic_layout_creator]
 VIA_PADDING = 7
@@ -55,9 +55,10 @@ VIA_PADDING = 7
 # -> rail width -
 
 [trace_generator]
-INIT_RAIL_RING_OFFSET = 350
-RAIL_RING_OFFSET = 100
-RAIL_RING_WIDTH = 50
+INIT_RAIL_RING_OFFSET_Y = 350
+INIT_RAIL_RING_OFFSET_X = 150
+RAIL_RING_OFFSET = 150
+RAIL_RING_WIDTH = 100
 
 
 

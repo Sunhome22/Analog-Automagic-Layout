@@ -134,11 +134,11 @@ def main():
         MagicLayoutCreator(project_properties=project_properties, components=components)
 
         # DRC handling
-        #DRCchecking(project_properties=project_properties)
+        DRCchecking(project_properties=project_properties)
 
         # LVS handling
-        #LVSchecking(project_properties=project_properties)
-        #save_to_json(components, file_name="src/json_converter/components.json")
+        LVSchecking(project_properties=project_properties)
+        save_to_json(components, file_name="src/json_converter/components_test.json")
 
         # Debug log of all components
         logger.debug(f"Components registered: ")

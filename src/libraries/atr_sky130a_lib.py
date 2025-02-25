@@ -39,8 +39,8 @@ def generate_local_traces_for_atr_sky130a_lib(self: object):
         if component.schematic_connections['G'] == component.schematic_connections['D']:
             __local_gate_to_drain_connection_for_sky130a_lib(self=self, component=component)
 
-        #if re.search(r".*VDD.*", component.schematic_connections['B']):
-            #__local_bulk_to_vdd_connection_for_sky130a_lib(self=self, component=component)
+        if re.search(r".*VDD.*", component.schematic_connections['B']):
+            __local_bulk_to_vdd_connection_for_sky130a_lib(self=self, component=component)
 
 
 def __local_bulk_to_source_connection_for_atr_sky130a_lib(self: object, component: object):
@@ -57,7 +57,6 @@ def __local_bulk_to_source_connection_for_atr_sky130a_lib(self: object, componen
                                                                 x2=source_x2 + component.transform_matrix.c,
                                                                 y2=source_y2 + component.transform_matrix.f))]
     self.components.append(trace)
-
 
 def __local_gate_to_drain_connection_for_sky130a_lib(self: object, component: object):
     trace = TraceNet(name=f"{component.name}_G_D", cell=component.cell)
@@ -80,19 +79,72 @@ def __local_bulk_to_vdd_connection_for_sky130a_lib(self: object, component: obje
     trace = TraceNet(name=f"{component.name}_B_VDD", cell=component.cell)
     trace.instance = trace.__class__.__name__
 
-    # Calculate distance from bulk to VDD ring and select the one closes
-    for structural_component in self.structural_components:
-        if re.search(r".*VDD.*", structural_component.name):
-            bulk_y1_pos = (next((port.area.y1 for port in component.layout_ports if port.type == 'B')) +
-                           component.transform_matrix.f)
+    if component.group_endpoint == 'top':
+        for structural_component in self.structural_components:
+            print(structural_component)
+            if re.search(r".*VDD.*", structural_component.name):
+                bulk_x1 = next((port.area.x1 for port in component.layout_ports if port.type == 'B'))
+                bulk_x2 = next((port.area.x2 for port in component.layout_ports if port.type == 'B'))
+                bulk_width = abs(bulk_x2-bulk_x1)
+                main_segment = RectArea(x1=structural_component.layout.area.x1,
+                                        y1=component.bounding_box.y2 + component.transform_matrix.f - bulk_width // 2
+                                           + component.group_endpoint_bounding_box.y2 // 2,
+                                        x2=structural_component.layout.area.x2,
+                                        y2=component.bounding_box.y2 + component.transform_matrix.f + bulk_width // 2
+                                           + component.group_endpoint_bounding_box.y2 // 2)
 
-            distances = []
-            for pin_layout_area in structural_component.layout:
-                distance = abs(bulk_y1_pos - pin_layout_area.area.y1)
+                left_segment = RectArea(x1=structural_component.layout.area.x1,
+                                        y1=component.bounding_box.y2 + component.transform_matrix.f - bulk_width // 2
+                                           + component.group_endpoint_bounding_box.y2 // 2,
+                                        x2=structural_component.layout.area.x1 + self.RAIL_RING_WIDTH,
+                                        y2=structural_component.layout.area.y2)
 
-                distances.append(distance, pin_layout_area)
+                right_segment = RectArea(x1=structural_component.layout.area.x2 - self.RAIL_RING_WIDTH,
+                                         y1=component.bounding_box.y2 + component.transform_matrix.f - bulk_width // 2
+                                            + component.group_endpoint_bounding_box.y2 // 2,
+                                         x2=structural_component.layout.area.x2,
+                                         y2=structural_component.layout.area.y2)
 
-            print(min(distances))
+                # The two additional segments (left_segment and right_segment) are used for forcing via generation.
+                # These remove the need for special handling
+                trace.segments.append(RectAreaLayer(layer='m1', area=left_segment))
+                trace.segments.append(RectAreaLayer(layer='locali', area=main_segment))
+                trace.segments.append(RectAreaLayer(layer='m1', area=right_segment))
+        self.components.append(trace)
+
+    if component.group_endpoint == 'bottom':
+        for structural_component in self.structural_components:
+            if re.search(r".*VDD.*", structural_component.name):
+                bulk_x1 = next((port.area.x1 for port in component.layout_ports if port.type == 'B'))
+                bulk_x2 = next((port.area.x2 for port in component.layout_ports if port.type == 'B'))
+                bulk_width = abs(bulk_x2-bulk_x1)
+
+                main_segment = RectArea(x1=structural_component.layout.area.x1,
+                                        y1=component.bounding_box.y1 + component.transform_matrix.f - bulk_width // 2
+                                           - component.group_endpoint_bounding_box.y2 // 2,
+                                        x2=structural_component.layout.area.x2,
+                                        y2=component.bounding_box.y1 + component.transform_matrix.f + bulk_width // 2
+                                           - component.group_endpoint_bounding_box.y2 // 2)
+
+                left_segment = RectArea(x1=structural_component.layout.area.x1,
+                                        y1=component.bounding_box.y1 + component.transform_matrix.f - bulk_width // 2
+                                           - component.group_endpoint_bounding_box.y2 // 2,
+                                        x2=structural_component.layout.area.x1 + self.RAIL_RING_WIDTH,
+                                        y2=structural_component.layout.area.y2)
+
+                right_segment = RectArea(x1=structural_component.layout.area.x2 - self.RAIL_RING_WIDTH,
+                                         y1=component.bounding_box.y1 + component.transform_matrix.f - bulk_width // 2
+                                         - component.group_endpoint_bounding_box.y2 // 2,
+                                         x2=structural_component.layout.area.x2,
+                                         y2=structural_component.layout.area.y2)
+
+                # The two additional segments (left_segment and right_segment) are used for forcing via generation.
+                # These remove the need for special handling
+                trace.segments.append(RectAreaLayer(layer='m1', area=left_segment))
+                trace.segments.append(RectAreaLayer(layer='locali', area=main_segment))
+                trace.segments.append(RectAreaLayer(layer='m1', area=right_segment))
+        self.components.append(trace)
+
 
 
 def get_component_group_end_points_for_atr_sky130a_lib(self: object):
@@ -166,15 +218,15 @@ def get_component_group_end_points_for_atr_sky130a_lib(self: object):
             for _, components in min_y_components:
                 for comp in components:
                     if comp == component:
-                        component.group_end_point = "bottom"
+                        component.group_endpoint = "bottom"
 
             for _, components in max_y_components:
                 for comp in components:
                     if comp == component:
-                        if component.group_end_point == "bottom":
-                            component.group_end_point = "top/bottom"
+                        if component.group_endpoint == "bottom":
+                            component.group_endpoint = "top/bottom"
                         else:
-                            component.group_end_point = "top"
+                            component.group_endpoint = "top"
 
 # ========================================== Magic layout creator functions ============================================
 
@@ -183,7 +235,7 @@ def place_transistor_endpoints_for_atr_sky130a_lib(self: object, component: obje
     if isinstance(component, Transistor):
         layout_name = re.sub(r".{3}$", "TAP", component.layout_name)
 
-        if component.group_end_point == "top":
+        if component.group_endpoint == "top":
 
             self.magic_file_lines.extend([
                 f"use {layout_name} {component.group}_{component.name}_TAP {self.current_component_library_path}",
@@ -194,7 +246,7 @@ def place_transistor_endpoints_for_atr_sky130a_lib(self: object, component: obje
                 f"{component.group_endpoint_bounding_box.x2} {component.group_endpoint_bounding_box.y2}"
             ])
 
-        if component.group_end_point == "bottom":
+        if component.group_endpoint == "bottom":
 
             self.magic_file_lines.extend([
                 f"use {layout_name} {component.group}_{component.name}_TAP {self.current_component_library_path}",
@@ -205,7 +257,7 @@ def place_transistor_endpoints_for_atr_sky130a_lib(self: object, component: obje
                 f"{component.group_endpoint_bounding_box.x2} {component.group_endpoint_bounding_box.y2}"
             ])
 
-        if component.group_end_point == "top/bottom":
+        if component.group_endpoint == "top/bottom":
 
             self.magic_file_lines.extend([
                 f"use {layout_name} {component.group}_{component.name}_TAP {self.current_component_library_path}",

@@ -15,13 +15,15 @@
 # ================================================== Libraries =========================================================
 import os
 import time
-from circuit.circuit_components import RectArea, Transistor, Capacitor, Resistor, Pin, CircuitCell, TraceNet
+from circuit.circuit_components import RectArea, Transistor, Capacitor, Resistor, Pin, CircuitCell, TraceNet, RectAreaLayer
 from magic.magic_drawer import get_pixel_boxes_from_text, get_black_white_pixel_boxes_from_image
 from logger.logger import get_a_logger
 from collections import deque
 import tomllib
 import re
 import libraries.atr_sky130a_lib as ATR
+
+
 
 # ============================================== Magic layout creator ==================================================
 
@@ -126,7 +128,8 @@ class MagicLayoutCreator:
                 self.__place_box(layer=via_layer, area=area)
 
     def __add_trace_net_vias(self, trace_net: TraceNet) -> int:
-        """Checks for overlap between segments of a trace net in different layers and adds vias"""
+        """Checks for overlap between segments of a trace net in different layers and adds vias.
+           Vias only get added when layer changes occur."""
         last_segment_layer = None
         previous_segment = None
         via_count = 0
@@ -289,9 +292,8 @@ class MagicLayoutCreator:
             ATR.place_transistor_endpoints_for_atr_sky130a_lib(self=self, component=component)
 
     def __pin_component_creator(self, component):
-        if component.layout:
-            # If we have multiple layout areas for a single pin select the first one
-            component.layout = component.layout[0]
+        # Check that layout type is valid
+        if isinstance(component.layout, RectAreaLayer):
             self.magic_file_lines.extend([
                 f"flabel {component.layout.layer} s {component.layout.area.x1} {component.layout.area.y1} "
                 f"{component.layout.area.x2} {component.layout.area.y2} 0 FreeSans 400 0 0 0 {component.name}",

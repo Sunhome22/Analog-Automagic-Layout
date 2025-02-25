@@ -43,6 +43,7 @@ class LinearOptimizationSolver:
         self.RUN = self.config["linear_optimization"]["RUN"]
         self.STOP_TOLERANCE = self.config["linear_optimization"]["STOP_TOLERANCE"]
         self.SOLVER_MSG = self.config["linear_optimization"]["SOLVER_MSG"]
+
         # Setup of problem space and solver
         self.problem_space = pulp.LpProblem("ComponentPlacement", pulp.LpMinimize)
         self.solver = pulp.SCIP_PY(msg=self.SOLVER_MSG, warmStart=True, options=[f"limits/gap={self.STOP_TOLERANCE}"])
