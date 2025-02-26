@@ -117,8 +117,6 @@ class Transistor(FunctionalComponent):
     group_endpoint: str = field(default_factory=str)  # None, top, bottom
     group_endpoint_bounding_box: RectArea | dict = field(default_factory=RectArea)
 
-
-
 @dataclass
 class Resistor(FunctionalComponent):
     pass
@@ -126,6 +124,9 @@ class Resistor(FunctionalComponent):
 
 @dataclass
 class Capacitor(FunctionalComponent):
+    pass
+
+class Inverter(FunctionalComponent):
     pass
 
 # ============================================ Structural Component classes ============================================

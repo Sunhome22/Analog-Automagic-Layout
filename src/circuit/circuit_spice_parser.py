@@ -318,6 +318,29 @@ class SPICEparser:
 
                 self.components.append(circuit_cell)
 
+            #  --- Inverters ---
+            elif component_category == 'I':
+                # Get port definitions for component
+                port_definitions = self.__get_layout_port_definitions(line_words[5], self.subcircuits)
+
+                # Create transistor component and add extracted parameters
+                transistor = Transistor(name=filtered_name,
+                                        type="dd",
+                                        number_id=len(self.components),
+                                        cell=current_cell,
+                                        group=filtered_group,
+                                        schematic_connections={port_definitions[i]: line_words[i + 1] for i in
+                                                               range(min(len(port_definitions), len(line_words) - 1))},
+                                        layout_name=line_words[5],
+                                        layout_library=current_library)
+
+                transistor.instance = transistor.__class__.__name__  # add instance type
+                self.components.append(transistor)
+
+            #  --- Gates ---
+            elif component_category == 'G':
+                port_definitions = self.__get_layout_port_definitions(line_words[-1], self.subcircuits)
+
             else:
                 self.logger.error(f"SPICE line '{spice_line}' is not handled!")
 
