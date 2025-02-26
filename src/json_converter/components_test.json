@@ -65,15 +65,7 @@
         "cell": "COMP",
         "type": "ipin",
         "name": "VIP",
-        "layout": {
-            "layer": "",
-            "area": {
-                "x1": 0,
-                "y1": 0,
-                "x2": 0,
-                "y2": 0
-            }
-        }
+        "layout": ""
     },
     {
         "instance": "Pin",
@@ -81,15 +73,7 @@
         "cell": "COMP",
         "type": "ipin",
         "name": "VIN",
-        "layout": {
-            "layer": "",
-            "area": {
-                "x1": 0,
-                "y1": 0,
-                "x2": 0,
-                "y2": 0
-            }
-        }
+        "layout": ""
     },
     {
         "instance": "Pin",
@@ -97,15 +81,7 @@
         "cell": "COMP",
         "type": "opin",
         "name": "VO",
-        "layout": {
-            "layer": "",
-            "area": {
-                "x1": 0,
-                "y1": 0,
-                "x2": 0,
-                "y2": 0
-            }
-        }
+        "layout": ""
     },
     {
         "instance": "Pin",
@@ -113,15 +89,7 @@
         "cell": "COMP",
         "type": "ipin",
         "name": "I_BIAS",
-        "layout": {
-            "layer": "",
-            "area": {
-                "x1": 0,
-                "y1": 0,
-                "x2": 0,
-                "y2": 0
-            }
-        }
+        "layout": ""
     },
     {
         "instance": "Transistor",
@@ -198,12 +166,12 @@
             "x": 92,
             "y": 64
         },
-        "group_endpoint": "top/bottom",
+        "group_endpoint": "top/bot",
         "group_endpoint_bounding_box": {
             "x1": 0,
             "y1": 0,
             "x2": 576,
-            "y2": 240
+            "y2": 200
         }
     },
     {
@@ -281,12 +249,12 @@
             "x": 92,
             "y": 64
         },
-        "group_endpoint": "top/bottom",
+        "group_endpoint": "top/bot",
         "group_endpoint_bounding_box": {
             "x1": 0,
             "y1": 0,
             "x2": 576,
-            "y2": 240
+            "y2": 200
         }
     },
     {
@@ -369,7 +337,7 @@
             "x1": 0,
             "y1": 0,
             "x2": 576,
-            "y2": 240
+            "y2": 200
         }
     },
     {
@@ -452,7 +420,7 @@
             "x1": 0,
             "y1": 0,
             "x2": 576,
-            "y2": 240
+            "y2": 200
         }
     },
     {
@@ -530,12 +498,12 @@
             "x": 92,
             "y": 64
         },
-        "group_endpoint": "bottom",
+        "group_endpoint": "bot",
         "group_endpoint_bounding_box": {
             "x1": 0,
             "y1": 0,
             "x2": 576,
-            "y2": 240
+            "y2": 200
         }
     },
     {
@@ -613,12 +581,12 @@
             "x": 92,
             "y": 64
         },
-        "group_endpoint": "bottom",
+        "group_endpoint": "bot",
         "group_endpoint_bounding_box": {
             "x1": 0,
             "y1": 0,
             "x2": 576,
-            "y2": 240
+            "y2": 200
         }
     },
     {
@@ -696,12 +664,12 @@
             "x": 92,
             "y": 64
         },
-        "group_endpoint": "bottom",
+        "group_endpoint": "bot",
         "group_endpoint_bounding_box": {
             "x1": 0,
             "y1": 0,
             "x2": 576,
-            "y2": 240
+            "y2": 200
         }
     },
     {
@@ -779,12 +747,12 @@
             "x": 92,
             "y": 64
         },
-        "group_endpoint": "bottom",
+        "group_endpoint": "bot",
         "group_endpoint_bounding_box": {
             "x1": 0,
             "y1": 0,
             "x2": 576,
-            "y2": 240
+            "y2": 200
         }
     },
     {
@@ -867,7 +835,7 @@
             "x1": 0,
             "y1": 0,
             "x2": 576,
-            "y2": 240
+            "y2": 200
         }
     },
     {
@@ -950,7 +918,7 @@
             "x1": 0,
             "y1": 0,
             "x2": 576,
-            "y2": 240
+            "y2": 200
         }
     },
     {
@@ -1033,7 +1001,7 @@
             "x1": 0,
             "y1": 0,
             "x2": 576,
-            "y2": 240
+            "y2": 200
         }
     },
     {
@@ -1116,7 +1084,7 @@
             "x1": 0,
             "y1": 0,
             "x2": 576,
-            "y2": 240
+            "y2": 200
         }
     },
     {
@@ -1271,40 +1239,6 @@
     },
     {
         "instance": "TraceNet",
-        "name": "MP5_B_VDD",
-        "cell": "COMP",
-        "segments": [
-            {
-                "layer": "m1",
-                "area": {
-                    "x1": 1274,
-                    "y1": 3922,
-                    "x2": 1374,
-                    "y2": 4450
-                }
-            },
-            {
-                "layer": "locali",
-                "area": {
-                    "x1": 1274,
-                    "y1": 3922,
-                    "x2": 3226,
-                    "y2": 4018
-                }
-            },
-            {
-                "layer": "m1",
-                "area": {
-                    "x1": 3126,
-                    "y1": 3922,
-                    "x2": 3226,
-                    "y2": 4450
-                }
-            }
-        ]
-    },
-    {
-        "instance": "TraceNet",
         "name": "MP6_B_S",
         "cell": "COMP",
         "segments": [
@@ -1321,40 +1255,6 @@
     },
     {
         "instance": "TraceNet",
-        "name": "MP6_B_VDD",
-        "cell": "COMP",
-        "segments": [
-            {
-                "layer": "m1",
-                "area": {
-                    "x1": 1274,
-                    "y1": 3922,
-                    "x2": 1374,
-                    "y2": 4450
-                }
-            },
-            {
-                "layer": "locali",
-                "area": {
-                    "x1": 1274,
-                    "y1": 3922,
-                    "x2": 3226,
-                    "y2": 4018
-                }
-            },
-            {
-                "layer": "m1",
-                "area": {
-                    "x1": 3126,
-                    "y1": 3922,
-                    "x2": 3226,
-                    "y2": 4450
-                }
-            }
-        ]
-    },
-    {
-        "instance": "TraceNet",
         "name": "MP1_B_S",
         "cell": "COMP",
         "segments": [
@@ -1365,40 +1265,6 @@
                     "y1": 2950,
                     "x2": 1914,
                     "y2": 2990
-                }
-            }
-        ]
-    },
-    {
-        "instance": "TraceNet",
-        "name": "MP1_B_VDD",
-        "cell": "COMP",
-        "segments": [
-            {
-                "layer": "m1",
-                "area": {
-                    "x1": 1274,
-                    "y1": 2482,
-                    "x2": 1374,
-                    "y2": 4450
-                }
-            },
-            {
-                "layer": "locali",
-                "area": {
-                    "x1": 1274,
-                    "y1": 2482,
-                    "x2": 3226,
-                    "y2": 2578
-                }
-            },
-            {
-                "layer": "m1",
-                "area": {
-                    "x1": 3126,
-                    "y1": 2482,
-                    "x2": 3226,
-                    "y2": 4450
                 }
             }
         ]
@@ -1431,40 +1297,6 @@
                     "y1": 2830,
                     "x2": 2746,
                     "y2": 2870
-                }
-            }
-        ]
-    },
-    {
-        "instance": "TraceNet",
-        "name": "MP2_B_VDD",
-        "cell": "COMP",
-        "segments": [
-            {
-                "layer": "m1",
-                "area": {
-                    "x1": 1274,
-                    "y1": 2482,
-                    "x2": 1374,
-                    "y2": 4450
-                }
-            },
-            {
-                "layer": "locali",
-                "area": {
-                    "x1": 1274,
-                    "y1": 2482,
-                    "x2": 3226,
-                    "y2": 2578
-                }
-            },
-            {
-                "layer": "m1",
-                "area": {
-                    "x1": 3126,
-                    "y1": 2482,
-                    "x2": 3226,
-                    "y2": 4450
                 }
             }
         ]
@@ -1593,6 +1425,278 @@
                     "y1": 3350,
                     "x2": 1914,
                     "y2": 3390
+                }
+            }
+        ]
+    },
+    {
+        "instance": "TraceNet",
+        "name": "MP5_B_VDD_TOP",
+        "cell": "COMP",
+        "segments": [
+            {
+                "layer": "m1",
+                "area": {
+                    "x1": 1274,
+                    "y1": 3902,
+                    "x2": 1374,
+                    "y2": 4450
+                }
+            },
+            {
+                "layer": "locali",
+                "area": {
+                    "x1": 1274,
+                    "y1": 3902,
+                    "x2": 3226,
+                    "y2": 3998
+                }
+            },
+            {
+                "layer": "m1",
+                "area": {
+                    "x1": 3126,
+                    "y1": 3902,
+                    "x2": 3226,
+                    "y2": 4450
+                }
+            }
+        ]
+    },
+    {
+        "instance": "TraceNet",
+        "name": "MP6_B_VDD_TOP",
+        "cell": "COMP",
+        "segments": [
+            {
+                "layer": "m1",
+                "area": {
+                    "x1": 1274,
+                    "y1": 3902,
+                    "x2": 1374,
+                    "y2": 4450
+                }
+            },
+            {
+                "layer": "locali",
+                "area": {
+                    "x1": 1274,
+                    "y1": 3902,
+                    "x2": 3226,
+                    "y2": 3998
+                }
+            },
+            {
+                "layer": "m1",
+                "area": {
+                    "x1": 3126,
+                    "y1": 3902,
+                    "x2": 3226,
+                    "y2": 4450
+                }
+            }
+        ]
+    },
+    {
+        "instance": "TraceNet",
+        "name": "MP1_B_VDD_BOT",
+        "cell": "COMP",
+        "segments": [
+            {
+                "layer": "m1",
+                "area": {
+                    "x1": 1274,
+                    "y1": 2502,
+                    "x2": 1374,
+                    "y2": 4450
+                }
+            },
+            {
+                "layer": "locali",
+                "area": {
+                    "x1": 1274,
+                    "y1": 2502,
+                    "x2": 3226,
+                    "y2": 2598
+                }
+            },
+            {
+                "layer": "m1",
+                "area": {
+                    "x1": 3126,
+                    "y1": 2502,
+                    "x2": 3226,
+                    "y2": 4450
+                }
+            }
+        ]
+    },
+    {
+        "instance": "TraceNet",
+        "name": "MP2_B_VDD_BOT",
+        "cell": "COMP",
+        "segments": [
+            {
+                "layer": "m1",
+                "area": {
+                    "x1": 1274,
+                    "y1": 2502,
+                    "x2": 1374,
+                    "y2": 4450
+                }
+            },
+            {
+                "layer": "locali",
+                "area": {
+                    "x1": 1274,
+                    "y1": 2502,
+                    "x2": 3226,
+                    "y2": 2598
+                }
+            },
+            {
+                "layer": "m1",
+                "area": {
+                    "x1": 3126,
+                    "y1": 2502,
+                    "x2": 3226,
+                    "y2": 4450
+                }
+            }
+        ]
+    },
+    {
+        "instance": "TraceNet",
+        "name": "MN4_B_VSS_BOT",
+        "cell": "COMP",
+        "segments": [
+            {
+                "layer": "m1",
+                "area": {
+                    "x1": 1424,
+                    "y1": -98,
+                    "x2": 1524,
+                    "y2": 4300
+                }
+            },
+            {
+                "layer": "locali",
+                "area": {
+                    "x1": 1424,
+                    "y1": -98,
+                    "x2": 3076,
+                    "y2": -2
+                }
+            },
+            {
+                "layer": "m1",
+                "area": {
+                    "x1": 2976,
+                    "y1": -98,
+                    "x2": 3076,
+                    "y2": 4300
+                }
+            }
+        ]
+    },
+    {
+        "instance": "TraceNet",
+        "name": "MN3_B_VSS_BOT",
+        "cell": "COMP",
+        "segments": [
+            {
+                "layer": "m1",
+                "area": {
+                    "x1": 1424,
+                    "y1": -98,
+                    "x2": 1524,
+                    "y2": 4300
+                }
+            },
+            {
+                "layer": "locali",
+                "area": {
+                    "x1": 1424,
+                    "y1": -98,
+                    "x2": 3076,
+                    "y2": -2
+                }
+            },
+            {
+                "layer": "m1",
+                "area": {
+                    "x1": 2976,
+                    "y1": -98,
+                    "x2": 3076,
+                    "y2": 4300
+                }
+            }
+        ]
+    },
+    {
+        "instance": "TraceNet",
+        "name": "MN5_B_VSS_TOP",
+        "cell": "COMP",
+        "segments": [
+            {
+                "layer": "m1",
+                "area": {
+                    "x1": 1424,
+                    "y1": 902,
+                    "x2": 1524,
+                    "y2": 4300
+                }
+            },
+            {
+                "layer": "locali",
+                "area": {
+                    "x1": 1424,
+                    "y1": 902,
+                    "x2": 3076,
+                    "y2": 998
+                }
+            },
+            {
+                "layer": "m1",
+                "area": {
+                    "x1": 2976,
+                    "y1": 902,
+                    "x2": 3076,
+                    "y2": 4300
+                }
+            }
+        ]
+    },
+    {
+        "instance": "TraceNet",
+        "name": "MN6_B_VSS_TOP",
+        "cell": "COMP",
+        "segments": [
+            {
+                "layer": "m1",
+                "area": {
+                    "x1": 1424,
+                    "y1": 902,
+                    "x2": 1524,
+                    "y2": 4300
+                }
+            },
+            {
+                "layer": "locali",
+                "area": {
+                    "x1": 1424,
+                    "y1": 902,
+                    "x2": 3076,
+                    "y2": 998
+                }
+            },
+            {
+                "layer": "m1",
+                "area": {
+                    "x1": 2976,
+                    "y1": 902,
+                    "x2": 3076,
+                    "y2": 4300
                 }
             }
         ]

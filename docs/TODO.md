@@ -10,6 +10,7 @@
 - [ ] There is likely some bug with connection points still, resulting in to many being created on top of each other.
 - [ ] Fix <<>> and rect in .mag file. Reduce <<>> count
 - [x] Fix x,y offset of rail rings
+- [] Fix number of traces and vias added, since its double, due to the implementation of local_bulk_to_rail_connection
 
 
 ## Notes

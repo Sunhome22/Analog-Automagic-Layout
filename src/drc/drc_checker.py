@@ -17,6 +17,7 @@
 import os
 import re
 import subprocess
+import itertools
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 from dataclasses import dataclass, field
@@ -122,12 +123,11 @@ class DRCchecking:
                                          linewidth=0.1, edgecolor='black', facecolor='red')
                 ax.add_patch(rect)
 
-        # Set limits
-        ax.set_xlim([min(area.x1 for areas in drc_errors.rule.values() for area in areas),
-                     max(area.x2 for areas in drc_errors.rule.values() for area in areas)])
-
-        ax.set_ylim([min(area.y1 for areas in drc_errors.rule.values() for area in areas),
-                     max(area.y2 for areas in drc_errors.rule.values() for area in areas)])
+        # Set plot limits
+        areas = list(itertools.chain.from_iterable(drc_errors.rule.values()))
+        if areas:
+            ax.set_xlim([min(area.x1 for area in areas), max(area.x2 for area in areas)])
+            ax.set_ylim([min(area.y1 for area in areas), max(area.y2 for area in areas)])
 
         ax.set_xlabel('X-axis')
         ax.set_ylabel('Y-axis')
