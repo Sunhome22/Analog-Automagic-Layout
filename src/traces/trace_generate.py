@@ -136,7 +136,6 @@ def map_segments_to_rectangles(path_segments, port_coord, connection_name):
 
     cumulative_x = 0
     cumulative_y = 0
-   # minimum_segment_length = 170
 
 
     for segment in path_segments:
@@ -148,9 +147,7 @@ def map_segments_to_rectangles(path_segments, port_coord, connection_name):
             end_x = start_x
             if end_real[1] > start_real[1]:
                 end_y = start_real[1] + (end_real[1] - start_real[1]) * (cumulative_y / length_y)
-            # elif end_real[1] == start_real[1]:
-            #     minimum_segment_length = minimum_segment_length * (-1 if segment_length < 0 else 1)
-            #     end_y = start_real[1] + minimum_segment_length * (cumulative_y / length_y)
+
             else:
                 end_y = start_real[1] - (start_real[1]- end_real[1]) * (cumulative_y / length_y)
         elif segment[0][1] == segment[-1][1]:  # Horizontal segment
@@ -170,76 +167,88 @@ def map_segments_to_rectangles(path_segments, port_coord, connection_name):
 
     return rectangles
 
-def _adjust_rectangle_port_overlap(overlapping_port_rectangle, non_overlapping_rectangles, all_rectangles):
+def _adjust_rectangle_port_overlap(overlapping_port_rectangle, all_rectangles, previous_adjusted_seg, increment, start_end_indicator):
 
-    adjusted_rectangles = []
-    test = []
-    old_start = (None, None)
-    old_end = (None, None)
-    for obj, port, overlapping_rectangle in overlapping_port_rectangle:
+    adjustment_distance = 21
+    all_rectangles_2 = all_rectangles[:]
+    obj = overlapping_port_rectangle[0]
+    port = overlapping_port_rectangle[1]
 
+    overlapping_rectangle = overlapping_port_rectangle[2]
+    print(obj)
+    print(port)
+    #
+    print("Overlap seg:")
+    print(overlapping_rectangle)
+    # print("All rectangles:")
+    # print(all_rectangles_2)
+    old_start = (overlapping_rectangle.area.x1, overlapping_rectangle.area.y1)
+    old_end = (overlapping_rectangle.area.x2, overlapping_rectangle.area.y2)
 
+    if previous_adjusted_seg == overlapping_rectangle:
+        increment = increment +1
+        adjustment_distance = adjustment_distance + increment
+    elif previous_adjusted_seg != overlapping_rectangle:
+        increment = 0
 
-
-        old_start = (overlapping_rectangle.area.x1,overlapping_rectangle.area.y1)
-        old_end = (overlapping_rectangle.area.x2,overlapping_rectangle.area.y2)
-
-        rectangle_direction = 1 if overlapping_rectangle.area.x1 != overlapping_rectangle.area.x2 else 0
-
+    rectangle_direction = 1 if overlapping_rectangle.area.x1 != overlapping_rectangle.area.x2 else 0
+    if not start_end_indicator:
         if rectangle_direction:
-            direction_change = obj.transform_matrix.f + port.area.y2 + 60 if obj.transform_matrix.f + (port.area.y2+port.area.y1) // 2 <= overlapping_rectangle.area.y1 else obj.transform_matrix.f+port.area.y1-60
+            direction_change = obj.transform_matrix.f + port.area.y2 + adjustment_distance if obj.transform_matrix.f + (port.area.y2+port.area.y1) // 2 < overlapping_rectangle.area.y1 else obj.transform_matrix.f+port.area.y1-adjustment_distance
+            print(f"before y: {overlapping_rectangle.area.y1}, y2:{overlapping_rectangle.area.y2}")
             overlapping_rectangle.area.y1 = overlapping_rectangle.area.y2 = direction_change
+            print(direction_change)
+            print(f"After y: {overlapping_rectangle.area.y1}, y2:{overlapping_rectangle.area.y2}")
+            print("Update")
         else:
-            direction_change = obj.transform_matrix.c + port.area.x2 + 60 if obj.transform_matrix.c + (port.area.x2 + port.area.x1) // 2 <= overlapping_rectangle.area.x1 else obj.transform_matrix.c + port.area.x1 - 60
+            direction_change = obj.transform_matrix.c + port.area.x2 + adjustment_distance if obj.transform_matrix.c + (port.area.x2 + port.area.x1) // 2 < overlapping_rectangle.area.x1 else obj.transform_matrix.c + port.area.x1 - adjustment_distance
+            print(f"before x: {overlapping_rectangle.area.x1}, x2:{overlapping_rectangle.area.x2}")
             overlapping_rectangle.area.x1 = overlapping_rectangle.area.x2 = direction_change
-        test.append(overlapping_rectangle)
-        adjusted_rectangles.append(overlapping_rectangle)
-        for rectangles in non_overlapping_rectangles:
+            print(direction_change)
+            print(f"After x: {overlapping_rectangle.area.x1}, x2:{overlapping_rectangle.area.x2}")
+            print("Update")
+    else:
+        if rectangle_direction:
+            if overlapping_rectangle.area.x2 > overlapping_rectangle.area.x1:
+                overlapping_rectangle.area.x2 -=  10
+            else:
+                overlapping_rectangle.x2 += 10
 
-            adjustment_conditions = {
-                "start_point" : [
-                                 rectangles.area.x1 == old_start[0],
-                                 rectangles.area.y1 == old_start[1]
-                                 ],
-                "start_point2": [
-                    rectangles.area.x2 == old_start[0],
-                    rectangles.area.y2 == old_start[1]
-                ],
-                "end_point" : [
-                               rectangles.area.x2 == old_end[0],
-                               rectangles.area.y2 == old_end[1]
-                               ],
-                "end_point2": [
-                    rectangles.area.x1 == old_end[0],
-                    rectangles.area.y1 == old_end[1]
-                ]
+        else:
 
-                              }
+            if overlapping_rectangle.area.y2 > overlapping_rectangle.area.y1:
+
+                overlapping_rectangle.area.y2 -= 10
+            else:
+                overlapping_rectangle.area.y2 += 10
 
 
 
-            if all(adjustment_conditions["start_point"]):
-                rectangles.area.x1 = overlapping_rectangle.area.x1
-                rectangles.area.y1 = overlapping_rectangle.area.y1
+    for rectangles in all_rectangles_2:
 
-            if all(adjustment_conditions["start_point2"]):
-                rectangles.area.x2 = overlapping_rectangle.area.x1
-                rectangles.area.y2= overlapping_rectangle.area.y1
 
-            if all(adjustment_conditions["end_point"]):
-                rectangles.area.x2 = overlapping_rectangle.area.x2
-                rectangles.area.y2 = overlapping_rectangle.area.y2
-            if all(adjustment_conditions["end_point2"]):
-                rectangles.area.x1 = overlapping_rectangle.area.x2
-                rectangles.area.y1 = overlapping_rectangle.area.y2
+        if (rectangles.area.x1, rectangles.area.y1) == old_start:
+            rectangles.area.x1, rectangles.area.y1 = overlapping_rectangle.area.x1, overlapping_rectangle.area.y1
 
 
 
-            adjusted_rectangles.append(rectangles)
+
+        if (rectangles.area.x2, rectangles.area.y2) == old_start:
+            rectangles.area.x2, rectangles.area.y2 = overlapping_rectangle.area.x1, overlapping_rectangle.area.y1
 
 
 
-    return adjusted_rectangles
+        if (rectangles.area.x2, rectangles.area.y2) == old_end:
+            rectangles.area.x2, rectangles.area.y2 = overlapping_rectangle.area.x2, overlapping_rectangle.area.y2
+
+
+
+        if (rectangles.area.x1, rectangles.area.y1) == old_end:
+            rectangles.area.x1, rectangles.area.y1 = overlapping_rectangle.area.x2, overlapping_rectangle.area.y2
+
+    # print("All rectangles:")
+    # print(all_rectangles_2)
+    return all_rectangles_2,  overlapping_rectangle, increment
 
 
 
@@ -248,11 +257,12 @@ def _adjust_rectangle_port_overlap(overlapping_port_rectangle, non_overlapping_r
 
 
 
-def _check_rectangle_port_overlap(rectangles, name, objects, trace_width):
+def _check_rectangle_port_overlap(rectangles, name, objects, trace_width,  previous_adjusted_seg, increment, net):
     pattern = r"^(\d+)([A-Za-z])_(\d+)([A-Za-z])$"
-    non_overlapping_rectangles = []
-    overlapping_port_rectangles = []
     match = re.match(pattern, name)
+    new_rectangles = rectangles [:]
+    start_end_indicator = False
+
 
     if match:
         start_object_id = int(match.group(1))
@@ -267,7 +277,7 @@ def _check_rectangle_port_overlap(rectangles, name, objects, trace_width):
 
 
     for obj in objects:
-        if not isinstance(obj, (Pin, CircuitCell)):
+        if not isinstance(obj, (Pin, CircuitCell, Trace)):
             for ports in obj.layout_ports:
 
                 allowed_overlap_conditions = {
@@ -275,70 +285,95 @@ def _check_rectangle_port_overlap(rectangles, name, objects, trace_width):
                     "end" :   [obj.number_id == end_object_id, ports.type == end_object_port],
                     "B" :     [ports.type == "B", ports.type == "b"]
                     }
+
                 if all(allowed_overlap_conditions["start"]) or all(allowed_overlap_conditions["end"]) or any(allowed_overlap_conditions["B"]):
+                    print(f"Object: {obj.number_id}, Port: {ports.type}")
                     continue
 
-                for seg in rectangles:
+                for index, seg in enumerate(rectangles):
                     overlap_conditions = {
                         "vertical_x" : [
                                         obj.transform_matrix.c + ports.area.x1 <= seg.area.x1 <= obj.transform_matrix.c + ports.area.x2,
-                                        obj.transform_matrix.c + ports.area.x1 <= seg.area.x1 - trace_width -30 <= obj.transform_matrix.c+ ports.area.x2,
-                                        obj.transform_matrix.c + ports.area.x1 <= seg.area.x1 + trace_width +30 <= obj.transform_matrix.c + ports.area.x2
+                                        obj.transform_matrix.c + ports.area.x1 <= seg.area.x1 - trace_width-17  <= obj.transform_matrix.c+ ports.area.x2,
+                                        obj.transform_matrix.c + ports.area.x1 <= seg.area.x1 + trace_width+17  <= obj.transform_matrix.c + ports.area.x2
                                         ],
 
                         "vertical_y" : [
                                         obj.transform_matrix.f + ports.area.y1 >= min(seg.area.y1, seg.area.y2) and obj.transform_matrix.f + ports.area.y2 <= max(seg.area.y1, seg.area.y2),
-                                        obj.transform_matrix.f + ports.area.y1 <= seg.area.y1 <= obj.transform_matrix.f + ports.area.y2,
-                                        obj.transform_matrix.f + ports.area.y1 <= seg.area.y2 <= obj.transform_matrix.f + ports.area.y2
+                                        obj.transform_matrix.f + ports.area.y1 <= seg.area.y1 < obj.transform_matrix.f + ports.area.y2,
+                                        obj.transform_matrix.f + ports.area.y1 <= seg.area.y2 < obj.transform_matrix.f + ports.area.y2
                                         ],
 
                         "horizontal_y" : [
-                                          obj.transform_matrix.f + ports.area.y1 <= seg.area.y1 <= obj.transform_matrix.f + ports.area.y2,
-                                          obj.transform_matrix.f + ports.area.y1 <= seg.area.y1 - trace_width -30 <= obj.transform_matrix.f + ports.area.y2,
-                                          obj.transform_matrix.f + ports.area.y1 <= seg.area.y1 + trace_width +30 <= obj.transform_matrix.f + ports.area.y2
+                                          obj.transform_matrix.f + ports.area.y1 <= seg.area.y1 < obj.transform_matrix.f + ports.area.y2,
+                                          obj.transform_matrix.f + ports.area.y1 <= seg.area.y1 - trace_width -17 < obj.transform_matrix.f + ports.area.y2,
+                                          obj.transform_matrix.f + ports.area.y1 <= seg.area.y1 + trace_width +17 < obj.transform_matrix.f + ports.area.y2
                                           ],
 
                         "horizontal_x" : [
                                           obj.transform_matrix.c + ports.area.x1 >= min(seg.area.x1, seg.area.x2) and obj.transform_matrix.c + ports.area.x2<= max(seg.area.x1, seg.area.x2),
-                                          obj.transform_matrix.c + ports.area.x1 <= seg.area.x1 <= obj.transform_matrix.c + ports.area.x2,
-                                          obj.transform_matrix.c + ports.area.x1 <= seg.area.x2 <= obj.transform_matrix.c + ports.area.x2
+                                          obj.transform_matrix.c + ports.area.x1 <= seg.area.x1 < obj.transform_matrix.c + ports.area.x2,
+                                          obj.transform_matrix.c + ports.area.x1 <= seg.area.x2 < obj.transform_matrix.c + ports.area.x2
                                           ]
                     }
 
-                    if (seg.area.x1 - seg.area.x2 == 0 and any(overlap_conditions["vertical_x"]) and any(overlap_conditions["vertical_y"])) or (seg.area.y1 - seg.area.y2 == 0 and any(overlap_conditions["horizontal_x"]) and any(overlap_conditions["horizontal_y"])):
-                            # print("overlap found")
-                            # print(obj.number_id)
-                            # print(obj.name)
-                            # print(f"Object placement: x: {obj.transform_matrix.c}, y: {obj.transform_matrix.f}")
-                            # print(f"Port: {ports.type} x1:{obj.transform_matrix.c + ports.area.x1}, y1:{obj.transform_matrix.f + ports.area.y1}, x2:{obj.transform_matrix.c + ports.area.x2}, y2:{obj.transform_matrix.f + ports.area.y2}")
-                            # print(name)
-                            # print(f"Rectangle x1:{seg.area.x1}, y1:{seg.area.y1}, x2:{seg.area.x2}, y2:{seg.area.y2}")
+                    ignore_overlap_conditions = {
+                        "same_net": [obj.schematic_connections[ports.type] == net],
+                        "vertical_x": [
+                            obj.transform_matrix.c + ports.area.x1 <= seg.area.x1 <= obj.transform_matrix.c + ports.area.x2,
 
-                            overlapping_port_rectangles.append([obj, ports, seg])
+                        ],
 
+                        "vertical_y": [
+                            obj.transform_matrix.f + ports.area.y1 >= min(seg.area.y1,
+                                                                          seg.area.y2) and obj.transform_matrix.f + ports.area.y2 <= max(
+                                seg.area.y1, seg.area.y2),
+                            obj.transform_matrix.f + ports.area.y1 <= seg.area.y1 < obj.transform_matrix.f + ports.area.y2,
+                            obj.transform_matrix.f + ports.area.y1 <= seg.area.y2 < obj.transform_matrix.f + ports.area.y2
+                        ],
 
+                        "horizontal_y": [
+                            obj.transform_matrix.f + ports.area.y1 <= seg.area.y1 < obj.transform_matrix.f + ports.area.y2,
 
+                        ],
 
-
-
-    if len(overlapping_port_rectangles) >= 1:
-
-        for rect in rectangles:
-            overlapping_bool = False
-            for overlapping_entry in overlapping_port_rectangles:
-
-                if overlapping_entry[2] == rect:
-                    overlapping_bool = True
-            if not overlapping_bool:
-                non_overlapping_rectangles.append(rect)
-
-        non_overlapping_rectangles = _adjust_rectangle_port_overlap(overlapping_port_rectangles, non_overlapping_rectangles, rectangles)
-
-
+                        "horizontal_x": [
+                            obj.transform_matrix.c + ports.area.x1 >= min(seg.area.x1,
+                                                                          seg.area.x2) and obj.transform_matrix.c + ports.area.x2 <= max(
+                                seg.area.x1, seg.area.x2),
+                            obj.transform_matrix.c + ports.area.x1 <= seg.area.x1 < obj.transform_matrix.c + ports.area.x2,
+                            obj.transform_matrix.c + ports.area.x1 <= seg.area.x2 < obj.transform_matrix.c + ports.area.x2
+                        ]
+                    }
 
 
+                    #hvis
 
-    return non_overlapping_rectangles
+
+
+
+                    if ignore_overlap_conditions["same_net"] and ((seg.area.x1 - seg.area.x2 == 0 and any(ignore_overlap_conditions["vertical_x"]) and any(ignore_overlap_conditions["vertical_y"])) or (seg.area.y1-seg.area.y2==0 and any(ignore_overlap_conditions["horizontal_x"]) and any(ignore_overlap_conditions["horizontal_y"]))):
+                         print(f"Ignored index: {index}")
+
+                         print("I MESS UP HERE")
+
+
+                    elif (seg.area.x1 - seg.area.x2 == 0 and any(overlap_conditions["vertical_x"]) and any(overlap_conditions["vertical_y"])) or (seg.area.y1 - seg.area.y2 == 0 and any(overlap_conditions["horizontal_x"]) and any(overlap_conditions["horizontal_y"])):
+                        print(f"Not ignored index: {index}")
+
+                        if index == 0 or index == len(rectangles)-1:
+                            start_end_indicator = True
+                           # if obj.schematic_connections[ports.type] != net:
+
+                        temporary_rectangles, previous_adjusted_seg, increment = _adjust_rectangle_port_overlap([obj, ports, seg], new_rectangles, previous_adjusted_seg, increment, start_end_indicator)
+                        return _check_rectangle_port_overlap(temporary_rectangles, name, objects, trace_width, previous_adjusted_seg, increment, net)
+
+
+
+
+
+
+    return rectangles
 
 
 
@@ -413,10 +448,9 @@ def _rectangle_consolidation(rectangles, segment_direction):
     return new_rectangle
 
 def _eliminate_rectangles(rectangles, trace_width):
-    spacing_m2 = 14 #horizontal
-    spacing_m3 = 30 #vertical
-    print("Rectangles length")
-    print(len(rectangles))
+    spacing_m2 = 100#horizontal
+    spacing_m3 = 100 #vertical
+
 
     rectangles_duplicate = rectangles[:]
     checked_rectangle = []
@@ -572,35 +606,38 @@ def _check_illegal_trace(trace_list):
 def initiate_write_traces(objects, all_paths,  port_coordinates, seg_list, scale_factor, net_list):
     trace_width = 30
     test = []
+    i = 0
 
     for index, net in enumerate(all_paths):
         #if not net == "local:net1" and not net =="local:net2" and not net == "local:VDD" and not net == "local:net3" and not net == "local:VSS" and not net == "local:I_BIAS" and not net == "local:net4" and not net == "net4" and not net == "net3" and not net == "net1":
-        if not net == "net1" and not net == "net3" and not net == "net4" :
+        if not net == "net1" and not net == "net2" and not net == "net3" :
       #  if not net == "net3" and not net == "net1" and not net == "net2" and not net == "net4":
 
             net_rectangles = []
             for name, path in all_paths[net]:
+                i+=1
 
                 segments = segment_path(path)
 
-
                 if len(segments) > 0:
-
+                    if i == 2:
+                        print(name)
                     mapped_rectangles = map_segments_to_rectangles(segments, port_coordinates, name)
 
+                    net_rectangles.extend(_check_rectangle_port_overlap(mapped_rectangles, name, objects, trace_width,  previous_adjusted_seg=None, increment= 0, net = net))
 
-                    net_rectangles.extend(_check_rectangle_port_overlap(mapped_rectangles, name, objects, trace_width))
-                    break
+                    # if i >= 3:
+                    #     break
 
             print(f"Length of net rectangles before delete duplicate: {len(net_rectangles)}")
             print("Stuck at _delete_duplicate")
-           # net_rectangles = _delete_duplicate_rectangles(net_rectangles)
+            net_rectangles = _delete_duplicate_rectangles(net_rectangles)
 
             print(f"Length of net rectangles before eliminate rectangles: {len(net_rectangles)}")
-           # net_rectangles = _eliminate_rectangles(net_rectangles, trace_width)
+            net_rectangles = _eliminate_rectangles(net_rectangles, trace_width)
             print("Stuck at _check_for_lost_points")
             print(f"Length of net rectangles before lost points: {len(net_rectangles)}")
-            #net_rectangles =_check_for_lost_points(net_rectangles)
+            net_rectangles =_check_for_lost_points(net_rectangles)
             print(f"Length of net rectangles end: {len(net_rectangles)}")
 
            # test.append(net_rectangles)
@@ -609,6 +646,6 @@ def initiate_write_traces(objects, all_paths,  port_coordinates, seg_list, scale
                 #net_rectangles = _eliminate_rectangles(net_rectangles, trace_width)
             objects.append(_write_traces(net_rectangles, trace_width, index, net))
 
-      #  _check_net_constraint_vioaltion(test)
+          #  _check_net_constraint_vioaltion(test)
 
     return objects
