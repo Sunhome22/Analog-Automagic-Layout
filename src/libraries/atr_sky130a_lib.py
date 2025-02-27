@@ -108,9 +108,9 @@ def generate_bulk_to_rail_segments(self, rail, component, y_params, group_endpoi
     for structural_component in self.structural_components:
         if re.search(rf".*{rail}.*", structural_component.name):
             middle_segment = RectArea(x1=structural_component.layout.area.x1,
-                                      y1=y_params[0] + component.transform_matrix.f - bulk_width // 2 + y_params[1],
+                                      y1=y_params[0] + component.transform_matrix.f - (bulk_width // 2) + y_params[1],
                                       x2=structural_component.layout.area.x2,
-                                      y2=y_params[0] + component.transform_matrix.f + bulk_width // 2 + y_params[1])
+                                      y2=y_params[0] + component.transform_matrix.f + (bulk_width // 2) + y_params[1])
 
             left_segment = RectArea(x1=structural_component.layout.area.x1,
                                     y1=y_params[0] + component.transform_matrix.f - bulk_width // 2 + y_params[1],
@@ -132,8 +132,12 @@ def generate_bulk_to_rail_segments(self, rail, component, y_params, group_endpoi
 
 def get_component_group_end_points_for_atr_sky130a_lib(self: object):
     component_group_sets = defaultdict(list)
+
     min_y_components = list(defaultdict(list))
     max_y_components = list(defaultdict(list))
+
+    min_x_components = list(defaultdict(list))
+    max_x_components = list(defaultdict(list))
 
     # Make sets of component groups
     for component in self.transistor_components:
@@ -150,6 +154,21 @@ def get_component_group_end_points_for_atr_sky130a_lib(self: object):
         min_y_components.append(min(components_y_placement.items()))
         max_y_components.append(max(components_y_placement.items()))
 
+    # Iterate over each set and their components within and get max- and min y position for each.
+    for group, components in component_group_sets.items():
+        components_x_placement = defaultdict(list)
+
+        for component in components:
+            components_x_placement[component.transform_matrix.c].append(component)
+
+        min_x_components.append(min(components_x_placement.items()))
+        max_x_components.append(max(components_x_placement.items()))
+
+    for components in max_x_components:
+        for component in components[1]:
+            print(component.name)
+
+
     # Check for overlap of y-minimum components
     prev_y_min = None
     y_min_overlap_components_to_remove = []
@@ -162,6 +181,7 @@ def get_component_group_end_points_for_atr_sky130a_lib(self: object):
 
                     # Take the maximum of the last two components that compared a y-distance to be
                     # less/equal to the bounding box.
+                    print(min_y_components[i])
                     y_min_overlap_components_to_remove.append(max(min_y_components[i - 1], min_y_components[i],
                                                                   key=lambda distance: (distance[0])))
         prev_y_min = y
@@ -235,7 +255,7 @@ def place_transistor_endpoints_for_atr_sky130a_lib(self: object, component: obje
                 f"use {layout_name_bot} {component.group}_{component.name}_TAPBOT {self.current_component_library_path}",
                 f"transform {component.transform_matrix.a} {component.transform_matrix.b}"
                 f" {component.transform_matrix.c} {component.transform_matrix.d}"
-                f" {component.transform_matrix.e} {component.transform_matrix.f - component.group_endpoint_bounding_box.y2}",
+                f" {component.transform_matrix.e} {component.transform_matrix.f - component.bounding_box.y2 // 2}",
                 f"box {component.group_endpoint_bounding_box.x1} {component.group_endpoint_bounding_box.y1} "
                 f"{component.group_endpoint_bounding_box.x2} {component.group_endpoint_bounding_box.y2}"
             ])
@@ -246,7 +266,7 @@ def place_transistor_endpoints_for_atr_sky130a_lib(self: object, component: obje
                 f"use {layout_name_bot} {component.group}_{component.name}_TAPBOT {self.current_component_library_path}",
                 f"transform {component.transform_matrix.a} {component.transform_matrix.b}"
                 f" {component.transform_matrix.c} {component.transform_matrix.d}"
-                f" {component.transform_matrix.e} {component.transform_matrix.f - component.group_endpoint_bounding_box.y2}",
+                f" {component.transform_matrix.e} {component.transform_matrix.f - component.bounding_box.y2 // 2}",
                 f"box {component.group_endpoint_bounding_box.x1} {component.group_endpoint_bounding_box.y1} "
                 f"{component.group_endpoint_bounding_box.x2} {component.group_endpoint_bounding_box.y2}"
             ])

@@ -116,15 +116,27 @@ def main():
         #MagicLayoutCreator(project_properties=project_properties, components=components)
         #draw_result(grid_size=grid_size, objects=components, used_area=used_area, scale_factor=scale_factor,
         #            draw_name=draw_name)
-        save_to_json(objects=components, file_name="src/json_converter/components.json")
+
+        # temp setting
+        for component in components:
+            if isinstance(component, CircuitCell):
+                component.transform_matrix.set([1,0,0,0,1,0])
+                component.bounding_box.set(used_area)
+
+        # Update components with trace information
+        components = TraceGenerator(components=components, project_properties=project_properties).get()
+
+        # Create layout
+        MagicLayoutCreator(project_properties=project_properties, components=components)
+
+        # DRC handling
+        DRCchecking(project_properties=project_properties)
+
+        # LVS handling
+        LVSchecking(project_properties=project_properties)
+        save_to_json(components, file_name="src/json_converter/components_test.json")
 
     else:
-        #path = []
-        #logger.info("Starting Drawing results")
-        # path true:
-        #
-        #logger.info("Finished Drawing results")
-
         components = load_from_json(file_name="src/json_converter/components.json")
 
         # Update components with trace information
@@ -144,7 +156,6 @@ def main():
         logger.debug(f"Components registered: ")
         for component in components:
             logger.debug(f"- {component}")
-
 
 if __name__ == '__main__':
     main()
