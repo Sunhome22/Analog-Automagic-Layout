@@ -79,21 +79,23 @@ def __local_gate_to_drain_connection_for_sky130a_lib(self: object, component: ob
 
 def __local_bulk_to_rail_connection_for_sky130a_lib(self: object, component: object, rail):
     y_params= {
-        'top': (component.bounding_box.y2, component.group_endpoint_bounding_box.y2 // 2),
-        'bot': (component.bounding_box.y1, -component.group_endpoint_bounding_box.y2 // 2),
+        'rail_top': (component.bounding_box.y2, component.group_endpoint_bounding_box.y2 // 2),
+        'rail_bot': (component.bounding_box.y1, -component.group_endpoint_bounding_box.y2 // 2),
     }
 
     if component.group_endpoint:
 
-        if component.group_endpoint == 'top/bot':
+        if component.group_endpoint == 'rail_top/bot':
             generate_bulk_to_rail_segments(self=self, rail=rail, component=component,
-                                           y_params=y_params['top'], group_endpoint="TOP")
+                                           y_params=y_params['rail_top'], group_endpoint="TOP")
             generate_bulk_to_rail_segments(self=self, rail=rail, component=component,
-                                           y_params=y_params['bot'], group_endpoint="BOT")
-        else:
+                                           y_params=y_params['rail_bot'], group_endpoint="BOT")
+
+        if component.group_endpoint == 'rail_top' or component.group_endpoint == 'rail_bot':
             generate_bulk_to_rail_segments(self=self, rail=rail, component=component,
                                            y_params=y_params[component.group_endpoint],
                                            group_endpoint=component.group_endpoint.upper())
+
 
 
 def generate_bulk_to_rail_segments(self, rail, component, y_params, group_endpoint):
@@ -131,6 +133,7 @@ def generate_bulk_to_rail_segments(self, rail, component, y_params, group_endpoi
 
 
 def get_component_group_end_points_for_atr_sky130a_lib(self: object):
+
     component_group_sets = defaultdict(list)
 
     min_y_components = list(defaultdict(list))
@@ -154,7 +157,7 @@ def get_component_group_end_points_for_atr_sky130a_lib(self: object):
         min_y_components.append(min(components_y_placement.items()))
         max_y_components.append(max(components_y_placement.items()))
 
-    # Iterate over each set and their components within and get max- and min y position for each.
+    # Iterate over each set and their components within and get max- and min x position for each.
     for group, components in component_group_sets.items():
         components_x_placement = defaultdict(list)
 
@@ -164,10 +167,9 @@ def get_component_group_end_points_for_atr_sky130a_lib(self: object):
         min_x_components.append(min(components_x_placement.items()))
         max_x_components.append(max(components_x_placement.items()))
 
-    for components in max_x_components:
-        for component in components[1]:
-            print(component.name)
-
+    # for components in min_x_components:
+    #     for component in components[1]:
+    #         print(component.name)
 
     # Check for overlap of y-minimum components
     prev_y_min = None
@@ -175,16 +177,35 @@ def get_component_group_end_points_for_atr_sky130a_lib(self: object):
 
     for i, (y, components) in enumerate(min_y_components):
 
-        if prev_y_min is not None:
+        if prev_y_min:
             for component in components:
-                if abs(y - prev_y_min) <= component.bounding_box.y2:
+
+                if abs(y - prev_y_min) == component.bounding_box.y2:
 
                     # Take the maximum of the last two components that compared a y-distance to be
                     # less/equal to the bounding box.
-                    print(min_y_components[i])
                     y_min_overlap_components_to_remove.append(max(min_y_components[i - 1], min_y_components[i],
                                                                   key=lambda distance: (distance[0])))
+
         prev_y_min = y
+
+    # Check for overlap of x-minimum components
+    prev_x_min = None
+    x_min_overlap_components_to_remove = []
+
+    for i, (x, components) in enumerate(min_x_components):
+
+        if prev_x_min:
+            for component in components:
+
+                if abs(x - prev_x_min) == component.bounding_box.x2:
+                    # Take the maximum of the last two components that compared a y-distance to be
+                    # less/equal to the bounding box.
+                    x_min_overlap_components_to_remove.append(max(min_x_components[i - 1], min_x_components[i],
+                                                                  key=lambda distance: (distance[0])))
+
+        prev_x_min = x
+
 
     # Check for overlap of y-maximum components
     prev_y_max = None
@@ -194,13 +215,31 @@ def get_component_group_end_points_for_atr_sky130a_lib(self: object):
 
         if prev_y_max is not None:
             for component in components:
-                # Maybe there are some edge case here!
-                if abs(y - prev_y_max) <= component.bounding_box.y2:
+                # Maybe there are some edge case here still!
+                if abs(y - prev_y_max) == component.bounding_box.y2:
+
                     # Take the minimum of the last two components that compared a y-distance to be
                     # less/equal to the bounding box.
                     y_max_overlap_components_to_remove.append(min(max_y_components[i - 1], max_y_components[i],
                                                                   key=lambda distance: (distance[0])))
         prev_y_max = y
+
+    # Check for overlap of x-maximum components
+    prev_x_max = None
+    x_max_overlap_components_to_remove = []
+
+    for i, (x, components) in enumerate(max_x_components):
+
+        if prev_x_max is not None:
+            for component in components:
+                # Maybe there are some edge case here still!
+                if abs(x - prev_x_max) == component.bounding_box.x2:
+                    # Take the minimum of the last two components that compared a y-distance to be
+                    # less/equal to the bounding box.
+                    x_max_overlap_components_to_remove.append(min(max_x_components[i - 1], max_x_components[i],
+                                                                  key=lambda distance: (distance[0])))
+        prev_x_max = x
+
 
     # Filter out y-minimum components that have been found to be overlapping
     for _, overlap_components in y_min_overlap_components_to_remove:
@@ -208,28 +247,90 @@ def get_component_group_end_points_for_atr_sky130a_lib(self: object):
                             for y, components in min_y_components]
     min_y_components = [(y, components) for y, components in min_y_components if components]  # remove empty tuples
 
+    # Filter out x-minimum components that have been found to be overlapping
+    for _, overlap_components in x_min_overlap_components_to_remove:
+        min_x_components = [(x, [component for component in components if component not in overlap_components])
+                            for x, components in min_x_components]
+    min_x_components = [(x, components) for x, components in min_x_components if components]  # remove empty tuples
+
+
     # Filter out y-maximum components that have been found to be overlapping
     for _, overlap_components in y_max_overlap_components_to_remove:
         max_y_components = [(y, [component for component in components if component not in overlap_components])
                             for y, components in max_y_components]
     max_y_components = [(y, components) for y, components in max_y_components if components]  # remove empty tuples
 
+    # Filter out x-maximum components that have been found to be overlapping
+    for _, overlap_components in x_max_overlap_components_to_remove:
+        max_x_components = [(x, [component for component in components if component not in overlap_components])
+                            for x, components in max_x_components]
+    max_x_components = [(x, components) for x, components in max_x_components if components]  # remove empty tuples
+
     # Update transistor components with end point information
     for component in self.components:
         if isinstance(component, Transistor):
 
-            for _, components in min_y_components:
-                for comp in components:
-                    if comp == component:
-                        component.group_endpoint = "bot"
+            for _, y_components in min_y_components:
+                for y_comp in y_components:
 
-            for _, components in max_y_components:
-                for comp in components:
-                    if comp == component:
-                        if component.group_endpoint == "bot":
-                            component.group_endpoint = "top/bot"
-                        else:
-                            component.group_endpoint = "top"
+                    for _, x_components in min_x_components:
+                        for x_comp in x_components:
+                            if x_comp == component:
+                                if y_comp == x_comp:
+                                    component.group_endpoint = "no_rail_bot"
+
+                    for _, x_components in max_x_components:
+                        for x_comp in x_components:
+                            if x_comp == component:
+                                if y_comp != x_comp:
+                                    component.group_endpoint = "no_rail_bot"
+
+
+            for _, mx_y_components in max_y_components:
+                for mx_y_comp in mx_y_components:
+
+                    for _, mi_x_components in min_x_components:
+                        for mi_x_comp in mi_x_components:
+                            if mi_x_comp == component:
+                                if mx_y_comp == mi_x_comp:
+                                    if component.group_endpoint == "no_rail_bot":
+                                        component.group_endpoint = "no_rail_top/bot"
+
+                                    else:
+                                        component.group_endpoint = "no_rail_top"
+
+                    for _, mx_x_components in max_x_components:
+                        for mx_x_comp in mx_x_components:
+                            if mx_x_comp == component:
+                                if mx_y_comp != mx_x_comp:
+                                    if component.group_endpoint == "no_rail_bot":
+                                        component.group_endpoint = "no_rail_top/bot"
+
+                                    else:
+                                        component.group_endpoint = "no_rail_top"
+
+                # for comp in components:
+                #     if comp == component:
+                #         if component.group_endpoint == "rail_bot":
+                #             component.group_endpoint = "rail_top/bot"
+                #         else:
+                #             component.group_endpoint = "rail_top"
+
+    # # Update transistor components with end point information
+    # for component in self.components:
+    #     if isinstance(component, Transistor):
+    #
+    #
+    #                     component.group_endpoint = "no_rail_bot"
+    #
+    #         for _, components in max_x_components:
+    #             for comp in components:
+    #                 if comp == component:
+    #                     if component.group_endpoint == "no_rail_bot":
+    #                         component.group_endpoint = "no_rail_top/bot"
+    #                     else:
+    #                         component.group_endpoint = "no_rail_top"
+
 
 # ========================================== Magic layout creator functions ============================================
 
@@ -239,7 +340,7 @@ def place_transistor_endpoints_for_atr_sky130a_lib(self: object, component: obje
         layout_name_top = re.sub(r".{3}$", "TAPTOP", component.layout_name)
         layout_name_bot = re.sub(r".{3}$", "TAPBOT", component.layout_name)
 
-        if component.group_endpoint == "top":
+        if component.group_endpoint == "rail_top":
 
             self.magic_file_lines.extend([
                 f"use {layout_name_top} {component.group}_{component.name}_TAPTOP {self.current_component_library_path}",
@@ -250,23 +351,23 @@ def place_transistor_endpoints_for_atr_sky130a_lib(self: object, component: obje
                 f"{component.group_endpoint_bounding_box.x2} {component.group_endpoint_bounding_box.y2}"
             ])
 
-        if component.group_endpoint == "bot":
+        if component.group_endpoint == "rail_bot":
             self.magic_file_lines.extend([
                 f"use {layout_name_bot} {component.group}_{component.name}_TAPBOT {self.current_component_library_path}",
                 f"transform {component.transform_matrix.a} {component.transform_matrix.b}"
                 f" {component.transform_matrix.c} {component.transform_matrix.d}"
-                f" {component.transform_matrix.e} {component.transform_matrix.f - component.bounding_box.y2 // 2}",
+                f" {component.transform_matrix.e} {component.transform_matrix.f - component.group_endpoint_bounding_box.y2}",
                 f"box {component.group_endpoint_bounding_box.x1} {component.group_endpoint_bounding_box.y1} "
                 f"{component.group_endpoint_bounding_box.x2} {component.group_endpoint_bounding_box.y2}"
             ])
 
-        if component.group_endpoint == "top/bot":
+        if component.group_endpoint == "rail_top/bot":
 
             self.magic_file_lines.extend([
                 f"use {layout_name_bot} {component.group}_{component.name}_TAPBOT {self.current_component_library_path}",
                 f"transform {component.transform_matrix.a} {component.transform_matrix.b}"
                 f" {component.transform_matrix.c} {component.transform_matrix.d}"
-                f" {component.transform_matrix.e} {component.transform_matrix.f - component.bounding_box.y2 // 2}",
+                f" {component.transform_matrix.e} {component.transform_matrix.f - component.group_endpoint_bounding_box.y2}",
                 f"box {component.group_endpoint_bounding_box.x1} {component.group_endpoint_bounding_box.y1} "
                 f"{component.group_endpoint_bounding_box.x2} {component.group_endpoint_bounding_box.y2}"
             ])
@@ -279,6 +380,50 @@ def place_transistor_endpoints_for_atr_sky130a_lib(self: object, component: obje
                 f"box {component.group_endpoint_bounding_box.x1} {component.group_endpoint_bounding_box.y1} "
                 f"{component.group_endpoint_bounding_box.x2} {component.group_endpoint_bounding_box.y2}"
             ])
+
+        if component.group_endpoint == "no_rail_top":
+
+            self.magic_file_lines.extend([
+                f"use {layout_name_top} {component.group}_{component.name}_TAPTOP {self.current_component_library_path}",
+                f"transform {component.transform_matrix.a} {component.transform_matrix.b}"
+                f" {component.transform_matrix.c} {component.transform_matrix.d}"
+                f" {component.transform_matrix.e} {component.transform_matrix.f + component.bounding_box.y2}",
+                f"box {component.group_endpoint_bounding_box.x1} {component.group_endpoint_bounding_box.y1} "
+                f"{component.group_endpoint_bounding_box.x2} {component.group_endpoint_bounding_box.y2}"
+            ])
+
+        if component.group_endpoint == "no_rail_bot":
+            self.magic_file_lines.extend([
+                f"use {layout_name_bot} {component.group}_{component.name}_TAPBOT {self.current_component_library_path}",
+                f"transform {component.transform_matrix.a} {component.transform_matrix.b}"
+                f" {component.transform_matrix.c} {component.transform_matrix.d}"
+                f" {component.transform_matrix.e} {component.transform_matrix.f - component.group_endpoint_bounding_box.y2}",
+                f"box {component.group_endpoint_bounding_box.x1} {component.group_endpoint_bounding_box.y1} "
+                f"{component.group_endpoint_bounding_box.x2} {component.group_endpoint_bounding_box.y2}"
+            ])
+
+        if component.group_endpoint == "no_rail_top/bot":
+
+            self.magic_file_lines.extend([
+                f"use {layout_name_bot} {component.group}_{component.name}_TAPBOT {self.current_component_library_path}",
+                f"transform {component.transform_matrix.a} {component.transform_matrix.b}"
+                f" {component.transform_matrix.c} {component.transform_matrix.d}"
+                f" {component.transform_matrix.e} {component.transform_matrix.f - component.group_endpoint_bounding_box.y2}",
+                f"box {component.group_endpoint_bounding_box.x1} {component.group_endpoint_bounding_box.y1} "
+                f"{component.group_endpoint_bounding_box.x2} {component.group_endpoint_bounding_box.y2}"
+            ])
+
+            self.magic_file_lines.extend([
+                f"use {layout_name_top} {component.group}_{component.name}_TAPTOP {self.current_component_library_path}",
+                f"transform {component.transform_matrix.a} {component.transform_matrix.b}"
+                f" {component.transform_matrix.c} {component.transform_matrix.d}"
+                f" {component.transform_matrix.e} {component.transform_matrix.f + component.bounding_box.y2}",
+                f"box {component.group_endpoint_bounding_box.x1} {component.group_endpoint_bounding_box.y1} "
+                f"{component.group_endpoint_bounding_box.x2} {component.group_endpoint_bounding_box.y2}"
+            ])
+
+
+
 
 # ========================================== Magic component parser functions ==========================================
 

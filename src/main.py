@@ -114,14 +114,15 @@ def main():
 
         #components = initiate_write_traces(components, path, port_coord, seg_list, scale_factor, net_list)
         #MagicLayoutCreator(project_properties=project_properties, components=components)
-        #draw_result(grid_size=grid_size, objects=components, used_area=used_area, scale_factor=scale_factor,
-        #            draw_name=draw_name)
+
 
         # temp setting
         for component in components:
             if isinstance(component, CircuitCell):
                 component.transform_matrix.set([1,0,0,0,1,0])
                 component.bounding_box.set(used_area)
+
+        save_to_json(components, file_name="src/json_converter/components.json")
 
         # Update components with trace information
         components = TraceGenerator(components=components, project_properties=project_properties).get()
@@ -134,7 +135,6 @@ def main():
 
         # LVS handling
         LVSchecking(project_properties=project_properties)
-        save_to_json(components, file_name="src/json_converter/components_test.json")
 
     else:
         components = load_from_json(file_name="src/json_converter/components.json")
@@ -150,7 +150,16 @@ def main():
 
         # LVS handling
         LVSchecking(project_properties=project_properties)
-        save_to_json(components, file_name="src/json_converter/components_test.json")
+        #save_to_json(components, file_name="src/json_converter/components_test.json")
+
+        used_area = 0
+        for component in components:
+            if isinstance(component, CircuitCell):
+                used_area  = component.bounding_box
+
+
+        draw_result(grid_size=grid_size, objects=components, used_area=used_area, scale_factor=scale_factor,
+                    draw_name=draw_name)
 
         # Debug log of all components
         logger.debug(f"Components registered: ")
