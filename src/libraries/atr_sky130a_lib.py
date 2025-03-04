@@ -43,7 +43,8 @@ def generate_local_traces_for_atr_sky130a_lib(self: object):
         if (re.search(r".*VDD.*", component.schematic_connections['B']) or
                 re.search(r".*VSS.*", component.schematic_connections['B'])):
             __local_bulk_to_rail_connection_for_sky130a_lib(self=self, component=component,
-                                                           rail=component.schematic_connections['B'])
+                                                            rail=component.schematic_connections['B'])
+
 
 def __local_bulk_to_source_connection_for_atr_sky130a_lib(self: object, component: object):
     trace = TraceNet(name=f"{component.name}_B_S", cell=component.cell)
@@ -59,6 +60,7 @@ def __local_bulk_to_source_connection_for_atr_sky130a_lib(self: object, componen
                                                                 x2=source_x2 + component.transform_matrix.c,
                                                                 y2=source_y2 + component.transform_matrix.f))]
     self.components.append(trace)
+
 
 def __local_gate_to_drain_connection_for_sky130a_lib(self: object, component: object):
     trace = TraceNet(name=f"{component.name}_G_D", cell=component.cell)
@@ -95,7 +97,6 @@ def __local_bulk_to_rail_connection_for_sky130a_lib(self: object, component: obj
             generate_bulk_to_rail_segments(self=self, rail=rail, component=component,
                                            y_params=y_params[component.group_endpoint],
                                            group_endpoint=component.group_endpoint.upper())
-
 
 
 def generate_bulk_to_rail_segments(self, rail, component, y_params, group_endpoint):
@@ -167,9 +168,9 @@ def get_component_group_end_points_for_atr_sky130a_lib(self: object):
         min_x_components.append(min(components_x_placement.items()))
         max_x_components.append(max(components_x_placement.items()))
 
-    # for components in min_x_components:
-    #     for component in components[1]:
-    #         print(component.name)
+    for components in max_y_components:
+        for component in components[1]:
+            print(f"pre_max_y: {component.name}")
 
     # Check for overlap of y-minimum components
     prev_y_min = None
@@ -190,22 +191,21 @@ def get_component_group_end_points_for_atr_sky130a_lib(self: object):
         prev_y_min = y
 
     # Check for overlap of x-minimum components
-    prev_x_min = None
-    x_min_overlap_components_to_remove = []
-
-    for i, (x, components) in enumerate(min_x_components):
-
-        if prev_x_min:
-            for component in components:
-
-                if abs(x - prev_x_min) == component.bounding_box.x2:
-                    # Take the maximum of the last two components that compared a y-distance to be
-                    # less/equal to the bounding box.
-                    x_min_overlap_components_to_remove.append(max(min_x_components[i - 1], min_x_components[i],
-                                                                  key=lambda distance: (distance[0])))
-
-        prev_x_min = x
-
+    # prev_x_min = None
+    # x_min_overlap_components_to_remove = []
+    #
+    # for i, (x, components) in enumerate(min_x_components):
+    #
+    #     if prev_x_min:
+    #         for component in components:
+    #
+    #             if abs(x - prev_x_min) == component.bounding_box.x2:
+    #                 # Take the maximum of the last two components that compared a y-distance to be
+    #                 # less/equal to the bounding box.
+    #                 x_min_overlap_components_to_remove.append(max(min_x_components[i - 1], min_x_components[i],
+    #                                                               key=lambda distance: (distance[0])))
+    #
+    #     prev_x_min = x
 
     # Check for overlap of y-maximum components
     prev_y_max = None
@@ -225,21 +225,21 @@ def get_component_group_end_points_for_atr_sky130a_lib(self: object):
         prev_y_max = y
 
     # Check for overlap of x-maximum components
-    prev_x_max = None
-    x_max_overlap_components_to_remove = []
-
-    for i, (x, components) in enumerate(max_x_components):
-
-        if prev_x_max is not None:
-            for component in components:
-                # Maybe there are some edge case here still!
-                if abs(x - prev_x_max) == component.bounding_box.x2:
-                    # Take the minimum of the last two components that compared a y-distance to be
-                    # less/equal to the bounding box.
-                    x_max_overlap_components_to_remove.append(min(max_x_components[i - 1], max_x_components[i],
-                                                                  key=lambda distance: (distance[0])))
-        prev_x_max = x
-
+    # prev_x_max = None
+    # x_max_overlap_components_to_remove = []
+    #
+    # for i, (x, components) in enumerate(max_x_components):
+    #
+    #     if prev_x_max is not None:
+    #         for component in components:
+    #             print(component)
+    #             # Maybe there are some edge case here still!
+    #             if abs(x - prev_x_max) == component.bounding_box.x2:
+    #                 # Take the minimum of the last two components that compared a y-distance to be
+    #                 # less/equal to the bounding box.
+    #                 x_max_overlap_components_to_remove.append(min(max_x_components[i - 1], max_x_components[i],
+    #                                                               key=lambda distance: (distance[0])))
+    #     prev_x_max = x
 
     # Filter out y-minimum components that have been found to be overlapping
     for _, overlap_components in y_min_overlap_components_to_remove:
@@ -248,11 +248,10 @@ def get_component_group_end_points_for_atr_sky130a_lib(self: object):
     min_y_components = [(y, components) for y, components in min_y_components if components]  # remove empty tuples
 
     # Filter out x-minimum components that have been found to be overlapping
-    for _, overlap_components in x_min_overlap_components_to_remove:
-        min_x_components = [(x, [component for component in components if component not in overlap_components])
-                            for x, components in min_x_components]
-    min_x_components = [(x, components) for x, components in min_x_components if components]  # remove empty tuples
-
+    # for _, overlap_components in x_min_overlap_components_to_remove:
+    #     min_x_components = [(x, [component for component in components if component not in overlap_components])
+    #                         for x, components in min_x_components]
+    # min_x_components = [(x, components) for x, components in min_x_components if components]  # remove empty tuples
 
     # Filter out y-maximum components that have been found to be overlapping
     for _, overlap_components in y_max_overlap_components_to_remove:
@@ -261,10 +260,26 @@ def get_component_group_end_points_for_atr_sky130a_lib(self: object):
     max_y_components = [(y, components) for y, components in max_y_components if components]  # remove empty tuples
 
     # Filter out x-maximum components that have been found to be overlapping
-    for _, overlap_components in x_max_overlap_components_to_remove:
-        max_x_components = [(x, [component for component in components if component not in overlap_components])
-                            for x, components in max_x_components]
-    max_x_components = [(x, components) for x, components in max_x_components if components]  # remove empty tuples
+    # for _, overlap_components in x_max_overlap_components_to_remove:
+    #     max_x_components = [(x, [component for component in components if component not in overlap_components])
+    #                         for x, components in max_x_components]
+    # max_x_components = [(x, components) for x, components in max_x_components if components]  # remove empty tuples
+
+    for components in min_x_components:
+        for component in components[1]:
+            print(f"minimum_x: {component.name}")
+
+    for components in max_x_components:
+        for component in components[1]:
+            print(f"max_x: {component.name}")
+
+    for components in min_y_components:
+        for component in components[1]:
+            print(f"minimum_y: {component.name}")
+
+    for components in max_y_components:
+        for component in components[1]:
+            print(f"max_y: {component.name}")
 
     # Update transistor components with end point information
     for component in self.components:
@@ -277,37 +292,39 @@ def get_component_group_end_points_for_atr_sky130a_lib(self: object):
                         for x_comp in x_components:
                             if x_comp == component:
                                 if y_comp == x_comp:
+                                    #print(f"min x: {x_comp.name}")
                                     component.group_endpoint = "no_rail_bot"
 
                     for _, x_components in max_x_components:
                         for x_comp in x_components:
+
                             if x_comp == component:
                                 if y_comp != x_comp:
+                                    #print(f"max x: {x_comp.name}")
                                     component.group_endpoint = "no_rail_bot"
 
-
-            for _, mx_y_components in max_y_components:
-                for mx_y_comp in mx_y_components:
-
-                    for _, mi_x_components in min_x_components:
-                        for mi_x_comp in mi_x_components:
-                            if mi_x_comp == component:
-                                if mx_y_comp == mi_x_comp:
-                                    if component.group_endpoint == "no_rail_bot":
-                                        component.group_endpoint = "no_rail_top/bot"
-
-                                    else:
-                                        component.group_endpoint = "no_rail_top"
-
-                    for _, mx_x_components in max_x_components:
-                        for mx_x_comp in mx_x_components:
-                            if mx_x_comp == component:
-                                if mx_y_comp != mx_x_comp:
-                                    if component.group_endpoint == "no_rail_bot":
-                                        component.group_endpoint = "no_rail_top/bot"
-
-                                    else:
-                                        component.group_endpoint = "no_rail_top"
+            # for _, mx_y_components in max_y_components:
+            #     for mx_y_comp in mx_y_components:
+            #
+            #         for _, mi_x_components in min_x_components:
+            #             for mi_x_comp in mi_x_components:
+            #                 if mi_x_comp == component:
+            #                     if mx_y_comp == mi_x_comp:
+            #                         if component.group_endpoint == "no_rail_bot":
+            #                             component.group_endpoint = "no_rail_top/bot"
+            #
+            #                         else:
+            #                             component.group_endpoint = "no_rail_top"
+            #
+            #         for _, mx_x_components in max_x_components:
+            #             for mx_x_comp in mx_x_components:
+            #                 if mx_x_comp == component:
+            #                     if mx_y_comp != mx_x_comp:
+            #                         if component.group_endpoint == "no_rail_bot":
+            #                             component.group_endpoint = "no_rail_top/bot"
+            #
+            #                         else:
+            #                             component.group_endpoint = "no_rail_top"
 
                 # for comp in components:
                 #     if comp == component:

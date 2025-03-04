@@ -6,9 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="f7791a66-c797-4448-a536-1f4db186a974" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/TODO.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/TODO.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/drc/drc_checker.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/drc/drc_checker.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/libraries/atr_sky130a_lib.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/libraries/atr_sky130a_lib.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/magic/magic_component_parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/magic/magic_component_parser.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -37,15 +36,15 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Python.Test.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "Bjørn__v2",
-    "last_opened_file_path": "//wsl$/Ubuntu-22.04/home/bjorn/Analog-Automagic-Layout/src/traces",
-    "settings.editor.selected.configurable": "editor.preferences.tabs"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Python.Test.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;Bjørn__v2&quot;,
+    &quot;last_opened_file_path&quot;: &quot;//wsl$/Ubuntu-22.04/home/bjorn/Analog-Automagic-Layout/src/traces&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;editor.preferences.tabs&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="\\wsl$\Ubuntu-22.04\home\bjorn\Analog-Automagic-Layout\src\traces" />
@@ -89,7 +88,7 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-python-sdk-98f27166c754-ba05f1cad1b1-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-242.21829.153" />
+        <option value="bundled-python-sdk-975db3bf15a3-31b6be0877a2-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-241.18034.82" />
       </set>
     </attachedChunks>
   </component>

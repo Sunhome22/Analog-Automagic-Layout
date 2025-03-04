@@ -50,17 +50,30 @@ class DRCchecking:
         self.project_top_cell_name = project_properties.top_cell_name
         self.logger = get_a_logger(__name__)
 
-        self.__create_drc_log()
-        raw_drc_log = self.__read_drc_log()
+        self.__create_standard_drc_logs()
+        self.__create_custom_drc_log()
+        raw_drc_log = self.__read_custom_drc_log()
 
         # Item nr. 2 = detailed violations
-        drc_errors = self.__parse_out_detailed_drc_errors(raw_data_log=raw_drc_log[2])
+        drc_errors = self.__parse_out_custom_detailed_drc_errors(raw_data_log=raw_drc_log[2])
 
-        self.__plot_drc_errors(drc_errors=drc_errors)
+        self.__plot_custom_drc_errors(drc_errors=drc_errors)
         self.logger.info(f"{raw_drc_log[0].rstrip()}")
         self.logger.info(f"{raw_drc_log[1].rstrip()}")
 
-    def __create_drc_log(self):
+    def __create_standard_drc_logs(self):
+        work_directory = os.path.expanduser(f"{self.project_directory}/work/")
+
+        try:
+            subprocess.run([f'make drc {work_directory}'],
+                           stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                           text=True, check=True, shell=True, cwd=work_directory)
+            self.logger.info(f"Standard DRC logs created from running 'make drc'")
+
+        except subprocess.CalledProcessError as e:
+            self.logger.error(f"'Could not run 'make drc {work_directory}'")
+
+    def __create_custom_drc_log(self):
         """Runs a Tcl script that creates a result log from running a series of DRC related magic commands"""
 
         tcl_script_path = os.path.join(self.current_file_directory, 'log_drc_info.tcl')
@@ -72,27 +85,27 @@ class DRCchecking:
                             f'-dnull -noconsole < {tcl_script_path}'],
                            stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                            text=True, check=True, shell=True, cwd=work_directory)
-            self.logger.info(f"DRC log created from executing 'magic ../design/{self.project_top_lib_name}/"
+            self.logger.info(f"Custom DRC log created from running 'magic ../design/{self.project_top_lib_name}/"
                              f"{self.project_top_cell_name}.mag -dnull -noconsole < {tcl_script_path}'")
 
         except subprocess.CalledProcessError as e:
             self.logger.error(f"'magic ../design/{self.project_top_lib_name}/{self.project_top_cell_name}.mag "
                               f"-dnull -noconsole < {tcl_script_path}' failed with {e.stderr}")
 
-    def __read_drc_log(self) -> list:
+    def __read_custom_drc_log(self) -> list:
         work_drc_directory = os.path.expanduser(f"{self.project_directory}/work/drc")
         drc_log = []
         try:
             with open(f"{work_drc_directory}/AAL_DRC_OUTPUT.log", "r") as drc_output_log:
                 for text_line in drc_output_log:
                     drc_log.append(text_line)
-                self.logger.info(f"DRC log '{work_drc_directory}/AAL_DRC_OUTPUT.log' read")
+                self.logger.info(f"Custom DRC log '{work_drc_directory}/AAL_DRC_OUTPUT.log' read")
                 return drc_log
 
         except FileNotFoundError:
             self.logger.error(f"The file {work_drc_directory}/AAL_DRC_OUTPUT.log was not found.")
 
-    def __parse_out_detailed_drc_errors(self, raw_data_log) -> RuleErrors:
+    def __parse_out_custom_detailed_drc_errors(self, raw_data_log) -> RuleErrors:
         general_info_pattern = r"\{([^{}]*)\}"
         all_data_listed = re.findall(general_info_pattern, raw_data_log)
 
@@ -110,10 +123,10 @@ class DRCchecking:
                 area = Area(x1=x1, y1=y1, x2=x2, y2=y2)
                 rule_errors.rule[current_rule].append(area)
 
-        self.logger.info("Detailed DRC errors parsed")
+        self.logger.info("Detailed DRC errors parsed from custom log")
         return rule_errors
 
-    def __plot_drc_errors(self, drc_errors: RuleErrors):
+    def __plot_custom_drc_errors(self, drc_errors: RuleErrors):
         fig, ax = plt.subplots()
 
         # Add rectangles
@@ -132,7 +145,7 @@ class DRCchecking:
         ax.set_xlabel('X-axis')
         ax.set_ylabel('Y-axis')
         ax.set_title('DRC Errors')
-        self.logger.info(f"Detailed DRC errors plotted and saved to '{self.current_file_directory}/drc_errors_plot.png'")
+        self.logger.info(f"Detailed DRC errors plotted from custom log and saved to '{self.current_file_directory}/drc_errors_plot.png'")
         plt.savefig(f"{self.current_file_directory}/drc_errors_plot.png", dpi=500)
 
 
