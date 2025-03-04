@@ -36,7 +36,7 @@ class GridGeneration:
         self.port_area = {}
         self.scale_factor = scale
         self.port_scaled_coord = {}
-        self.port_coord = {}
+        self.port_coordinates = {}
         self.used_area = [grid_size, grid_size, 0, 0]
 
 
@@ -68,8 +68,8 @@ class GridGeneration:
                     frac_x, int_x = math.modf(x1)
                     frac_y, int_y = math.modf(y1)
                     self.port_area.setdefault(port.type, []).append((round(int_x), round(int_y)))
-                    #self.port_area[port.type].append([int_x, int_y])
-                    self.port_coord.setdefault(str(obj.number_id) + port.type, []).extend([int(obj.transform_matrix.c + (port.area.x1 + port.area.x2)/2), int(obj.transform_matrix.f + (port.area.y1 + port.area.y2)/2)])
+
+                    self.port_coordinates.setdefault(str(obj.number_id) + port.type, []).extend([int(obj.transform_matrix.c + (port.area.x1 + port.area.x2)/2), int(obj.transform_matrix.f + (port.area.y1 + port.area.y2)/2)])
                     self.port_scaled_coord.setdefault(str(obj.number_id)+port.type, []).extend([int_x, frac_x, int_y, frac_y])
 
 
@@ -79,9 +79,7 @@ class GridGeneration:
     def generate_grid(self):
         self.logger.info("Starting Grid Generation")
 
-        value_appended = False
 
-        #port_area, area_coordinates, used_area, port_coord = _port_area(objects, grid_size, leeway_x, leeway_y)
 
         scaled_grid_size_y = list(math.modf((self.used_area[3]-self.used_area[1]+2*self.LEEWAY_Y)/self.scale_factor))
         scaled_grid_size_x = list(math.modf((self.used_area[2] - self.used_area[0] + 2 * self.LEEWAY_X)/self.scale_factor))
@@ -90,8 +88,8 @@ class GridGeneration:
 
 
         for port in self.port_area:
-            h = 2
-            w = 2 if port == "G" else 3
+            h = 4
+            w = 4 if port == "G" else 6
 
             for x,y in self.port_area[port]:
                 for i in range(y-h, y+h+1):
@@ -105,4 +103,4 @@ class GridGeneration:
         self._port_area()
         self.generate_grid()
 
-        return self.grid, self.port_scaled_coord, self.used_area, self.port_coord
+        return self.grid, self.port_scaled_coord, self.used_area, self.port_coordinates

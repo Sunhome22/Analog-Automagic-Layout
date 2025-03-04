@@ -26,7 +26,8 @@ from linear_optimization.linear_optimization import *
 from grid.generate_grid import GridGeneration
 from connections.connections import *
 from circuit.circuit_components import Transistor
-from milp_test.obj_placement import object_placement
+
+
 from traces.trace_generate import initiate_write_traces
 import os
 
@@ -68,6 +69,8 @@ grid_size = 3000
 scale_factor =16
 time_limit = 2
 draw_name = 'Temporary_check'
+trace_width = 30
+run_multiple_astar = True
 def main():
 
     # Create a logger
@@ -94,18 +97,30 @@ def main():
    # components = result.initiate_solver()
 
 
-    grid, port_scaled_coords, used_area, port_coord = GridGeneration(grid_size=grid_size,
+    grid, port_scaled_coordinates, used_area, port_coordinates = GridGeneration(grid_size=grid_size,
                                                                      objects=components,
                                                                      scale=scale_factor
                                                                      ).initialize_grid_generation()
 
 
-    path, seg_list = initiate_astar(grid, connections, local_connections, components, port_scaled_coords, net_list)
-    components = initiate_write_traces(components, path, port_coord, seg_list, scale_factor, net_list)
+    path, seg_list = initiate_astar(grid = grid,
+                                    connections = connections,
+                                    components = components,
+                                    port_scaled_coordinates = port_scaled_coordinates,
+                                    port_coordinates = port_coordinates,
+                                    net_list = net_list,
+                                    run_multiple_astar = run_multiple_astar
+                                    )
+    components = initiate_write_traces(components = components,
+                                       all_paths = path,
+                                       scale_factor= scale_factor,
+                                       trace_width= trace_width,
+                                       used_area= used_area
+                                       )
 
     logger.info("Starting Drawing results")
     #path true:
-    draw_result(grid_size, components, path, used_area, scale_factor, draw_name)
+    #draw_result(grid_size, components, path, used_area, scale_factor, draw_name)
     #path false:
     #draw_result(grid_size, components, connections, used_area)
     logger.info("Finished Drawing results")
