@@ -75,7 +75,7 @@ class TraceGenerator:
         # ATR SKY130A LIB component handling
         if any(lib for lib in self.component_libraries if re.search(r"ATR", lib.name)):
             # Calling order is required
-            ATR.get_component_group_end_points_for_atr_sky130a_lib(self=self)
+            ATR.get_component_group_endpoints_for_atr_sky130a_lib(self=self)
             ATR.generate_local_traces_for_atr_sky130a_lib(self=self)
 
 

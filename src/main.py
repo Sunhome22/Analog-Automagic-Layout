@@ -125,16 +125,16 @@ def main():
         save_to_json(components, file_name="src/json_converter/components.json")
 
         # Update components with trace information
-        components = TraceGenerator(components=components, project_properties=project_properties).get()
+        #components = TraceGenerator(components=components, project_properties=project_properties).get()
 
         # Create layout
-        MagicLayoutCreator(project_properties=project_properties, components=components)
+        # MagicLayoutCreator(project_properties=project_properties, components=components)
 
         # DRC handling
-        DRCchecking(project_properties=project_properties)
+        #DRCchecking(project_properties=project_properties)
 
         # LVS handling
-        LVSchecking(project_properties=project_properties)
+        #LVSchecking(project_properties=project_properties)
 
     else:
         components = load_from_json(file_name="src/json_converter/components.json")
