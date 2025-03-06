@@ -80,7 +80,7 @@ def __local_gate_to_drain_connection_for_sky130a_lib(self: object, component: ob
 
 
 def __local_bulk_to_rail_connection_for_sky130a_lib(self: object, component: object, rail):
-    y_params= {
+    y_params = {
         'rail_top': (component.bounding_box.y2, component.group_endpoint_bounding_box.y2 // 2),
         'rail_bot': (component.bounding_box.y1, -component.group_endpoint_bounding_box.y2 // 2),
     }
@@ -276,7 +276,6 @@ def get_component_group_endpoints_for_atr_sky130a_lib(self: object):
     for component in max_x_min_y_component_list:
         print(f"max_x_min_y: {component.name}")
 
-
     # Case 3 (no rail top/bot)
     min_x_max_y_component_list = [x_comp for _, y_components in max_y_components for y_comp in y_components
                                   for _, x_components in min_x_components for x_comp in x_components if x_comp == y_comp]
@@ -299,10 +298,10 @@ def get_component_group_endpoints_for_atr_sky130a_lib(self: object):
                                             in max_x_max_y_component_list]
 
     for component in self.components:
-        if (isinstance(component, Transistor)
-                and (component in min_x_no_rail_top_and_bot_components or component in
-                     max_x_no_rail_top_and_bot_components)):
-                component.group_endpoint = 'no_rail_top/bot'
+        if (isinstance(component, Transistor) and (component in min_x_no_rail_top_and_bot_components or component in
+                                                   max_x_no_rail_top_and_bot_components)):
+            print(component.group)
+            component.group_endpoint = 'no_rail_top/bot'
 
     # Case 4 (rail bot)
     for component in self.components:
