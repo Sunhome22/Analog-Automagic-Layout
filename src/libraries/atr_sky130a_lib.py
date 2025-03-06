@@ -168,6 +168,8 @@ def get_component_group_endpoints_for_atr_sky130a_lib(self: object):
         min_x_components.append(min(components_x_placement.items()))
         max_x_components.append(max(components_x_placement.items()))
 
+    ### Handling for the case where two groups of components are overlapping ###
+
     # Check for overlap of y-minimum components
     prev_y_min = None
     y_min_overlap_components_to_remove = []
@@ -180,7 +182,7 @@ def get_component_group_endpoints_for_atr_sky130a_lib(self: object):
                 if abs(y - prev_y_min) == component.bounding_box.y2:
 
                     # Take the maximum of the last two components that compared a y-distance to be
-                    # less/equal to the bounding box.
+                    # equal to the bounding box.
                     y_min_overlap_components_to_remove.append(max(min_y_components[i - 1], min_y_components[i],
                                                                   key=lambda distance: (distance[0])))
         prev_y_min = y
@@ -195,9 +197,8 @@ def get_component_group_endpoints_for_atr_sky130a_lib(self: object):
             for component in components:
                 # Maybe there are some edge case here still!
                 if abs(y - prev_y_max) == component.bounding_box.y2:
-
                     # Take the minimum of the last two components that compared a y-distance to be
-                    # less/equal to the bounding box.
+                    # equal to the bounding box.
                     y_max_overlap_components_to_remove.append(min(max_y_components[i - 1], max_y_components[i],
                                                                   key=lambda distance: (distance[0])))
         prev_y_max = y
@@ -262,7 +263,6 @@ def get_component_group_endpoints_for_atr_sky130a_lib(self: object):
         if (isinstance(component, Transistor)
                 and (component in min_x_no_rail_top_components or component in max_x_no_rail_top_components)):
             component.group_endpoint = 'no_rail_top'
-            print(component.name)
 
     for component in max_x_component_list:
         print(f"max_x_comp_list: {component.name}")
@@ -293,15 +293,47 @@ def get_component_group_endpoints_for_atr_sky130a_lib(self: object):
         print(f"min_x_max_y: {component.name}")
 
     min_x_no_rail_top_and_bot_components = [comp for comp in min_x_component_list if comp not
-                                            in min_x_max_y_component_list]
+                                            in min_x_max_y_component_list and comp not in min_x_min_y_component_list]
     max_x_no_rail_top_and_bot_components = [comp for comp in max_x_component_list if comp not
-                                            in max_x_max_y_component_list]
+                                            in max_x_max_y_component_list and comp not in max_x_min_y_component_list]
+
+    #for component in min_x_no_rail_top_and_bot_components:
+    #    print(component.name)
+
+    #for component in min_x_component_list:
+    #    print(component.name)
+
 
     for component in self.components:
-        if (isinstance(component, Transistor) and (component in min_x_no_rail_top_and_bot_components or component in
-                                                   max_x_no_rail_top_and_bot_components)):
-            print(component.group)
-            component.group_endpoint = 'no_rail_top/bot'
+        if isinstance(component, Transistor):
+            if component in min_x_no_rail_top_and_bot_components:
+                # Iterate over minimum x components that match with the group of the potential no rail top/bot endpoint.
+                same_group_and_min_x = [comp for comp in min_x_component_list if comp.group == component.group]
+
+                same_x_and_same_group_and_min_x = all(comp.transform_matrix.c == same_group_and_min_x[0].transform_matrix.c
+                                                      for comp in same_group_and_min_x)
+
+                if not same_x_and_same_group_and_min_x or len(same_group_and_min_x) == 1:
+                     component.group_endpoint = 'no_rail_top/bot'
+
+                elif len(same_group_and_min_x) > 1 and len(same_group_and_min_x) % 2:
+                    component.group_endpoint = ''
+
+            elif component in max_x_no_rail_top_and_bot_components:
+
+                same_group_and_max_x = [comp for comp in max_x_component_list if comp.group == component.group]
+
+
+                same_x_and_same_group_and_max_x = all(
+                    comp.transform_matrix.c == same_group_and_max_x[0].transform_matrix.c
+                    for comp in same_group_and_max_x)
+
+                if not same_x_and_same_group_and_max_x or len(same_group_and_max_x) == 1:
+                    component.group_endpoint = 'no_rail_top/bot'
+
+                elif len(same_group_and_max_x) > 1 and len(same_group_and_max_x) % 2:
+                    component.group_endpoint = ''
+
 
     # Case 4 (rail bot)
     for component in self.components:

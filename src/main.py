@@ -137,7 +137,7 @@ def main():
         #LVSchecking(project_properties=project_properties)
 
     else:
-        components = load_from_json(file_name="src/json_converter/components.json")
+        components = load_from_json(file_name="src/json_converter/components_w3.json")
 
         # Update components with trace information
         components = TraceGenerator(components=components, project_properties=project_properties).get()
