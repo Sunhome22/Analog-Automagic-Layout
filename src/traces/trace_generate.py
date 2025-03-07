@@ -727,57 +727,19 @@ def initiate_write_traces(components, all_paths,  scale_factor, trace_width, use
 
 
     for index, net in enumerate(all_paths):
-        net_rectangles = []
 
-        #if not net == "local:net1" and not net =="local:net2" and not net == "local:VDD" and not net == "local:net3" and not net == "local:VSS" and not net == "local:I_BIAS" and not net == "local:net4" and not net == "net4" and not net == "net3" and not net == "net1":
-        #if not net == "net2" and not net == "net4" and not net == "net3" :
-      #  if not net == "net3" and not net == "net1" and not net == "net2" and not net == "net4":
+
+        if net == "net2":
 
 
 
-        mapped_rectangles = map_segments_to_rectangles(path_info=all_paths[net],
-                                                               scale_factor=scale_factor,
-                                                               used_area=used_area)
 
-        #
-        # net_rectangles.extend(_check_rectangle_port_overlap(rectangles = mapped_rectangles,
-        #                                                              objects = components,
-        #                                                               port_coordinates = all_paths[net]["real_goal_nodes"],
-        #                                                               trace_width = trace_width,
-        #                                                               previous_adjusted_seg = None,
-        #                                                               increment = 0,
-        #                                                               net = net,
-        #                                                               i = 0
-                                                    #        ))
-        #     #    #  print(net_rectangles)
-        #     #    #  _look_for_specific_rectangle(net_rectangles)
-        #     #    #
-        #     #    #          # if i >= 3:
-        #     #    #          #     break
-        #     #    #  #
-        #     #    #  # print(f"Length of net rectangles before delete duplicate: {len(net_rectangles)}")
-        #     #    # #  # print("Stuck at _delete_duplicate")
-        # net_rectangles = _delete_duplicate_rectangles(net_rectangles)
-        #     # #    #  _check_illegal_rectangles(net_rectangles)
-        #     # #    # #  # print(f"Length of net rectangles before eliminate rectangles: {len(net_rectangles)}")
-        # net_rectangles = _eliminate_rectangles(rectangles=net_rectangles,
-        #                                                   trace_width=trace_width,
-        #                                                   port_coordinates = all_paths[net]["real_goal_nodes"])
-        #     #     #  _check_illegal_rectangles(net_rectangles)
-        #     #     # #  # print("Stuck at _check_for_lost_points")
-        #     # #    # #  # print(f"Length of net rectangles before lost points: {len(net_rectangles)}")
-        #     # #    #
-        # net_rectangles =_check_for_lost_points(net_rectangles)
-            #    # #  # print(f"Length of net rectangles end: {len(net_rectangles)}")
-            #    # #
-            #    # # # test.append(net_rectangles)
-            #
-            #
-            #     #if test_redo == True:
-            #         #net_rectangles = _eliminate_rectangles(net_rectangles, trace_width)
-        #components.append(_write_traces(net_rectangles, trace_width, index, net))
+            mapped_rectangles = map_segments_to_rectangles(path_info=all_paths[net],
+                                                                   scale_factor=scale_factor,
+                                                                   used_area=used_area)
 
-        components.append(_write_traces(mapped_rectangles, trace_width, index, net))
+
+            components.append(_write_traces(mapped_rectangles, trace_width, index, net))
 
           #  _check_net_constraint_vioaltion(test)
 

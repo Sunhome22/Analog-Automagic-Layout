@@ -70,7 +70,9 @@ scale_factor =16
 time_limit = 2
 draw_name = 'Temporary_check'
 trace_width = 30
-run_multiple_astar = True
+via_minimum_distance = 20
+added_via_size = 7
+run_multiple_astar = False
 def main():
 
     # Create a logger
@@ -97,10 +99,15 @@ def main():
    # components = result.initiate_solver()
 
 
-    grid, port_scaled_coordinates, used_area, port_coordinates = GridGeneration(grid_size=grid_size,
-                                                                     objects=components,
-                                                                     scale=scale_factor
+    grid, port_scaled_coordinates, used_area, port_coordinates, routing_sizing_area = GridGeneration(grid_size=grid_size,
+                                                                        objects=components,
+                                                                        scale=scale_factor,
+                                                                        trace_width= trace_width,
+                                                                        via_minimum_distance = via_minimum_distance,
+                                                                        added_via_size = added_via_size
                                                                      ).initialize_grid_generation()
+
+
 
 
     path, seg_list = initiate_astar(grid = grid,
@@ -109,7 +116,8 @@ def main():
                                     port_scaled_coordinates = port_scaled_coordinates,
                                     port_coordinates = port_coordinates,
                                     net_list = net_list,
-                                    run_multiple_astar = run_multiple_astar
+                                    run_multiple_astar = run_multiple_astar,
+                                    routing_sizing_area = routing_sizing_area
                                     )
     components = initiate_write_traces(components = components,
                                        all_paths = path,

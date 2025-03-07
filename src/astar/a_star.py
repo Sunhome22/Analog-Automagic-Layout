@@ -54,37 +54,6 @@ def heuristic(current, mask, goals):
     return min(manhattan(current, goal) for goal in unvisited)
 
 
-# def get_neighbors(node, grid_vertical, grid_horizontal, goal, current_dir, seg_length):
-#     """Get valid neighbors for the current node."""
-#     neighbors = []
-#     h_dir = [(1, 0), (-1, 0)]
-#     v_dir = [ (0, 1), (0, -1)]
-#
-#
-#
-#
-#     for hdx, hdy in h_dir:
-#         hx, hy = node[0] + hdx, node[1] + hdy
-#
-#
-#             # Check bounds and obstacles
-#         if 0 <= hx < len(grid_horizontal[0]) and 0 <= hy < len(grid_horizontal) and grid_horizontal[hy][hx] == 0:
-#             neighbors.append(((hx,hy), (hdx,hdy)))
-#         elif 0 <= hx < len(grid_horizontal[0]) and 0 <= hy < len(grid_horizontal) and grid_horizontal[hy][hx] == goal:
-#             neighbors.append(((hx,hy), (hdx,hdy)))
-#
-#
-#     for vdx, vdy in v_dir:
-#         vx, vy = node[0] + vdx, node[1] + vdy
-#
-#         if 0 <= vx < len(grid_vertical[0]) and 0 <= vy < len(grid_vertical) and grid_vertical[vy][vx] == 0:
-#             neighbors.append(((vx,vy), (vdx,vdy)))
-#         elif 0 <= vx < len(grid_vertical[0]) and 0 <= vy < len(grid_vertical) and grid_vertical[vy][vx] == goal:
-#             neighbors.append(((vx,vy), (vdx,vdy)))
-#
-#
-#     return neighbors
-
 
 def reconstruct_path(came_from, current):
     """Reconstruct the path from start to goal."""
@@ -96,13 +65,13 @@ def reconstruct_path(came_from, current):
     return path
 
 
-def a_star(grid_vertical, grid_horizontal, start, goals):
-    minimum_seg_length = 6 # Change this to 1 for debugging, but note the impact on state space.
+def a_star(grid_vertical, grid_horizontal, start, goals, minimum_segment_length):
+    minimum_seg_length = minimum_segment_length # Change this to 1 for debugging, but note the impact on state space.
     goal_indices = {goal: i for i, goal in enumerate(goals)}
     all_visited = (1 << len(goals)) - 1
     height = len(grid_vertical)
     width = len(grid_vertical[0]) if height > 0 else 0
-    min_seg_after_goal = 10
+    min_seg_after_goal = minimum_segment_length
     def in_bounds(pos):
         x, y = pos
         return 0 <= x < width and 0 <= y < height
@@ -213,15 +182,17 @@ def check_start_end_port(con, port_scaled_coordinates: dict, port_coordinates: d
 
     return start, real_start, end, real_end
 
-def _lock_or_unlock_port(grid_vertical, grid_horizontal, goal, port_scaled_coordinates, lock):
-    print(port_scaled_coordinates)
-    h = 4
-    w = 6
+def _lock_or_unlock_port(grid_vertical, grid_horizontal, goal, port_scaled_coordinates, routing_sizing_area,lock):
+
+    h = routing_sizing_area.port_height_scaled
+    w = routing_sizing_area.port_width_scaled
     for node in goal:
         for key in port_scaled_coordinates:
             if (int(port_scaled_coordinates[key][0]),int(port_scaled_coordinates[key][2])) == node:
-                w = 4 if key[1] == "G" else 6
+                w = routing_sizing_area.gate_width_scaled if key[1] == "G" else routing_sizing_area.port_width_scaled
+
                 break
+
         for y in range(node[1]-h, node[1]+h+1):
             for x in range(node[0]-w, node[0]+w+1):
 
@@ -231,34 +202,32 @@ def _lock_or_unlock_port(grid_vertical, grid_horizontal, goal, port_scaled_coord
 
     return grid_vertical, grid_horizontal
 
-def run_multiple_astar_multiple_times(grid_vertical, grid_horizontal,goals, run_multiple):
+def run_multiple_astar_multiple_times(grid_vertical, grid_horizontal,goals, port_width_scaled, run_multiple):
     best_path = None
     best_length = float('inf')
     if run_multiple:
-
+        i = 0
         for start in goals:
-            path, length = a_star(grid_vertical, grid_horizontal, start, goals)
+            i+=1
+            path, length = a_star(grid_vertical, grid_horizontal, start, goals, port_width_scaled)
+            print(i)
             if path is not None and length < best_length:
                 best_path = path
                 best_length = length
         return best_path
     else:
-        path, _ = a_star(grid_vertical, grid_horizontal, goals[0], goals)
+        path, _ = a_star(grid_vertical, grid_horizontal, goals[0], goals, port_width_scaled)
         return path
 
 
-def initiate_astar(grid, connections, components, port_scaled_coordinates, port_coordinates, net_list, run_multiple_astar):
+def initiate_astar(grid, connections, components, port_scaled_coordinates, port_coordinates, net_list, run_multiple_astar, routing_sizing_area):
     logger.info("Starting Initiate A*")
     grid_vertical = [row[:] for row in grid[:]]
     grid_horizontal = [row[:] for row in grid[:]]
-    local_paths = {}
+
     path = {}
     seg_list = {}
 
-    done = []
-
-    start_id = 0
-    end_id = 0
 
     for net in net_list.applicable_nets:
 
@@ -300,15 +269,14 @@ def initiate_astar(grid, connections, components, port_scaled_coordinates, port_
 
 
        #Make goal nodes walkable
-        grid_vertical, grid_horizontal = _lock_or_unlock_port(grid_vertical, grid_horizontal, goal_nodes, port_scaled_coordinates , 0)
+        grid_vertical, grid_horizontal = _lock_or_unlock_port(grid_vertical, grid_horizontal, goal_nodes, port_scaled_coordinates , routing_sizing_area,0)
 
-
-        p = run_multiple_astar_multiple_times(grid_vertical, grid_horizontal, goal_nodes, run_multiple_astar)
+        p = run_multiple_astar_multiple_times(grid_vertical, grid_horizontal, goal_nodes, routing_sizing_area.port_width_scaled ,run_multiple_astar)
 
         path.setdefault(net, {})["goal_nodes"] = goal_nodes
         path.setdefault(net, {})["real_goal_nodes"] = real_goal_nodes
         #Make goal nodes non-walkable
-        grid_vertical, grid_horizontal= _lock_or_unlock_port(grid_vertical, grid_horizontal, goal_nodes,port_scaled_coordinates,1)
+        grid_vertical, grid_horizontal= _lock_or_unlock_port(grid_vertical, grid_horizontal, goal_nodes,port_scaled_coordinates,routing_sizing_area,1)
 
         seg = segment_path(p)
         path.setdefault(net, {})["segments"] = seg
@@ -324,15 +292,13 @@ def initiate_astar(grid, connections, components, port_scaled_coordinates, port_
             if seg[0][0] - seg[-1][0] == 0:
 
                 for x, y in seg:
-                    for i in range(-4, 5):
+                    for i in range(-routing_sizing_area.trace_width_scaled, routing_sizing_area.trace_width_scaled+1):
                         grid_vertical[y][x + i] = 1
-                # for x,y in seg:
-                #     grid_vertical[y][x] = 0.2
 
             # horizontal
             if seg[0][1] - seg[-1][1] == 0:
                 for x, y in seg:
-                    for i in range(-4, 5):
+                    for i in range(-routing_sizing_area.trace_width_scaled, routing_sizing_area.trace_width_scaled+1):
                         grid_horizontal[y + i][x] = 1
 
     heatmap_test(grid_vertical, "grid_vertical_heatmap")

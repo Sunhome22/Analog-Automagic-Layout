@@ -11,6 +11,7 @@
 # You should have received a copy of the GNU General Public License along with this program.
 # If not, see <https://www.gnu.org/licenses/>.
 # ==================================================================================================================== #
+from dataclasses import dataclass
 
 from circuit.circuit_components import Pin, CircuitCell
 from logger.logger import get_a_logger
@@ -18,9 +19,15 @@ import math
 import numpy as np
 import matplotlib.pyplot as plt
 from draw_result.visualize_grid import visualize_grid, heatmap_test
+from dataclasses import dataclass, field
 
-
-
+@dataclass
+class RoutingSizingParameters:
+    trace_width_scaled: int = field(default_factory=int)
+    port_width_scaled: int = field(default_factory=int)
+    port_height_scaled: int = field(default_factory=int)
+    gate_width_scaled: int = field(default_factory=int)
+    minimum_segment_length: int = field(default_factory=int)
 
 class GridGeneration:
     LEEWAY_X= 500
@@ -28,7 +35,13 @@ class GridGeneration:
 
 
 
-    def __init__(self, grid_size, objects, scale):
+    def __init__(self, grid_size, objects, scale, trace_width, via_minimum_distance, added_via_size):
+        self.trace_width = trace_width
+        self.via_minimum_distance = via_minimum_distance
+        self.added_via_size = added_via_size
+
+        self.routing_sizing_area = RoutingSizingParameters()
+
 
         self.logger = get_a_logger(__name__)
         self.grid_size = grid_size
@@ -73,6 +86,20 @@ class GridGeneration:
                     self.port_scaled_coord.setdefault(str(obj.number_id)+port.type, []).extend([int_x, frac_x, int_y, frac_y])
 
 
+    def _calculate_non_overlap_parameters(self):
+        self.routing_sizing_area.trace_width_scaled = math.ceil((self.trace_width+self.via_minimum_distance+self.added_via_size*2)/self.scale_factor)
+        for object_1 in self.objects:
+            if not isinstance(object_1, (Pin, CircuitCell)):
+                for port in object_1.layout_ports:
+                    if not port.type == "G":
+                        self.routing_sizing_area.port_width_scaled = math.ceil(((port.area.x2-port.area.x1)/2 +self.via_minimum_distance+self.added_via_size*2+self.trace_width/2)/self.scale_factor)
+
+                    else:
+                        self.routing_sizing_area.gate_width_scaled = math.ceil(((port.area.x2-port.area.x1)/2 +self.via_minimum_distance+self.added_via_size*2+self.trace_width/2)/self.scale_factor)
+
+                    self.routing_sizing_area.port_height_scaled = math.ceil(((port.area.y2-port.area.y1)/2 +self.via_minimum_distance+self.added_via_size*2+self.trace_width/2)/self.scale_factor)
+                    if self.routing_sizing_area.port_width_scaled != 0 and self.routing_sizing_area.gate_width_scaled != 0:
+                        break
 
 
 
@@ -88,8 +115,8 @@ class GridGeneration:
 
 
         for port in self.port_area:
-            h = 4
-            w = 4 if port == "G" else 6
+            h = self.routing_sizing_area.port_height_scaled
+            w = self.routing_sizing_area.gate_width_scaled if port == "G" else self.routing_sizing_area.port_width_scaled
 
             for x,y in self.port_area[port]:
                 for i in range(y-h, y+h+1):
@@ -101,6 +128,7 @@ class GridGeneration:
 
     def initialize_grid_generation(self):
         self._port_area()
+        self._calculate_non_overlap_parameters()
         self.generate_grid()
 
-        return self.grid, self.port_scaled_coord, self.used_area, self.port_coordinates
+        return self.grid, self.port_scaled_coord, self.used_area, self.port_coordinates, self.routing_sizing_area
