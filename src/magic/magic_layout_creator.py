@@ -121,37 +121,36 @@ class MagicLayoutCreator:
 
         for segment in trace.segments:
 
-            if last_segment_layer != segment.layer:
-                last_segment_layer = segment.layer
 
-                if previous_segment:
 
-                    # Calculate overlap
-                    overlap_x1 = max(previous_segment.area.x1, segment.area.x1)
-                    overlap_y1 = max(previous_segment.area.y1, segment.area.y1)
-                    overlap_x2 = min(previous_segment.area.x2, segment.area.x2)
-                    overlap_y2 = min(previous_segment.area.y2, segment.area.y2)
+            if previous_segment and segment.layer !=previous_segment.layer:
 
-                    # Skip if no overlap
-                    if overlap_x1 < overlap_x2 and overlap_y1 < overlap_y2:
+                # Calculate overlap
+                overlap_x1 = max(previous_segment.area.x1, segment.area.x1)
+                overlap_y1 = max(previous_segment.area.y1, segment.area.y1)
+                overlap_x2 = min(previous_segment.area.x2, segment.area.x2)
+                overlap_y2 = min(previous_segment.area.y2, segment.area.y2)
 
-                        # Define via area
-                        via_area = RectArea(
-                            x1=overlap_x1,
-                            y1=overlap_y1,
-                            x2=overlap_x2,
-                            y2=overlap_y2
-                        )
-                        # Place the via
-                        self.__via_placer(
-                            start_layer=previous_segment.layer,
-                            end_layer=segment.layer,
-                            area=via_area
-                        )
-                        via_count += 1
+                # Skip if no overlap
+                if overlap_x1 < overlap_x2 and overlap_y1 < overlap_y2:
 
-                # Update the previous segment
-                previous_segment = segment
+                    # Define via area
+                    via_area = RectArea(
+                        x1=overlap_x1,
+                        y1=overlap_y1,
+                        x2=overlap_x2,
+                        y2=overlap_y2
+                    )
+                    # Place the via
+                    self.__via_placer(
+                        start_layer=previous_segment.layer,
+                        end_layer=segment.layer,
+                        area=via_area
+                    )
+                    via_count += 1
+
+            # Update the previous segment
+            previous_segment = segment
 
         return via_count
 

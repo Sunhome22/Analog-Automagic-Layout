@@ -66,12 +66,14 @@ def reconstruct_path(came_from, current):
 
 
 def a_star(grid_vertical, grid_horizontal, start, goals, minimum_segment_length):
-    minimum_seg_length = minimum_segment_length # Change this to 1 for debugging, but note the impact on state space.
+    minimum_seg_length = minimum_segment_length  # For debugging, you might set this to 1.
     goal_indices = {goal: i for i, goal in enumerate(goals)}
     all_visited = (1 << len(goals)) - 1
     height = len(grid_vertical)
     width = len(grid_vertical[0]) if height > 0 else 0
+    # You can set this higher than minimum_segment_length to enforce a "wider swing" into the goal.
     min_seg_after_goal = minimum_segment_length
+
     def in_bounds(pos):
         x, y = pos
         return 0 <= x < width and 0 <= y < height
@@ -79,14 +81,13 @@ def a_star(grid_vertical, grid_horizontal, start, goals, minimum_segment_length)
     def is_walkable(pos, current_position):
         x, y = pos
         old_x, old_y = current_position
-        if x-old_x == 0:
+        if x - old_x == 0:
             return grid_vertical[y][x] == 0
         else:
-            return grid_horizontal[y][x]==0
-
+            return grid_horizontal[y][x] == 0
 
     # Movements: up, down, left, right.
-    directions = [(0, -1), (0, 1),(-1, 0), (1, 0)]
+    directions = [(0, -1), (0, 1), (-1, 0), (1, 0)]
 
     open_set = PriorityQueue()
     init_mask = 0
@@ -95,18 +96,18 @@ def a_star(grid_vertical, grid_horizontal, start, goals, minimum_segment_length)
         init_mask |= (1 << goal_indices[start])
     g_start = 0
     f_start = g_start + heuristic(start, init_mask, goals)
-    # For the starting state, no previous direction (None) and segment length 0.
-    open_set.push((g_start, start, init_mask, [start], None, 0, init_after_goal), f_start)
+    # For the starting state: no previous direction (None), segment length 0, and no reversal.
+    open_set.push((g_start, start, init_mask, [start], None, 0, init_after_goal, False), f_start)
 
     visited_states = set()
 
     # Helper to cap the segment length in state keys.
     def cap_seg(seg):
-        return seg if seg < minimum_seg_length else minimum_seg_length
+        return seg if seg < minimum_segment_length else minimum_segment_length
 
     while not open_set.is_empty():
-        g, current, mask, path, last_dir, seg_len, after_goal = open_set.pop()
-        state_key = (current, mask, last_dir, cap_seg(seg_len), after_goal)
+        g, current, mask, path, last_dir, seg_len, after_goal, last_was_reversal = open_set.pop()
+        state_key = (current, mask, last_dir, cap_seg(seg_len), after_goal, last_was_reversal)
         if state_key in visited_states:
             continue
         visited_states.add(state_key)
@@ -119,42 +120,76 @@ def a_star(grid_vertical, grid_horizontal, start, goals, minimum_segment_length)
         for d in directions:
             dx, dy = d
             neighbor = (x + dx, y + dy)
-            if in_bounds(neighbor) and is_walkable(neighbor, current):
-                new_g = g + 1  # uniform cost per step.
-                new_mask = mask
-                if neighbor in goal_indices:
-                    new_mask |= (1 << goal_indices[neighbor])
-                    new_after_goal = True
-                else:
-                    new_after_goal = after_goal
+            if not (in_bounds(neighbor) and is_walkable(neighbor, current)):
+                continue
 
-                # Determine new segment parameters.
-                if last_dir is None:
-                    # Starting state: choose any direction.
-                    new_last_dir = d
-                    new_seg_len = 1
-                else:
-                    if d == last_dir:
-                        # Continue in the same direction.
-                        new_last_dir = last_dir
-                        new_seg_len = seg_len + 1
-                    else:
-                        # Attempting a turn: only allowed if the current segment length meets the minimum.
-                        required_min = min_seg_after_goal if after_goal else minimum_seg_length
-                        if seg_len >= required_min:
-                            new_last_dir = d
-                            new_seg_len = 1
-                            new_after_goal = False
-                        else:
-                            continue  # Skip neighbor: segment too short to turn.
+            # Initialize prospective values.
+            prospective_last_dir = None
+            prospective_seg_len = 0
+            prospective_last_was_reversal = False
 
-                new_f = new_g + heuristic(neighbor, new_mask, goals)
-                open_set.push(
-                    (new_g, neighbor, new_mask, path + [neighbor], new_last_dir, new_seg_len, new_after_goal),
-                    new_f
-                )
+            if last_dir is None:
+                # Starting state: simply set the new direction.
+                prospective_last_dir = d
+                prospective_seg_len = 1
+            else:
+                if d == last_dir:
+                    # Continuing in the same direction.
+                    prospective_last_dir = last_dir
+                    prospective_seg_len = seg_len + 1
+                    prospective_last_was_reversal = False
+                elif d[0] == -last_dir[0] and d[1] == -last_dir[1]:
+                    # This move is a reversal.
+                    # Allow reversal only if:
+                    # 1. We're after a goal,
+                    # 2. The current segment length meets the minimum,
+                    # 3. The last move was not already a reversal.
+                    if not after_goal or seg_len < min_seg_after_goal or last_was_reversal:
+                        continue
+                    prospective_last_dir = d
+                    prospective_seg_len = 1
+                    prospective_last_was_reversal = True
+                else:
+                    # A turn that is not a reversal (i.e. a perpendicular move).
+                    required_min = min_seg_after_goal if after_goal else minimum_segment_length
+                    if seg_len < required_min:
+                        continue  # Not allowed to turn yet.
+                    prospective_last_dir = d
+                    prospective_seg_len = 1
+                    prospective_last_was_reversal = False
+
+            # Enforce the minimum segment length rule when approaching a goal.
+            if neighbor in goal_indices:
+                if prospective_seg_len < min_seg_after_goal:
+                    continue
+
+            # Update visited goals.
+            new_mask = mask
+            new_after_goal = after_goal
+            if neighbor in goal_indices:
+                new_mask |= (1 << goal_indices[neighbor])
+                new_after_goal = True
+
+            new_g = g + 1
+            new_f = new_g + heuristic(neighbor, new_mask, goals)
+            open_set.push(
+                (
+                    new_g,
+                    neighbor,
+                    new_mask,
+                    path + [neighbor],
+                    prospective_last_dir,
+                    prospective_seg_len,
+                    new_after_goal,
+                    prospective_last_was_reversal
+                ),
+                new_f
+            )
 
     return None, None
+
+
+
 
 
 def check_start_end_port(con, port_scaled_coordinates: dict, port_coordinates: dict):
@@ -289,17 +324,46 @@ def initiate_astar(grid, connections, components, port_scaled_coordinates, port_
 
         for seg in seg_list[net]:
             # vertical
+            direction = None
+            other_direction = None
             if seg[0][0] - seg[-1][0] == 0:
+                if seg[0][1]>seg[-1][1]:
+                    direction = -1
+                else:
+                    direction = 1
+                if direction == 1:
+                    other_direction = -1
+                else:
+                    other_direction = 1
+
+
 
                 for x, y in seg:
                     for i in range(-routing_sizing_area.trace_width_scaled, routing_sizing_area.trace_width_scaled+1):
+                        grid_vertical[y + 1 * other_direction][x + i] = 1
+                        grid_vertical[y + 2 * other_direction][x + i] = 1
                         grid_vertical[y][x + i] = 1
+                        grid_vertical[y+1*direction][x + i] = 1
+                        grid_vertical[y+2*direction][x + i] = 1
 
             # horizontal
             if seg[0][1] - seg[-1][1] == 0:
+                if seg[0][1] > seg[-1][1]:
+                    direction = -1
+                else:
+                    direction = 1
+                if direction == 1:
+                    other_direction = -1
+                else:
+                    other_direction = 1
+
                 for x, y in seg:
                     for i in range(-routing_sizing_area.trace_width_scaled, routing_sizing_area.trace_width_scaled+1):
+                        grid_horizontal[y + i][x + 1 * other_direction] = 1
+                        grid_horizontal[y + i][x + 2 * other_direction] = 1
                         grid_horizontal[y + i][x] = 1
+                        grid_horizontal[y + i][x+ 1*direction] = 1
+                        grid_horizontal[y + i][x+2*direction] = 1
 
     heatmap_test(grid_vertical, "grid_vertical_heatmap")
     heatmap_test(grid_horizontal, "grid_horizontal_heatmap")
