@@ -18,6 +18,7 @@ import re
 import subprocess
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
+from itertools import groupby
 from dataclasses import dataclass, field
 from typing import List, Dict
 from collections import defaultdict
@@ -134,232 +135,108 @@ def generate_bulk_to_rail_segments(self, rail, component, y_params, group_endpoi
 
 
 def get_component_group_endpoints_for_atr_sky130a_lib(self: object):
+    component_names_and_cords = []
+    overlapping_components_x_sort = []
+    overlapping_components_y_sort = []
 
-    component_group_sets = defaultdict(list)
-
-    min_y_components = list(defaultdict(list))
-    max_y_components = list(defaultdict(list))
-
-    min_x_components = list(defaultdict(list))
-    max_x_components = list(defaultdict(list))
-
-    # Make sets of component groups
     for component in self.transistor_components:
-        if component.group:
-            component_group_sets[component.group].append(component)
+        component_names_and_cords.append((component, component.transform_matrix.c, component.transform_matrix.f))
 
-    # Iterate over each set and their components within and get max- and min y position for each.
-    for group, components in component_group_sets.items():
-        components_y_placement = defaultdict(list)
+    # Sorts components first by x and then by y (ascending order)
+    sorted_components_by_x = sorted(component_names_and_cords, key=lambda item: (item[1], item[2]))
 
-        for component in components:
-            components_y_placement[component.transform_matrix.f].append(component)
-
-        min_y_components.append(min(components_y_placement.items()))
-        max_y_components.append(max(components_y_placement.items()))
-
-    # Iterate over each set and their components within and get max- and min x position for each.
-    for group, components in component_group_sets.items():
-        components_x_placement = defaultdict(list)
-
-        for component in components:
-            components_x_placement[component.transform_matrix.c].append(component)
-
-        min_x_components.append(min(components_x_placement.items()))
-        max_x_components.append(max(components_x_placement.items()))
-
-    ### Handling for the case where two groups of components are overlapping ###
-
-    # Check for overlap of y-minimum components
-    prev_y_min = None
-    y_min_overlap_components_to_remove = []
-
-    for i, (y, components) in enumerate(min_y_components):
-
-        if prev_y_min:
-            for component in components:
-
-                if abs(y - prev_y_min) == component.bounding_box.y2:
-
-                    # Take the maximum of the last two components that compared a y-distance to be
-                    # equal to the bounding box.
-                    y_min_overlap_components_to_remove.append(max(min_y_components[i - 1], min_y_components[i],
-                                                                  key=lambda distance: (distance[0])))
-        prev_y_min = y
-
-    # Check for overlap of y-maximum components
-    prev_y_max = None
-    y_max_overlap_components_to_remove = []
-
-    for i, (y, components) in enumerate(max_y_components):
-
-        if prev_y_max is not None:
-            for component in components:
-                # Maybe there are some edge case here still!
-                if abs(y - prev_y_max) == component.bounding_box.y2:
-                    # Take the minimum of the last two components that compared a y-distance to be
-                    # equal to the bounding box.
-                    y_max_overlap_components_to_remove.append(min(max_y_components[i - 1], max_y_components[i],
-                                                                  key=lambda distance: (distance[0])))
-        prev_y_max = y
-
-    # Filter out y-minimum components that have been found to be overlapping
-    for _, overlap_components in y_min_overlap_components_to_remove:
-        min_y_components = [(y, [component for component in components if component not in overlap_components])
-                            for y, components in min_y_components]
-    min_y_components = [(y, components) for y, components in min_y_components if components]  # remove empty tuples
-
-    # Filter out y-maximum components that have been found to be overlapping
-    for _, overlap_components in y_max_overlap_components_to_remove:
-        max_y_components = [(y, [component for component in components if component not in overlap_components])
-                            for y, components in max_y_components]
-    max_y_components = [(y, components) for y, components in max_y_components if components]  # remove empty tuples
-
-    for components in min_x_components:
-        for component in components[1]:
-            print(f"minimum_x: {component.name}")
-
-    for components in max_x_components:
-        for component in components[1]:
-            print(f"max_x: {component.name}")
-
-    for components in min_y_components:
-        for component in components[1]:
-            print(f"minimum_y: {component.name}")
-
-    for components in max_y_components:
-        for component in components[1]:
-            print(f"max_y: {component.name}")
-
-    ### Handling for the different possible scenarios of endpoint placement ###
-
-    # Case 1 (no rail bot)
-    min_x_component_list = [comp for _, components in min_x_components for comp in components]
-    max_x_component_list = [comp for _, components in max_x_components for comp in components]
-
-    min_x_max_y_component_list = [x_comp for _, y_components in max_y_components for y_comp in y_components for
-                                  _, x_components in min_x_components for x_comp in x_components if x_comp == y_comp]
-    max_x_max_y_component_list = [x_comp for _, y_components in max_y_components for y_comp in y_components for
-                                  _, x_components in max_x_components for x_comp in x_components if x_comp == y_comp]
-
-    min_x_no_rail_bot_components = [comp for comp in min_x_component_list if comp not in min_x_max_y_component_list]
-    max_x_no_rail_bot_components = [comp for comp in max_x_component_list if comp not in max_x_max_y_component_list]
-
-    for component in self.components:
-        if (isinstance(component, Transistor)
-                and (component in min_x_no_rail_bot_components or component in max_x_no_rail_bot_components)):
-            component.group_endpoint = 'no_rail_bot'
-
-    # Case 2 (no rail top)
-    min_x_min_y_component_list = [x_comp for _, y_components in min_y_components for y_comp in y_components for
-                                  _, x_components in min_x_components for x_comp in x_components if x_comp == y_comp]
-    max_x_min_y_component_list = [x_comp for _, y_components in min_y_components for y_comp in y_components for
-                                  _, x_components in max_x_components for x_comp in x_components if x_comp == y_comp]
-
-    min_x_no_rail_top_components = [comp for comp in min_x_component_list if comp not in min_x_min_y_component_list]
-    max_x_no_rail_top_components = [comp for comp in max_x_component_list if comp not in max_x_min_y_component_list]
-
-    for component in self.components:
-        if (isinstance(component, Transistor)
-                and (component in min_x_no_rail_top_components or component in max_x_no_rail_top_components)):
-            component.group_endpoint = 'no_rail_top'
-
-    for component in max_x_component_list:
-        print(f"max_x_comp_list: {component.name}")
-
-    for component in min_x_component_list:
-        print(f"min_x_comp_list: {component.name}")
-
-    for component in min_x_min_y_component_list:
-        print(f"min_x_min_y: {component.name}")
-
-    for component in max_x_min_y_component_list:
-        print(f"max_x_min_y: {component.name}")
-
-    # Case 3 (no rail top/bot)
-    min_x_max_y_component_list = [x_comp for _, y_components in max_y_components for y_comp in y_components
-                                  for _, x_components in min_x_components for x_comp in x_components if x_comp == y_comp]
-
-    max_x_max_y_component_list = [x_comp for _, y_components in max_y_components for y_comp in y_components
-                                  for _, x_components in max_x_components for x_comp in x_components if x_comp == y_comp]
-
-    for component in max_x_component_list:
-        print(f"max_x_comp_list: {component.name}")
-
-    for component in max_x_max_y_component_list:
-        print(f"max_x_max_y: {component.name}")
-
-    for component in min_x_max_y_component_list:
-        print(f"min_x_max_y: {component.name}")
-
-    min_x_no_rail_top_and_bot_components = [comp for comp in min_x_component_list if comp not
-                                            in min_x_max_y_component_list and comp not in min_x_min_y_component_list]
-    max_x_no_rail_top_and_bot_components = [comp for comp in max_x_component_list if comp not
-                                            in max_x_max_y_component_list and comp not in max_x_min_y_component_list]
-
-    #for component in min_x_no_rail_top_and_bot_components:
-    #    print(component.name)
-
-    #for component in min_x_component_list:
-    #    print(component.name)
+    # Sorts components first by y and then by x (ascending order)
+    sorted_components_by_y = sorted(component_names_and_cords, key=lambda item: (item[2], item[1]))
 
 
-    for component in self.components:
-        if isinstance(component, Transistor):
-            if component in min_x_no_rail_top_and_bot_components:
-                # Iterate over minimum x components that match with the group of the potential no rail top/bot endpoint.
-                same_group_and_min_x = [comp for comp in min_x_component_list if comp.group == component.group]
+    # Get overlapping components with x direction sorting
+    prev_component_x_sort = None
+    current_component_x_sort = None
+    for component in sorted_components_by_x:
 
-                same_x_and_same_group_and_min_x = all(comp.transform_matrix.c == same_group_and_min_x[0].transform_matrix.c
-                                                      for comp in same_group_and_min_x)
+        if prev_component_x_sort:
+            if component[2] - prev_component_x_sort[2] == component[0].bounding_box.y2:
 
-                if not same_x_and_same_group_and_min_x or len(same_group_and_min_x) == 1:
-                     component.group_endpoint = 'no_rail_top/bot'
+                # Don't add the same component twice
+                if prev_component_x_sort != current_component_x_sort:
+                    overlapping_components_x_sort.append((prev_component_x_sort[0],
+                                                          prev_component_x_sort[1], prev_component_x_sort[2]))
 
-                elif len(same_group_and_min_x) > 1 and len(same_group_and_min_x) % 2:
-                    component.group_endpoint = ''
+                overlapping_components_x_sort.append((component[0], component[1], component[2]))
+                current_component_x_sort = (component[0], component[1], component[2])
+            else:
+                overlapping_components_x_sort.append((0,0,0)) # adds blanks between every overlapping set of components
 
-            elif component in max_x_no_rail_top_and_bot_components:
+        prev_component_x_sort = (component[0], component[1], component[2])
 
-                same_group_and_max_x = [comp for comp in max_x_component_list if comp.group == component.group]
+    # Get overlapping components with y direction sorting
+    prev_component_y_sort = None
+    current_component_y_sort = None
+    for component in sorted_components_by_y:
+
+        if prev_component_y_sort:
+            if component[1] - prev_component_y_sort[1] == component[0].bounding_box.x2:
+
+                # Don't add the same component twice
+                if prev_component_y_sort != current_component_y_sort:
+                    overlapping_components_y_sort.append((prev_component_y_sort[0],
+                                                          prev_component_y_sort[1], prev_component_y_sort[2]))
+
+                overlapping_components_y_sort.append((component[0], component[1], component[2]))
+                current_component_y_sort = (component[0], component[1], component[2])
+            else:
+                overlapping_components_y_sort.append((0, 0, 0))  # adds blanks between every overlapping set of components
+
+        prev_component_y_sort = (component[0], component[1], component[2])
+
+    # Print sorted list
+    print("Sorted:")
+    for component in sorted_components_by_x:
+        print(component[0].name, component[1], component[2])
+
+    #print("Overlapping:")
+    #for component in overlapping_components:
+    #    print(component[0].name, component[1], component[2])
 
 
-                same_x_and_same_group_and_max_x = all(
-                    comp.transform_matrix.c == same_group_and_max_x[0].transform_matrix.c
-                    for comp in same_group_and_max_x)
 
-                if not same_x_and_same_group_and_max_x or len(same_group_and_max_x) == 1:
-                    component.group_endpoint = 'no_rail_top/bot'
+    # Place no overlap top and bot endpoints
+    grouped_overlap_lists_x_sort = [list(group) for _, group in groupby(overlapping_components_x_sort, key=lambda x: x[1])]
+    grouped_overlap_lists_y_sort = [list(group) for _, group in groupby(overlapping_components_y_sort, key=lambda x: x[2])]
 
-                elif len(same_group_and_max_x) > 1 and len(same_group_and_max_x) % 2:
-                    component.group_endpoint = ''
+    # for grouped_overlap_list in grouped_overlap_lists_y_sort:
+    #     for component in grouped_overlap_list:
+    #         if component[0] == 0:
+    #             print("empty")
+    #         else:
+    #             print(component[0].name)
+
+    # If I don't have it in y_sort it must be a rail top or bot somewhere. Search through x_sort and find it.
+    # List position in x_sort defines if it is a top or bot
+    # if I have multiple components not defined in y_sort. I need to do the same thing, however they may be in the same x_sort
+    # but can also not be. Deal with this also.
+
+    for component in self.transistor_components:
+        for grouped_overlap_list in grouped_overlap_lists:
+            if component == grouped_overlap_list[0][0]:
+                component.group_endpoint = 'no_rail_bot'
+            if component == grouped_overlap_list[-1][0]:
+                component.group_endpoint = 'no_rail_top'
 
 
-    # Case 4 (rail bot)
-    for component in self.components:
-        if isinstance(component, Transistor):
-            for _, y_components in min_y_components:
-                for y_comp in y_components:
-                    if y_comp == component:
-                        component.group_endpoint = "rail_bot"
 
-    # Case 5 (rail top)
-    for component in self.components:
-        if isinstance(component, Transistor):
-            for _, y_components in max_y_components:
-                for y_comp in y_components:
-                    if y_comp == component:
-                        component.group_endpoint = "rail_top"
+    # Grouping using groupby
+    # prev_overlap_component = None
+    # for component in overlapping_components:
+    #     if prev_overlap_component:
+    #         if prev_overlap_component[1] == component[1]:
+    #             print(component[0].name)
+    #
+    #
+    #     prev_overlap_component = component
 
-    # Case 6 (rail top/bot)
-    for component in self.components:
-        if isinstance(component, Transistor):
-            for _, mi_y_components in min_y_components:
-                for mi_y_comp in mi_y_components:
-                    for _, mx_y_components in max_y_components:
-                        for mx_y_comp in mx_y_components:
-                            if mi_y_comp == mx_y_comp == component:
-                                component.group_endpoint = "rail_top/bot"
+
+
 
     # Logging
     for component in self.components:
