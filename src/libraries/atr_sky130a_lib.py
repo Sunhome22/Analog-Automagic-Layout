@@ -162,6 +162,7 @@ def get_component_group_endpoints_for_atr_sky130a_lib(self: object):
                     overlapping_components_x_sort.append((prev_component_x_sort[0],
                                                           prev_component_x_sort[1], prev_component_x_sort[2]))
 
+
                 overlapping_components_x_sort.append((component[0], component[1], component[2]))
                 current_component_x_sort = (component[0], component[1], component[2])
             else:
@@ -174,13 +175,15 @@ def get_component_group_endpoints_for_atr_sky130a_lib(self: object):
     current_component_y_sort = None
     for component in sorted_components_by_y:
 
-        if prev_component_y_sort:
-            if component[1] - prev_component_y_sort[1] == component[0].bounding_box.x2:
-
+        if prev_component_y_sort is None:
+            overlapping_components_y_sort.append((component[0], component[1], component[2]))
+        else:
+            if component[1] - prev_component_y_sort[1] <= component[0].bounding_box.x2:
                 # Don't add the same component twice
                 if prev_component_y_sort != current_component_y_sort:
                     overlapping_components_y_sort.append((prev_component_y_sort[0],
                                                           prev_component_y_sort[1], prev_component_y_sort[2]))
+
 
                 overlapping_components_y_sort.append((component[0], component[1], component[2]))
                 current_component_y_sort = (component[0], component[1], component[2])
@@ -190,34 +193,93 @@ def get_component_group_endpoints_for_atr_sky130a_lib(self: object):
         prev_component_y_sort = (component[0], component[1], component[2])
 
     # Print sorted list
-    print("Sorted:")
-    for component in sorted_components_by_x:
-        print(component[0].name, component[1], component[2])
+    # print("Sorted:")
+    # for component in sorted_components_by_y:
+    #     print(component[0].name, component[1], component[2])
 
-    #print("Overlapping:")
-    #for component in overlapping_components:
-    #    print(component[0].name, component[1], component[2])
+    # Create a set of groups that are based on overlap and position and not the transistor object group label
+    groups = []
+    current_group = [sorted_components_by_y[0]]
 
-    grouped_overlap_lists_x_sort = [list(group) for _, group in groupby(overlapping_components_x_sort, key=lambda x: x[1])]
-    grouped_overlap_lists_y_sort = [list(group) for _, group in groupby(overlapping_components_y_sort, key=lambda x: x[2])]
+    for i in range(1, len(sorted_components_by_y)):
+        _, _, prev_y = sorted_components_by_y[i - 1]
+        component, x, y = sorted_components_by_y[i]
 
-    # Finding possible top/bot in edge case
-    # unfinished test
-    sorted_ = [
-        comp[0].name
-        for grouped_overlap_list in grouped_overlap_lists_x_sort
-        for comp in grouped_overlap_list
-        if comp and hasattr(comp[0], "name")
-    ]
+        if abs(y - prev_y) > component.bounding_box.y2:
+            groups.append(current_group)
+            current_group = []
 
-    keys2 = [
-        comp[0].name
-        for grouped_overlap_list in grouped_overlap_lists_y_sort
-        for comp in grouped_overlap_list
-        if comp and hasattr(comp[0], "name")
-    ]
-    common_keys = [key for key in keys1 if key not in set(keys2)]
-    print(common_keys)
+        current_group.append((component, x, y))
+
+    # Append the last group
+    groups.append(current_group)
+
+    groups_x = []
+    current_group_x = [sorted_components_by_x[0]]
+
+    for i in range(1, len(sorted_components_by_x)):
+        _, _, prev_y = sorted_components_by_x[i - 1]
+        component, x, y = sorted_components_by_x[i]
+
+        if abs(y - prev_y) > component.bounding_box.y2:
+            groups_x.append(current_group_x)
+            current_group_x = []
+
+        current_group_x.append((component, x, y))
+
+    # Append the last group
+    groups_x.append(current_group_x)
+
+    for index_x, group_x in enumerate(groups_x):
+        for comp_x in group_x:
+            # print(comp_x[0].name)
+
+            # Iterate over group items and
+            for index, group in enumerate(groups):
+                print(f"Group {index + 1}:")
+                for comp in group:
+                    if comp_x == comp:
+                        print(comp_x[0].name)
+
+
+                    #print(f"  {comp[0].name}")
+
+
+
+        #prev_group = group
+        # print("new group")
+        # for component in group:
+        #     # Check y distance to components above and check x position against components.
+        #     print(component[0].name)
+
+    # print("Overlapping:")
+    # for component in overlapping_components_y_sort:
+    #     if component[0] == 0:
+    #         print("next line")
+    #     else:
+    #         print(component[0].name, component[1], component[2])
+    #
+    # # Creates grouped lists
+    # grouped_overlap_lists_x_sorted = [list(group) for _, group in groupby(overlapping_components_x_sort, key=lambda x: x[1])]
+    # grouped_overlap_lists_y_sorted = [list(group) for _, group in groupby(overlapping_components_y_sort, key=lambda x: x[2])]
+    #
+    # # Finding possible top/bot in edge case
+    # # unfinished test
+    # keys1 = [
+    #     comp[0].name
+    #     for grouped_overlap_list in grouped_overlap_lists_x_sorted
+    #     for comp in grouped_overlap_list
+    #     if comp and hasattr(comp[0], "name")
+    # ]
+    #
+    # keys2 = [
+    #     comp[0].name
+    #     for grouped_overlap_list in grouped_overlap_lists_y_sorted
+    #     for comp in grouped_overlap_list
+    #     if comp and hasattr(comp[0], "name")
+    # ]
+    # common_keys = [key for key in keys1 if key not in set(keys2)]
+    # print(common_keys)
 
     # for grouped_overlap_list in grouped_overlap_lists_y_sort:
     #     for comp in grouped_overlap_list:

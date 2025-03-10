@@ -158,8 +158,8 @@ def main():
                 used_area  = component.bounding_box
 
 
-        #draw_result(grid_size=grid_size, objects=components, used_area=used_area, scale_factor=scale_factor,
-        #            draw_name=draw_name)
+        draw_result(grid_size=grid_size, objects=components, used_area=used_area, scale_factor=scale_factor,
+                    draw_name=draw_name)
 
         # Debug log of all components
         logger.debug(f"Components registered: ")
