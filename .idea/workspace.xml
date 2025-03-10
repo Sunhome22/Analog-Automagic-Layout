@@ -6,7 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="f7791a66-c797-4448-a536-1f4db186a974" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/drc/drc_errors_plot.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/drc/drc_errors_plot.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/libraries/atr_sky130a_lib.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/libraries/atr_sky130a_lib.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />

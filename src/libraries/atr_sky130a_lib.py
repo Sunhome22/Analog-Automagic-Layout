@@ -198,30 +198,47 @@ def get_component_group_endpoints_for_atr_sky130a_lib(self: object):
     #for component in overlapping_components:
     #    print(component[0].name, component[1], component[2])
 
-
-
-    # Place no overlap top and bot endpoints
     grouped_overlap_lists_x_sort = [list(group) for _, group in groupby(overlapping_components_x_sort, key=lambda x: x[1])]
     grouped_overlap_lists_y_sort = [list(group) for _, group in groupby(overlapping_components_y_sort, key=lambda x: x[2])]
 
+    # Finding possible top/bot in edge case
+    # unfinished test
+    sorted_ = [
+        comp[0].name
+        for grouped_overlap_list in grouped_overlap_lists_x_sort
+        for comp in grouped_overlap_list
+        if comp and hasattr(comp[0], "name")
+    ]
+
+    keys2 = [
+        comp[0].name
+        for grouped_overlap_list in grouped_overlap_lists_y_sort
+        for comp in grouped_overlap_list
+        if comp and hasattr(comp[0], "name")
+    ]
+    common_keys = [key for key in keys1 if key not in set(keys2)]
+    print(common_keys)
+
     # for grouped_overlap_list in grouped_overlap_lists_y_sort:
-    #     for component in grouped_overlap_list:
-    #         if component[0] == 0:
-    #             print("empty")
-    #         else:
-    #             print(component[0].name)
+    #     for comp in grouped_overlap_list:
+    #         for component in self.transistor_components:
+    #             if comp[0] == component or comp[0] == 0:
+    #                 print("yo")
+    #             else:
+    #                 print(comp[0].name)
+
 
     # If I don't have it in y_sort it must be a rail top or bot somewhere. Search through x_sort and find it.
     # List position in x_sort defines if it is a top or bot
     # if I have multiple components not defined in y_sort. I need to do the same thing, however they may be in the same x_sort
     # but can also not be. Deal with this also.
 
-    for component in self.transistor_components:
-        for grouped_overlap_list in grouped_overlap_lists:
-            if component == grouped_overlap_list[0][0]:
-                component.group_endpoint = 'no_rail_bot'
-            if component == grouped_overlap_list[-1][0]:
-                component.group_endpoint = 'no_rail_top'
+    # for component in self.transistor_components:
+    #     for grouped_overlap_list in grouped_overlap_lists:
+    #         if component == grouped_overlap_list[0][0]:
+    #             component.group_endpoint = 'no_rail_bot'
+    #         if component == grouped_overlap_list[-1][0]:
+    #             component.group_endpoint = 'no_rail_top'
 
 
 
@@ -234,8 +251,6 @@ def get_component_group_endpoints_for_atr_sky130a_lib(self: object):
     #
     #
     #     prev_overlap_component = component
-
-
 
 
     # Logging
