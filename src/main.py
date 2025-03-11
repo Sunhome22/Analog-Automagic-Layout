@@ -91,9 +91,14 @@ def main():
     # Algorithms
     con_obj = ConnectionLists(components)
     single_connection, local_connections, connections, overlap_dict, net_list = con_obj.initialize_connections()
+    print("Connections")
 
-
-
+    for con in connections:
+        print(con)
+    print("SINGLE CONNECRIONs")
+    for c in single_connection:
+        print(c)
+    return
 
    # result = LinearOptimizationSolver(components, connections, local_connections, grid_size, overlap_dict, time_limit)
    # components = result.initiate_solver()

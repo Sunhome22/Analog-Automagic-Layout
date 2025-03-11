@@ -233,12 +233,16 @@ def initiate_write_traces(components, all_paths,  scale_factor, trace_width, use
 
 
 
-
-
-
         mapped_rectangles = map_segments_to_rectangles(path_info=all_paths[net],
-                                                               scale_factor=scale_factor,
-                                                               used_area=used_area)
+                                                           scale_factor=scale_factor,
+                                                           used_area=used_area)
+
+
+
+
+
+
+
 
 
         components.append(_write_traces(mapped_rectangles, trace_width, index, net))

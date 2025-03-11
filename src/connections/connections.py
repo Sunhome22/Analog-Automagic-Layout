@@ -113,18 +113,17 @@ class ConnectionLists:
                             not isinstance(component_2, (Pin,CircuitCell)),
                             component_1 != component_2,
                             component_1.cell == component_2.cell
-                              ]
+                            ]
 
                 if all(conditions):
-
                     for port_1 in component_1.schematic_connections:
                         if port_1 == "B":
                             continue
 
-                        element_appended = False
                         for port_2 in component_2.schematic_connections:
                             if port_2 == "B":
                                 continue
+
                             if component_1.schematic_connections[port_1] == component_2.schematic_connections[port_2]:
                                 net = component_1.schematic_connections[port_1]
                                 cell = component_1.cell
@@ -139,12 +138,23 @@ class ConnectionLists:
                                 if not any(isinstance(obj, Connection) and obj == target for target in entry for obj in self.component_connections):
 
                                     self.component_connections.append(entry[0])
-                                    element_appended = True
+
+    def _single_connection_list(self):
+        in_connection_list = False
+        for component in self.components:
+            if not isinstance(component, (Pin, CircuitCell)):
+                for port in component.schematic_connections:
+                    for con in self.component_connections:
 
 
+                        if (con.start_comp_id == str(component.number_id) and port in con.start_area) or (con.end_comp_id == str(component.number_id) and port in con.end_area):
+                            in_connection_list = True
+                            break
+                    if not in_connection_list:
+                        self.single_connection.append(Connection(component.number_id, port, component.name,"" ,"" ,"" , component.cell, component.schematic_connections[port]))
+                        in_connection_list = False
 
-                        if not element_appended:
-                            self.single_connection.append(Connection(component_1.number_id, port_1, component_1.name,"", "", "", component_1.cell, component_1.schematic_connections[port_1]))
+
 
     def _overlap_transistors(self):
         n_transistors = []
@@ -182,6 +192,7 @@ class ConnectionLists:
 
         self._local_connection_list()
         self._connection_list()
+        self._single_connection_list()
         self._overlap_transistors()
         self._get_net_list()
 
