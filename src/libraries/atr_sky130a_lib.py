@@ -162,7 +162,6 @@ def get_component_group_endpoints_for_atr_sky130a_lib(self: object):
                     overlapping_components_x_sort.append((prev_component_x_sort[0],
                                                           prev_component_x_sort[1], prev_component_x_sort[2]))
 
-
                 overlapping_components_x_sort.append((component[0], component[1], component[2]))
                 current_component_x_sort = (component[0], component[1], component[2])
             else:
@@ -184,7 +183,6 @@ def get_component_group_endpoints_for_atr_sky130a_lib(self: object):
                     overlapping_components_y_sort.append((prev_component_y_sort[0],
                                                           prev_component_y_sort[1], prev_component_y_sort[2]))
 
-
                 overlapping_components_y_sort.append((component[0], component[1], component[2]))
                 current_component_y_sort = (component[0], component[1], component[2])
             else:
@@ -193,12 +191,12 @@ def get_component_group_endpoints_for_atr_sky130a_lib(self: object):
         prev_component_y_sort = (component[0], component[1], component[2])
 
     # Print sorted list
-    # print("Sorted:")
-    # for component in sorted_components_by_y:
-    #     print(component[0].name, component[1], component[2])
+    print("Sorted:")
+    for component in sorted_components_by_x:
+        print(component[0].name, component[1], component[2])
 
     # Create a set of groups that are based on overlap and position and not the transistor object group label
-    groups = []
+    groups_y = []
     current_group = [sorted_components_by_y[0]]
 
     for i in range(1, len(sorted_components_by_y)):
@@ -206,13 +204,13 @@ def get_component_group_endpoints_for_atr_sky130a_lib(self: object):
         component, x, y = sorted_components_by_y[i]
 
         if abs(y - prev_y) > component.bounding_box.y2:
-            groups.append(current_group)
+            groups_y.append(current_group)
             current_group = []
 
         current_group.append((component, x, y))
 
     # Append the last group
-    groups.append(current_group)
+    groups_y.append(current_group)
 
     groups_x = []
     current_group_x = [sorted_components_by_x[0]]
@@ -230,16 +228,60 @@ def get_component_group_endpoints_for_atr_sky130a_lib(self: object):
     # Append the last group
     groups_x.append(current_group_x)
 
+    # Some more fancy stuff
+    component_x_group_y_group = []
     for index_x, group_x in enumerate(groups_x):
         for comp_x in group_x:
-            # print(comp_x[0].name)
-
-            # Iterate over group items and
-            for index, group in enumerate(groups):
-                print(f"Group {index + 1}:")
-                for comp in group:
+            for index_y, group_y in enumerate(groups_y):
+                for comp in group_y:
                     if comp_x == comp:
-                        print(comp_x[0].name)
+                        component_x_group_y_group.append((comp_x, index_x, index_y))
+
+    # Create a dictionary to group components by y_group
+    grouped_dict_x = {}
+    for name, x, y in component_x_group_y_group:
+        if x not in grouped_dict_x:
+            grouped_dict_x[x] = []
+        grouped_dict_x[x].append([name, x, y])
+
+    # Convert dictionary to a sorted list of lists
+    grouped_components_x = [grouped_dict_x[key] for key in sorted(grouped_dict_x.keys())]
+
+    #prev_y_group = None
+
+    for components in grouped_components_x:
+        for component in self.transistor_components:
+            if component == components[-1][0][0] and len(components) > 1:
+                component.group_endpoint = "no_rail_top"
+                print(component.transform_matrix.f, component.name, )
+            elif component == components[0][0][0] and len(components) > 1:
+                component.group_endpoint = "no_rail_bot"
+            elif component == components[0][0][0] and len(components) == 1:
+                component.group_endpoint = "no_rail_top/bot"
+
+    #prev_y_group = components[0][2]
+    for component in sorted_components_by_y:
+        print(component[0].name)
+    #for components in grouped_components_y:
+    #    print(components[-1][0][0].name)
+
+
+
+
+
+        #print(group[0])
+
+    #prev_group_x = None
+    #for component, group_x, group_y in component_y_group_x_group:
+    #    print(component[0].name, group_x, group_y)
+        #if prev_group_x == group_x:
+        #    print(component[0].name)
+
+        #prev_group_x = group_x
+
+
+    # for item in component_to_group:
+    #     print(item[1])
 
 
                     #print(f"  {comp[0].name}")

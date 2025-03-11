@@ -6,8 +6,9 @@
   <component name="ChangeListManager">
     <list default="true" id="f7791a66-c797-4448-a536-1f4db186a974" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/drc/drc_errors_plot.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/drc/drc_errors_plot.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/json_converter/components_w3.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/json_converter/components_w3.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/libraries/atr_sky130a_lib.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/libraries/atr_sky130a_lib.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -88,7 +89,7 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-python-sdk-98f27166c754-ba05f1cad1b1-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-242.21829.153" />
+        <option value="bundled-python-sdk-975db3bf15a3-31b6be0877a2-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-241.18034.82" />
       </set>
     </attachedChunks>
   </component>
