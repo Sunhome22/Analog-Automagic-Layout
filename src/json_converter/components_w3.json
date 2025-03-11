@@ -1496,8 +1496,8 @@
         "schematic_connections": {
             "D": "net4",
             "G": "net3",
-            "S": "VDD",
-            "B": "VDD"
+            "S": "net1",
+            "B": "net1"
         },
         "layout_name": "JNWATR_NCH_4C5F0",
         "layout_library": "JNW_ATR_SKY130A",

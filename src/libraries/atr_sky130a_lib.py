@@ -136,8 +136,6 @@ def generate_bulk_to_rail_segments(self, rail, component, y_params, group_endpoi
 
 def get_component_group_endpoints_for_atr_sky130a_lib(self: object):
     component_names_and_cords = []
-    overlapping_components_x_sort = []
-    overlapping_components_y_sort = []
 
     for component in self.transistor_components:
         component_names_and_cords.append((component, component.transform_matrix.c, component.transform_matrix.f))
@@ -148,54 +146,7 @@ def get_component_group_endpoints_for_atr_sky130a_lib(self: object):
     # Sorts components first by y and then by x (ascending order)
     sorted_components_by_y = sorted(component_names_and_cords, key=lambda item: (item[2], item[1]))
 
-
-    # Get overlapping components with x direction sorting
-    prev_component_x_sort = None
-    current_component_x_sort = None
-    for component in sorted_components_by_x:
-
-        if prev_component_x_sort:
-            if component[2] - prev_component_x_sort[2] == component[0].bounding_box.y2:
-
-                # Don't add the same component twice
-                if prev_component_x_sort != current_component_x_sort:
-                    overlapping_components_x_sort.append((prev_component_x_sort[0],
-                                                          prev_component_x_sort[1], prev_component_x_sort[2]))
-
-                overlapping_components_x_sort.append((component[0], component[1], component[2]))
-                current_component_x_sort = (component[0], component[1], component[2])
-            else:
-                overlapping_components_x_sort.append((0,0,0)) # adds blanks between every overlapping set of components
-
-        prev_component_x_sort = (component[0], component[1], component[2])
-
-    # Get overlapping components with y direction sorting
-    prev_component_y_sort = None
-    current_component_y_sort = None
-    for component in sorted_components_by_y:
-
-        if prev_component_y_sort is None:
-            overlapping_components_y_sort.append((component[0], component[1], component[2]))
-        else:
-            if component[1] - prev_component_y_sort[1] <= component[0].bounding_box.x2:
-                # Don't add the same component twice
-                if prev_component_y_sort != current_component_y_sort:
-                    overlapping_components_y_sort.append((prev_component_y_sort[0],
-                                                          prev_component_y_sort[1], prev_component_y_sort[2]))
-
-                overlapping_components_y_sort.append((component[0], component[1], component[2]))
-                current_component_y_sort = (component[0], component[1], component[2])
-            else:
-                overlapping_components_y_sort.append((0, 0, 0))  # adds blanks between every overlapping set of components
-
-        prev_component_y_sort = (component[0], component[1], component[2])
-
-    # Print sorted list
-    print("Sorted:")
-    for component in sorted_components_by_x:
-        print(component[0].name, component[1], component[2])
-
-    # Create a set of groups that are based on overlap and position and not the transistor object group label
+    # Create a set of y groups that are based on overlap and position and not the transistor object group label
     groups_y = []
     current_group = [sorted_components_by_y[0]]
 
@@ -212,6 +163,7 @@ def get_component_group_endpoints_for_atr_sky130a_lib(self: object):
     # Append the last group
     groups_y.append(current_group)
 
+    # Create a set of x groups that are based on overlap and position and not the transistor object group label
     groups_x = []
     current_group_x = [sorted_components_by_x[0]]
 
@@ -228,7 +180,7 @@ def get_component_group_endpoints_for_atr_sky130a_lib(self: object):
     # Append the last group
     groups_x.append(current_group_x)
 
-    # Some more fancy stuff
+
     component_x_group_y_group = []
     for index_x, group_x in enumerate(groups_x):
         for comp_x in group_x:
@@ -247,121 +199,76 @@ def get_component_group_endpoints_for_atr_sky130a_lib(self: object):
     # Convert dictionary to a sorted list of lists
     grouped_components_x = [grouped_dict_x[key] for key in sorted(grouped_dict_x.keys())]
 
-    #prev_y_group = None
+    possible_y_max_components = []
+    possible_y_min_components = []
 
     for components in grouped_components_x:
         for component in self.transistor_components:
+
             if component == components[-1][0][0] and len(components) > 1:
+                possible_y_max_components.append((component, component.transform_matrix.f, components[0][2]))
                 component.group_endpoint = "no_rail_top"
-                print(component.transform_matrix.f, component.name, )
+
             elif component == components[0][0][0] and len(components) > 1:
                 component.group_endpoint = "no_rail_bot"
+                possible_y_min_components.append((component, component.transform_matrix.f, components[0][2]))
+
             elif component == components[0][0][0] and len(components) == 1:
                 component.group_endpoint = "no_rail_top/bot"
+                possible_y_max_components.append((component, component.transform_matrix.f, components[0][2]))
+                possible_y_min_components.append((component, component.transform_matrix.f, components[0][2]))
 
-    #prev_y_group = components[0][2]
-    for component in sorted_components_by_y:
-        print(component[0].name)
-    #for components in grouped_components_y:
-    #    print(components[-1][0][0].name)
+    for min_y_components in list(find_min_y_components(possible_y_min_components).values()):
+        for min_y_component in min_y_components:
+            for component in self.transistor_components:
+                if min_y_component == component:
+                    component.group_endpoint = "rail_bot"
 
-
-
-
-
-        #print(group[0])
-
-    #prev_group_x = None
-    #for component, group_x, group_y in component_y_group_x_group:
-    #    print(component[0].name, group_x, group_y)
-        #if prev_group_x == group_x:
-        #    print(component[0].name)
-
-        #prev_group_x = group_x
-
-
-    # for item in component_to_group:
-    #     print(item[1])
-
-
-                    #print(f"  {comp[0].name}")
-
-
-
-        #prev_group = group
-        # print("new group")
-        # for component in group:
-        #     # Check y distance to components above and check x position against components.
-        #     print(component[0].name)
-
-    # print("Overlapping:")
-    # for component in overlapping_components_y_sort:
-    #     if component[0] == 0:
-    #         print("next line")
-    #     else:
-    #         print(component[0].name, component[1], component[2])
-    #
-    # # Creates grouped lists
-    # grouped_overlap_lists_x_sorted = [list(group) for _, group in groupby(overlapping_components_x_sort, key=lambda x: x[1])]
-    # grouped_overlap_lists_y_sorted = [list(group) for _, group in groupby(overlapping_components_y_sort, key=lambda x: x[2])]
-    #
-    # # Finding possible top/bot in edge case
-    # # unfinished test
-    # keys1 = [
-    #     comp[0].name
-    #     for grouped_overlap_list in grouped_overlap_lists_x_sorted
-    #     for comp in grouped_overlap_list
-    #     if comp and hasattr(comp[0], "name")
-    # ]
-    #
-    # keys2 = [
-    #     comp[0].name
-    #     for grouped_overlap_list in grouped_overlap_lists_y_sorted
-    #     for comp in grouped_overlap_list
-    #     if comp and hasattr(comp[0], "name")
-    # ]
-    # common_keys = [key for key in keys1 if key not in set(keys2)]
-    # print(common_keys)
-
-    # for grouped_overlap_list in grouped_overlap_lists_y_sort:
-    #     for comp in grouped_overlap_list:
-    #         for component in self.transistor_components:
-    #             if comp[0] == component or comp[0] == 0:
-    #                 print("yo")
-    #             else:
-    #                 print(comp[0].name)
-
-
-    # If I don't have it in y_sort it must be a rail top or bot somewhere. Search through x_sort and find it.
-    # List position in x_sort defines if it is a top or bot
-    # if I have multiple components not defined in y_sort. I need to do the same thing, however they may be in the same x_sort
-    # but can also not be. Deal with this also.
-
-    # for component in self.transistor_components:
-    #     for grouped_overlap_list in grouped_overlap_lists:
-    #         if component == grouped_overlap_list[0][0]:
-    #             component.group_endpoint = 'no_rail_bot'
-    #         if component == grouped_overlap_list[-1][0]:
-    #             component.group_endpoint = 'no_rail_top'
-
-
-
-    # Grouping using groupby
-    # prev_overlap_component = None
-    # for component in overlapping_components:
-    #     if prev_overlap_component:
-    #         if prev_overlap_component[1] == component[1]:
-    #             print(component[0].name)
-    #
-    #
-    #     prev_overlap_component = component
-
-
+    for max_y_components in list(find_max_y_components(possible_y_max_components).values()):
+        for max_y_component in max_y_components:
+            for component in self.transistor_components:
+                if max_y_component == component:
+                    if component.group_endpoint == "rail_bot":
+                        component.group_endpoint = "rail_top/bot"
+                    else:
+                        # Handling of special edge case
+                        if component.group_endpoint == "no_rail_top/bot":
+                            component.group_endpoint = "no_rail_top/bot"
+                        else:
+                            component.group_endpoint = "rail_top"
     # Logging
     for component in self.components:
         if isinstance(component, Transistor):
             self.logger.info(f"Component '{component.name}' "
                              f"was assigned group endpoint '{component.group_endpoint}'")
+
+
+def find_max_y_components(data):
+    groups = defaultdict(list)
+
+    for name, y, group in data:
+        groups[group].append((name, y))
+
+    max_y_components = {}
+    for group, components in groups.items():
+        max_y = max(components, key=lambda x: x[1])[1]
+        max_y_components[group] = [name for name, y in components if y == max_y]
+
+    return max_y_components
+
+
+def find_min_y_components(data):
+    groups = defaultdict(list)
+
+    for name, y, group in data:
+        groups[group].append((name, y))
+
+    min_y_components = {}
+    for group, components in groups.items():
+        min_y = min(components, key=lambda x: x[1])[1]
+        min_y_components[group] = [name for name, y in components if y == min_y]
+
+    return min_y_components
 
 
 # ========================================== Magic layout creator functions ============================================
