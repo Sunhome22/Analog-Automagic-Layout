@@ -28,6 +28,7 @@ RED = "\033[38;2;255;51;51m"
 BLUE = "\033[38;2;59;92;222m"
 LIGHT_BLUE = "\033[38;2;51;153;255m"
 ORANGE = "\033[38;2;255;153;51m"
+LIGHT_ORANGE = "\033[38;2;255;204;153m"
 YELLOW = "\033[38;2;255;255;70m"
 PURPLE = "\033[38;2;153;51;255m"
 CYAN = "\033[38;2;0;204;204m"
@@ -45,12 +46,13 @@ def get_a_logger(name):
         "magic.magic_component_parser": LIGHT_BLUE,
         "json_converter.json_converter": ORANGE,
         "magic.magic_layout_creator": YELLOW,
-        "linear_optimization.linear_optimization":PURPLE,
+        "linear_optimization.linear_optimization": PURPLE,
         "connections.connections": CYAN,
         "astar.a_star": BLUE,
         "grid.generate_grid": PINK,
         "drc.drc_checker": DARK_CYAN,
-        "lvs.lvs_checker": DARK_GREEN
+        "lvs.lvs_checker": DARK_GREEN,
+        "traces.trace_generator": LIGHT_ORANGE
     }
 
     file_spcific_color = color_table.get(name, WHITE)

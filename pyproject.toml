@@ -52,7 +52,7 @@ VIA_PADDING = 7
 # Trace generator config options
 # -> Init rail ring offset - offset from cells defined bounding box
 # -> rail ring offset - distance from the outside of one ring to the outside of the next
-# -> rail width -
+# -> rail width - width of the rails
 
 [trace_generator]
 INIT_RAIL_RING_OFFSET_Y = 350

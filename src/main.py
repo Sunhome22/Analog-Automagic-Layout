@@ -73,7 +73,7 @@ project_properties = ProjectProperties(directory="~/aicex/ip/jnw_bkle_sky130A",
 def main():
     # Create a logger
     logger = get_a_logger(__name__)
-    run = False
+    run = True
 
     if run:
         # Extracts component information from SPICE file
@@ -102,7 +102,9 @@ def main():
             components=components,
             scale_factor=scale_factor
         ).initialize_grid_generation()
-        print(used_area)
+
+        draw_result(grid_size=grid_size, objects=components, used_area=used_area, scale_factor=scale_factor,
+                   draw_name=draw_name)
 
         # path, seg_list = initiate_astar(
         #     grid=grid,
@@ -112,32 +114,31 @@ def main():
         #     port_scaled_coords=port_scaled_coords,
         #     net_list=net_list)
 
-        #components = initiate_write_traces(components, path, port_coord, seg_list, scale_factor, net_list)
-        #MagicLayoutCreator(project_properties=project_properties, components=components)
-
+        # components = initiate_write_traces(components, path, port_coord, seg_list, scale_factor, net_list)
+        # MagicLayoutCreator(project_properties=project_properties, components=components)
 
         # temp setting
         for component in components:
             if isinstance(component, CircuitCell):
-                component.transform_matrix.set([1,0,0,0,1,0])
+                component.transform_matrix.set([1, 0, 0, 0, 1, 0])
                 component.bounding_box.set(used_area)
 
-        save_to_json(components, file_name="src/json_converter/components.json")
+        save_to_json(components, file_name="src/json_converter/components_test.json")
 
         # Update components with trace information
-        #components = TraceGenerator(components=components, project_properties=project_properties).get()
+        # components = TraceGenerator(components=components, project_properties=project_properties).get()
 
         # Create layout
         # MagicLayoutCreator(project_properties=project_properties, components=components)
 
         # DRC handling
-        #DRCchecking(project_properties=project_properties)
+        # DRCchecking(project_properties=project_properties)
 
         # LVS handling
-        #LVSchecking(project_properties=project_properties)
+        # LVSchecking(project_properties=project_properties)
 
     else:
-        components = load_from_json(file_name="src/json_converter/components_w3.json")
+        components = load_from_json(file_name="src/json_converter/components_(edge_case_test_for_endpoints).json")
 
         # Update components with trace information
         components = TraceGenerator(components=components, project_properties=project_properties).get()
@@ -146,25 +147,25 @@ def main():
         MagicLayoutCreator(project_properties=project_properties, components=components)
 
         # DRC handling
-        #DRCchecking(project_properties=project_properties)
+        # DRCchecking(project_properties=project_properties)
 
         # LVS handling
         # LVSchecking(project_properties=project_properties)
-        #save_to_json(components, file_name="src/json_converter/components_test.json")
+        # save_to_json(components, file_name="src/json_converter/components_test.json")
 
-        used_area = 0
-        for component in components:
-            if isinstance(component, CircuitCell):
-                used_area = component.bounding_box
+        # used_area = 0
+        # for component in components:
+        #     if isinstance(component, CircuitCell):
+        #         used_area = component.bounding_box
 
-
-        #draw_result(grid_size=grid_size, objects=components, used_area=used_area, scale_factor=scale_factor,
+        # draw_result(grid_size=grid_size, objects=components, used_area=used_area, scale_factor=scale_factor,
         #            draw_name=draw_name)
 
         # Debug log of all components
         logger.debug(f"Components registered: ")
         for component in components:
             logger.debug(f"- {component}")
+
 
 if __name__ == '__main__':
     main()

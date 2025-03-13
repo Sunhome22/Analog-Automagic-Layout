@@ -46,7 +46,8 @@ class LinearOptimizationSolver:
 
         # Setup of problem space and solver
         self.problem_space = pulp.LpProblem("ComponentPlacement", pulp.LpMinimize)
-        self.solver = pulp.SCIP_PY(msg=self.SOLVER_MSG, mip=False, warmStart=False, options=[f"limits/gap={self.STOP_TOLERANCE}"])
+        self.solver = pulp.SCIP_PY(msg=self.SOLVER_MSG, mip=False, warmStart=False,
+                                   options=[f"limits/gap={self.STOP_TOLERANCE}"])
 
         # Inputs
         self.components = components
@@ -106,16 +107,16 @@ class LinearOptimizationSolver:
 
     def __check_mirrored_components(self) -> list:
         mirrored_objects = []
-        components2 = self.functional_components[:] # shallow copy
+        components2 = self.functional_components[:]  # shallow copy
 
         for component in self.functional_components:
             group = []
             for component2 in components2:
                 if component.group == component2.group and component != component2 and component.group is not None:
-                    group.append([component,component2])
+                    group.append([component, component2])
 
-            if len(group) == 1 and ([group[0][1],group[0][0]]) not in mirrored_objects:
-                mirrored_objects.append([group[0][0],group[0][1]])
+            if len(group) == 1 and ([group[0][1], group[0][0]]) not in mirrored_objects:
+                mirrored_objects.append([group[0][0], group[0][1]])
                 components2.remove(group[0][0])
                 components2.remove(group[0][1])
 
@@ -131,7 +132,7 @@ class LinearOptimizationSolver:
 
                 if len(group) == 1:
                     if (([group[0][0], group[0][1]]) not in mirrored_objects
-                            and ([group[0][1],group[0][0]]) not in mirrored_objects):
+                            and ([group[0][1], group[0][0]]) not in mirrored_objects):
                         mirrored_objects.append([group[0][0], group[0][1]])
         return mirrored_objects
 
@@ -251,7 +252,7 @@ class LinearOptimizationSolver:
 
         for c1 in self.component_ids:
             self.problem_space += self.coordinates_x[c1] + self.width[c1] + (self.OFFSET_X//2) <= self.grid_size
-            self.problem_space += self.coordinates_y[c1] + self.height[c1]  + (self.OFFSET_Y//2) <= self.grid_size
+            self.problem_space += self.coordinates_y[c1] + self.height[c1] + (self.OFFSET_Y//2) <= self.grid_size
 
             self.problem_space += self.x_max >= self.coordinates_x[c1] + self.width[c1]
             self.problem_space += self.x_min <= self.coordinates_x[c1]
@@ -267,17 +268,17 @@ class LinearOptimizationSolver:
 
                     self.problem_space += z1 + z2 + z3 + z4 == 1, f"NonOverlap_{c1}_{c2}"
                     if [c1,c2] in self.overlap_components["top"] and [c1, c2] in self.overlap_components["side"]:
-                        self.problem_space += (self.coordinates_x[c1] + self.width[c1]  <= self.coordinates_x[c2]
+                        self.problem_space += (self.coordinates_x[c1] + self.width[c1] <= self.coordinates_x[c2]
                                                + self.grid_size * (1 - z1), f"LeftOf_{c1}_{c2}")
                         self.problem_space += (self.coordinates_x[c2] + self.width[c2] <= self.coordinates_x[c1]
                                                + self.grid_size * (1 - z2), f"RightOf_{c1}_{c2}")
-                        self.problem_space += (self.coordinates_y[c1] + self.height[c1]  <= self.coordinates_y[c2]
+                        self.problem_space += (self.coordinates_y[c1] + self.height[c1] <= self.coordinates_y[c2]
                                                + self.grid_size * (1 - z3), f"Below_{c1}_{c2}")
-                        self.problem_space += (self.coordinates_y[c2] + self.height[c2]  <= self.coordinates_y[c1]
+                        self.problem_space += (self.coordinates_y[c2] + self.height[c2] <= self.coordinates_y[c1]
                                                + self.grid_size * (1 - z4), f"Above_{c1}_{c2}")
 
                     elif [c1,c2] in self.overlap_components["side"]:
-                        self.problem_space += (self.coordinates_x[c1] + self.width[c1]  <= self.coordinates_x[c2]
+                        self.problem_space += (self.coordinates_x[c1] + self.width[c1] <= self.coordinates_x[c2]
                                                + self.grid_size * (1 - z1), f"LeftOf_{c1}_{c2}")
                         self.problem_space += (self.coordinates_x[c2] + self.width[c2] <= self.coordinates_x[c1]
                                                + self.grid_size * (1 - z2), f"RightOf_{c1}_{c2}")
@@ -293,17 +294,17 @@ class LinearOptimizationSolver:
                                                <= self.coordinates_x[c1] + self.grid_size * (1 - z2), f"RightOf_{c1}_{c2}")
                         self.problem_space += (self.coordinates_y[c1] + self.height[c1] <= self.coordinates_y[c2]
                                                + self.grid_size * (1 - z3), f"Below_{c1}_{c2}")
-                        self.problem_space += (self.coordinates_y[c2] + self.height[c2]  <= self.coordinates_y[c1]
+                        self.problem_space += (self.coordinates_y[c2] + self.height[c2] <= self.coordinates_y[c1]
                                                + self.grid_size * (1 - z4), f"Above_{c1}_{c2}")
                     else:
 
-                        self.problem_space += (self.coordinates_x[c1] + self.width[c1] +self.OFFSET_X
+                        self.problem_space += (self.coordinates_x[c1] + self.width[c1] + self.OFFSET_X
                                                <= self.coordinates_x[c2] + self.grid_size * (1 - z1), f"LeftOf_{c1}_{c2}")
-                        self.problem_space += (self.coordinates_x[c2] + self.width[c2] +self.OFFSET_X
+                        self.problem_space += (self.coordinates_x[c2] + self.width[c2] + self.OFFSET_X
                                                <= self.coordinates_x[c1] + self.grid_size * (1 - z2), f"RightOf_{c1}_{c2}")
-                        self.problem_space += (self.coordinates_y[c1] + self.height[c1]+self.OFFSET_Y
+                        self.problem_space += (self.coordinates_y[c1] + self.height[c1]+ self.OFFSET_Y
                                                <= self.coordinates_y[c2] + self.grid_size * (1 - z3), f"Below_{c1}_{c2}")
-                        self.problem_space += (self.coordinates_y[c2] + self.height[c2]+self.OFFSET_Y
+                        self.problem_space += (self.coordinates_y[c2] + self.height[c2]+ self.OFFSET_Y
                                                <= self.coordinates_y[c1] + self.grid_size * (1 - z4), f"Above_{c1}_{c2}")
 
             component_list.remove(c1)
@@ -312,7 +313,7 @@ class LinearOptimizationSolver:
         self.problem_space += (pulp.lpSum([self.d_x[(c1.start_comp_id, c1.end_comp_id)] +
                                            self.d_y[(c1.start_comp_id, c1.end_comp_id)] for c1 in self.connections])
                                * self.ALPHA + (self.x_max - self.x_min)
-                               * self.BETA + (self.y_max - self.y_min) * self.THETA , "totalWireLength")
+                               * self.BETA + (self.y_max - self.y_min) * self.THETA, "totalWireLength")
         # Warm start
         placement_solution_file = f"{self.current_file_directory}/previous_placement_solution.pkl"
         self.__warm_start(file=placement_solution_file)
@@ -336,7 +337,7 @@ class LinearOptimizationSolver:
                 loaded_solution = pickle.load(f)
 
             self.logger.info("Using previous solution to speed up solving")
-            variables_dict = self.problem_space.variablesDict() # access once to save on compute time
+            variables_dict = self.problem_space.variablesDict()  # access once to save on compute time
             for var_name, var_value in loaded_solution.items():
                 if var_name in variables_dict:
                     variables_dict[var_name].setInitialValue(round(var_value, 2))
@@ -353,7 +354,7 @@ class LinearOptimizationSolver:
                              f"y={pulp.value(self.coordinates_y[number_id])})")
 
         total_length = pulp.value(self.problem_space.objective)
-        self.logger.info(f"Total wire length: {round(total_length/10,2)}um")
+        self.logger.info(f"Total wire length: {round(total_length/10, 2)}um")
 
     def __update_component_info(self):
         for component in self.functional_components:

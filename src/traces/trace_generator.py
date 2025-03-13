@@ -78,7 +78,6 @@ class TraceGenerator:
             ATR.get_component_group_endpoints_for_atr_sky130a_lib(self=self)
             ATR.generate_local_traces_for_atr_sky130a_lib(self=self)
 
-
     def __load_config(self, path="pyproject.toml"):
         try:
             with open(path, "rb") as f:
@@ -122,12 +121,13 @@ class TraceGenerator:
         # Make top segment layout area for pin
         component.layout = RectAreaLayer(layer=layer, area=top_segment)
 
-
     def __generate_rails(self):
         # Automated adding of VDD/VSS ring nets around cell based on found pins
         rail_number = 0
         for component in self.structural_components:
-            if re.search(r".*VDD.*", component.name) or re.search(r".*VSS.*", component.name):
+            if (re.search(r".*VDD.*", component.name, re.IGNORECASE) or
+                    re.search(r".*VSS.*", component.name, re.IGNORECASE)):
+
                 self.__generate_trace_box_around_cell(
                     component,
                     offset_x=self.INIT_RAIL_RING_OFFSET_X + self.RAIL_RING_OFFSET * rail_number,
