@@ -28,12 +28,6 @@ import libraries.atr_sky130a_lib as ATR
 
 # =============================================== Trace Generator ======================================================
 
-@dataclass
-class LocalConnection:
-    connection_type_pair: list[str]
-    connection_net_name_pair: list[str]
-
-
 class TraceGenerator:
 
     def __init__(self, project_properties, components):

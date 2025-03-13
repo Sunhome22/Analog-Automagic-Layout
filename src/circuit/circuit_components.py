@@ -113,7 +113,7 @@ class FunctionalComponent:
 
 @dataclass
 class Transistor(FunctionalComponent):
-    overlap_distance: OverlapDistance = field(default_factory=OverlapDistance)
+    overlap_distance: OverlapDistance | dict = field(default_factory=OverlapDistance)
     group_endpoint: str = field(default_factory=str)  # None, top, bottom
     group_endpoint_bounding_box: RectArea | dict = field(default_factory=RectArea)
 
@@ -139,7 +139,11 @@ class Pin:
     cell: str = field(default_factory=str)
     type: str = field(default_factory=str)
     name: str = field(default_factory=str)
-    layout: RectAreaLayer = field(default_factory=str)
+    layout: RectAreaLayer | dict = field(default_factory=str)
+
+    def __post_init__(self):
+        if isinstance(self.layout, dict):
+            self.layout = RectAreaLayer(**self.layout)
 
 @dataclass
 class TraceNet:
@@ -147,7 +151,7 @@ class TraceNet:
     name: str = field(default_factory=str)
     cell: str = field(default_factory=str)
     segments: List[RectAreaLayer] | dict = field(default_factory=list)
-    #vias: List[RectAreaLayer] | dict = field(default_factory=list)
+    vias: List[RectAreaLayer] | dict = field(default_factory=list)
 
     # Handling of JSON file input
     def __post_init__(self):
@@ -155,8 +159,8 @@ class TraceNet:
         if isinstance(self.segments, list):
             self.segments = [RectAreaLayer(**item) for item in self.segments]
 
-        #if isinstance(self.vias, list):
-        #    self.vias = [RectAreaLayer(**item) for item in self.vias]
+        if isinstance(self.vias, list):
+            self.vias = [RectAreaLayer(**item) for item in self.vias]
 
 
 @dataclass

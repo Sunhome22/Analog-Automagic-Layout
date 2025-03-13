@@ -40,11 +40,33 @@ def generate_local_traces_for_atr_sky130a_lib(self: object):
         if component.schematic_connections['G'] == component.schematic_connections['D']:
             __local_gate_to_drain_connection_for_sky130a_lib(self=self, component=component)
 
+
+    # Make groups of components by y-coordinate
+    y_grouped_component_names = defaultdict(list)
+    for component in self.transistor_components:
+        y_grouped_component_names[component.transform_matrix.f].append(component.name)
+    y_grouped_component_names = dict(y_grouped_component_names)
+
+    # Get components connecting bulk to rail
+    components_with_bulk_to_rail_connection = []
     for component in self.transistor_components:
         if (re.search(r".*VDD.*", component.schematic_connections['B'], re.IGNORECASE) or
                 re.search(r".*VSS.*", component.schematic_connections['B'], re.IGNORECASE)):
-            __local_bulk_to_rail_connection_for_sky130a_lib(self=self, component=component,
-                                                            rail=component.schematic_connections['B'])
+                components_with_bulk_to_rail_connection.append(component)
+
+    # Iterate over y-grouped components and check for match against bulk to rail components. On component hit against a
+    # group discard all other components within group. This solution removes redundant rail traces for each component
+    # with the same y-coordinates.
+    for f_value, group in y_grouped_component_names.items():
+        found_comp = False
+        for comp_name in group:
+            for component in components_with_bulk_to_rail_connection:
+                if component.name == comp_name and not found_comp:
+                    found_comp = True
+                    group_name = "_".join(map(str, group))
+                    __local_bulk_to_rail_connection_for_sky130a_lib(self=self, component=component,
+                                                                    rail=component.schematic_connections['B'],
+                                                                    group_name=group_name)
 
 
 def __local_bulk_to_source_connection_for_atr_sky130a_lib(self: object, component: object):
@@ -80,7 +102,7 @@ def __local_gate_to_drain_connection_for_sky130a_lib(self: object, component: ob
     self.components.append(trace)
 
 
-def __local_bulk_to_rail_connection_for_sky130a_lib(self: object, component: object, rail):
+def __local_bulk_to_rail_connection_for_sky130a_lib(self: object, component: object, rail: str, group_name: str):
     y_params = {
         'rail_top': (component.bounding_box.y2, component.group_endpoint_bounding_box.y2 // 2),
         'rail_bot': (component.bounding_box.y1, -component.group_endpoint_bounding_box.y2 // 2),
@@ -89,20 +111,23 @@ def __local_bulk_to_rail_connection_for_sky130a_lib(self: object, component: obj
     if component.group_endpoint:
 
         if component.group_endpoint == 'rail_top/bot':
-            generate_bulk_to_rail_segments(self=self, rail=rail, component=component,
-                                           y_params=y_params['rail_top'], group_endpoint="TOP")
-            generate_bulk_to_rail_segments(self=self, rail=rail, component=component,
-                                           y_params=y_params['rail_bot'], group_endpoint="BOT")
+
+
+
+            generate_bulk_to_rail_segments(self=self, rail=rail, component=component, y_params=y_params['rail_top'],
+                                           group_endpoint="RAIL_TOP", group_name=group_name)
+            generate_bulk_to_rail_segments(self=self, rail=rail, component=component, y_params=y_params['rail_bot'],
+                                           group_endpoint="RAIL_BOT",group_name=group_name)
 
         if component.group_endpoint == 'rail_top' or component.group_endpoint == 'rail_bot':
             generate_bulk_to_rail_segments(self=self, rail=rail, component=component,
                                            y_params=y_params[component.group_endpoint],
-                                           group_endpoint=component.group_endpoint.upper())
+                                           group_endpoint=component.group_endpoint.upper(),
+                                           group_name=group_name)
 
 
-def generate_bulk_to_rail_segments(self, rail, component, y_params, group_endpoint):
-
-    trace = TraceNet(name=f"{component.name}_B_{rail}_{group_endpoint}", cell=component.cell)
+def generate_bulk_to_rail_segments(self, rail: str, component: object, y_params: list, group_endpoint: str, group_name):
+    trace = TraceNet(name=f"{group_name}_B_{rail}_{group_endpoint}", cell=component.cell)
     trace.instance = trace.__class__.__name__
 
     bulk_x1 = next((port.area.x1 for port in component.layout_ports if port.type == 'B'))
@@ -111,26 +136,25 @@ def generate_bulk_to_rail_segments(self, rail, component, y_params, group_endpoi
 
     for structural_component in self.structural_components:
         if re.search(rf".*{rail}.*", structural_component.name, re.IGNORECASE):
-            middle_segment = RectArea(x1=structural_component.layout.area.x1,
-                                      y1=y_params[0] + component.transform_matrix.f - (bulk_width // 2) + y_params[1],
-                                      x2=structural_component.layout.area.x2,
-                                      y2=y_params[0] + component.transform_matrix.f + (bulk_width // 2) + y_params[1])
+            segment = RectArea(x1=structural_component.layout.area.x1,
+                               y1=y_params[0] + component.transform_matrix.f - (bulk_width // 2) + y_params[1],
+                               x2=structural_component.layout.area.x2,
+                               y2=y_params[0] + component.transform_matrix.f + (bulk_width // 2) + y_params[1])
 
-            left_segment = RectArea(x1=structural_component.layout.area.x1,
-                                    y1=y_params[0] + component.transform_matrix.f - bulk_width // 2 + y_params[1],
-                                    x2=structural_component.layout.area.x1 + self.RAIL_RING_WIDTH,
-                                    y2=structural_component.layout.area.y2)
+            via_left = RectArea(x1=structural_component.layout.area.x1,
+                                y1=y_params[0] + component.transform_matrix.f - bulk_width // 2 + y_params[1],
+                                x2=structural_component.layout.area.x1 + self.RAIL_RING_WIDTH,
+                                y2=y_params[0] + component.transform_matrix.f + (bulk_width // 2) + y_params[1])
 
-            right_segment = RectArea(x1=structural_component.layout.area.x2 - self.RAIL_RING_WIDTH,
-                                     y1=y_params[0] + component.transform_matrix.f - bulk_width // 2 + y_params[1],
-                                     x2=structural_component.layout.area.x2,
-                                     y2=structural_component.layout.area.y2)
+            via_right = RectArea(x1=structural_component.layout.area.x2 - self.RAIL_RING_WIDTH,
+                                 y1=y_params[0] + component.transform_matrix.f - bulk_width // 2 + y_params[1],
+                                 x2=structural_component.layout.area.x2,
+                                 y2=y_params[0] + component.transform_matrix.f + (bulk_width // 2) + y_params[1])
 
-            # The two additional segments (left_segment and right_segment) are used for forcing via generation, and
-            # remove the need for special handling
-            trace.segments.append(RectAreaLayer(layer='m1', area=left_segment))
-            trace.segments.append(RectAreaLayer(layer='locali', area=middle_segment))
-            trace.segments.append(RectAreaLayer(layer='m1', area=right_segment))
+            trace.vias.append(RectAreaLayer(layer='locali-m1', area=via_left))
+            trace.vias.append(RectAreaLayer(layer='locali-m1', area=via_right))
+            trace.segments.append(RectAreaLayer(layer='locali', area=segment))
+
     self.components.append(trace)
 
 
@@ -366,7 +390,7 @@ def magic_component_parsing_for_atr_sky130a_lib(self: object, layout_file_path: 
     except FileNotFoundError:
         self.logger.error(f"The file {layout_file_path} was not found.")
 
-    # It's safe to assumes that top and bottom taps have equal bounding box.
+    # It's safe to assumes that top and bottom taps have equal bounding boxes.
     transistor_endpoint_layout_name = re.sub(r".{3}$", "TAPTOP", component.layout_name)
     layout_file_path = os.path.expanduser(f"{self.current_component_library_path}/"
                                           f"{transistor_endpoint_layout_name}.mag")

@@ -22,6 +22,7 @@ from collections import deque
 import tomllib
 import re
 import libraries.atr_sky130a_lib as ATR
+import copy
 
 
 
@@ -92,7 +93,7 @@ class MagicLayoutCreator:
             f"rect {area.x1} {area.y1} {area.x2} {area.y2}"
         ])
 
-    def __via_placer(self, start_layer: str, end_layer: str, area: RectArea):
+    def __via_placer(self, start_layer: str, end_layer: str, area: RectArea, trace_net: TraceNet):
         """Adds via(s) and potentially necessary metal layers between a top layer and a bottom layer"""
 
         via_map = {
@@ -113,12 +114,13 @@ class MagicLayoutCreator:
 
         # Metal area is increased with an offset to compensate for the via if via is present
 
-
         metal_area = RectArea(x1=area.x1, y1=area.y1, x2=area.x2, y2=area.y2)
 
         if via_layers is not None:
             metal_area = RectArea(x1=area.x1 - self.VIA_PADDING, y1=area.y1 - self.VIA_PADDING,
                                   x2=area.x2 + self.VIA_PADDING, y2=area.y2 + self.VIA_PADDING)
+
+        trace_net.vias.append(RectAreaLayer(layer=f"{metal_layers[0]}-{metal_layers[1]}", area=area))
 
         # Place all required metal(s)
         if metal_layers is not None:
@@ -130,10 +132,11 @@ class MagicLayoutCreator:
             for via_layer in via_layers:
                 self.__place_box(layer=via_layer, area=area)
 
+
+
     def __add_trace_net_vias(self, trace_net: TraceNet) -> int:
         """Checks for overlap between segments of a trace net in different layers and adds vias.
            Vias only get added when layer changes occur."""
-        last_segment_layer = None
         previous_segment = None
         via_count = 0
 
@@ -161,7 +164,8 @@ class MagicLayoutCreator:
                     self.__via_placer(
                         start_layer=previous_segment.layer,
                         end_layer=segment.layer,
-                        area=via_area
+                        area=via_area,
+                        trace_net=trace_net
                     )
                     via_count += 1
 
@@ -196,7 +200,8 @@ class MagicLayoutCreator:
                         if not (segment.area.x2 < port_pos.x1 or segment.area.x1 > port_pos.x2 or
                                 segment.area.y2 < port_pos.y1 or segment.area.y1 > port_pos.y2):
 
-                            self.__via_placer(start_layer=segment.layer, end_layer=port.layer, area=port_pos)
+                            self.__via_placer(start_layer=segment.layer, end_layer=port.layer, area=port_pos,
+                                              trace_net=trace_net)
 
                             self.total_connection_points_added += 1
 
@@ -251,18 +256,30 @@ class MagicLayoutCreator:
         via_count = 0
         segment_count = 0
 
-        # Basic check if segments are valid for being displayed in magic: x1 < x2 and y1 < y2
+        # Check if segments are valid for being displayed in magic: x1 < x2 and y1 < y2
         for segment in trace_net.segments:
             if segment.area.x2 < segment.area.x1 or segment.area.y2 < segment.area.y1:
                 self.logger.error(f"For trace '{trace_net.name}' segment area {segment.area} is invalid!")
 
-        # Add segments
+        # Add predefined trace segments
         for segment in trace_net.segments:
             self.__place_box(layer=segment.layer, area=segment.area)
             segment_count += 1
 
-        # Add vias at intersection points between segments that move up/down in layers
+        # Add predefined trace vias
+        current_trace_net_vias = copy.deepcopy(trace_net.vias)
+        trace_net.vias.clear()
+
+        for via in current_trace_net_vias:
+            self.__via_placer(start_layer=re.search(r'^[^-]+', via.layer).group(0),
+                              end_layer=re.search(r'[^-]*$', via.layer).group(0),
+                              area=via.area,
+                              trace_net=trace_net)
+            via_count += 1
+
+        # Automatically create vias at intersection points between trace segments that move up/down in layers
         via_count += self.__add_trace_net_vias(trace_net=trace_net)
+
 
         self.logger.info(f"Trace net '{trace_net.name}' placed with segments: {segment_count} vias: {via_count}")
         self.total_vias_added += via_count
@@ -292,6 +309,7 @@ class MagicLayoutCreator:
             ATR.place_transistor_endpoints_for_atr_sky130a_lib(self=self, component=component)
 
     def __pin_component_creator(self, component):
+
         # Check that layout type is valid
         if isinstance(component.layout, RectAreaLayer):
             self.magic_file_lines.extend([
@@ -299,6 +317,8 @@ class MagicLayoutCreator:
                 f"{component.layout.area.x2} {component.layout.area.y2} 0 FreeSans 400 0 0 0 {component.name}",
                 f"port {component.number_id} nsew signal bidirectional"
             ])
+            self.logger.info(f"{component.instance} '{component.name}' placed in layer '{component.layout.layer}'")
+
 
     def __circuit_cell_component_creator(self, component):
 

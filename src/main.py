@@ -73,7 +73,7 @@ project_properties = ProjectProperties(directory="~/aicex/ip/jnw_bkle_sky130A",
 def main():
     # Create a logger
     logger = get_a_logger(__name__)
-    run = True
+    run = False
 
     if run:
         # Extracts component information from SPICE file
@@ -138,10 +138,10 @@ def main():
         # LVSchecking(project_properties=project_properties)
 
     else:
-        components = load_from_json(file_name="src/json_converter/components_(edge_case_test_for_endpoints).json")
+        components = load_from_json(file_name="src/json_converter/components_test.json")
 
         # Update components with trace information
-        components = TraceGenerator(components=components, project_properties=project_properties).get()
+        #components = TraceGenerator(components=components, project_properties=project_properties).get()
 
         # Create layout
         MagicLayoutCreator(project_properties=project_properties, components=components)
@@ -160,7 +160,7 @@ def main():
 
         # draw_result(grid_size=grid_size, objects=components, used_area=used_area, scale_factor=scale_factor,
         #            draw_name=draw_name)
-
+        #save_to_json(components, file_name="src/json_converter/components_test.json")
         # Debug log of all components
         logger.debug(f"Components registered: ")
         for component in components:

@@ -4,13 +4,13 @@
   (Don't think this really makes sense to do)
 - [x] Handle bulks accidently overlapping for the diffpair of the original comparator circuit 
 - [x] Implement structural component creator and deal with pins
-- [] Create separate object for functional and structural components NO
 - [x] Make config file for user input variables for linear optimization
 - [ ] Number ID begins at zero again when dealing with trace nets. Maybe fix?
 - [ ] There is likely some bug with connection points still, resulting in to many being created on top of each other.
 - [ ] Fix <<>> and rect in .mag file. Reduce <<>> count
 - [x] Fix x,y offset of rail rings
-- [] Fix number of traces and vias added, since its double, due to the implementation of local_bulk_to_rail_connection
+- [x] Fix number of traces and vias added, since its double, due to the implementation of local_bulk_to_rail_connection
+- [x] Add vias to TraceNet and update .json file
 
 
 ## Notes
@@ -19,10 +19,8 @@
 
 - Designers can make ther on transistors as they which. After that he need to create labels to define what is G,S,D,B
 
-- Why are we using the transistor we are?
 
 - Would be nice if A* logged out what trace it is currently solving
-
 - Alf has been told by Carsten to always connect bulk to VSS/VDD
 - Carsten is going to add nsubstratendiff and pstubstreatepdiff layers to cic that I can use
 - Place nsubstratendiff and pstubstreatepdiff around a group of transistors and place locali metal on top and bottom. 
@@ -30,7 +28,7 @@
 - It is very possible to have multiple VDDs. That should just be added to the ring outside. 
 - All rails should be in m1 so you can connect from either below or above
 - You need to write an "x" (instance name) at the front of names in the schematic. 
-- Our system does not rely on instance names defined by xschem, we roll our one.
+- Our system does not use instance names defined by xschem, we roll our one.
 - Were the ports should be, could be a specification like top, bottom, left, right of cell.
 - Is it safe to say that all components always will have a FIXED_BBOX parameter? No
 - 
