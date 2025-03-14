@@ -14,17 +14,12 @@
 
 
 # ================================================== Libraries =========================================================
-import os
-import time
+
 from circuit.circuit_components import RectArea, Transistor, Capacitor, Resistor, Pin, CircuitCell, TraceNet, RectAreaLayer
-from magic.magic_drawer import get_pixel_boxes_from_text, get_black_white_pixel_boxes_from_image
 from logger.logger import get_a_logger
-from collections import deque
 import tomllib
 import re
-from dataclasses import dataclass
-from collections import defaultdict
-import libraries.atr_sky130a_lib as ATR
+import libraries.atr_sky130a_lib as atr
 
 # =============================================== Trace Generator ======================================================
 
@@ -69,8 +64,8 @@ class TraceGenerator:
         # ATR SKY130A LIB component handling
         if any(lib for lib in self.component_libraries if re.search(r"ATR", lib.name)):
             # Calling order is required
-            ATR.get_component_group_endpoints_for_atr_sky130a_lib(self=self)
-            ATR.generate_local_traces_for_atr_sky130a_lib(self=self)
+            atr.get_component_group_endpoints_for_atr_sky130a_lib(self=self)
+            atr.generate_local_traces_for_atr_sky130a_lib(self=self)
 
     def __load_config(self, path="pyproject.toml"):
         try:

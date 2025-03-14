@@ -11,6 +11,7 @@
 - [x] Fix x,y offset of rail rings
 - [x] Fix number of traces and vias added, since its double, due to the implementation of local_bulk_to_rail_connection
 - [x] Add vias to TraceNet and update .json file
+- [x] Having to write MN1 or MP1 is a fair solution according to Carsten. 
 
 
 ## Notes

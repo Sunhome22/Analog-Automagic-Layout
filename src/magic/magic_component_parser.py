@@ -15,10 +15,11 @@
 # ================================================== Libraries =========================================================
 import os
 import re
-from circuit.circuit_components import LayoutPort, RectArea, Pin, CircuitCell, TraceNet, Transistor, Capacitor, Resistor
+from circuit.circuit_components import LayoutPort, RectArea, Pin, CircuitCell, TraceNet, Transistor, Capacitor, \
+    Resistor, DigitalBlock
 from logger.logger import get_a_logger
 from dataclasses import fields
-import libraries.atr_sky130a_lib as ATR
+import libraries.atr_sky130a_lib as atr
 
 # ============================================= Magic component parser =================================================
 
@@ -45,7 +46,7 @@ class MagicComponentsParser:
         # Iterate over all components
         for component in self.components:
 
-            if isinstance(component, (Transistor, Capacitor, Resistor)):
+            if isinstance(component, (Transistor, Capacitor, Resistor, DigitalBlock)):
                 updated_components += 1
 
                 # Find library of current component
@@ -65,8 +66,8 @@ class MagicComponentsParser:
 
                 # ATR SKY130A LIB component handling
                 if any(lib for lib in self.component_libraries if re.search(r"ATR", lib.name)):
-                    ATR.magic_component_parsing_for_atr_sky130a_lib(self=self, layout_file_path=layout_file_path,
-                                                                        component=component)
+                    atr.magic_component_parsing_for_atr_sky130a_lib(self=self, layout_file_path=layout_file_path,
+                                                                    component=component)
 
                 self.__check_component_is_valid(component=component)
 
@@ -75,7 +76,8 @@ class MagicComponentsParser:
 
         return self.components
 
-    def __get_component_port_info(self, text_line: str, component: object):
+    @staticmethod
+    def __get_component_port_info(text_line: str, component: object):
 
         if re.search(r'flabel', text_line):
             text_line_words = text_line.split()

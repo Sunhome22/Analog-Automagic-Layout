@@ -112,8 +112,6 @@ def __local_bulk_to_rail_connection_for_sky130a_lib(self: object, component: obj
 
         if component.group_endpoint == 'rail_top/bot':
 
-
-
             generate_bulk_to_rail_segments(self=self, rail=rail, component=component, y_params=y_params['rail_top'],
                                            group_endpoint="RAIL_TOP", group_name=group_name)
             generate_bulk_to_rail_segments(self=self, rail=rail, component=component, y_params=y_params['rail_bot'],
@@ -126,7 +124,8 @@ def __local_bulk_to_rail_connection_for_sky130a_lib(self: object, component: obj
                                            group_name=group_name)
 
 
-def generate_bulk_to_rail_segments(self, rail: str, component: object, y_params: list, group_endpoint: str, group_name):
+def generate_bulk_to_rail_segments(self: object, rail: str, component: object, y_params: tuple, group_endpoint: str,
+                                   group_name: str):
     trace = TraceNet(name=f"{group_name}_B_{rail}_{group_endpoint}", cell=component.cell)
     trace.instance = trace.__class__.__name__
 

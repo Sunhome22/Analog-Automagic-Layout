@@ -21,7 +21,7 @@ from logger.logger import get_a_logger
 from collections import deque
 import tomllib
 import re
-import libraries.atr_sky130a_lib as ATR
+import libraries.atr_sky130a_lib as atr
 import copy
 
 
@@ -280,7 +280,6 @@ class MagicLayoutCreator:
         # Automatically create vias at intersection points between trace segments that move up/down in layers
         via_count += self.__add_trace_net_vias(trace_net=trace_net)
 
-
         self.logger.info(f"Trace net '{trace_net.name}' placed with segments: {segment_count} vias: {via_count}")
         self.total_vias_added += via_count
         self.total_trace_nets_added += 1
@@ -306,7 +305,7 @@ class MagicLayoutCreator:
 
         # ATR SKY130A LIB component handling
         if any(lib for lib in self.component_libraries if re.search(r"ATR", lib.name)):
-            ATR.place_transistor_endpoints_for_atr_sky130a_lib(self=self, component=component)
+            atr.place_transistor_endpoints_for_atr_sky130a_lib(self=self, component=component)
 
     def __pin_component_creator(self, component):
 
@@ -317,8 +316,8 @@ class MagicLayoutCreator:
                 f"{component.layout.area.x2} {component.layout.area.y2} 0 FreeSans 400 0 0 0 {component.name}",
                 f"port {component.number_id} nsew signal bidirectional"
             ])
-            self.logger.info(f"{component.instance} '{component.name}' placed in layer '{component.layout.layer}'")
-
+            self.logger.info(f"{component.instance} '{component.name}' placed in layer '{component.layout.layer}' "
+                             f"with {component.layout.area}")
 
     def __circuit_cell_component_creator(self, component):
 

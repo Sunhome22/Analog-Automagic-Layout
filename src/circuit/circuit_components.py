@@ -98,7 +98,7 @@ class FunctionalComponent:
     # Handling of JSON file input
     def __post_init__(self):
 
-        if isinstance(self.layout_ports, list):
+        if isinstance(self.layout_ports, list | dict):
             self.layout_ports = [LayoutPort(**item) for item in self.layout_ports]
 
         if isinstance(self.bounding_box, dict):
@@ -107,15 +107,21 @@ class FunctionalComponent:
         if isinstance(self.transform_matrix, dict):
             self.transform_matrix = TransformMatrix(**self.transform_matrix)
 
-        if isinstance(self.group_endpoint_bounding_box, dict):
-            self.group_endpoint_bounding_box = RectArea(**self.group_endpoint_bounding_box)
-
 
 @dataclass
 class Transistor(FunctionalComponent):
     overlap_distance: OverlapDistance | dict = field(default_factory=OverlapDistance)
-    group_endpoint: str = field(default_factory=str)  # None, top, bottom
+    group_endpoint: str = field(default_factory=str)
     group_endpoint_bounding_box: RectArea | dict = field(default_factory=RectArea)
+
+    def __post_init__(self):
+        super().__post_init__()
+        if isinstance(self.overlap_distance, dict):
+            self.overlap_distance = OverlapDistance(**self.overlap_distance)
+
+        if isinstance(self.group_endpoint_bounding_box, dict):
+            self.group_endpoint_bounding_box = RectArea(**self.group_endpoint_bounding_box)
+
 
 @dataclass
 class Resistor(FunctionalComponent):
@@ -126,8 +132,12 @@ class Resistor(FunctionalComponent):
 class Capacitor(FunctionalComponent):
     pass
 
-class Inverter(FunctionalComponent):
-    pass
+
+@dataclass
+class DigitalBlock(FunctionalComponent):
+    overlap_distance: OverlapDistance | dict = field(default_factory=OverlapDistance)
+    group_endpoint: str = field(default_factory=str)
+    group_endpoint_bounding_box: RectArea | dict = field(default_factory=RectArea)
 
 # ============================================ Structural Component classes ============================================
 
@@ -145,6 +155,7 @@ class Pin:
         if isinstance(self.layout, dict):
             self.layout = RectAreaLayer(**self.layout)
 
+
 @dataclass
 class TraceNet:
     instance: str = field(default_factory=str)
@@ -156,10 +167,10 @@ class TraceNet:
     # Handling of JSON file input
     def __post_init__(self):
 
-        if isinstance(self.segments, list):
+        if isinstance(self.segments, list | dict):
             self.segments = [RectAreaLayer(**item) for item in self.segments]
 
-        if isinstance(self.vias, list):
+        if isinstance(self.vias, list | dict):
             self.vias = [RectAreaLayer(**item) for item in self.vias]
 
 
