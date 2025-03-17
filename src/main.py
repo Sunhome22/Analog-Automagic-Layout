@@ -83,28 +83,27 @@ def main():
         components = MagicComponentsParser(project_properties=project_properties, components=components.get()).get()
 
         # Figures out connection types, nets and components that can overlap
-        # single_connection, local_connections, connections, overlap_components, net_list = (
-        #     ConnectionLists(components=components).initialize_connections())
+        single_connection, local_connections, connections, overlap_components, net_list = (
+            ConnectionLists(components=components).initialize_connections())
 
         # Finds optimal structural component placements from solving LP problem
-        # components = LinearOptimizationSolver(
-        #     components=components,
-        #     connections=connections,
-        #     local_connections=local_connections,
-        #     grid_size=grid_size,
-        #     overlap_components=overlap_components
-        # ).solve_placement()
+        components = LinearOptimizationSolver(
+            components=components,
+            connections=connections,
+            local_connections=local_connections,
+            grid_size=grid_size,
+            overlap_components=overlap_components
+        ).solve_placement()
 
         # Generates grid
+        grid, port_scaled_coords, used_area, port_coord = GridGeneration(
+            grid_size=grid_size,
+            components=components,
+            scale_factor=scale_factor
+        ).initialize_grid_generation()
 
-        # grid, port_scaled_coords, used_area, port_coord = GridGeneration(
-        #     grid_size=grid_size,
-        #     components=components,
-        #     scale_factor=scale_factor
-        # ).initialize_grid_generation()
-        #
-        # draw_result(grid_size=grid_size, objects=components, used_area=used_area, scale_factor=scale_factor,
-        #            draw_name=draw_name)
+        draw_result(grid_size=grid_size, objects=components, used_area=used_area, scale_factor=scale_factor,
+                   draw_name=draw_name)
 
         # path, seg_list = initiate_astar(
         #     grid=grid,
@@ -118,12 +117,14 @@ def main():
         # MagicLayoutCreator(project_properties=project_properties, components=components)
 
         # temp setting
-        # for component in components:
-        #     if isinstance(component, CircuitCell):
-        #         component.transform_matrix.set([1, 0, 0, 0, 1, 0])
-        #         component.bounding_box.set(used_area)
+        i = 0
+        for component in components:
+            if isinstance(component, CircuitCell):
+                i += 1
+                component.transform_matrix.set([1, 0, i*1000, 0, 1, i*1000])
+                component.bounding_box.set(used_area)
 
-        save_to_json(components, file_name="src/json_converter/components_digital_test.json")
+        save_to_json(components, file_name="src/json_converter/components_multiple_cell_test.json")
 
         # Update components with trace information
         # components = TraceGenerator(components=components, project_properties=project_properties).get()
@@ -138,7 +139,7 @@ def main():
         # LVSchecking(project_properties=project_properties)
 
     else:
-        components = load_from_json(file_name="src/json_converter/components_(edge_case_test_for_endpoints).json")
+        components = load_from_json(file_name="src/json_converter/components_for_comp_circuit 1.json")
 
         # Update components with trace information
         components = TraceGenerator(components=components, project_properties=project_properties).get()
@@ -147,26 +148,27 @@ def main():
         MagicLayoutCreator(project_properties=project_properties, components=components)
 
         # DRC handling
-        # DRCchecking(project_properties=project_properties)
+        DRCchecking(project_properties=project_properties)
 
         # LVS handling
-        # LVSchecking(project_properties=project_properties)
-        # save_to_json(components, file_name="src/json_converter/components_test.json")
+        LVSchecking(project_properties=project_properties)
 
-        # used_area = 0
-        # for component in components:
-        #     if isinstance(component, CircuitCell):
-        #         used_area = component.bounding_box
 
-        # draw_result(grid_size=grid_size, objects=components, used_area=used_area, scale_factor=scale_factor,
-        #            draw_name=draw_name)
+
+        used_area = 0
+        for component in components:
+            if isinstance(component, CircuitCell):
+                used_area = component.bounding_box
+
+        draw_result(grid_size=grid_size, objects=components, used_area=used_area, scale_factor=scale_factor,
+                   draw_name=draw_name)
         #save_to_json(components, file_name="src/json_converter/components_test.json")
         # Debug log of all components
         logger.debug(f"Components registered: ")
         for component in components:
             logger.debug(f"- {component}")
 
-
+        save_to_json(components, file_name="src/json_converter/components_complete.json")
 if __name__ == '__main__':
     main()
 

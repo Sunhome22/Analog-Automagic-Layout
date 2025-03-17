@@ -44,13 +44,19 @@ STOP_TOLERANCE = 0.05
 SOLVER_MSG = true
 
 # Magic layout creator config options
+# -> Technology - defines which PDK technology we are targeting
+# -> Metal layers - defines the metal layers that can be route in (ascending order)
+# -> Via map - defines the via layers we can route in (ascending order)
 # -> Via padding - defines how much padding in units of 1e-8m should be added around all vias
 
 [magic_layout_creator]
+TECHNOLOGY = 'sky130A'
+METAL_LAYERS = ['locali', 'm1', 'm2', 'm3', 'm4']
+VIA_MAP = {"locali-m1" = "viali", "m1-m2" = "via1", "m2-m3" = "via2", "m3-m4" = "via3"}
 VIA_PADDING = 7
 
 # Trace generator config options
-# -> Init rail ring offset - offset from cells defined bounding box
+# -> Init rail ring offset x/y - offset from cells defined bounding box
 # -> rail ring offset - distance from the outside of one ring to the outside of the next
 # -> rail width - width of the rails
 

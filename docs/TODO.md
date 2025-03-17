@@ -12,8 +12,8 @@
 - [x] Fix number of traces and vias added, since its double, due to the implementation of local_bulk_to_rail_connection
 - [x] Add vias to TraceNet and update .json file
 - [x] Having to write MN1 or MP1 is a fair solution according to Carsten. 
-- [] Remove layer name dependency of technology from magic layout creator. 
-
+- [x] Remove layer name dependency of technology from magic layout creator. 
+- [ ] When adding multiple circuit cells the set of components only getting added once.
 
 ## Notes
 - Vias get turned into multiple smaller ones when converting to GDSII. Always want atleast two, however

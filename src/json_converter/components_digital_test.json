@@ -3,15 +3,15 @@
         "instance": "DigitalBlock",
         "number_id": 0,
         "name": "D3",
-        "type": "",
+        "type": "nmos/pmos",
         "cell": "JNW_BKLE",
-        "group": null,
+        "group": "load1",
         "schematic_connections": {
-            "A": "net1",
-            "B": "net2",
-            "Y": "net3",
-            "AVDD": "net4",
-            "AVSS": "net5"
+            "A": "net4",
+            "B": "net4",
+            "Y": "net1",
+            "AVDD": "net2",
+            "AVSS": "net3"
         },
         "layout_name": "JNWTR_ANX1_CV",
         "layout_library": "JNW_TR_SKY130A",
@@ -68,12 +68,12 @@
             }
         ],
         "transform_matrix": {
-            "a": 0,
+            "a": 1,
             "b": 0,
-            "c": 0,
+            "c": 10,
             "d": 0,
-            "e": 0,
-            "f": 0
+            "e": 1,
+            "f": 1050
         },
         "bounding_box": {
             "x1": 0,
@@ -82,8 +82,8 @@
             "y2": 400
         },
         "overlap_distance": {
-            "x": 0,
-            "y": 0
+            "x": 92,
+            "y": 64
         },
         "group_endpoint": "",
         "group_endpoint_bounding_box": {
@@ -97,14 +97,14 @@
         "instance": "DigitalBlock",
         "number_id": 1,
         "name": "D2",
-        "type": "",
+        "type": "nmos/pmos",
         "cell": "JNW_BKLE",
-        "group": null,
+        "group": "load1",
         "schematic_connections": {
-            "A": "net6",
-            "Y": "net7",
-            "AVDD": "net8",
-            "AVSS": "net9"
+            "A": "net1",
+            "Y": "net4",
+            "AVDD": "net2",
+            "AVSS": "net3"
         },
         "layout_name": "JNWTR_IVX1_CV",
         "layout_library": "JNW_TR_SKY130A",
@@ -151,217 +151,18 @@
             }
         ],
         "transform_matrix": {
-            "a": 0,
+            "a": 1,
             "b": 0,
-            "c": 0,
+            "c": 10,
             "d": 0,
-            "e": 0,
-            "f": 0
+            "e": 1,
+            "f": 2150
         },
         "bounding_box": {
             "x1": 0,
             "y1": 0,
             "x2": 990,
             "y2": 160
-        },
-        "overlap_distance": {
-            "x": 0,
-            "y": 0
-        },
-        "group_endpoint": "",
-        "group_endpoint_bounding_box": {
-            "x1": 0,
-            "y1": 0,
-            "x2": 0,
-            "y2": 0
-        }
-    },
-    {
-        "instance": "DigitalBlock",
-        "number_id": 2,
-        "name": "D1",
-        "type": "",
-        "cell": "JNW_BKLE",
-        "group": null,
-        "schematic_connections": {
-            "D": "net10",
-            "CK": "net11",
-            "RN": "net12",
-            "Q": "net13",
-            "QN": "net14",
-            "AVDD": "net15",
-            "AVSS": "net16"
-        },
-        "layout_name": "JNWTR_DFRNQNX1_CV",
-        "layout_library": "JNW_TR_SKY130A",
-        "layout_ports": [
-            {
-                "type": "D",
-                "layer": "locali",
-                "area": {
-                    "x1": 765,
-                    "y1": 625,
-                    "x2": 855,
-                    "y2": 655
-                }
-            },
-            {
-                "type": "CK",
-                "layer": "locali",
-                "area": {
-                    "x1": 135,
-                    "y1": 225,
-                    "x2": 225,
-                    "y2": 255
-                }
-            },
-            {
-                "type": "Q",
-                "layer": "locali",
-                "area": {
-                    "x1": 315,
-                    "y1": 1865,
-                    "x2": 405,
-                    "y2": 1895
-                }
-            },
-            {
-                "type": "QN",
-                "layer": "locali",
-                "area": {
-                    "x1": 315,
-                    "y1": 1705,
-                    "x2": 405,
-                    "y2": 1735
-                }
-            },
-            {
-                "type": "AVDD",
-                "layer": "m3",
-                "area": {
-                    "x1": 585,
-                    "y1": 0,
-                    "x2": 673,
-                    "y2": 1920
-                }
-            },
-            {
-                "type": "AVSS",
-                "layer": "m3",
-                "area": {
-                    "x1": 315,
-                    "y1": 0,
-                    "x2": 403,
-                    "y2": 1920
-                }
-            },
-            {
-                "type": "RN",
-                "layer": "locali",
-                "area": {
-                    "x1": 135,
-                    "y1": 1505,
-                    "x2": 225,
-                    "y2": 1535
-                }
-            }
-        ],
-        "transform_matrix": {
-            "a": 0,
-            "b": 0,
-            "c": 0,
-            "d": 0,
-            "e": 0,
-            "f": 0
-        },
-        "bounding_box": {
-            "x1": 0,
-            "y1": 0,
-            "x2": 990,
-            "y2": 1920
-        },
-        "overlap_distance": {
-            "x": 0,
-            "y": 0
-        },
-        "group_endpoint": "",
-        "group_endpoint_bounding_box": {
-            "x1": 0,
-            "y1": 0,
-            "x2": 0,
-            "y2": 0
-        }
-    },
-    {
-        "instance": "Transistor",
-        "number_id": 3,
-        "name": "MN1",
-        "type": "nmos",
-        "cell": "JNW_BKLE",
-        "group": null,
-        "schematic_connections": {
-            "D": "net17",
-            "G": "net18",
-            "S": "net19",
-            "B": "net20"
-        },
-        "layout_name": "JNWATR_NCH_12C1F2",
-        "layout_library": "JNW_ATR_SKY130A",
-        "layout_ports": [
-            {
-                "type": "G",
-                "layer": "m1",
-                "area": {
-                    "x1": 80,
-                    "y1": 180,
-                    "x2": 112,
-                    "y2": 220
-                }
-            },
-            {
-                "type": "S",
-                "layer": "m1",
-                "area": {
-                    "x1": 144,
-                    "y1": 300,
-                    "x2": 240,
-                    "y2": 340
-                }
-            },
-            {
-                "type": "B",
-                "layer": "locali",
-                "area": {
-                    "x1": -48,
-                    "y1": 180,
-                    "x2": 48,
-                    "y2": 220
-                }
-            },
-            {
-                "type": "D",
-                "layer": "m1",
-                "area": {
-                    "x1": 592,
-                    "y1": 20,
-                    "x2": 688,
-                    "y2": 60
-                }
-            }
-        ],
-        "transform_matrix": {
-            "a": 0,
-            "b": 0,
-            "c": 0,
-            "d": 0,
-            "e": 0,
-            "f": 0
-        },
-        "bounding_box": {
-            "x1": 0,
-            "y1": 0,
-            "x2": 832,
-            "y2": 400
         },
         "overlap_distance": {
             "x": 92,
@@ -371,131 +172,8 @@
         "group_endpoint_bounding_box": {
             "x1": 0,
             "y1": 0,
-            "x2": 832,
-            "y2": 240
-        }
-    },
-    {
-        "instance": "Transistor",
-        "number_id": 4,
-        "name": "QN1",
-        "type": "npn",
-        "cell": "JNW_BKLE",
-        "group": null,
-        "schematic_connections": {
-            "C": "net21",
-            "B": "net22",
-            "E": "net23"
-        },
-        "layout_name": "AALMISC_PNP_W3p40L3p40",
-        "layout_library": "AAL_MISC_SKY130A",
-        "layout_ports": [
-            {
-                "type": "E",
-                "layer": "locali",
-                "area": {
-                    "x1": 554,
-                    "y1": 626,
-                    "x2": 802,
-                    "y2": 730
-                }
-            },
-            {
-                "type": "C",
-                "layer": "locali",
-                "area": {
-                    "x1": 613,
-                    "y1": 1252,
-                    "x2": 714,
-                    "y2": 1301
-                }
-            },
-            {
-                "type": "B",
-                "layer": "locali",
-                "area": {
-                    "x1": 590,
-                    "y1": 1102,
-                    "x2": 708,
-                    "y2": 1142
-                }
-            }
-        ],
-        "transform_matrix": {
-            "a": 0,
-            "b": 0,
-            "c": 0,
-            "d": 0,
-            "e": 0,
-            "f": 0
-        },
-        "bounding_box": {
-            "x1": 0,
-            "y1": 0,
-            "x2": 670,
-            "y2": 670
-        },
-        "overlap_distance": {
-            "x": 0,
-            "y": 0
-        },
-        "group_endpoint": "",
-        "group_endpoint_bounding_box": {
-            "x1": 0,
-            "y1": 0,
             "x2": 0,
             "y2": 0
-        }
-    },
-    {
-        "instance": "Resistor",
-        "number_id": 5,
-        "name": "R1",
-        "type": null,
-        "cell": "JNW_BKLE",
-        "group": null,
-        "schematic_connections": {
-            "N": "net24",
-            "P": "net25",
-            "B": "net26"
-        },
-        "layout_name": "JNWTR_RES16",
-        "layout_library": "JNW_TR_SKY130A",
-        "layout_ports": [
-            {
-                "type": "N",
-                "layer": "locali",
-                "area": {
-                    "x1": -18,
-                    "y1": 1260,
-                    "x2": 126,
-                    "y2": 1380
-                }
-            },
-            {
-                "type": "P",
-                "layer": "locali",
-                "area": {
-                    "x1": 1710,
-                    "y1": 1260,
-                    "x2": 1854,
-                    "y2": 1380
-                }
-            }
-        ],
-        "transform_matrix": {
-            "a": 0,
-            "b": 0,
-            "c": 0,
-            "d": 0,
-            "e": 0,
-            "f": 0
-        },
-        "bounding_box": {
-            "x1": 0,
-            "y1": 0,
-            "x2": 1836,
-            "y2": 1320
         }
     }
 ]

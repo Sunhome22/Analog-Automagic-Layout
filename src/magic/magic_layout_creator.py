@@ -47,7 +47,11 @@ class MagicLayoutCreator:
         self.total_circuit_cells_added = 0
 
         self.config = self.__load_config()
+        self.TECHNOLOGY = self.config["magic_layout_creator"]["TECHNOLOGY"]
         self.VIA_PADDING = self.config["magic_layout_creator"]["VIA_PADDING"]
+        self.METAL_LAYERS = self.config["magic_layout_creator"]["METAL_LAYERS"]
+        self.VIA_MAP = self.config["magic_layout_creator"]["VIA_MAP"]
+
         self.logger = get_a_logger(__name__)
         self.__generate_magic_files()
 
@@ -58,17 +62,17 @@ class MagicLayoutCreator:
         except (FileNotFoundError, tomllib.TOMLDecodeError) as e:
             self.logger.error(f"Error loading config: {e}")
 
-    def place_black_white_picture(self, image_path: str):
+    def place_black_white_picture(self, image_path: str, layer1: str, layer2: str):
         """Not used"""
         black_pixels, white_pixels = get_black_white_pixel_boxes_from_image(image_path)
 
-        self.magic_file_lines.append(f"<< m1 >>")
+        self.magic_file_lines.append(f"<< {layer1} >>")
         for box in black_pixels:
             rect_area = RectArea()
             rect_area.set(box)
             self.magic_file_lines.append(f"rect {rect_area.x1} {rect_area.y1} {rect_area.x2} {rect_area.y2}")
 
-        self.magic_file_lines.append(f"<< m2 >>")
+        self.magic_file_lines.append(f"<< {layer2} >>")
         for box in white_pixels:
             rect_area = RectArea()
             rect_area.set(box)
@@ -96,24 +100,20 @@ class MagicLayoutCreator:
     def __via_placer(self, start_layer: str, end_layer: str, area: RectArea, trace_net: TraceNet):
         """Adds via(s) and potentially necessary metal layers between a top layer and a bottom layer"""
 
-        via_map = {
-            ('locali', 'm1'): 'viali',
-            ('m1', 'locali'): 'viali',
-            ('m1', 'm2'): 'via1',
-            ('m2', 'm1'): 'via1',
-            ('m2', 'm3'): 'via2',
-            ('m3', 'm2'): 'via2',
-            ('m3', 'm4'): 'via3',
-            ('m4', 'm3'): 'via3',
-        }
-        metal_layer_list = ['locali', 'm1', 'm2', 'm3', 'm4']
+        # Build the complete via map
+        via_map = {}
+        for key, value in self.VIA_MAP.items():
+            key_tuple = tuple(key.split("-"))
+
+            # Add both the original and swapped key-value pairs to the map since traversal can go both directions
+            via_map[key_tuple] = value
+            via_map[key_tuple[::-1]] = value
 
         metal_layers = self.__get_inbetween_metal_layers(start_layer=start_layer, end_layer=end_layer,
-                                                       metal_layer_list=metal_layer_list)
+                                                       metal_layer_list=self.METAL_LAYERS)
         via_layers = self.__get_inbetween_via_layers(start_layer=start_layer, end_layer=end_layer, via_map=via_map)
 
         # Metal area is increased with an offset to compensate for the via if via is present
-
         metal_area = RectArea(x1=area.x1, y1=area.y1, x2=area.x2, y2=area.y2)
 
         if via_layers is not None:
@@ -192,8 +192,9 @@ class MagicLayoutCreator:
                                             y1=port.area.y1 + component.transform_matrix.f,
                                             y2=port.area.y2 + component.transform_matrix.f)
 
-                        # Hinder placement of connection points to bulks since they are always connected in 'locali'
-                        if port.type == "B" or segment.layer == 'locali':
+                        # Hinder placement of connection points to bulks since they are always connected in the
+                        # lowest metal
+                        if port.type == "B" or segment.layer == self.METAL_LAYERS[0]:
                             continue
 
                         # Check for overlap between the port and the segment and add vias accordingly
@@ -335,7 +336,7 @@ class MagicLayoutCreator:
     def __magic_file_top_template(self):
         self.magic_file_lines.extend([
             "magic",
-            "tech sky130A",
+            f"tech {self.TECHNOLOGY}",
             "magscale 1 1",
             f"timestamp {int(time.time())}",
             "<< checkpaint >>",

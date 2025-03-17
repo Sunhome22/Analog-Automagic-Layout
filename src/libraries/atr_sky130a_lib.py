@@ -337,15 +337,18 @@ def place_transistor_endpoints_for_atr_sky130a_lib(self: object, component: obje
 
 
 def get_overlap_difference_for_atr_sky130a_lib(self: object, text_line: str, component: object):
+
     if component.type == "nmos" or component.type == "pmos":
 
         if self.found_transistor_well:
+
             line_words = text_line.split()
             self.transistor_well_size = RectArea(x1=int(line_words[1]), y1=int(line_words[2]), x2=int(line_words[3]),
                                                  y2=int(line_words[4]))
             self.found_transistor_well = False
 
         elif re.search(r'<< nwell >>', text_line) or re.search(r'<< pwell >>', text_line):
+
             # Next line contains well size info
             self.found_transistor_well = True
 

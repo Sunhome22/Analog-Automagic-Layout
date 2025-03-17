@@ -170,6 +170,7 @@ class SPICEparser:
     def __get_current_cell(self, spice_file_line: str):
         # Update cell information (Any symbol or the schematic itself)
         if re.match(r'\*\*\.subckt', spice_file_line) or re.match(r'.subckt', spice_file_line):
+
             self.logger.info(f"Found circuit cell '{spice_file_line.split()[1]}'")
             self.last_cell_found = spice_file_line.split()[1]
             return spice_file_line.split()[1]
@@ -206,7 +207,6 @@ class SPICEparser:
         component_type = None
 
         # Check SPICE line for circuit component identifier
-
         if re.match(r'^[^*.]', spice_line):
             line_words = spice_line.split()
 
@@ -235,11 +235,11 @@ class SPICEparser:
                 self.logger.error(f"- xU? Circuit Cells")
                 sys.exit()
 
-            # --- MOS Transistor ---
-            if component_category == 'M':
+            # --- MOS Transistor / Bipolar Transistor ---
+            if component_category == 'M' or component_category == 'Q':
 
                 # Get port definitions for component
-                port_definitions = self.__get_layout_port_definitions(line_words[5], self.subcircuits)
+                port_definitions = self.__get_layout_port_definitions(line_words[-1], self.subcircuits)
 
                 # Create transistor component and add extracted parameters
                 transistor = Transistor(name=filtered_name,
@@ -249,7 +249,7 @@ class SPICEparser:
                                         group=filtered_group,
                                         schematic_connections={port_definitions[i]: line_words[i + 1] for i in
                                                                range(min(len(port_definitions), len(line_words) - 1))},
-                                        layout_name=line_words[5],
+                                        layout_name=line_words[-1],
                                         layout_library=current_library)
 
                 transistor.instance = transistor.__class__.__name__  # add instance type
@@ -259,7 +259,7 @@ class SPICEparser:
             elif component_category == 'R':
 
                 # Get port definitions for component
-                port_definitions = self.__get_layout_port_definitions(line_words[4], self.subcircuits)
+                port_definitions = self.__get_layout_port_definitions(line_words[-1], self.subcircuits)
 
                 # Create resistor component and add extracted parameters
                 resistor = Resistor(name=filtered_name,
@@ -269,7 +269,7 @@ class SPICEparser:
                                     group=filtered_group,
                                     schematic_connections={port_definitions[i]: line_words[i + 1] for i in
                                                            range(min(len(port_definitions), len(line_words) - 1))},
-                                    layout_name=line_words[4],
+                                    layout_name=line_words[-1],
                                     layout_library=current_library)
 
                 resistor.instance = resistor.__class__.__name__  # add instance type
@@ -279,7 +279,7 @@ class SPICEparser:
             elif component_category == 'C':
 
                 # Get port definitions for components
-                port_definitions = self.__get_layout_port_definitions(line_words[3], self.subcircuits)
+                port_definitions = self.__get_layout_port_definitions(line_words[-1], self.subcircuits)
 
                 # Create capacitor component and add extracted parameters
                 capacitor = Capacitor(name=filtered_name,
@@ -289,31 +289,11 @@ class SPICEparser:
                                       group=filtered_group,
                                       schematic_connections={port_definitions[i]: line_words[i + 1] for i in
                                                              range(min(len(port_definitions), len(line_words) - 1))},
-                                      layout_name=line_words[3],
+                                      layout_name=line_words[-1],
                                       layout_library=current_library)
 
                 capacitor.instance = capacitor.__class__.__name__  # add instance type
                 self.components.append(capacitor)
-
-            #  --- Bipolar Transistor ---
-            elif component_category == 'Q':
-
-                # Get port definitions for component
-                port_definitions = self.__get_layout_port_definitions(line_words[4], self.subcircuits)
-
-                # Create transistor component and add extracted parameters
-                transistor = Transistor(name=filtered_name,
-                                        type=component_type,
-                                        number_id=len(self.components),
-                                        cell=current_cell,
-                                        group=filtered_group,
-                                        schematic_connections={port_definitions[i]: line_words[i + 1] for i in
-                                                               range(min(len(port_definitions), len(line_words) - 1))},
-                                        layout_name=line_words[4],
-                                        layout_library=current_library)
-
-                transistor.instance = transistor.__class__.__name__  # add instance type
-                self.components.append(transistor)
 
             #  --- Circuit cells ---
             elif component_category == 'U':
@@ -322,7 +302,7 @@ class SPICEparser:
                 port_definitions = self.__get_layout_port_definitions(line_words[-1], self.subcircuits)
 
                 # Create circuit cell component and add extracted parameters
-                circuit_cell = CircuitCell(name=line_words[-1],
+                circuit_cell = CircuitCell(name=f"{line_words[-1]}_{line_words[0]}",
                                            cell=current_cell,
                                            number_id=len(self.components),
                                            schematic_connections={port_definitions[i]: line_words[i + 1] for i in

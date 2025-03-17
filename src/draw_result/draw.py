@@ -37,7 +37,7 @@ def draw_result(grid_size, objects, used_area, scale_factor, draw_name):
                                      linewidth=1, edgecolor='blue', facecolor='red')
             ax.add_patch(rect)
             ax.text(obj.transform_matrix.c + (obj.bounding_box.x2 / 2),
-                    obj.transform_matrix.f + (obj.bounding_box.y2 / 2), obj.group+"_"+obj.name,
+                    obj.transform_matrix.f + (obj.bounding_box.y2 / 2), f"{obj.group}_{obj.name}",
                     ha='center', va='center', fontsize=12, color='black')
 
     plt.title('OBJ placement')

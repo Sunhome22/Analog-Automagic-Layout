@@ -13,7 +13,7 @@
 # ==================================================================================================================== #
 
 from dataclasses import dataclass
-from circuit.circuit_components import Pin, CircuitCell, Transistor
+from circuit.circuit_components import Pin, CircuitCell, Transistor, DigitalBlock
 from logger.logger import get_a_logger
 
 
@@ -166,7 +166,7 @@ class ConnectionLists:
         p_transistors = []
 
         for obj in self.components:
-            if isinstance(obj, Transistor):
+            if isinstance(obj, (Transistor, DigitalBlock)):
                 if obj.type == "pmos":
                     p_transistors.append(obj)
                 elif obj.type == "nmos":

@@ -139,6 +139,14 @@ class DigitalBlock(FunctionalComponent):
     group_endpoint: str = field(default_factory=str)
     group_endpoint_bounding_box: RectArea | dict = field(default_factory=RectArea)
 
+    def __post_init__(self):
+        super().__post_init__()
+        if isinstance(self.overlap_distance, dict):
+            self.overlap_distance = OverlapDistance(**self.overlap_distance)
+
+        if isinstance(self.group_endpoint_bounding_box, dict):
+            self.group_endpoint_bounding_box = RectArea(**self.group_endpoint_bounding_box)
+
 # ============================================ Structural Component classes ============================================
 
 
