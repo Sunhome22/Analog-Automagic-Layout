@@ -202,8 +202,11 @@ class SPICEparser:
 
 
     def __get_component(self, spice_line: str, current_cell: str, current_library: str):
+        component_category = None
+        component_type = None
 
         # Check SPICE line for circuit component identifier
+
         if re.match(r'^[^*.]', spice_line):
             line_words = spice_line.split()
 
