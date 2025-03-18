@@ -17,7 +17,6 @@
 import json
 from circuit.circuit_components import *
 from dataclasses import asdict
-from typing import List
 from logger.logger import get_a_logger
 # =============================================== JSON converter =======================================================
 
@@ -48,14 +47,12 @@ def load_from_json(file_name: str):
                            "Resistor": Resistor,
                            "Capacitor": Capacitor,
                            "Pin": Pin,
-                           "Cell": CircuitCell,
-                           "Trace": Trace}
+                           "CircuitCell": CircuitCell,
+                           "TraceNet": TraceNet}
     # Read JSON file
     try:
         with open(file_name, 'r') as file:
             json_data = json.load(file)
-
-
 
     except FileNotFoundError:
         logger.error(f"'{file_name}' could not be found")

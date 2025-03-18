@@ -1,4 +1,5 @@
-# #pip install -e .
+# =================================================== Overview =========================================================
+# pip3.12 install -e .
 [project]
 name = "Analog-Automagic-Layout"
 version = "2.0.0"
@@ -14,3 +15,65 @@ dynamic = ["dependencies"]
 
 [tool.setuptools.dynamic]
 dependencies = {file = ["requirements.txt"]}
+
+# ===================================================== Configs ========================================================
+
+# Linear optimization config options
+# -> Alpha - Constant for weighing the importance of total Manhattan distance between components in the objective function
+# -> Beta - Constant for weighing the importance of perimeter along the x-axis in the objective function
+# -> Theta - Constant for weighing the importance of perimeter along the y-axis in the objective function
+# -> Unit_width, Unit_height - Unit width and height are intervals of allowable placements along the x- and y-axis
+# -> Offset_x, Offset_y - Minimum offset along the x- and y-axis between components that can not overlap
+# -> Mirror - Boolean used for debugging. Turns on or off the mirroring constraint
+# -> Run - Boolean used for debugging. Turns on or off the execution of linear optimization
+# -> Stop_tolerance - MIP gap threshold percentage for when to stop searching with respect to the relative difference
+#                     between primal and dual solutions
+
+[linear_optimization]
+UNIT_HEIGHT = 100
+UNIT_WIDTH = 64
+OFFSET_X = 184
+OFFSET_Y = 700
+ALPHA = 0.001
+BETA = 100
+THETA = 1
+TIME_LIMIT = 2
+MIRROR = true
+RUN = true
+
+STOP_TOLERANCE = 0.05
+SOLVER_MSG = true
+
+# Magic layout creator config options
+# -> Technology - defines which PDK technology we are targeting
+# -> Metal layers - defines the metal layers that can be route in (ascending order)
+# -> Via map - defines the via layers we can route in (ascending order)
+# -> Via padding - defines how much padding in units of 1e-8m should be added around all vias
+
+[magic_layout_creator]
+TECHNOLOGY = 'sky130A'
+METAL_LAYERS = ['locali', 'm1', 'm2', 'm3', 'm4']
+VIA_MAP = {"locali-m1" = "viali", "m1-m2" = "via1", "m2-m3" = "via2", "m3-m4" = "via3"}
+VIA_PADDING = 7
+
+# Trace generator config options
+# -> Init rail ring offset x/y - offset from cells defined bounding box
+# -> rail ring offset - distance from the outside of one ring to the outside of the next
+# -> rail width - width of the rails
+
+[trace_generator]
+INIT_RAIL_RING_OFFSET_Y = 350
+INIT_RAIL_RING_OFFSET_X = 150
+RAIL_RING_OFFSET = 150
+RAIL_RING_WIDTH = 100
+
+[generate_grid]
+GRID_SIZE = 3000
+SCALE_FACRIE =16
+TRACE_WIDTH = 30
+VIA_MINIMUM_DISTANCE = 20
+
+RUN_MULTIPLE_ASTAR = true
+
+[DRAW_RESULT]
+FILE_NAME = 'Temporary_check'

@@ -44,10 +44,9 @@ class ComponentLibrary:
 @dataclass
 class ProjectProperties:
     directory: str
-    cell_name: str
-    lib_name: str
+    top_cell_name: str
+    top_lib_name: str
     component_libraries: list[ComponentLibrary]
-    main_file_directory: str
 
 
 # Component libraries
@@ -56,23 +55,14 @@ tr_lib = ComponentLibrary(name="JNWTR", path="~/aicex/ip/jnw_bkle_sky130A/design
 misc_lib = ComponentLibrary(name="AALMISC", path="~/aicex/ip/jnw_bkle_sky130A/design/AAL_COMP_LIBS/AAL_MISC_SKY130A")
 
 
-project_properties = ProjectProperties(directory="~/aicex/ip/jnw_bkle_sky130A/",
-                                       cell_name="JNW_BKLE",
-                                       lib_name="JNW_BKLE_SKY130A",
-                                       component_libraries=[atr_lib, tr_lib, misc_lib],
-                                       main_file_directory=os.path.dirname(os.path.abspath(__file__))
-                                       )
+project_properties = ProjectProperties(directory="~/aicex/ip/jnw_bkle_sky130A",
+                                       top_cell_name="JNW_BKLE",
+                                       top_lib_name="JNW_BKLE_SKY130A",
+                                       component_libraries=[atr_lib, tr_lib, misc_lib])
 
 # ===================================================== Main ===========================================================
 # Define grid size and objects
-grid_size = 3000
-scale_factor =16
-time_limit = 2
-draw_name = 'Temporary_check'
-trace_width = 30
-via_minimum_distance = 20
-added_via_size = 7
-run_multiple_astar = False
+
 def main():
 
     # Create a logger
@@ -84,33 +74,22 @@ def main():
     # Update component attributes with information from it's associated Magic files
     #components = MagicComponentsParser(project_properties=project_properties,
      #                                  components=components.get_info()).get_info()
-    components = load_from_json(file_name=f"{project_properties.main_file_directory}/results/"f""f"Full_test.json")
+    components = load_from_json(file_name=f"{os.path.dirname(os.path.abspath(__file__))}/results/"f""f"Full_test_2.json")
 
 
 
     # Algorithms
     con_obj = ConnectionLists(components)
-    single_connection, local_connections, connections, overlap_dict, net_list = con_obj.initialize_connections()
-    print("Connections")
+    connections, overlap_dict, net_list = con_obj.initialize_connections()
 
-    for con in connections:
-        print(con)
-    print("SINGLE CONNECRIONs")
-    for c in single_connection:
-        print(c)
-    return
+
+
 
    # result = LinearOptimizationSolver(components, connections, local_connections, grid_size, overlap_dict, time_limit)
    # components = result.initiate_solver()
 
 
-    grid, port_scaled_coordinates, used_area, port_coordinates, routing_sizing_area = GridGeneration(grid_size=grid_size,
-                                                                        objects=components,
-                                                                        scale=scale_factor,
-                                                                        trace_width= trace_width,
-                                                                        via_minimum_distance = via_minimum_distance,
-                                                                        added_via_size = added_via_size
-                                                                     ).initialize_grid_generation()
+    grid, port_scaled_coordinates, used_area, port_coordinates, routing_sizing_area = GridGeneration(components=components).initialize_grid_generation()
 
 
 
@@ -121,13 +100,14 @@ def main():
                                     port_scaled_coordinates = port_scaled_coordinates,
                                     port_coordinates = port_coordinates,
                                     net_list = net_list,
-                                    run_multiple_astar = run_multiple_astar,
+
                                     routing_sizing_area = routing_sizing_area
                                     )
     components = initiate_write_traces(components = components,
                                        all_paths = path,
                                        scale_factor= scale_factor,
                                        trace_width= trace_width,
+                                       net_list=net_list,
                                        used_area= used_area
                                        )
 
@@ -142,8 +122,8 @@ def main():
     MagicLayoutCreator(project_properties=project_properties, components=components)
 
     # Save found components to JSON file
-    save_to_json(objects=components, file_name=f"{project_properties.main_file_directory}/results/"
-                                          f"Full_test_traces.json")
+    save_to_json(objects=components, file_name=f"{os.path.dirname(os.path.abspath(__file__))}/results/"
+                                          f"Full_test_traces_3.json")
 
     # Debug log of all components
     logger.debug(f"Components registered: ")

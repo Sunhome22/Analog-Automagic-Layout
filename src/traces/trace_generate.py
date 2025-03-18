@@ -19,12 +19,12 @@ import re
 import math
 
 
-from circuit.circuit_components import Trace, RectAreaLayer, RectArea
+from circuit.circuit_components import TraceNet, RectAreaLayer, RectArea,CircuitCell, Pin
 from json_tool.json_converter import save_to_json
 from magic.magic_layout_creator import MagicLayoutCreator
 
-from circuit.circuit_components import CircuitCell, Pin, RectArea
-from numpy.ma.core import append, trace
+
+
 
 lost_start_end_points = []
 @dataclass
@@ -151,6 +151,7 @@ def map_segments_to_rectangles(path_info, scale_factor, used_area):
 
 
 
+
     return rectangles
 
 def trace_stretch(switch_bool: bool, trace_width: int, index: int, length: int) -> tuple[int,int]:
@@ -173,10 +174,10 @@ def trace_stretch(switch_bool: bool, trace_width: int, index: int, length: int) 
         return -trace_width // 2, trace_width // 2
 
 
-def _write_traces(rectangles, trace_width, index, name):
-    a_trace = Trace()
+def _write_traces(rectangles, trace_width, cell, name):
+    a_trace = TraceNet()
     a_trace.instance = a_trace.__class__.__name__
-    a_trace.number_id = index
+    a_trace.cell =cell
     a_trace.name = name
 
 
@@ -221,16 +222,41 @@ def _write_traces(rectangles, trace_width, index, name):
             print("ILLEGAL TRACE IN WRITE TRACE")
             print(f"x1:{rect.area.x1},  y1:{rect.area.y1}, x2:{rect.area.x2}, y2:{rect.area.y2}")
 
+
+
+
+
     return a_trace
 
+def _write_label(components, net, net_list, trace_object):
+    if net in net_list.pin_nets:
+        for obj in components:
+            if isinstance(obj, Pin) and obj.name == net:
+                if len(trace_object.segments) > 1:
+                    obj.layout = RectAreaLayer(layer=trace_object.segments[0].layer, area=trace_object.segments[0].area)
 
+                else:
+                    for n_obj in components:
+                        if not isinstance(n_obj, (Pin, TraceNet, CircuitCell) ):
+                            for port in n_obj.schematic_connections:
+                                if n_obj.schematic_connections[port] == net:
+                                    for p in n_obj.layout_ports:
+                                        if p.type == port:
+                                            obj.layout = RectAreaLayer(layer=p.layer,
+                                                                       area=RectArea())
 
-def initiate_write_traces(components, all_paths,  scale_factor, trace_width, used_area):
+                                            obj.layout.area.x1 = p.area.x1 + n_obj.transform_matrix.c
+                                            obj.layout.area.x2 = p.area.x2 + n_obj.transform_matrix.c
+                                            obj.layout.area.y1 = p.area.y1 + n_obj.transform_matrix.f
+                                            obj.layout.area.y2 = p.area.y2 + n_obj.transform_matrix.f
+
+    return components
+
+def initiate_write_traces(components, all_paths,  scale_factor, trace_width, used_area, net_list):
 
 
 
     for index, net in enumerate(all_paths):
-
 
 
         mapped_rectangles = map_segments_to_rectangles(path_info=all_paths[net],
@@ -239,14 +265,15 @@ def initiate_write_traces(components, all_paths,  scale_factor, trace_width, use
 
 
 
+        trace_object = _write_traces(rectangles=mapped_rectangles,
+                                        trace_width=trace_width,
+                                        cell = "COMP",
+                                        name = net)
 
+        print(trace_object)
 
+        components.append(trace_object)
 
-
-
-
-        components.append(_write_traces(mapped_rectangles, trace_width, index, net))
-
-          #  _check_net_constraint_vioaltion(test)
+        components = _write_label(components=components, net=net, net_list=net_list, trace_object = trace_object)
 
     return components

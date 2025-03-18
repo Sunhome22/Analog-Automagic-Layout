@@ -13,13 +13,14 @@
 # ==================================================================================================================== #
 from dataclasses import dataclass
 
-from circuit.circuit_components import Pin, CircuitCell
+from circuit.circuit_components import Pin, CircuitCell, RectArea
 from logger.logger import get_a_logger
 import math
 import numpy as np
 import matplotlib.pyplot as plt
 from draw_result.visualize_grid import visualize_grid, heatmap_test
 from dataclasses import dataclass, field
+import tomllib
 
 @dataclass
 class RoutingSizingParameters:
@@ -35,37 +36,50 @@ class GridGeneration:
 
 
 
-    def __init__(self, grid_size, objects, scale, trace_width, via_minimum_distance, added_via_size):
-        self.trace_width = trace_width
-        self.via_minimum_distance = via_minimum_distance
-        self.added_via_size = added_via_size
+    def __init__(self, components):
 
-        self.routing_sizing_area = RoutingSizingParameters()
+
+
+        self.routing_parameters = RoutingSizingParameters()
 
 
         self.logger = get_a_logger(__name__)
-        self.grid_size = grid_size
-        self.objects = objects
+
+        #Load config
+        self.config = self.__load_config()
+        self.GRID_SIZE = self.config["generate_grid"]["GRID_SIZE"]
+        self.SCALE_FACTOR = self.config["generate_grid"]["SCALE_FACTOR"]
+        self.TRACE_WIDTH = self.config["generate_grid"]["TRACE_WIDTH"]
+        self.VIA_MINIMUM_DISTANCE = self.config["generate_grid"]["VIA_MINIMUM_DISTANCE"]
+        self.VIA_PADDING = self.config["magic_layout_creator"]["VIA_PADDING"]
+
+        self.components = components
         self.port_area = {}
-        self.scale_factor = scale
         self.port_scaled_coord = {}
         self.port_coordinates = {}
-        self.used_area = [grid_size, grid_size, 0, 0]
+        self.used_area = RectArea(x1=self.GRID_SIZE, y1=self.GRID_SIZE, x2=0, y2=0)
 
 
         self.grid = None
 
+    def __load_config(self, path="pyproject.toml"):
+        try:
+            with open(path, "rb") as f:
+                return tomllib.load(f)
+        except (FileNotFoundError, tomllib.TOMLDecodeError) as e:
+            self.logger.error(f"Error loading config: {e}")
+
 
     def _port_area(self):
 
-        for obj in self.objects:
-            if not isinstance(obj, (Pin, CircuitCell)):  # Skip objects of these types
-                self.used_area[0] = min(self.used_area[0], obj.transform_matrix.c)
-                self.used_area[2] = max(self.used_area[2], obj.transform_matrix.c + obj.bounding_box.x2)
-                self.used_area[1] = min(self.used_area[1], obj.transform_matrix.f)
-                self.used_area[3] = max(self.used_area[3], obj.transform_matrix.f + obj.bounding_box.y2)
+        for obj in self.components:
+            if not isinstance(obj, (Pin, CircuitCell)):  # Skip components of these types
+                self.used_area.x1 = min(self.used_area.x1, obj.transform_matrix.c)
+                self.used_area.y1 = min(self.used_area.y1, obj.transform_matrix.f)
+                self.used_area.x2 = max(self.used_area.x2, obj.transform_matrix.c + obj.bounding_box.x2)
+                self.used_area.y2 = max(self.used_area.y2, obj.transform_matrix.f + obj.bounding_box.y2)
 
-        for obj in self.objects:
+        for obj in self.components:
 
             if not isinstance(obj, (Pin, CircuitCell)):
 
@@ -75,8 +89,8 @@ class GridGeneration:
                     if port.type == "B":
                         continue
 
-                    x1 = (obj.transform_matrix.c + (port.area.x1 + port.area.x2)/2 - self.used_area[0] + self.LEEWAY_X)/self.scale_factor
-                    y1 = (obj.transform_matrix.f + (port.area.y1 + port.area.y2)/2 - self.used_area[1] + self.LEEWAY_Y)/self.scale_factor
+                    x1 = (obj.transform_matrix.c + (port.area.x1 + port.area.x2)/2 - self.used_area.x1 + self.LEEWAY_X)/self.SCALE_FACTOR
+                    y1 = (obj.transform_matrix.f + (port.area.y1 + port.area.y2)/2 - self.used_area.y1 + self.LEEWAY_Y)/self.SCALE_FACTOR
 
                     frac_x, int_x = math.modf(x1)
                     frac_y, int_y = math.modf(y1)
@@ -87,18 +101,18 @@ class GridGeneration:
 
 
     def _calculate_non_overlap_parameters(self):
-        self.routing_sizing_area.trace_width_scaled = math.ceil((self.trace_width+self.via_minimum_distance+self.added_via_size*2)/self.scale_factor)
-        for object_1 in self.objects:
+        self.routing_parameters.trace_width_scaled = math.ceil((self.TRACE_WIDTH+self.VIA_MINIMUM_DISTANCE+self.VIA_PADDING*2)/self.SCALE_FACTOR)
+        for object_1 in self.components:
             if not isinstance(object_1, (Pin, CircuitCell)):
                 for port in object_1.layout_ports:
                     if not port.type == "G":
-                        self.routing_sizing_area.port_width_scaled = math.ceil(((port.area.x2-port.area.x1)/2 +self.via_minimum_distance+self.added_via_size*2+self.trace_width/2)/self.scale_factor)
+                        self.routing_parameters.port_width_scaled = math.ceil(((port.area.x2-port.area.x1)/2 +self.VIA_MINIMUM_DISTANCE+self.VIA_PADDING*2+self.TRACE_WIDTH/2)/self.SCALE_FACTOR)
 
                     else:
-                        self.routing_sizing_area.gate_width_scaled = math.ceil(((port.area.x2-port.area.x1)/2 +self.via_minimum_distance+self.added_via_size*2+self.trace_width/2)/self.scale_factor)
+                        self.routing_parameters.gate_width_scaled = math.ceil(((port.area.x2-port.area.x1)/2 +self.VIA_MINIMUM_DISTANCE+self.VIA_PADDING*2+self.TRACE_WIDTH/2)/self.SCALE_FACTOR)
 
-                    self.routing_sizing_area.port_height_scaled = math.ceil(((port.area.y2-port.area.y1)/2 +self.via_minimum_distance+self.added_via_size*2+self.trace_width/2)/self.scale_factor)
-                    if self.routing_sizing_area.port_width_scaled != 0 and self.routing_sizing_area.gate_width_scaled != 0:
+                    self.routing_parameters.port_height_scaled = math.ceil(((port.area.y2-port.area.y1)/2 +self.VIA_MINIMUM_DISTANCE+self.VIA_PADDING*2+self.TRACE_WIDTH/2)/self.SCALE_FACTOR)
+                    if self.routing_parameters.port_width_scaled != 0 and self.routing_parameters.gate_width_scaled != 0:
                         break
 
 
@@ -108,15 +122,15 @@ class GridGeneration:
 
 
 
-        scaled_grid_size_y = list(math.modf((self.used_area[3]-self.used_area[1]+2*self.LEEWAY_Y)/self.scale_factor))
-        scaled_grid_size_x = list(math.modf((self.used_area[2] - self.used_area[0] + 2 * self.LEEWAY_X)/self.scale_factor))
+        scaled_grid_size_y = list(math.modf((self.used_area.y2-self.used_area.y1+2*self.LEEWAY_Y)/self.SCALE_FACTOR))
+        scaled_grid_size_x = list(math.modf((self.used_area.x2 - self.used_area.x1 + 2 * self.LEEWAY_X)/self.SCALE_FACTOR))
 
         self.grid = [[0 for _ in range(int(scaled_grid_size_x[1]))] for _ in range(int(scaled_grid_size_y[1]))]
 
 
         for port in self.port_area:
-            h = self.routing_sizing_area.port_height_scaled
-            w = self.routing_sizing_area.gate_width_scaled if port == "G" else self.routing_sizing_area.port_width_scaled
+            h = self.routing_parameters.port_height_scaled
+            w = self.routing_parameters.gate_width_scaled if port == "G" else self.routing_parameters.port_width_scaled
 
             for x,y in self.port_area[port]:
                 for i in range(y-h, y+h+1):
@@ -131,4 +145,4 @@ class GridGeneration:
         self._calculate_non_overlap_parameters()
         self.generate_grid()
 
-        return self.grid, self.port_scaled_coord, self.used_area, self.port_coordinates, self.routing_sizing_area
+        return self.grid, self.port_scaled_coord, self.used_area, self.port_coordinates, self.routing_parameters

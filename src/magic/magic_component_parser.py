@@ -15,16 +15,17 @@
 # ================================================== Libraries =========================================================
 import os
 import re
-from circuit.circuit_components import LayoutPort, RectArea, Pin, CircuitCell, Transistor, Trace
+from circuit.circuit_components import LayoutPort, RectArea, Pin, CircuitCell, TraceNet, Transistor, Capacitor, \
+    Resistor, DigitalBlock
 from logger.logger import get_a_logger
-from dataclasses import dataclass, fields
+from dataclasses import fields
+import libraries.atr_sky130a_lib as atr
 
 # ============================================= Magic component parser =================================================
 
 
 class MagicComponentsParser:
     def __init__(self, project_properties, components):
-        self.project_cell_name = project_properties.cell_name
         self.project_directory = project_properties.directory
         self.component_libraries = project_properties.component_libraries
         self.current_component_library_path = None
@@ -36,7 +37,7 @@ class MagicComponentsParser:
         self.found_bounding_box = False
         self.transistor_well_size = RectArea
 
-    def get_info(self):
+    def get(self):
         return self.__read_magic_files()
 
     def __read_magic_files(self):
@@ -45,8 +46,7 @@ class MagicComponentsParser:
         # Iterate over all components
         for component in self.components:
 
-            # Filter out pins, circuit cells and traces
-            if not isinstance(component, (Pin, CircuitCell, Trace)):
+            if isinstance(component, (Transistor, Capacitor, Resistor, DigitalBlock)):
                 updated_components += 1
 
                 # Find library of current component
@@ -56,56 +56,42 @@ class MagicComponentsParser:
                 layout_file_path = os.path.expanduser(f"{self.current_component_library_path}/"
                                                       f"{component.layout_name}.mag")
 
+                # General component handling
                 try:
                     with open(layout_file_path, "r") as magic_file:
-
                         for text_line in magic_file:
-                            self.__get_component_bounding_box_info(text_line=text_line, component=component)
                             self.__get_component_port_info(text_line=text_line, component=component)
-                            self.__get_overlap_difference_for_cmos_transistors(text_line=text_line, component=component)
-                        self.__adjust_port_sizes(component=component)
-                        self.__basic_component_is_valid_check(component=component)
-
                 except FileNotFoundError:
                     self.logger.error(f"The file {layout_file_path} was not found.")
 
+                # ATR SKY130A LIB component handling
+                if any(lib for lib in self.component_libraries if re.search(r"ATR", lib.name)):
+                    atr.magic_component_parsing_for_atr_sky130a_lib(self=self, layout_file_path=layout_file_path,
+                                                                    component=component)
+
+                self.__check_component_is_valid(component=component)
+
         # Process complete
-        self.logger.info(f"Process complete! Components updated: {updated_components}")
+        self.logger.info(f"Process complete! Functional components updated: {updated_components}")
 
         return self.components
 
-    def __get_overlap_difference_for_cmos_transistors(self, text_line: str, component: object):
+    @staticmethod
+    def __get_component_port_info(text_line: str, component: object):
 
-        if component.type == "nmos" or component.type == "pmos":
+        if re.search(r'flabel', text_line):
+            text_line_words = text_line.split()
 
-            if self.found_transistor_well:
-                line_words = text_line.split()
-                self.transistor_well_size = RectArea(x1=int(line_words[1]), y1=int(line_words[2]), x2=int(line_words[3]),
-                                                     y2=int(line_words[4]))
-                self.found_transistor_well = False
+            layout_port = LayoutPort(type=text_line_words[-1], layer=text_line_words[1],
+                                     area=RectArea(x1=int(text_line_words[3]), y1=int(text_line_words[4]),
+                                                   x2=int(text_line_words[5]), y2=int(text_line_words[6])))
 
-            elif re.search(r'<< nwell >>', text_line) or re.search(r'<< pwell >>', text_line):
-                # Next line contains well size info
-                self.found_transistor_well = True
+            component.layout_ports.append(layout_port)
 
-            # Calculate overlap difference after bounding box has been set
-            elif self.found_bounding_box:
-
-                x_difference = int((abs(self.transistor_well_size.x1) + abs(self.transistor_well_size.x2)
-                                    - (abs(component.bounding_box.x1) + abs(component.bounding_box.x2)))/2)
-                y_difference = int((abs(self.transistor_well_size.y1) + abs(self.transistor_well_size.y2)
-                                    - (abs(component.bounding_box.y1) + abs(component.bounding_box.y2)))/2)
-
-                component.overlap_distance.x = x_difference
-                component.overlap_distance.y = y_difference
-
-                self.found_bounding_box = False
-
-        self.found_bounding_box = False
-
-    def __adjust_port_sizes(self, component: object):
+    @staticmethod
+    def __adjust_port_sizes_to_minimum(component: object):
+        """Adjust port sizes to the smallest one found. This is no longer in use"""
         port_areas = []
-        ports = []
         port_with_minimum_area = None
 
         # Find the port with the smallest area
@@ -118,33 +104,17 @@ class MagicComponentsParser:
                 elif new_area < area:
                     port_with_minimum_area = port
 
-        minimum_x_size = port_with_minimum_area.area.x2 - port_with_minimum_area.area.x1
-        minimum_y_size = port_with_minimum_area.area.y2 - port_with_minimum_area.area.y1
+        minimum_x_length = port_with_minimum_area.area.x2 - port_with_minimum_area.area.x1
+        minimum_y_length = port_with_minimum_area.area.y2 - port_with_minimum_area.area.y1
 
-        # Adjust port sizes to become the same as the area of the smallest port
+        # Adjust port sizes to become the same as the area of the smallest port and center them
         for port in component.layout_ports:
-            port.area.x2 = port.area.x1 + minimum_x_size
-            port.area.y2 = port.area.y1 + minimum_y_size
+            port.area.x1 = ((port.area.x2 - port.area.x1) // 2) + port.area.x1 - (minimum_x_length // 2)
+            port.area.y1 = ((port.area.y2 - port.area.y1) // 2) + port.area.y1 - (minimum_y_length // 2)
+            port.area.x2 = port.area.x1 + minimum_x_length
+            port.area.y2 = port.area.y1 + minimum_y_length
 
-    def __get_component_bounding_box_info(self, text_line: str, component: object):
-
-        if re.search(r'string FIXED_BBOX', text_line):
-            text_line_words = text_line.split()
-            component.bounding_box.set(map(int, text_line_words[2:6]))
-            self.found_bounding_box = True
-
-    def __get_component_port_info(self, text_line: str, component: object):
-
-        if re.search(r'flabel', text_line):
-            text_line_words = text_line.split()
-
-            layout_port = LayoutPort(type=text_line_words[-1], layer=text_line_words[1],
-                                     area=RectArea(x1=int(text_line_words[3]), y1=int(text_line_words[4]),
-                                                   x2=int(text_line_words[5]), y2=int(text_line_words[6])))
-
-            component.layout_ports.append(layout_port)
-
-    def __basic_component_is_valid_check(self, component):
+    def __check_component_is_valid(self, component: object):
 
         # Check if both bounding box info and layout port info is present
         if not all(getattr(component.bounding_box, field.name) == 0 for field
@@ -167,4 +137,3 @@ class MagicComponentsParser:
         else:
             self.logger.error(f"Found no bounding box for'{component.name}' from "
                               f"'{component.cell}' with layout '{component.layout_name}'")
-

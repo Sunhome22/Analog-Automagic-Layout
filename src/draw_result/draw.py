@@ -13,7 +13,7 @@
 # ==================================================================================================================== #
 
 from matplotlib import pyplot as plt, patches
-from circuit.circuit_components import Pin, CircuitCell, Trace
+from circuit.circuit_components import Pin, CircuitCell, TraceNet
 
 
 def draw_result(grid_size, objects, connections, used_area, scale_factor, draw_name):
@@ -34,7 +34,7 @@ def draw_result(grid_size, objects, connections, used_area, scale_factor, draw_n
         ax.axvline(i, lw=0.5, color='gray', zorder=0)
 
     for obj in objects:
-        if not isinstance(obj, (Pin, CircuitCell, Trace)):
+        if not isinstance(obj, (Pin, CircuitCell, TraceNet)):
 
             rect = patches.Rectangle((obj.transform_matrix.c, obj.transform_matrix.f), obj.bounding_box.x2, obj.bounding_box.y2, linewidth=1, edgecolor='blue', facecolor='red')
 

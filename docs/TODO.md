@@ -7,14 +7,20 @@
   - [x] Bulk connection logic is not entirely correct
 - Connections:
   - [x] Some functionality was lost, and now it generates too many connections. Fixed
-  - [] Remove all bulk connections, but save them as local, either bulk source or bulk drain
+  - [x] Remove all bulk connections, but save them as local, either bulk source or bulk drain
 - UNIT TEST
 - ASTAR
   - [x] Updates Astar, such that when connecting from areas that have local connections the two closes ports are chosen.
   - [x] Introduce constraints for how close each path is
-  - [] Introduce constraints for how close each path is to via
-  - [] Find out what is happening to net4
-  - [] VSS in locali and VDD in m1
+  - [x] Introduce constraints for how close each path is to via
+  - [x] Find out what is happening to net4
+  - [x] VSS in locali and VDD in m1
+- 18.03
+  - [] Add variables to toml-file
+  - [] Allow for self defined order of nets in astar
+  - [] Regex string to check if it's VDD and VSS
+  - [] Make a function that checks if instances
+  - 
 
 
 

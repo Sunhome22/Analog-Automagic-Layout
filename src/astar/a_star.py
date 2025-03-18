@@ -19,7 +19,7 @@ from traces.trace_generate import segment_path
 from circuit.circuit_components import CircuitCell, Pin
 from logger.logger import get_a_logger
 import heapq
-
+import tomllib
 
 
 from draw_result.visualize_grid import heatmap_test
@@ -199,14 +199,187 @@ def a_star(grid_vertical, grid_horizontal, start, goals, minimum_segment_length)
     return None, None
 
 
+"""----------------------------SPLIT HERE---------------------------------------------"""
+
+
+class InitiateAstarAlgorithm:
+    def __init__(self, components, grid, connections, port_scaled_coordinates, port_coordinates, net_list,
+                            routing_sizing_area):
+        self.logger = get_a_logger(__name__)
+        self.config = self.__load_config()
+        self.RUN_MULTIPLE_ASTAR = self.config["astar"]["RUN_MULTIPLE_ASTAR"]
+
+        self.routing_parameters = routing_sizing_area
+        self.components = components
+        self.grid_vertical = [row[:] for row in grid[:]]
+        self.grid_horizontal = [row[:] for row in grid[:]]
+        self.connections = connections
+        self.port_scaled_coordinates = port_scaled_coordinates
+        self.port_coordinates = port_coordinates
+        self.net_list = net_list
+        self.goal_nodes = []
+        self.real_goal_nodes = []
+        self.path = {}
+        self.seg_list = {}
+        
+    def __load_config(self, path="pyproject.toml"):
+        try:
+            with open(path, "rb") as f:
+                return tomllib.load(f)
+        except (FileNotFoundError, tomllib.TOMLDecodeError) as e:
+            self.logger.error(f"Error loading config: {e}")
+
+    def _extract_goal_nodes(self,connection_list, net):
+        self.goal_nodes = []
+        self.real_goal_nodes = []
+        for con in connection_list:
+            start_found = False
+            end_found = False
+            if con.net == net:
+                for index, placed_object in enumerate(self.components):
+
+                    if not isinstance(placed_object, (Pin, CircuitCell)) and placed_object.number_id == int(
+                            con.start_comp_id):
+                        start = (int(self.port_scaled_coordinates[con.start_comp_id + con.start_area[0]][0]),
+                                 int(self.port_scaled_coordinates[con.start_comp_id + con.start_area[0]][2]))
+                        real_start = (int(self.port_coordinates[con.start_comp_id + con.start_area[0]][0]),
+                                      int(self.port_coordinates[con.start_comp_id + con.start_area[0]][1]))
+                        start_found = True
+
+                    if not isinstance(placed_object, (Pin, CircuitCell)) and placed_object.number_id == int(
+                            con.end_comp_id):
+                        end = (int(self.port_scaled_coordinates[con.end_comp_id + con.end_area[0]][0]),
+                               int(self.port_scaled_coordinates[con.end_comp_id + con.end_area[0]][2]))
+                        real_end = (int(self.port_coordinates[con.end_comp_id + con.end_area[0]][0]),
+                                    int(self.port_coordinates[con.end_comp_id + con.end_area[0]][1]))
+                        end_found = True
+
+                    if start_found and end_found:
+                        if len(con.start_area) >= 2 or len(con.end_area) >= 2:
+                            start, real_start, end, real_end = check_start_end_port(con, self.port_scaled_coordinates,
+                                                                                    self.port_coordinates)
+
+                        if start not in self.goal_nodes:
+                            self.goal_nodes.append(start)
+                            self.real_goal_nodes.append(real_start)
+
+                        if end not in self.goal_nodes:
+                            self.goal_nodes.append(end)
+                            self.real_goal_nodes.append(real_end)
+
+                        start_found = False
+                        end_found = False
+
+    def _extract_goal_nodes_from_single_connections(self, connection_list, net):
+        for con in connection_list:
+
+            if con.net == net:
+                for index, placed_object in enumerate(self.components):
+
+                    if not isinstance(placed_object, (Pin, CircuitCell)) and placed_object.number_id == int(
+                            con.start_comp_id):
+                        self.goal_nodes.append((int(self.port_scaled_coordinates[con.start_comp_id + con.start_area[0]][0]),
+                                           int(self.port_scaled_coordinates[con.start_comp_id + con.start_area[0]][2])))
+                        self.real_goal_nodes.append((int(self.port_coordinates[con.start_comp_id + con.start_area[0]][0]),
+                                                int(self.port_coordinates[con.start_comp_id + con.start_area[0]][1])))
+
+    def _lock_or_unlock_port(self, lock):
+
+        h = self.routing_parameters.port_height_scaled
+        w = self.routing_parameters.port_width_scaled
+        for node in self.goal_nodes:
+            for key in self.port_scaled_coordinates:
+                if (int(self.port_scaled_coordinates[key][0]), int(self.port_scaled_coordinates[key][2])) == node:
+                    w = self.routing_parameters.gate_width_scaled if key[1] == "G" else self.routing_parameters.port_width_scaled
+
+                    break
+
+            for y in range(node[1] - h, node[1] + h + 1):
+                for x in range(node[0] - w, node[0] + w + 1):
+                    self.grid_vertical[y][x] = lock
+                    self.grid_horizontal[y][x] = lock
+
+    def _update_grid(self, net):
+        for segment in self.seg_list[net]:
+            # vertical
+
+            if segment[0][0] - segment[-1][0] == 0:
+                for x, y in segment:
+                    for i in range(-self.routing_parameters.trace_width_scaled,
+                                   self.routing_parameters.trace_width_scaled + 1):
+                        for p in range(-2, 3):
+                            self.grid_vertical[y + p][x + i] = 1
+
+            # horizontal
+            if segment[0][1] - segment[-1][1] == 0:
+                for x, y in segment:
+                    for i in range(-self.routing_parameters.trace_width_scaled,
+                                   self.routing_parameters.trace_width_scaled + 1):
+                        for p in range(-2, 3):
+                            self.grid_horizontal[y + i][x + p] = 1
+
+    def _run_multiple_astar_multiple_times(self):
+        best_path = None
+        best_length = float('inf')
+        if self.RUN_MULTIPLE_ASTAR:
+
+            for start in self.goal_nodes:
+
+                path, length = a_star(self.grid_vertical, self.grid_horizontal, start, self.goal_nodes, self.routing_parameters.port_width_scaled)
+
+                if path is not None and length < best_length:
+                    best_path = path
+                    best_length = length
+            return best_path
+        else:
+            path, _ = a_star(self.grid_vertical, self.grid_horizontal, self.goal_nodes[0], self.goal_nodes, self.routing_parameters.port_width_scaled)
+            return path
+
+    def _initiate_astar(self):
+        self.logger.info("Starting Initiate A*")
+
+
+
+        for net in self.net_list.pin_nets + self.net_list.applicable_nets:
+            # Skipping these nets, that are handled by other routing algorithm
+            if "VDD" in net or "VSS" in net:
+                continue
+
+            self._extract_goal_nodes(connection_list=self.connections["component_connections"], net=net)
+
+            if len(self.goal_nodes) == 0:
+                self._extract_goal_nodes_from_single_connections(
+                    connection_list=self.connections["single_connections"], net=net)
+
+
+            # Make goal nodes walkable
+            self._lock_or_unlock_port(lock=0)
+
+            if len(self.goal_nodes) > 1:
+                p = self._run_multiple_astar_multiple_times()
+            else:
+                p = []
+
+            self.path.setdefault(net, {})["goal_nodes"] = self.goal_nodes
+            self.path.setdefault(net, {})["real_goal_nodes"] = self.real_goal_nodes
+            # Make goal nodes non-walkable
+            self._lock_or_unlock_port(lock=1)
+
+            segments = segment_path(p)
+            self.path.setdefault(net, {})["segments"] = segments
+            self.seg_list.setdefault(net, []).extend(segments)
+
+            self._update_grid(net=net)
+
+        # heatmap_test(grid_vertical, "grid_vertical_heatmap")
+        # heatmap_test(grid_horizontal, "grid_horizontal_heatmap")
+
+        logger.info("Finished A*")
 
 
 
 
-
-
-
-
+"""Helper function deciding which of two connected ports should be routed from"""
 def check_start_end_port(con, port_scaled_coordinates: dict, port_coordinates: dict):
     start_ports = con.start_area
     end_ports = con.end_area
@@ -232,140 +405,15 @@ def check_start_end_port(con, port_scaled_coordinates: dict, port_coordinates: d
 
     return start, real_start, end, real_end
 
-def _lock_or_unlock_port(grid_vertical, grid_horizontal, goal, port_scaled_coordinates, routing_sizing_area,lock):
-
-    h = routing_sizing_area.port_height_scaled
-    w = routing_sizing_area.port_width_scaled
-    for node in goal:
-        for key in port_scaled_coordinates:
-            if (int(port_scaled_coordinates[key][0]),int(port_scaled_coordinates[key][2])) == node:
-                w = routing_sizing_area.gate_width_scaled if key[1] == "G" else routing_sizing_area.port_width_scaled
-
-                break
-
-        for y in range(node[1]-h, node[1]+h+1):
-            for x in range(node[0]-w, node[0]+w+1):
-
-
-                grid_vertical[y][x] = lock
-                grid_horizontal[y][x] = lock
-
-    return grid_vertical, grid_horizontal
-
-def run_multiple_astar_multiple_times(grid_vertical, grid_horizontal,goals, port_width_scaled, run_multiple):
-    best_path = None
-    best_length = float('inf')
-    if run_multiple:
-        i = 0
-        for start in goals:
-            i+=1
-            path, length = a_star(grid_vertical, grid_horizontal, start, goals, port_width_scaled)
-            print(i)
-            if path is not None and length < best_length:
-                best_path = path
-                best_length = length
-        return best_path
-    else:
-        path, _ = a_star(grid_vertical, grid_horizontal, goals[0], goals, port_width_scaled)
-        return path
 
 
 
 
-def initiate_astar(grid, connections, components, port_scaled_coordinates, port_coordinates, net_list, run_multiple_astar, routing_sizing_area):
-    logger.info("Starting Initiate A*")
-    grid_vertical = [row[:] for row in grid[:]]
-    grid_horizontal = [row[:] for row in grid[:]]
-
-    path = {}
-    seg_list = {}
-
-
-    for net in net_list.applicable_nets + net_list.pin_nets :
-        #Skipping these nets, that are handled by other routing algorithm
-        if "VDD" in net or "VSS" in net:
-            continue
-        goal_nodes = []
-        real_goal_nodes = []
-        for con in connections:
-            start_found = False
-            end_found = False
-            if con.net == net:
-                for index, placed_object in enumerate(components):
-
-                    if not isinstance(placed_object, (Pin, CircuitCell)) and placed_object.number_id == int(con.start_comp_id):
-                        start = (int(port_scaled_coordinates[con.start_comp_id + con.start_area[0]][0]), int(port_scaled_coordinates[con.start_comp_id + con.start_area[0]][2]))
-                        real_start = (int(port_coordinates[con.start_comp_id + con.start_area[0]][0]), int(port_coordinates[con.start_comp_id + con.start_area[0]][1]))
-                        start_found = True
-
-
-                    if not isinstance(placed_object, (Pin, CircuitCell)) and placed_object.number_id == int(con.end_comp_id):
-                        end = (int(port_scaled_coordinates[con.end_comp_id + con.end_area[0]][0]), int(port_scaled_coordinates[con.end_comp_id + con.end_area[0]][2]))
-                        real_end = (int(port_coordinates[con.end_comp_id + con.end_area[0]][0]), int(port_coordinates[con.end_comp_id + con.end_area[0]][1]))
-                        end_found = True
-
-                    if start_found and end_found:
-                        if len(con.start_area) >= 2 or len(con.end_area) >= 2:
-                            start, real_start, end, real_end = check_start_end_port(con, port_scaled_coordinates, port_coordinates)
-
-                        if start not in goal_nodes:
-                            goal_nodes.append(start)
-                            real_goal_nodes.append(real_start)
-
-
-                        if end not in goal_nodes:
-                            goal_nodes.append(end)
-                            real_goal_nodes.append(real_end)
-
-
-                        start_found = False
-                        end_found = False
-
-
-       #Make goal nodes walkable
-        grid_vertical, grid_horizontal = _lock_or_unlock_port(grid_vertical, grid_horizontal, goal_nodes, port_scaled_coordinates , routing_sizing_area,0)
-        if not goal_nodes:
-
-            print(goal_nodes)
-        p = run_multiple_astar_multiple_times(grid_vertical, grid_horizontal, goal_nodes, routing_sizing_area.port_width_scaled ,run_multiple_astar)
-
-        path.setdefault(net, {})["goal_nodes"] = goal_nodes
-        path.setdefault(net, {})["real_goal_nodes"] = real_goal_nodes
-        #Make goal nodes non-walkable
-        grid_vertical, grid_horizontal= _lock_or_unlock_port(grid_vertical, grid_horizontal, goal_nodes,port_scaled_coordinates,routing_sizing_area,1)
-
-        segments = segment_path(p)
-        path.setdefault(net, {})["segments"] = segments
-        if net not in seg_list:
-            seg_list[net] = []
-
-
-        for seg in segments:
-            seg_list[net].append(seg)
-
-        for seg in seg_list[net]:
-            # vertical
-
-            if seg[0][0] - seg[-1][0] == 0:
-                for x, y in seg:
-                    for i in range(-routing_sizing_area.trace_width_scaled, routing_sizing_area.trace_width_scaled+1):
-                        for p in range (-2, 3):
-
-                            grid_vertical[y +p ][x + i] = 1
-
-
-            # horizontal
-            if seg[0][1] - seg[-1][1] == 0:
-                for x, y in seg:
-                    for i in range(-routing_sizing_area.trace_width_scaled, routing_sizing_area.trace_width_scaled+1):
-                        for p in range(-2, 3):
-                            grid_horizontal[y + i][x+p] = 1
-
-
-    heatmap_test(grid_vertical, "grid_vertical_heatmap")
-    heatmap_test(grid_horizontal, "grid_horizontal_heatmap")
 
 
 
-    logger.info("Finished A*")
-    return path, seg_list
+
+
+
+
+

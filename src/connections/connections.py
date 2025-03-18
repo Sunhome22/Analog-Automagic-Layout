@@ -48,16 +48,20 @@ class Connection:
         self.net = net
 
 
+
 class ConnectionLists:
 
     def __init__(self, components):
         self.logger = get_a_logger(__name__)
         self.components = components
 
+        self.connections = {
+            "local_connections" : [],
+            "component_connections" : [],
+            "single_connections":[]
 
-        self.local_connections = []
-        self.component_connections = []
-        self.single_connection = []
+        }
+
         self.overlap_dict = {}
         self.local_con_area = {}
         self.net_list = Nets(applicable_nets=[], pin_nets=[])
@@ -82,8 +86,8 @@ class ConnectionLists:
                         if key != key1:
                             entry = [Connection(obj.number_id, key, obj.name, obj.number_id, obj.name, obj.cell, key1,ports[key]),
                                      Connection(obj.number_id, key1, obj.name, obj.number_id, key, obj.name, obj.cell, ports[key])]
-                            if ports[key] == ports[key1] and not any(isinstance(obj, Connection) and obj == target for target in entry for obj in self.local_connections):
-                                self.local_connections.append(Connection(obj.number_id, key, obj.name, obj.number_id, key1, obj.name, obj.cell, ports[key]))
+                            if ports[key] == ports[key1] and not any(isinstance(obj, Connection) and obj == target for target in entry for obj in self.connections["local_connections"]):
+                                self.connections["local_connections"].append(Connection(obj.number_id, key, obj.name, obj.number_id, key1, obj.name, obj.cell, ports[key]))
                                 self._update_local_nets(obj.number_id, key, key1)
 
 
@@ -135,23 +139,26 @@ class ConnectionLists:
                                 entry = [Connection(component_1.number_id, port_1_area, component_1.name, component_2.number_id, port_2_area, component_2.name, cell, net),
                                          Connection(component_2.number_id, port_2_area, component_2.name, component_1.number_id, port_1_area, component_1.name, cell, net)]
 
-                                if not any(isinstance(obj, Connection) and obj == target for target in entry for obj in self.component_connections):
+                                if not any(isinstance(obj, Connection) and obj == target for target in entry for obj in self.connections["component_connections"]):
 
-                                    self.component_connections.append(entry[0])
+                                    self.connections["component_connections"].append(entry[0])
 
     def _single_connection_list(self):
-        in_connection_list = False
+
         for component in self.components:
             if not isinstance(component, (Pin, CircuitCell)):
                 for port in component.schematic_connections:
-                    for con in self.component_connections:
+                    if port == "B" or port == "b":
+                        continue
+                    in_connection_list = False
+                    for con in self.connections["component_connections"]:
 
 
                         if (con.start_comp_id == str(component.number_id) and port in con.start_area) or (con.end_comp_id == str(component.number_id) and port in con.end_area):
                             in_connection_list = True
                             break
                     if not in_connection_list:
-                        self.single_connection.append(Connection(component.number_id, port, component.name,"" ,"" ,"" , component.cell, component.schematic_connections[port]))
+                        self.connections["single_connections"].append(Connection(component.number_id, port, component.name,"" ,"" ,"" , component.cell, component.schematic_connections[port]))
                         in_connection_list = False
 
 
@@ -198,22 +205,11 @@ class ConnectionLists:
 
 
 
-        return self.single_connection, self.local_connections, self.component_connections, self.overlap_dict, self.net_list
+        return  self.connections, self.overlap_dict, self.net_list
 
 
 
 
-
-###----------Usikker på om denne blir brukt---------------####
-def diff_components(components):
-    diff_pairs = []
-    comp = components[:]
-    for obj in components:
-        for obj1 in comp:
-            if obj.group == obj1.group and "diff" in obj.type:
-                diff_pairs.append([obj, obj1])
-        comp.remove(obj)
-    return diff_pairs
 
 
 def overlap_pairs(list1):
