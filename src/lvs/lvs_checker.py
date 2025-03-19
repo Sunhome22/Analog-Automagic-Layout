@@ -43,7 +43,7 @@ class LVSchecking:
         try:
             subprocess.run(['make lvsall'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True,
                            check=True, shell=True, cwd=work_directory)
-            self.logger.info("LVS checked")
+            self.logger.info("TBD!")
 
         except subprocess.CalledProcessError as e:
             self.logger.warning(f"'make lvsall' command had problems: {e.stderr}")

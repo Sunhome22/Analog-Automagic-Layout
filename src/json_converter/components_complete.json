@@ -134,7 +134,7 @@
             "D": "net3",
             "G": "VIP",
             "S": "net1",
-            "B": "net1"
+            "B": "VSS"
         },
         "layout_name": "JNWATR_NCH_4C5F0",
         "layout_library": "JNW_ATR_SKY130A",
@@ -217,7 +217,7 @@
             "D": "net2",
             "G": "VIN",
             "S": "net1",
-            "B": "net1"
+            "B": "VSS"
         },
         "layout_name": "JNWATR_NCH_4C5F0",
         "layout_library": "JNW_ATR_SKY130A",
@@ -2303,40 +2303,6 @@
     },
     {
         "instance": "TraceNet",
-        "name": "MN1_B_S",
-        "cell": "COMP",
-        "segments": [
-            {
-                "layer": "locali",
-                "area": {
-                    "x1": 2202,
-                    "y1": 1850,
-                    "x2": 2490,
-                    "y2": 1890
-                }
-            }
-        ],
-        "vias": []
-    },
-    {
-        "instance": "TraceNet",
-        "name": "MN2_B_S",
-        "cell": "COMP",
-        "segments": [
-            {
-                "layer": "locali",
-                "area": {
-                    "x1": 1626,
-                    "y1": 1850,
-                    "x2": 1914,
-                    "y2": 1890
-                }
-            }
-        ],
-        "vias": []
-    },
-    {
-        "instance": "TraceNet",
         "name": "MP5_B_S",
         "cell": "COMP",
         "segments": [
@@ -2572,6 +2538,78 @@
             }
         ],
         "vias": []
+    },
+    {
+        "instance": "TraceNet",
+        "name": "MN1_MN2_B_VSS_RAIL_TOP",
+        "cell": "COMP",
+        "segments": [
+            {
+                "layer": "locali",
+                "area": {
+                    "x1": 1424,
+                    "y1": 2022,
+                    "x2": 3076,
+                    "y2": 2118
+                }
+            }
+        ],
+        "vias": [
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 1424,
+                    "y1": 2022,
+                    "x2": 1524,
+                    "y2": 2118
+                }
+            },
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 2976,
+                    "y1": 2022,
+                    "x2": 3076,
+                    "y2": 2118
+                }
+            }
+        ]
+    },
+    {
+        "instance": "TraceNet",
+        "name": "MN1_MN2_B_VSS_RAIL_BOT",
+        "cell": "COMP",
+        "segments": [
+            {
+                "layer": "locali",
+                "area": {
+                    "x1": 1424,
+                    "y1": 1382,
+                    "x2": 3076,
+                    "y2": 1478
+                }
+            }
+        ],
+        "vias": [
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 1424,
+                    "y1": 1382,
+                    "x2": 1524,
+                    "y2": 1478
+                }
+            },
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 2976,
+                    "y1": 1382,
+                    "x2": 3076,
+                    "y2": 1478
+                }
+            }
+        ]
     },
     {
         "instance": "TraceNet",

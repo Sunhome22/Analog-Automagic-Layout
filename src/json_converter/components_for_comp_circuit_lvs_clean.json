@@ -118,7 +118,7 @@
             "D": "net3",
             "G": "VIP",
             "S": "net1",
-            "B": "net1"
+            "B": "VSS"
         },
         "layout_name": "JNWATR_NCH_4C5F0",
         "layout_library": "JNW_ATR_SKY130A",
@@ -201,7 +201,7 @@
             "D": "net2",
             "G": "VIN",
             "S": "net1",
-            "B": "net1"
+            "B": "VSS"
         },
         "layout_name": "JNWATR_NCH_4C5F0",
         "layout_library": "JNW_ATR_SKY130A",

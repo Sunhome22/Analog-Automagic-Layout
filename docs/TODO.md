@@ -13,14 +13,16 @@
 - [x] Add vias to TraceNet and update .json file
 - [x] Having to write MN1 or MP1 is a fair solution according to Carsten. 
 - [x] Remove layer name dependency of technology from magic layout creator. 
-- [ ] When adding multiple circuit cells the set of components only getting added once.
+- [ ] When adding multiple circuit cells the set of components only getting added once. 
+- [ ] Fix gathering of deeper information when cells inherit other cells. Overlap distance is for example not handled
 
 ## Notes
 - Vias get turned into multiple smaller ones when converting to GDSII. Always want atleast two, however
   Carsten is not allways following this rule.
 
 - Designers can make ther on transistors as they which. After that he need to create labels to define what is G,S,D,B
-
+- Everything that is white in Magic is connected together if its transistors of the same type. You need a deep nwell 
+  for example if want to differentiate two sets of NMOSes. 
 
 - Would be nice if A* logged out what trace it is currently solving
 - Alf has been told by Carsten to always connect bulk to VSS/VDD

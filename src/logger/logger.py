@@ -55,7 +55,7 @@ def get_a_logger(name):
         "traces.trace_generator": LIGHT_ORANGE
     }
 
-    file_spcific_color = color_table.get(name, WHITE)
+    file_specific_color = color_table.get(name, WHITE)
 
     # Create a logger and set default level
     logger = logging.getLogger(name)
@@ -64,8 +64,8 @@ def get_a_logger(name):
     console_handler = logging.StreamHandler()
     console_handler.setLevel(logging.DEBUG)
 
-    # Create a custom formatter with the dynmaic file color
-    formatter = CustomFormatter(file_color=file_spcific_color)
+    # Create a custom formatter with the dynamic file color
+    formatter = CustomFormatter(file_color=file_specific_color)
     console_handler.setFormatter(formatter)
     logger.addHandler(console_handler)
 
