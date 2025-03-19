@@ -334,15 +334,11 @@ class InitiateAstarAlgorithm:
         else:
             path, _ = a_star(self.grid_vertical, self.grid_horizontal, self.goal_nodes[0], self.goal_nodes, self.routing_parameters.port_width_scaled)
             return path
-    def _check_vdd_vss(self, net):
+    def __check_vdd_vss(self, net):
 
-        ground = re.escape("VSS")
-        power = re.escape("VDD")
 
-        if re.search(ground, net, re.IGNORECASE) or re.search(ground, net, re.IGNORECASE):
-            return True
-        else:
-            return False
+        return re.search(".*VSS.*", net, re.IGNORECASE) or re.search(".*VDD.*", net, re.IGNORECASE)
+
     def _initiate_astar(self):
         self.logger.info("Starting Initiate A*")
 
@@ -350,7 +346,7 @@ class InitiateAstarAlgorithm:
 
         for net in self.net_list.pin_nets + self.net_list.applicable_nets:
             # Skipping these nets, that are handled by other routing algorithm
-            if self._check_vdd_vss(net):
+            if self.__check_vdd_vss(net):
                 continue
 
             self._extract_goal_nodes(connection_list=self.connections["component_connections"], net=net)
