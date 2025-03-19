@@ -89,7 +89,7 @@ def main():
    # components = result.initiate_solver()
 
 
-    grid, port_scaled_coordinates, used_area, port_coordinates, routing_sizing_area = GridGeneration(components=components).initialize_grid_generation()
+    grid, port_scaled_coordinates, used_area, port_coordinates, routing_parameters= GridGeneration(components=components).initialize_grid_generation()
 
 
 
