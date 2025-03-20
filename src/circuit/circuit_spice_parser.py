@@ -46,6 +46,8 @@ class SPICEparser:
         self.subcircuits = list()
         self.user_created_circuit_cells = list()
         self.last_cell_found = ''
+        self.prev_parent_cell_name = ''
+        self.parent_cell_chain = ''
 
         self.logger = get_a_logger(__name__)
         self.__parse()
@@ -158,7 +160,7 @@ class SPICEparser:
                 # Return library name from path name
                 return re.search(r'[^/]+$', self.component_libraries[index].path).group()
 
-    def __get_subcircuit_port_info_for_cells(self, spice_file_content: list):
+    def __get_port_info_for_circuit_cells(self, spice_file_content: list):
         for line in spice_file_content:
             if re.match(r'\*\*\.subckt', line) or re.match(r'.subckt', line):
                 line_words = line.split()
@@ -168,7 +170,7 @@ class SPICEparser:
 
                 self.logger.info(f"SPICE subcircuit port info found for '{subcircuit.layout_name}'")
 
-    def __get_current_cell(self, spice_file_line: str):
+    def __get_current_circuit_cell(self, spice_file_line: str):
         # Update cell information (Any symbol or the schematic itself)
         if re.match(r'\*\*\.subckt', spice_file_line) or re.match(r'.subckt', spice_file_line):
             self.logger.info(f"Found circuit cell '{spice_file_line.split()[1]}'")
@@ -202,7 +204,7 @@ class SPICEparser:
         return component_category, component_type
 
 
-    def __get_component(self, spice_line: str, cell: str, parent_cell: str, current_library: str):
+    def __get_component(self, spice_line: str, cell: str, parent_cell: str, parent_cell_chain: str, current_library: str):
         component_category = None
         component_type = None
 
@@ -247,6 +249,7 @@ class SPICEparser:
                                         number_id=len(self.components),
                                         cell=cell,
                                         parent_cell = parent_cell,
+                                        parent_cell_chain = parent_cell_chain,
                                         group=filtered_group,
                                         schematic_connections={port_definitions[i]: line_words[i + 1] for i in
                                                                range(min(len(port_definitions), len(line_words) - 1))},
@@ -268,6 +271,7 @@ class SPICEparser:
                                     number_id=len(self.components),
                                     cell=cell,
                                     parent_cell=parent_cell,
+                                    parent_cell_chain=parent_cell_chain,
                                     group=filtered_group,
                                     schematic_connections={port_definitions[i]: line_words[i + 1] for i in
                                                            range(min(len(port_definitions), len(line_words) - 1))},
@@ -289,6 +293,7 @@ class SPICEparser:
                                       number_id=len(self.components),
                                       cell=cell,
                                       parent_cell=parent_cell,
+                                      parent_cell_chain=parent_cell_chain,
                                       group=filtered_group,
                                       schematic_connections={port_definitions[i]: line_words[i + 1] for i in
                                                              range(min(len(port_definitions), len(line_words) - 1))},
@@ -309,6 +314,7 @@ class SPICEparser:
                                           number_id=len(self.components),
                                           cell=cell,
                                           parent_cell=parent_cell,
+                                          parent_cell_chain=parent_cell_chain,
                                           group=filtered_group,
                                           schematic_connections={port_definitions[i]: line_words[i + 1] for i in
                                                                range(min(len(port_definitions), len(line_words) - 1))},
@@ -326,12 +332,12 @@ class SPICEparser:
             line_words = spice_line.split()
 
             pin_type = ''.join(re.findall(r'[a-zA-Z]+', line_words[0]))
-            pin = Pin(type=pin_type, cell=cell, parent_cell=parent_cell,
+            pin = Pin(type=pin_type, cell=cell, parent_cell=parent_cell, parent_cell_chain=parent_cell_chain,
                       name=line_words[1], number_id=len(self.components))
             pin.instance = pin.__class__.__name__  # add instance type
             self.components.append(pin)
 
-    def __get_user_created_circuit_cells(self, spice_line, current_cell):
+    def __build_list_of_circuit_cells(self, spice_line, current_cell):
         component_category = None
 
         # Check SPICE line for circuit component identifier
@@ -373,6 +379,7 @@ class SPICEparser:
                 circuit_cell = CircuitCell(name=line_words[0],
                                            cell=line_words[-1],
                                            parent_cell=current_cell,
+                                           parent_cell_chain=f"{line_words[0]}_{line_words[-1]}",
                                            group=filtered_group,
                                            number_id=len(self.components),
                                            schematic_connections={port_definitions[i]: line_words[i + 1] for i in
@@ -381,7 +388,42 @@ class SPICEparser:
                 circuit_cell.instance = circuit_cell.__class__.__name__  # add instance type
                 self.components.append(circuit_cell)
                 self.user_created_circuit_cells.append(circuit_cell)
-                print(circuit_cell)
+
+    def __add_components_for_each_circuit_cell(self, current_parent_cell):
+        """Recursive adding of components within each circuit cell"""
+
+        for user_created_circuit_cell in self.user_created_circuit_cells:
+            if user_created_circuit_cell.parent_cell == current_parent_cell:
+
+                inside_cell = False
+
+                # Creating a unique cell name for nested cells
+                self.parent_cell_chain = (f"{self.prev_parent_cell_name}{user_created_circuit_cell.name}"
+                                     f"_{user_created_circuit_cell.cell}")
+
+                if current_parent_cell == self.project_top_cell_name:
+                    self.parent_cell_chain = f"{user_created_circuit_cell.name}_{user_created_circuit_cell.cell}"
+                    self.prev_parent_cell_name = ''
+
+                # Extracting components inside current cell
+                for line in self.spice_file_content:
+                    line_words = line.split()
+
+                    if len(line_words) > 1 and line_words[1] == user_created_circuit_cell.cell:
+                        inside_cell = True
+                    elif line_words[0] == '.ends':
+                        inside_cell = False
+                    elif inside_cell:
+                        current_library = self.__get_current_component_library(line)
+
+                        self.__get_component(spice_line=line,
+                                             cell=f"{user_created_circuit_cell.name}_{user_created_circuit_cell.cell}",
+                                             parent_cell=user_created_circuit_cell.parent_cell,
+                                             parent_cell_chain = self.parent_cell_chain,
+                                             current_library=current_library)
+
+                self.prev_parent_cell_name += f"{user_created_circuit_cell.name}_{user_created_circuit_cell.cell}_"
+                self.__add_components_for_each_circuit_cell(current_parent_cell=user_created_circuit_cell.cell)
 
     def __parse(self):
         self.__generate_spice_file_for_schematic()
@@ -391,58 +433,13 @@ class SPICEparser:
         # The only possible subcircuits left in the spice file now are cells.
 
         # Get port info for these cells
-        self.__get_subcircuit_port_info_for_cells(self.spice_file_content)
+        self.__get_port_info_for_circuit_cells(self.spice_file_content)
 
-        # Main component extraction loop
+        # Add all components for each circuit cell
         for line in self.spice_file_content:
-            current_cell = self.__get_current_cell(line)
-            self.__get_user_created_circuit_cells(spice_line=line, current_cell=current_cell)
-
-        inside_cell = False
-        user_created_circuit_cells_2 = copy.deepcopy(self.user_created_circuit_cells)
-        for user_created_circuit_cell in self.user_created_circuit_cells:
-            for user_created_circuit_cell_2 in user_created_circuit_cells_2:
-                if user_created_circuit_cell_2.parent_cell == user_created_circuit_cell.cell:
-                    print(user_created_circuit_cell_2.cell)
-                    for line in self.spice_file_content:
-                        line_words = line.split()
-
-                        if len(line_words) > 1 and line_words[1] == user_created_circuit_cell_2.cell:
-                            inside_cell = True
-                        elif line_words[0] == '.ends':
-                            inside_cell = False
-                        elif inside_cell:
-                            current_library = self.__get_current_component_library(line)
-                            self.__get_component(spice_line=line,
-                                                 cell=f"{user_created_circuit_cell_2.name}_{user_created_circuit_cell_2.cell}",
-                                                 parent_cell=user_created_circuit_cell_2.parent_cell,
-                                                 current_library=current_library)
-
-                    for line in self.spice_file_content:
-                        line_words = line.split()
-
-                        if len(line_words) > 1 and line_words[1] == user_created_circuit_cell.cell:
-                            inside_cell = True
-                        elif line_words[0] == '.ends':
-                            inside_cell = False
-                        elif inside_cell:
-                            current_library = self.__get_current_component_library(line)
-                            self.__get_component(spice_line=line,
-                                                 cell=f"{user_created_circuit_cell.name}_{user_created_circuit_cell.cell}",
-                                                 parent_cell=user_created_circuit_cell.parent_cell,
-                                                 current_library=current_library)
-
-            # for line in self.spice_file_content:
-            #     line_words = line.split()
-            #
-            #     if len(line_words) > 1 and line_words[1] == user_created_circuit_cell.cell:
-            #         inside_cell = True
-            #     elif line_words[0] == '.ends':
-            #         inside_cell = False
-            #     elif inside_cell:
-            #         current_library = self.__get_current_component_library(line)
-            #         self.__get_component(spice_line=line, cell=f"{user_created_circuit_cell.name}_{user_created_circuit_cell.cell}",
-            #                              parent_cell=user_created_circuit_cell.parent_cell, current_library=current_library)
+            current_cell = self.__get_current_circuit_cell(line)
+            self.__build_list_of_circuit_cells(spice_line=line, current_cell=current_cell)
+        self.__add_components_for_each_circuit_cell(current_parent_cell=self.project_top_cell_name)
 
         # Summary of parsing
         for component in self.components:

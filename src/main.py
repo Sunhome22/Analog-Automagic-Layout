@@ -82,28 +82,31 @@ def main():
         # Updates component attributes with information from it's associated Magic files
         components = MagicComponentsParser(project_properties=project_properties, components=components.get()).get()
 
-        # # Figures out connection types, nets and components that can overlap
-        # single_connection, local_connections, connections, overlap_components, net_list = (
-        #     ConnectionLists(components=components).initialize_connections())
-        #
-        # # Finds optimal structural component placements from solving LP problem
-        # components = LinearOptimizationSolver(
-        #     components=components,
-        #     connections=connections,
-        #     local_connections=local_connections,
-        #     grid_size=grid_size,
-        #     overlap_components=overlap_components
-        # ).solve_placement()
-        #
-        # # Generates grid
-        # grid, port_scaled_coords, used_area, port_coord = GridGeneration(
-        #     grid_size=grid_size,
-        #     components=components,
-        #     scale_factor=scale_factor
-        # ).initialize_grid_generation()
-        #
-        # draw_result(grid_size=grid_size, objects=components, used_area=used_area, scale_factor=scale_factor,
-        #            draw_name=draw_name)
+
+        for component in components:
+            print(component.cell, component.parent_cell_chain)
+        # Figures out connection types, nets and components that can overlap
+        single_connection, local_connections, connections, overlap_components, net_list = (
+            ConnectionLists(components=components).initialize_connections())
+
+        # Finds optimal structural component placements from solving LP problem
+        components = LinearOptimizationSolver(
+            components=components,
+            connections=connections,
+            local_connections=local_connections,
+            grid_size=grid_size,
+            overlap_components=overlap_components
+        ).solve_placement()
+
+        # Generates grid
+        grid, port_scaled_coords, used_area, port_coord = GridGeneration(
+            grid_size=grid_size,
+            components=components,
+            scale_factor=scale_factor
+        ).initialize_grid_generation()
+
+        draw_result(grid_size=grid_size, objects=components, used_area=used_area, scale_factor=scale_factor,
+                   draw_name=draw_name)
         #
         # # path, seg_list = initiate_astar(
         # #     grid=grid,
