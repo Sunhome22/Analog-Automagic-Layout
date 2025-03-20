@@ -1,4 +1,5 @@
 #!/pri/bjs1/Analog-Automagic-Layout/venv/bin/python
+import re
 
 # #!/home/bjorn/Analog-Automagic-Layout/venv/bin/python
 # ==================================================================================================================== #
@@ -33,6 +34,7 @@ from traces import trace_generator
 from traces.trace_generate import initiate_write_traces
 from drc.drc_checker import DRCchecking
 from lvs.lvs_checker import LVSchecking
+from collections import defaultdict
 
 from traces.trace_generator import *
 import os
@@ -82,9 +84,23 @@ def main():
         # Updates component attributes with information from it's associated Magic files
         components = MagicComponentsParser(project_properties=project_properties, components=components.get()).get()
 
-
+        components_grouped_by_circuit_cell = defaultdict(list)
         for component in components:
-            print(component.cell, component.parent_cell_chain)
+            if isinstance(component, CircuitCell):
+                print("yo")
+            print(component.parent_cell_chain)
+            #if re.search(r'^(?:[^_]+_){2}([^_]+)$', component.parent_cell_chain):
+            #    print("he")
+
+            components_grouped_by_circuit_cell[component.parent_cell_chain].append(component)
+
+        #for grouped_components in components_grouped_by_circuit_cell:
+            #print(components_grouped_by_circuit_cell[grouped_components])
+            #if isinstance(component, CircuitCell):
+            #    print(component.parent_cell_chain)
+
+            #print(component.cell, component.parent_cell_chain)
+
         # Figures out connection types, nets and components that can overlap
         single_connection, local_connections, connections, overlap_components, net_list = (
             ConnectionLists(components=components).initialize_connections())
