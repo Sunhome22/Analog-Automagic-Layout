@@ -34,6 +34,7 @@ PURPLE = "\033[38;2;153;51;255m"
 CYAN = "\033[38;2;0;204;204m"
 DARK_CYAN = "\033[38;2;0;153;153m"
 PINK = "\033[38;2;255;51;255m"
+PALETURQUOISE = "\033[38;2;175;238;238m"
 # =================================================== Logging ==========================================================
 
 
@@ -49,6 +50,7 @@ def get_a_logger(name):
         "linear_optimization.linear_optimization": PURPLE,
         "connections.connections": CYAN,
         "astar.a_star": BLUE,
+        "astar.a_star_initiator": PALETURQUOISE,
         "grid.generate_grid": PINK,
         "drc.drc_checker": DARK_CYAN,
         "lvs.lvs_checker": DARK_GREEN,

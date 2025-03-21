@@ -24,7 +24,7 @@ from typing import List, Dict
 from collections import defaultdict
 from logger.logger import get_a_logger
 from circuit.circuit_components import (RectArea, RectAreaLayer, Transistor, Capacitor, Resistor, Pin, CircuitCell,
-                                        TraceNet, RectAreaLayer)
+                                        TraceNet, RectAreaLayer, DigitalBlock)
 
 # ======================================================================================================================
 # ================================================ ATR SKY130A handling ================================================
@@ -32,7 +32,7 @@ from circuit.circuit_components import (RectArea, RectAreaLayer, Transistor, Cap
 
 
 # ============================================= Trace generator functions ==============================================
-def generate_local_traces_for_atr_sky130a_lib(self: object):
+def generate_local_traces_for_atr_sky130a_lib(self):
     for component in self.transistor_components:
         if component.schematic_connections['B'] == component.schematic_connections['S']:
             __local_bulk_to_source_connection_for_atr_sky130a_lib(self=self, component=component)
@@ -69,7 +69,7 @@ def generate_local_traces_for_atr_sky130a_lib(self: object):
                                                                     group_name=group_name)
 
 
-def __local_bulk_to_source_connection_for_atr_sky130a_lib(self: object, component: object):
+def __local_bulk_to_source_connection_for_atr_sky130a_lib(self, component):
     trace = TraceNet(name=f"{component.name}_B_S", cell=component.cell)
     trace.instance = trace.__class__.__name__
 
@@ -85,7 +85,7 @@ def __local_bulk_to_source_connection_for_atr_sky130a_lib(self: object, componen
     self.components.append(trace)
 
 
-def __local_gate_to_drain_connection_for_sky130a_lib(self: object, component: object):
+def __local_gate_to_drain_connection_for_sky130a_lib(self, component: object):
     trace = TraceNet(name=f"{component.name}_G_D", cell=component.cell)
     trace.instance = trace.__class__.__name__
 
@@ -102,7 +102,7 @@ def __local_gate_to_drain_connection_for_sky130a_lib(self: object, component: ob
     self.components.append(trace)
 
 
-def __local_bulk_to_rail_connection_for_sky130a_lib(self: object, component: object, rail: str, group_name: str):
+def __local_bulk_to_rail_connection_for_sky130a_lib(self, component, rail: str, group_name: str):
     y_params = {
         'rail_top': (component.bounding_box.y2, component.group_endpoint_bounding_box.y2 // 2),
         'rail_bot': (component.bounding_box.y1, -component.group_endpoint_bounding_box.y2 // 2),
@@ -124,8 +124,8 @@ def __local_bulk_to_rail_connection_for_sky130a_lib(self: object, component: obj
                                            group_name=group_name)
 
 
-def generate_bulk_to_rail_segments(self: object, rail: str, component: object, y_params: tuple, group_endpoint: str,
-                                   group_name: str):
+def generate_bulk_to_rail_segments(self, rail: str, component: Transistor, y_params: tuple,
+                                   group_endpoint: str, group_name: str):
     trace = TraceNet(name=f"{group_name}_B_{rail}_{group_endpoint}", cell=component.cell)
     trace.instance = trace.__class__.__name__
 
@@ -157,7 +157,7 @@ def generate_bulk_to_rail_segments(self: object, rail: str, component: object, y
     self.components.append(trace)
 
 
-def get_component_group_endpoints_for_atr_sky130a_lib(self: object):
+def get_component_group_endpoints_for_atr_sky130a_lib(self):
     components_and_positions = []
 
     for component in self.transistor_components:
@@ -287,7 +287,7 @@ def find_min_y_components(possible_y_min_components: list) -> dict:
 # ========================================== Magic layout creator functions ============================================
 
 
-def place_transistor_endpoints_for_atr_sky130a_lib(self: object, component: object):
+def place_transistor_endpoints_for_atr_sky130a_lib(self, component: Transistor):
     if isinstance(component, Transistor):
         layout_name_top = re.sub(r".{3}$", "TAPTOP", component.layout_name)
         layout_name_bot = re.sub(r".{3}$", "TAPBOT", component.layout_name)
@@ -336,16 +336,19 @@ def place_transistor_endpoints_for_atr_sky130a_lib(self: object, component: obje
 # ========================================== Magic component parser functions ==========================================
 
 
-def get_overlap_difference_for_atr_sky130a_lib(self: object, text_line: str, component: object):
+def get_overlap_difference_for_atr_sky130a_lib(self, text_line: str, component: Transistor):
+
     if component.type == "nmos" or component.type == "pmos":
 
         if self.found_transistor_well:
+
             line_words = text_line.split()
             self.transistor_well_size = RectArea(x1=int(line_words[1]), y1=int(line_words[2]), x2=int(line_words[3]),
                                                  y2=int(line_words[4]))
             self.found_transistor_well = False
 
         elif re.search(r'<< nwell >>', text_line) or re.search(r'<< pwell >>', text_line):
+
             # Next line contains well size info
             self.found_transistor_well = True
 
@@ -365,7 +368,7 @@ def get_overlap_difference_for_atr_sky130a_lib(self: object, text_line: str, com
     self.found_bounding_box = False
 
 
-def get_component_bounding_box_for_atr_sky130a_lib(self: object, text_line: str, component: object):
+def get_component_bounding_box_for_atr_sky130a_lib(self, text_line: str, component):
 
     if re.search(r'string FIXED_BBOX', text_line):
         text_line_words = text_line.split()
@@ -373,14 +376,14 @@ def get_component_bounding_box_for_atr_sky130a_lib(self: object, text_line: str,
         self.found_bounding_box = True
 
 
-def get_component_endpoint_bounding_box_for_atr_sky130a_lib(text_line: str, component: object):
+def get_component_endpoint_bounding_box_for_atr_sky130a_lib(text_line: str, component):
 
     if re.search(r'string FIXED_BBOX', text_line):
         text_line_words = text_line.split()
         component.group_endpoint_bounding_box.set(map(int, text_line_words[2:6]))
 
 
-def magic_component_parsing_for_atr_sky130a_lib(self: object, layout_file_path: str, component: object):
+def magic_component_parsing_for_atr_sky130a_lib(self, layout_file_path: str, component: Transistor):
     try:
         with open(layout_file_path, "r") as magic_file:
             for text_line in magic_file:
@@ -400,3 +403,5 @@ def magic_component_parsing_for_atr_sky130a_lib(self: object, layout_file_path: 
 
     except FileNotFoundError:
         self.logger.error(f"The file {layout_file_path} was not found.")
+
+

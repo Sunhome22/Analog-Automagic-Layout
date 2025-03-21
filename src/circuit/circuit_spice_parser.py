@@ -17,7 +17,7 @@
     Naming conversions for circuit components:
     - R	Resistors
     - C	Capacitors
-    - Q	Bipolar transistor
+    - QN/QP	NPN/PNP Bipolar transistor
     - MN/MP NMOS/PMOS transistor
     - U	Circuit cells/Integrated circuits
 """
@@ -26,6 +26,9 @@
 import os
 import subprocess
 import re
+import sys
+from ast import Index
+
 from circuit.circuit_components import *
 from logger.logger import get_a_logger
 
@@ -35,7 +38,7 @@ from logger.logger import get_a_logger
 class SPICEparser:
 
     def __init__(self, project_properties):
-        self.project_cell_name = project_properties.cell_name
+        self.project_top_cell_name = project_properties.top_cell_name
         self.project_directory = project_properties.directory
         self.component_libraries = project_properties.component_libraries
         self.spice_file_content = list()
@@ -47,7 +50,7 @@ class SPICEparser:
         self.__parse()
 
     def __generate_spice_file_for_schematic(self):
-        work_directory = os.path.expanduser(f"{self.project_directory}work/")
+        work_directory = os.path.expanduser(f"{self.project_directory}/work/")
 
         # Run SPICE generation command from work directory of project
         try:
@@ -61,16 +64,23 @@ class SPICEparser:
     def __read_spice_file(self):
 
         try:
-            spice_file_path = os.path.expanduser(f"{self.project_directory}work/xsch/{self.project_cell_name}.spice")
+            spice_file_path = os.path.expanduser(f"{self.project_directory}/work/xsch/{self.project_top_cell_name}.spice")
 
             # Copy each line of the file into a list
             with open(spice_file_path, "r") as spice_file:
+
                 for line in spice_file:
-                    self.spice_file_content.append(line)
+                    # Check for missing symbols
+                    if re.search(r'\bIS MISSING\b', line):
+                        self.logger.error(f"Component '{line.split()[1]}' is missing the symbol '{line.split()[3]}'")
+                    else:
+                        self.spice_file_content.append(line)
+
                 self.logger.info(f"SPICE content copied into program")
 
         except FileNotFoundError:
-            self.logger.error(f"The file {self.project_directory}work/xsch/{self.project_cell_name}.spice' was not found.")
+            self.logger.error(f"The file {self.project_directory}/work/xsch/"
+                              f"{self.project_top_cell_name}.spice' was not found.")
 
     def __rebuild_spice_lines_with_plus_symbol(self):
         # Removes added "+" symbols to long lines in the SPICE file
@@ -151,6 +161,7 @@ class SPICEparser:
         for line in spice_file_content:
             if re.match(r'\*\*\.subckt', line) or re.match(r'.subckt', line):
                 line_words = line.split()
+
                 subcircuit = SubCircuit(layout_name=line_words[1], ports=line_words[2:])
                 self.subcircuits.append(subcircuit)
 
@@ -159,6 +170,7 @@ class SPICEparser:
     def __get_current_cell(self, spice_file_line: str):
         # Update cell information (Any symbol or the schematic itself)
         if re.match(r'\*\*\.subckt', spice_file_line) or re.match(r'.subckt', spice_file_line):
+
             self.logger.info(f"Found circuit cell '{spice_file_line.split()[1]}'")
             self.last_cell_found = spice_file_line.split()[1]
             return spice_file_line.split()[1]
@@ -172,8 +184,8 @@ class SPICEparser:
 
         self.logger.error(f"Port definition not found for '{line_word}'")
 
-    def __get_component_category_and_type(self, filtered_name):
-
+    @staticmethod
+    def __get_component_category_and_type(filtered_name):
         # A map of different category identifiers and type identifiers to their corresponding type words
         component_category_to_type_table = {
             ("M", "N"): "nmos",
@@ -187,31 +199,47 @@ class SPICEparser:
 
         # The second letter of the filtered name can define type
         component_type = component_category_to_type_table.get((component_category, filtered_name[1]), None)
-
         return component_category, component_type
 
+
     def __get_component(self, spice_line: str, current_cell: str, current_library: str):
+        component_category = None
+        component_type = None
 
         # Check SPICE line for circuit component identifier
         if re.match(r'^[^*.]', spice_line):
             line_words = spice_line.split()
 
+            # Remove first letter of string containing group + name as a general rule
+            line_words[0] = line_words[0][1:]
+
             # Component name = characters after underscore if underscore is present
             filtered_name = (lambda x: re.search(r'_(.*)', x).group(1) if re.search(
                 r'_(.*)', x) else x)(line_words[0])
 
-            # Component group = characters until underscore if underscore is present
-            filtered_group = (lambda x: re.search(r'^[^_]+(?=_)', x).group() if re.search(
-                r'^[^_]+(?=_)', x) else None)(line_words[0])
+            # Component group = characters until underscore if underscore is present. First char is skipped
+            filtered_group = (lambda x: re.search(r'^[^_]+(?=_)', x[:]).group() if re.search(
+                r'^[^_]+(?=_)', x[1:]) else None)(line_words[0])
 
-            # Component category and type
-            component_category, component_type = self.__get_component_category_and_type(filtered_name)
+            # Error handling incase component category or component type is invalid
+            try:
+                component_category, component_type = self.__get_component_category_and_type(filtered_name=filtered_name)
+            except IndexError as e:
+                self.logger.error(f"Incorrect naming of component on spice line: '{spice_line}'")
+                self.logger.error(f"Naming conversions for circuit components:")
+                self.logger.error(f"- xR? Resistors")
+                self.logger.error(f"- xC? Capacitors")
+                self.logger.error(f"- xQN?/xQP? NPN/PNP")
+                self.logger.error(f"- xMN?/xMP? NMOS/PMOS")
+                self.logger.error(f"- xD? Digital Blocks")
+                self.logger.error(f"- xU? Circuit Cells")
+                sys.exit()
 
-            # --- MOS Transistor ---
-            if component_category == 'M':
+            # --- MOS Transistor / Bipolar Transistor ---
+            if component_category == 'M' or component_category == 'Q':
 
                 # Get port definitions for component
-                port_definitions = self.__get_layout_port_definitions(line_words[5], self.subcircuits)
+                port_definitions = self.__get_layout_port_definitions(line_words[-1], self.subcircuits)
 
                 # Create transistor component and add extracted parameters
                 transistor = Transistor(name=filtered_name,
@@ -221,7 +249,7 @@ class SPICEparser:
                                         group=filtered_group,
                                         schematic_connections={port_definitions[i]: line_words[i + 1] for i in
                                                                range(min(len(port_definitions), len(line_words) - 1))},
-                                        layout_name=line_words[5],
+                                        layout_name=line_words[-1],
                                         layout_library=current_library)
 
                 transistor.instance = transistor.__class__.__name__  # add instance type
@@ -231,7 +259,7 @@ class SPICEparser:
             elif component_category == 'R':
 
                 # Get port definitions for component
-                port_definitions = self.__get_layout_port_definitions(line_words[4], self.subcircuits)
+                port_definitions = self.__get_layout_port_definitions(line_words[-1], self.subcircuits)
 
                 # Create resistor component and add extracted parameters
                 resistor = Resistor(name=filtered_name,
@@ -241,7 +269,7 @@ class SPICEparser:
                                     group=filtered_group,
                                     schematic_connections={port_definitions[i]: line_words[i + 1] for i in
                                                            range(min(len(port_definitions), len(line_words) - 1))},
-                                    layout_name=line_words[4],
+                                    layout_name=line_words[-1],
                                     layout_library=current_library)
 
                 resistor.instance = resistor.__class__.__name__  # add instance type
@@ -251,7 +279,7 @@ class SPICEparser:
             elif component_category == 'C':
 
                 # Get port definitions for components
-                port_definitions = self.__get_layout_port_definitions(line_words[3], self.subcircuits)
+                port_definitions = self.__get_layout_port_definitions(line_words[-1], self.subcircuits)
 
                 # Create capacitor component and add extracted parameters
                 capacitor = Capacitor(name=filtered_name,
@@ -261,31 +289,11 @@ class SPICEparser:
                                       group=filtered_group,
                                       schematic_connections={port_definitions[i]: line_words[i + 1] for i in
                                                              range(min(len(port_definitions), len(line_words) - 1))},
-                                      layout_name=line_words[3],
+                                      layout_name=line_words[-1],
                                       layout_library=current_library)
 
                 capacitor.instance = capacitor.__class__.__name__  # add instance type
                 self.components.append(capacitor)
-
-            #  --- Bipolar Transistor ---
-            elif component_category == 'Q':
-
-                # Get port definitions for component
-                port_definitions = self.__get_layout_port_definitions(line_words[4], self.subcircuits)
-
-                # Create transistor component and add extracted parameters
-                transistor = Transistor(name=filtered_name,
-                                        type=component_type,
-                                        number_id=len(self.components),
-                                        cell=current_cell,
-                                        group=filtered_group,
-                                        schematic_connections={port_definitions[i]: line_words[i + 1] for i in
-                                                               range(min(len(port_definitions), len(line_words) - 1))},
-                                        layout_name=line_words[4],
-                                        layout_library=current_library)
-
-                transistor.instance = transistor.__class__.__name__  # add instance type
-                self.components.append(transistor)
 
             #  --- Circuit cells ---
             elif component_category == 'U':
@@ -294,7 +302,7 @@ class SPICEparser:
                 port_definitions = self.__get_layout_port_definitions(line_words[-1], self.subcircuits)
 
                 # Create circuit cell component and add extracted parameters
-                circuit_cell = CircuitCell(name=line_words[-1],
+                circuit_cell = CircuitCell(name=f"{line_words[-1]}",
                                            cell=current_cell,
                                            number_id=len(self.components),
                                            schematic_connections={port_definitions[i]: line_words[i + 1] for i in
@@ -304,6 +312,25 @@ class SPICEparser:
                 circuit_cell.instance = circuit_cell.__class__.__name__  # add instance type
 
                 self.components.append(circuit_cell)
+
+            #  --- Digital Blocks ---
+            elif component_category == 'D':
+                # Get port definitions for component
+                port_definitions = self.__get_layout_port_definitions(line_words[-1], self.subcircuits)
+
+                # Create digital block component and add extracted parameters
+                digital_block = DigitalBlock(name=filtered_name,
+                                          type="",
+                                          number_id=len(self.components),
+                                          cell=current_cell,
+                                          group=filtered_group,
+                                          schematic_connections={port_definitions[i]: line_words[i + 1] for i in
+                                                               range(min(len(port_definitions), len(line_words) - 1))},
+                                          layout_name=line_words[-1],
+                                          layout_library=current_library)
+
+                digital_block.instance = digital_block.__class__.__name__  # add instance type
+                self.components.append(digital_block)
 
             else:
                 self.logger.error(f"SPICE line '{spice_line}' is not handled!")
@@ -341,9 +368,8 @@ class SPICEparser:
         self.logger.info("Process complete! Components extracted from SPICE file: "
                          f"{len(self.components)}")
 
-    def get_info(self) -> list:
+    def get(self) -> list:
         return self.components
-
 
 
 

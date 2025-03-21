@@ -48,6 +48,8 @@ class MagicLayoutCreator:
         self.logger = get_a_logger(__name__)
         self.config = self.__load_config()
 
+
+
         self.VIA_PADDING = self.config["magic_layout_creator"]["VIA_PADDING"]
 
         self.__generate_magic_files()
@@ -120,18 +122,21 @@ class MagicLayoutCreator:
         if via_layers is not None:
             metal_area = RectArea(x1=area.x1 - self.VIA_PADDING, y1=area.y1 - self.VIA_PADDING,
                                   x2=area.x2 + self.VIA_PADDING, y2=area.y2 + self.VIA_PADDING)
+        if len(metal_layers) > 1:
 
-        trace_net.vias.append(RectAreaLayer(layer=f"{metal_layers[0]}-{metal_layers[1]}", area=area))
+            trace_net.vias.append(RectAreaLayer(layer=f"{metal_layers[0]}-{metal_layers[1]}", area=area))
 
-        # Place all required metal(s)
-        if metal_layers is not None:
-            for metal_layer in metal_layers:
-                self.__place_box(layer=metal_layer, area=metal_area)
+            # Place all required metal(s)
+            if metal_layers is not None:
+                for metal_layer in metal_layers:
+                    self.__place_box(layer=metal_layer, area=metal_area)
 
-        # Place all required via(s)
-        if via_layers is not None:
-            for via_layer in via_layers:
-                self.__place_box(layer=via_layer, area=area)
+            # Place all required via(s)
+            if via_layers is not None:
+                for via_layer in via_layers:
+                    self.__place_box(layer=via_layer, area=area)
+        else:
+            self.logger.error(f"")
 
 
 
@@ -218,6 +223,7 @@ class MagicLayoutCreator:
             # Get layers between the start and end (inclusive)
             result = metal_layer_list[min(metal_layer_list.index(start_layer), metal_layer_list.index(end_layer)):
                                       max(metal_layer_list.index(start_layer), metal_layer_list.index(end_layer)) + 1]
+
             return result
 
         except ValueError:

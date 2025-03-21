@@ -4,6 +4,9 @@
         "number_id": 0,
         "name": "COMP",
         "cell": "JNW_BKLE",
+        "parent_cell": "",
+        "parent_cell_chain": "",
+        "group": "",
         "schematic_connections": {
             "VDD": "net1",
             "VIN": "net2",
@@ -22,90 +25,86 @@
         },
         "bounding_box": {
             "x1": 1674,
-            "y1": 50,
+            "y1": 350,
             "x2": 2826,
-            "y2": 3850
+            "y2": 4150
         }
     },
     {
         "instance": "Pin",
         "number_id": 1,
         "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
         "type": "ipin",
         "name": "VSS",
-        "layout": ""
+        "layout": {
+            "layer": "m1",
+            "area": {
+                "x1": 1424,
+                "y1": 4500,
+                "x2": 3076,
+                "y2": 4600
+            }
+        }
     },
     {
         "instance": "Pin",
         "number_id": 2,
         "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
         "type": "ipin",
         "name": "VDD",
-        "layout": ""
+        "layout": {
+            "layer": "m1",
+            "area": {
+                "x1": 1274,
+                "y1": 4650,
+                "x2": 3226,
+                "y2": 4750
+            }
+        }
     },
     {
         "instance": "Pin",
         "number_id": 3,
         "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
         "type": "ipin",
         "name": "VIP",
-        "layout": {
-            "layer": "m1",
-            "area": {
-                "x1": 2330,
-                "y1": 1730,
-                "x2": 2362,
-                "y2": 1770
-            }
-        }
+        "layout": ""
     },
     {
         "instance": "Pin",
         "number_id": 4,
         "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
         "type": "ipin",
         "name": "VIN",
-        "layout": {
-            "layer": "m1",
-            "area": {
-                "x1": 1754,
-                "y1": 1730,
-                "x2": 1786,
-                "y2": 1770
-            }
-        }
+        "layout": ""
     },
     {
         "instance": "Pin",
         "number_id": 5,
         "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
         "type": "opin",
         "name": "VO",
-        "layout": {
-            "layer": "m3",
-            "area": {
-                "x1": 2041,
-                "y1": 2769,
-                "x2": 2071,
-                "y2": 3088
-            }
-        }
+        "layout": ""
     },
     {
         "instance": "Pin",
         "number_id": 6,
         "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
         "type": "ipin",
         "name": "I_BIAS",
-        "layout": {
-            "layer": "m2",
-            "area": {
-                "x1": 2041,
-                "y1": 229,
-                "x2": 2344,
-                "y2": 259
-            }
-        }
+        "layout": ""
     },
     {
         "instance": "Transistor",
@@ -113,95 +112,14 @@
         "name": "MN1",
         "type": "nmos",
         "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
         "group": "diff1",
         "schematic_connections": {
             "D": "net3",
             "G": "VIP",
             "S": "net1",
-            "B": "net1"
-        },
-        "layout_name": "JNWATR_NCH_4C5F0",
-        "layout_library": "JNW_ATR_SKY130A",
-        "layout_ports": [
-            {
-                "type": "G",
-                "layer": "m1",
-                "area": {
-                    "x1": 80,
-                    "y1": 180,
-                    "x2": 112,
-                    "y2": 220
-                }
-            },
-            {
-                "type": "S",
-                "layer": "m1",
-                "area": {
-                    "x1": 144,
-                    "y1": 300,
-                    "x2": 240,
-                    "y2": 340
-                }
-            },
-            {
-                "type": "B",
-                "layer": "locali",
-                "area": {
-                    "x1": -48,
-                    "y1": 180,
-                    "x2": 48,
-                    "y2": 220
-                }
-            },
-            {
-                "type": "D",
-                "layer": "m1",
-                "area": {
-                    "x1": 336,
-                    "y1": 20,
-                    "x2": 432,
-                    "y2": 60
-                }
-            }
-        ],
-        "transform_matrix": {
-            "a": 1,
-            "b": 0,
-            "c": 2250,
-            "d": 0,
-            "e": 1,
-            "f": 1550
-        },
-        "bounding_box": {
-            "x1": 0,
-            "y1": 0,
-            "x2": 576,
-            "y2": 400
-        },
-        "overlap_distance": {
-            "x": 92,
-            "y": 64
-        },
-        "group_endpoint": "",
-        "group_endpoint_bounding_box": {
-            "x1": 0,
-            "y1": 0,
-            "x2": 576,
-            "y2": 240
-        }
-    },
-    {
-        "instance": "Transistor",
-        "number_id": 8,
-        "name": "MN2",
-        "type": "nmos",
-        "cell": "COMP",
-        "group": "diff1",
-        "schematic_connections": {
-            "D": "net2",
-            "G": "VIN",
-            "S": "net1",
-            "B": "net1"
+            "B": "VSS"
         },
         "layout_name": "JNWATR_NCH_4C5F0",
         "layout_library": "JNW_ATR_SKY130A",
@@ -253,7 +171,7 @@
             "c": 1674,
             "d": 0,
             "e": 1,
-            "f": 1550
+            "f": 2250
         },
         "bounding_box": {
             "x1": 0,
@@ -265,7 +183,92 @@
             "x": 92,
             "y": 64
         },
-        "group_endpoint": "",
+        "group_endpoint": "rail_bot",
+        "group_endpoint_bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 576,
+            "y2": 240
+        }
+    },
+    {
+        "instance": "Transistor",
+        "number_id": 8,
+        "name": "MN2",
+        "type": "nmos",
+        "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
+        "group": "diff1",
+        "schematic_connections": {
+            "D": "net2",
+            "G": "VIN",
+            "S": "net1",
+            "B": "VSS"
+        },
+        "layout_name": "JNWATR_NCH_4C5F0",
+        "layout_library": "JNW_ATR_SKY130A",
+        "layout_ports": [
+            {
+                "type": "G",
+                "layer": "m1",
+                "area": {
+                    "x1": 80,
+                    "y1": 180,
+                    "x2": 112,
+                    "y2": 220
+                }
+            },
+            {
+                "type": "S",
+                "layer": "m1",
+                "area": {
+                    "x1": 144,
+                    "y1": 300,
+                    "x2": 240,
+                    "y2": 340
+                }
+            },
+            {
+                "type": "B",
+                "layer": "locali",
+                "area": {
+                    "x1": -48,
+                    "y1": 180,
+                    "x2": 48,
+                    "y2": 220
+                }
+            },
+            {
+                "type": "D",
+                "layer": "m1",
+                "area": {
+                    "x1": 336,
+                    "y1": 20,
+                    "x2": 432,
+                    "y2": 60
+                }
+            }
+        ],
+        "transform_matrix": {
+            "a": 1,
+            "b": 0,
+            "c": 2250,
+            "d": 0,
+            "e": 1,
+            "f": 2250
+        },
+        "bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 576,
+            "y2": 400
+        },
+        "overlap_distance": {
+            "x": 92,
+            "y": 64
+        },
+        "group_endpoint": "rail_bot",
         "group_endpoint_bounding_box": {
             "x1": 0,
             "y1": 0,
@@ -279,6 +282,8 @@
         "name": "MP5",
         "type": "pmos",
         "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
         "group": "load1",
         "schematic_connections": {
             "D": "net2",
@@ -333,10 +338,10 @@
         "transform_matrix": {
             "a": 1,
             "b": 0,
-            "c": 2250,
+            "c": 1674,
             "d": 0,
             "e": 1,
-            "f": 3050
+            "f": 350
         },
         "bounding_box": {
             "x1": 0,
@@ -348,7 +353,7 @@
             "x": 92,
             "y": 64
         },
-        "group_endpoint": "",
+        "group_endpoint": "rail_bot",
         "group_endpoint_bounding_box": {
             "x1": 0,
             "y1": 0,
@@ -362,6 +367,8 @@
         "name": "MP6",
         "type": "pmos",
         "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
         "group": "load1",
         "schematic_connections": {
             "D": "VO",
@@ -416,10 +423,10 @@
         "transform_matrix": {
             "a": 1,
             "b": 0,
-            "c": 1674,
+            "c": 2250,
             "d": 0,
             "e": 1,
-            "f": 3050
+            "f": 350
         },
         "bounding_box": {
             "x1": 0,
@@ -431,7 +438,7 @@
             "x": 92,
             "y": 64
         },
-        "group_endpoint": "",
+        "group_endpoint": "rail_bot",
         "group_endpoint_bounding_box": {
             "x1": 0,
             "y1": 0,
@@ -445,6 +452,8 @@
         "name": "MP1",
         "type": "pmos",
         "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
         "group": "load1",
         "schematic_connections": {
             "D": "net4",
@@ -499,10 +508,10 @@
         "transform_matrix": {
             "a": 1,
             "b": 0,
-            "c": 2250,
+            "c": 1674,
             "d": 0,
             "e": 1,
-            "f": 3450
+            "f": 1150
         },
         "bounding_box": {
             "x1": 0,
@@ -514,7 +523,7 @@
             "x": 92,
             "y": 64
         },
-        "group_endpoint": "",
+        "group_endpoint": "rail_top",
         "group_endpoint_bounding_box": {
             "x1": 0,
             "y1": 0,
@@ -528,6 +537,8 @@
         "name": "MP2",
         "type": "pmos",
         "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
         "group": "load1",
         "schematic_connections": {
             "D": "net3",
@@ -582,10 +593,10 @@
         "transform_matrix": {
             "a": 1,
             "b": 0,
-            "c": 1674,
+            "c": 2250,
             "d": 0,
             "e": 1,
-            "f": 3450
+            "f": 1150
         },
         "bounding_box": {
             "x1": 0,
@@ -597,7 +608,7 @@
             "x": 92,
             "y": 64
         },
-        "group_endpoint": "",
+        "group_endpoint": "rail_top",
         "group_endpoint_bounding_box": {
             "x1": 0,
             "y1": 0,
@@ -611,6 +622,8 @@
         "name": "MN4",
         "type": "nmos",
         "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
         "group": "mirror2",
         "schematic_connections": {
             "D": "net1",
@@ -665,10 +678,10 @@
         "transform_matrix": {
             "a": 1,
             "b": 0,
-            "c": 2250,
+            "c": 1674,
             "d": 0,
             "e": 1,
-            "f": 50
+            "f": 3750
         },
         "bounding_box": {
             "x1": 0,
@@ -680,7 +693,7 @@
             "x": 92,
             "y": 64
         },
-        "group_endpoint": "",
+        "group_endpoint": "rail_top/bot",
         "group_endpoint_bounding_box": {
             "x1": 0,
             "y1": 0,
@@ -694,6 +707,8 @@
         "name": "MN3",
         "type": "nmos",
         "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
         "group": "mirror2",
         "schematic_connections": {
             "D": "I_BIAS",
@@ -748,10 +763,10 @@
         "transform_matrix": {
             "a": 1,
             "b": 0,
-            "c": 1674,
+            "c": 2250,
             "d": 0,
             "e": 1,
-            "f": 50
+            "f": 3750
         },
         "bounding_box": {
             "x1": 0,
@@ -763,7 +778,7 @@
             "x": 92,
             "y": 64
         },
-        "group_endpoint": "",
+        "group_endpoint": "rail_top/bot",
         "group_endpoint_bounding_box": {
             "x1": 0,
             "y1": 0,
@@ -777,6 +792,8 @@
         "name": "MN5",
         "type": "nmos",
         "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
         "group": "mirror1",
         "schematic_connections": {
             "D": "net4",
@@ -831,10 +848,10 @@
         "transform_matrix": {
             "a": 1,
             "b": 0,
-            "c": 2250,
+            "c": 1674,
             "d": 0,
             "e": 1,
-            "f": 450
+            "f": 2650
         },
         "bounding_box": {
             "x1": 0,
@@ -846,7 +863,7 @@
             "x": 92,
             "y": 64
         },
-        "group_endpoint": "",
+        "group_endpoint": "rail_top",
         "group_endpoint_bounding_box": {
             "x1": 0,
             "y1": 0,
@@ -860,6 +877,8 @@
         "name": "MN6",
         "type": "nmos",
         "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
         "group": "mirror1",
         "schematic_connections": {
             "D": "VO",
@@ -914,10 +933,10 @@
         "transform_matrix": {
             "a": 1,
             "b": 0,
-            "c": 1674,
+            "c": 2250,
             "d": 0,
             "e": 1,
-            "f": 450
+            "f": 2650
         },
         "bounding_box": {
             "x1": 0,
@@ -929,7 +948,7 @@
             "x": 92,
             "y": 64
         },
-        "group_endpoint": "",
+        "group_endpoint": "rail_top",
         "group_endpoint_bounding_box": {
             "x1": 0,
             "y1": 0,
@@ -943,6 +962,8 @@
         "name": "MP3",
         "type": "pmos",
         "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
         "group": "load1",
         "schematic_connections": {
             "D": "net3",
@@ -1000,7 +1021,7 @@
             "c": 1674,
             "d": 0,
             "e": 1,
-            "f": 2650
+            "f": 750
         },
         "bounding_box": {
             "x1": 0,
@@ -1026,6 +1047,8 @@
         "name": "MP4",
         "type": "pmos",
         "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
         "group": "load1",
         "schematic_connections": {
             "D": "net2",
@@ -1083,7 +1106,7 @@
             "c": 2250,
             "d": 0,
             "e": 1,
-            "f": 2650
+            "f": 750
         },
         "bounding_box": {
             "x1": 0,
@@ -1105,282 +1128,218 @@
     },
     {
         "instance": "TraceNet",
-        "name": "VIP",
+        "name": "VSS",
         "cell": "COMP",
-        "segments": [],
+        "parent_cell": "",
+        "parent_cell_chain": "",
+        "segments": [
+            {
+                "layer": "m1",
+                "area": {
+                    "x1": 1424,
+                    "y1": 4500,
+                    "x2": 3076,
+                    "y2": 4600
+                }
+            },
+            {
+                "layer": "m1",
+                "area": {
+                    "x1": 1424,
+                    "y1": -100,
+                    "x2": 3076,
+                    "y2": 0
+                }
+            },
+            {
+                "layer": "m1",
+                "area": {
+                    "x1": 1424,
+                    "y1": 0,
+                    "x2": 1524,
+                    "y2": 4500
+                }
+            },
+            {
+                "layer": "m1",
+                "area": {
+                    "x1": 2976,
+                    "y1": 0,
+                    "x2": 3076,
+                    "y2": 4500
+                }
+            }
+        ],
         "vias": []
     },
     {
         "instance": "TraceNet",
-        "name": "VIN",
+        "name": "VDD",
         "cell": "COMP",
-        "segments": [],
+        "parent_cell": "",
+        "parent_cell_chain": "",
+        "segments": [
+            {
+                "layer": "m1",
+                "area": {
+                    "x1": 1274,
+                    "y1": 4650,
+                    "x2": 3226,
+                    "y2": 4750
+                }
+            },
+            {
+                "layer": "m1",
+                "area": {
+                    "x1": 1274,
+                    "y1": -250,
+                    "x2": 3226,
+                    "y2": -150
+                }
+            },
+            {
+                "layer": "m1",
+                "area": {
+                    "x1": 1274,
+                    "y1": -150,
+                    "x2": 1374,
+                    "y2": 4650
+                }
+            },
+            {
+                "layer": "m1",
+                "area": {
+                    "x1": 3126,
+                    "y1": -150,
+                    "x2": 3226,
+                    "y2": 4650
+                }
+            }
+        ],
         "vias": []
-    },
-    {
-        "instance": "TraceNet",
-        "name": "VO",
-        "cell": "COMP",
-        "segments": [
-            {
-                "layer": "m3",
-                "area": {
-                    "x1": 2041,
-                    "y1": 2769,
-                    "x2": 2071,
-                    "y2": 3088
-                }
-            },
-            {
-                "layer": "m2",
-                "area": {
-                    "x1": 2041,
-                    "y1": 2769,
-                    "x2": 2199,
-                    "y2": 2799
-                }
-            },
-            {
-                "layer": "m3",
-                "area": {
-                    "x1": 2169,
-                    "y1": 1473,
-                    "x2": 2199,
-                    "y2": 2799
-                }
-            },
-            {
-                "layer": "m2",
-                "area": {
-                    "x1": 2041,
-                    "y1": 1473,
-                    "x2": 2199,
-                    "y2": 1503
-                }
-            },
-            {
-                "layer": "m3",
-                "area": {
-                    "x1": 2041,
-                    "y1": 480,
-                    "x2": 2071,
-                    "y2": 1503
-                }
-            }
-        ],
-        "vias": [
-            {
-                "layer": "m1-m2",
-                "area": {
-                    "x1": 2010,
-                    "y1": 3070,
-                    "x2": 2106,
-                    "y2": 3110
-                }
-            },
-            {
-                "layer": "m1-m2",
-                "area": {
-                    "x1": 2010,
-                    "y1": 470,
-                    "x2": 2106,
-                    "y2": 510
-                }
-            },
-            {
-                "layer": "m2-m3",
-                "area": {
-                    "x1": 2041,
-                    "y1": 2769,
-                    "x2": 2071,
-                    "y2": 2799
-                }
-            },
-            {
-                "layer": "m2-m3",
-                "area": {
-                    "x1": 2169,
-                    "y1": 2769,
-                    "x2": 2199,
-                    "y2": 2799
-                }
-            },
-            {
-                "layer": "m2-m3",
-                "area": {
-                    "x1": 2169,
-                    "y1": 1473,
-                    "x2": 2199,
-                    "y2": 1503
-                }
-            },
-            {
-                "layer": "m2-m3",
-                "area": {
-                    "x1": 2041,
-                    "y1": 1473,
-                    "x2": 2071,
-                    "y2": 1503
-                }
-            }
-        ]
-    },
-    {
-        "instance": "TraceNet",
-        "name": "I_BIAS",
-        "cell": "COMP",
-        "segments": [
-            {
-                "layer": "m2",
-                "area": {
-                    "x1": 2041,
-                    "y1": 229,
-                    "x2": 2344,
-                    "y2": 259
-                }
-            },
-            {
-                "layer": "m3",
-                "area": {
-                    "x1": 2041,
-                    "y1": 84,
-                    "x2": 2071,
-                    "y2": 259
-                }
-            }
-        ],
-        "vias": [
-            {
-                "layer": "m1-m2",
-                "area": {
-                    "x1": 2330,
-                    "y1": 230,
-                    "x2": 2362,
-                    "y2": 270
-                }
-            },
-            {
-                "layer": "m1-m2",
-                "area": {
-                    "x1": 2010,
-                    "y1": 70,
-                    "x2": 2106,
-                    "y2": 110
-                }
-            },
-            {
-                "layer": "m2-m3",
-                "area": {
-                    "x1": 2041,
-                    "y1": 229,
-                    "x2": 2071,
-                    "y2": 259
-                }
-            }
-        ]
     },
     {
         "instance": "TraceNet",
         "name": "net3",
         "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
         "segments": [
             {
                 "layer": "m2",
                 "area": {
-                    "x1": 2042,
-                    "y1": 3635,
-                    "x2": 2345,
-                    "y2": 3665
+                    "x1": 2090,
+                    "y1": 972,
+                    "x2": 2393,
+                    "y2": 1002
                 }
             },
             {
                 "layer": "m3",
                 "area": {
-                    "x1": 2042,
-                    "y1": 3171,
-                    "x2": 2072,
-                    "y2": 3665
-                }
-            },
-            {
-                "layer": "m2",
-                "area": {
-                    "x1": 2042,
-                    "y1": 3171,
-                    "x2": 2232,
-                    "y2": 3201
+                    "x1": 2090,
+                    "y1": 812,
+                    "x2": 2120,
+                    "y2": 1002
                 }
             },
             {
                 "layer": "m3",
                 "area": {
-                    "x1": 2202,
-                    "y1": 2835,
-                    "x2": 2232,
-                    "y2": 3201
+                    "x1": 2090,
+                    "y1": 812,
+                    "x2": 2120,
+                    "y2": 1146
                 }
             },
             {
                 "layer": "m2",
                 "area": {
-                    "x1": 2202,
-                    "y1": 2835,
-                    "x2": 2360,
-                    "y2": 2865
+                    "x1": 2090,
+                    "y1": 1116,
+                    "x2": 2248,
+                    "y2": 1146
                 }
             },
             {
                 "layer": "m3",
                 "area": {
-                    "x1": 2330,
-                    "y1": 2675,
-                    "x2": 2360,
-                    "y2": 2865
+                    "x1": 2218,
+                    "y1": 1116,
+                    "x2": 2248,
+                    "y2": 1402
                 }
             },
             {
                 "layer": "m2",
                 "area": {
-                    "x1": 2042,
-                    "y1": 2675,
-                    "x2": 2360,
-                    "y2": 2705
+                    "x1": 1802,
+                    "y1": 1372,
+                    "x2": 2248,
+                    "y2": 1402
                 }
             },
             {
                 "layer": "m2",
                 "area": {
-                    "x1": 2042,
-                    "y1": 2675,
-                    "x2": 2456,
-                    "y2": 2705
+                    "x1": 1802,
+                    "y1": 1372,
+                    "x2": 2408,
+                    "y2": 1402
                 }
             },
             {
                 "layer": "m3",
                 "area": {
-                    "x1": 2426,
-                    "y1": 1955,
-                    "x2": 2456,
-                    "y2": 2705
+                    "x1": 2378,
+                    "y1": 1212,
+                    "x2": 2408,
+                    "y2": 1402
                 }
             },
             {
                 "layer": "m2",
                 "area": {
-                    "x1": 2426,
-                    "y1": 1955,
-                    "x2": 2648,
-                    "y2": 1985
+                    "x1": 2378,
+                    "y1": 1212,
+                    "x2": 2696,
+                    "y2": 1242
+                }
+            },
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 2218,
+                    "y1": 1212,
+                    "x2": 2696,
+                    "y2": 1242
                 }
             },
             {
                 "layer": "m3",
                 "area": {
-                    "x1": 2618,
-                    "y1": 1586,
-                    "x2": 2648,
-                    "y2": 1985
+                    "x1": 2218,
+                    "y1": 1212,
+                    "x2": 2248,
+                    "y2": 1498
+                }
+            },
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 2090,
+                    "y1": 1468,
+                    "x2": 2248,
+                    "y2": 1498
+                }
+            },
+            {
+                "layer": "m3",
+                "area": {
+                    "x1": 2090,
+                    "y1": 1468,
+                    "x2": 2120,
+                    "y2": 2331
                 }
             }
         ],
@@ -1388,224 +1347,145 @@
             {
                 "layer": "m1-m2",
                 "area": {
-                    "x1": 2586,
-                    "y1": 1570,
-                    "x2": 2682,
-                    "y2": 1610
-                }
-            },
-            {
-                "layer": "m1-m2",
-                "area": {
-                    "x1": 2330,
-                    "y1": 3630,
-                    "x2": 2362,
-                    "y2": 3670
-                }
-            },
-            {
-                "layer": "m1-m2",
-                "area": {
                     "x1": 2010,
-                    "y1": 3470,
+                    "y1": 2270,
                     "x2": 2106,
-                    "y2": 3510
-                }
-            },
-            {
-                "layer": "m1-m2",
-                "area": {
-                    "x1": 2010,
-                    "y1": 2670,
-                    "x2": 2106,
-                    "y2": 2710
-                }
-            },
-            {
-                "layer": "m1-m2",
-                "area": {
-                    "x1": 2010,
-                    "y1": 2670,
-                    "x2": 2106,
-                    "y2": 2710
-                }
-            },
-            {
-                "layer": "m1-m2",
-                "area": {
-                    "x1": 2330,
-                    "y1": 2830,
-                    "x2": 2362,
-                    "y2": 2870
-                }
-            },
-            {
-                "layer": "m1-m2",
-                "area": {
-                    "x1": 2330,
-                    "y1": 2830,
-                    "x2": 2362,
-                    "y2": 2870
+                    "y2": 2310
                 }
             },
             {
                 "layer": "m2-m3",
                 "area": {
-                    "x1": 2042,
-                    "y1": 3635,
-                    "x2": 2072,
-                    "y2": 3665
+                    "x1": 2090,
+                    "y1": 972,
+                    "x2": 2120,
+                    "y2": 1002
                 }
             },
             {
                 "layer": "m2-m3",
                 "area": {
-                    "x1": 2042,
-                    "y1": 3171,
-                    "x2": 2072,
-                    "y2": 3201
+                    "x1": 2090,
+                    "y1": 1116,
+                    "x2": 2120,
+                    "y2": 1146
                 }
             },
             {
                 "layer": "m2-m3",
                 "area": {
-                    "x1": 2202,
-                    "y1": 3171,
-                    "x2": 2232,
-                    "y2": 3201
+                    "x1": 2218,
+                    "y1": 1116,
+                    "x2": 2248,
+                    "y2": 1146
                 }
             },
             {
                 "layer": "m2-m3",
                 "area": {
-                    "x1": 2202,
-                    "y1": 2835,
-                    "x2": 2232,
-                    "y2": 2865
+                    "x1": 2218,
+                    "y1": 1372,
+                    "x2": 2248,
+                    "y2": 1402
                 }
             },
             {
                 "layer": "m2-m3",
                 "area": {
-                    "x1": 2330,
-                    "y1": 2835,
-                    "x2": 2360,
-                    "y2": 2865
+                    "x1": 2378,
+                    "y1": 1372,
+                    "x2": 2408,
+                    "y2": 1402
                 }
             },
             {
                 "layer": "m2-m3",
                 "area": {
-                    "x1": 2330,
-                    "y1": 2675,
-                    "x2": 2360,
-                    "y2": 2705
+                    "x1": 2378,
+                    "y1": 1212,
+                    "x2": 2408,
+                    "y2": 1242
                 }
             },
             {
                 "layer": "m2-m3",
                 "area": {
-                    "x1": 2426,
-                    "y1": 2675,
-                    "x2": 2456,
-                    "y2": 2705
+                    "x1": 2218,
+                    "y1": 1212,
+                    "x2": 2248,
+                    "y2": 1242
                 }
             },
             {
                 "layer": "m2-m3",
                 "area": {
-                    "x1": 2426,
-                    "y1": 1955,
-                    "x2": 2456,
-                    "y2": 1985
+                    "x1": 2218,
+                    "y1": 1468,
+                    "x2": 2248,
+                    "y2": 1498
                 }
             },
             {
                 "layer": "m2-m3",
                 "area": {
-                    "x1": 2618,
-                    "y1": 1955,
-                    "x2": 2648,
-                    "y2": 1985
+                    "x1": 2090,
+                    "y1": 1468,
+                    "x2": 2120,
+                    "y2": 1498
                 }
             }
         ]
     },
     {
         "instance": "TraceNet",
+        "name": "VIP",
+        "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
+        "segments": [],
+        "vias": []
+    },
+    {
+        "instance": "TraceNet",
         "name": "net1",
         "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
         "segments": [
             {
                 "layer": "m2",
                 "area": {
-                    "x1": 1864,
-                    "y1": 1855,
-                    "x2": 2455,
-                    "y2": 1885
+                    "x1": 1785,
+                    "y1": 2149,
+                    "x2": 2376,
+                    "y2": 2179
                 }
             },
             {
                 "layer": "m3",
                 "area": {
-                    "x1": 2425,
-                    "y1": 847,
-                    "x2": 2455,
-                    "y2": 1885
+                    "x1": 1785,
+                    "y1": 2149,
+                    "x2": 1815,
+                    "y2": 2483
                 }
             },
             {
                 "layer": "m2",
                 "area": {
-                    "x1": 2425,
-                    "y1": 847,
-                    "x2": 2583,
-                    "y2": 877
+                    "x1": 1785,
+                    "y1": 2453,
+                    "x2": 2007,
+                    "y2": 2483
                 }
             },
             {
                 "layer": "m3",
                 "area": {
-                    "x1": 2553,
-                    "y1": 559,
-                    "x2": 2583,
-                    "y2": 877
-                }
-            },
-            {
-                "layer": "m2",
-                "area": {
-                    "x1": 2553,
-                    "y1": 559,
-                    "x2": 2775,
-                    "y2": 589
-                }
-            },
-            {
-                "layer": "m3",
-                "area": {
-                    "x1": 2745,
-                    "y1": 367,
-                    "x2": 2775,
-                    "y2": 589
-                }
-            },
-            {
-                "layer": "m2",
-                "area": {
-                    "x1": 2617,
-                    "y1": 367,
-                    "x2": 2775,
-                    "y2": 397
-                }
-            },
-            {
-                "layer": "m3",
-                "area": {
-                    "x1": 2617,
-                    "y1": 78,
-                    "x2": 2647,
-                    "y2": 397
+                    "x1": 1977,
+                    "y1": 2453,
+                    "x2": 2007,
+                    "y2": 3380
                 }
             }
         ],
@@ -1613,100 +1493,46 @@
             {
                 "layer": "m1-m2",
                 "area": {
-                    "x1": 2394,
-                    "y1": 1850,
-                    "x2": 2490,
-                    "y2": 1890
+                    "x1": 1754,
+                    "y1": 2430,
+                    "x2": 1786,
+                    "y2": 2470
                 }
             },
             {
                 "layer": "m1-m2",
                 "area": {
-                    "x1": 2394,
-                    "y1": 1850,
-                    "x2": 2490,
-                    "y2": 1890
-                }
-            },
-            {
-                "layer": "m1-m2",
-                "area": {
-                    "x1": 1818,
-                    "y1": 1850,
-                    "x2": 1914,
-                    "y2": 1890
-                }
-            },
-            {
-                "layer": "m1-m2",
-                "area": {
-                    "x1": 2586,
-                    "y1": 70,
-                    "x2": 2682,
-                    "y2": 110
+                    "x1": 1754,
+                    "y1": 2430,
+                    "x2": 1786,
+                    "y2": 2470
                 }
             },
             {
                 "layer": "m2-m3",
                 "area": {
-                    "x1": 2425,
-                    "y1": 1855,
-                    "x2": 2455,
-                    "y2": 1885
+                    "x1": 1785,
+                    "y1": 2149,
+                    "x2": 1815,
+                    "y2": 2179
                 }
             },
             {
                 "layer": "m2-m3",
                 "area": {
-                    "x1": 2425,
-                    "y1": 847,
-                    "x2": 2455,
-                    "y2": 877
+                    "x1": 1785,
+                    "y1": 2453,
+                    "x2": 1815,
+                    "y2": 2483
                 }
             },
             {
                 "layer": "m2-m3",
                 "area": {
-                    "x1": 2553,
-                    "y1": 847,
-                    "x2": 2583,
-                    "y2": 877
-                }
-            },
-            {
-                "layer": "m2-m3",
-                "area": {
-                    "x1": 2553,
-                    "y1": 559,
-                    "x2": 2583,
-                    "y2": 589
-                }
-            },
-            {
-                "layer": "m2-m3",
-                "area": {
-                    "x1": 2745,
-                    "y1": 559,
-                    "x2": 2775,
-                    "y2": 589
-                }
-            },
-            {
-                "layer": "m2-m3",
-                "area": {
-                    "x1": 2745,
-                    "y1": 367,
-                    "x2": 2775,
-                    "y2": 397
-                }
-            },
-            {
-                "layer": "m2-m3",
-                "area": {
-                    "x1": 2617,
-                    "y1": 367,
-                    "x2": 2647,
-                    "y2": 397
+                    "x1": 1977,
+                    "y1": 2453,
+                    "x2": 2007,
+                    "y2": 2483
                 }
             }
         ]
@@ -1715,149 +1541,151 @@
         "instance": "TraceNet",
         "name": "net2",
         "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
         "segments": [
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 1642,
+                    "y1": 532,
+                    "x2": 2345,
+                    "y2": 562
+                }
+            },
+            {
+                "layer": "m3",
+                "area": {
+                    "x1": 1642,
+                    "y1": 532,
+                    "x2": 1672,
+                    "y2": 962
+                }
+            },
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 1642,
+                    "y1": 932,
+                    "x2": 1784,
+                    "y2": 962
+                }
+            },
+            {
+                "layer": "m3",
+                "area": {
+                    "x1": 1754,
+                    "y1": 820,
+                    "x2": 1784,
+                    "y2": 962
+                }
+            },
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 1642,
+                    "y1": 820,
+                    "x2": 1784,
+                    "y2": 850
+                }
+            },
+            {
+                "layer": "m3",
+                "area": {
+                    "x1": 1642,
+                    "y1": 372,
+                    "x2": 1672,
+                    "y2": 850
+                }
+            },
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 1642,
+                    "y1": 372,
+                    "x2": 2072,
+                    "y2": 402
+                }
+            },
             {
                 "layer": "m3",
                 "area": {
                     "x1": 2042,
-                    "y1": 1586,
+                    "y1": 372,
                     "x2": 2072,
-                    "y2": 1985
+                    "y2": 690
                 }
             },
             {
                 "layer": "m2",
                 "area": {
-                    "x1": 1754,
-                    "y1": 1955,
-                    "x2": 2072,
-                    "y2": 1985
+                    "x1": 2042,
+                    "y1": 660,
+                    "x2": 2200,
+                    "y2": 690
                 }
             },
             {
                 "layer": "m3",
                 "area": {
-                    "x1": 1754,
-                    "y1": 1955,
-                    "x2": 1784,
-                    "y2": 2865
+                    "x1": 2170,
+                    "y1": 660,
+                    "x2": 2200,
+                    "y2": 802
                 }
             },
             {
                 "layer": "m2",
                 "area": {
-                    "x1": 1642,
-                    "y1": 2835,
-                    "x2": 1784,
-                    "y2": 2865
-                }
-            },
-            {
-                "layer": "m3",
-                "area": {
-                    "x1": 1642,
-                    "y1": 2835,
-                    "x2": 1672,
-                    "y2": 3265
-                }
-            },
-            {
-                "layer": "m2",
-                "area": {
-                    "x1": 1642,
-                    "y1": 3235,
-                    "x2": 1784,
-                    "y2": 3265
-                }
-            },
-            {
-                "layer": "m3",
-                "area": {
-                    "x1": 1754,
-                    "y1": 3123,
-                    "x2": 1784,
-                    "y2": 3265
-                }
-            },
-            {
-                "layer": "m2",
-                "area": {
-                    "x1": 1754,
-                    "y1": 3123,
-                    "x2": 1896,
-                    "y2": 3153
-                }
-            },
-            {
-                "layer": "m3",
-                "area": {
-                    "x1": 1866,
-                    "y1": 3123,
-                    "x2": 1896,
-                    "y2": 3281
-                }
-            },
-            {
-                "layer": "m2",
-                "area": {
-                    "x1": 1866,
-                    "y1": 3251,
-                    "x2": 2312,
-                    "y2": 3281
-                }
-            },
-            {
-                "layer": "m3",
-                "area": {
-                    "x1": 2282,
-                    "y1": 3123,
-                    "x2": 2312,
-                    "y2": 3281
-                }
-            },
-            {
-                "layer": "m2",
-                "area": {
-                    "x1": 2282,
-                    "y1": 3123,
-                    "x2": 2472,
-                    "y2": 3153
-                }
-            },
-            {
-                "layer": "m3",
-                "area": {
-                    "x1": 2442,
-                    "y1": 3123,
-                    "x2": 2472,
-                    "y2": 3265
-                }
-            },
-            {
-                "layer": "m2",
-                "area": {
-                    "x1": 2330,
-                    "y1": 3235,
-                    "x2": 2472,
-                    "y2": 3265
-                }
-            },
-            {
-                "layer": "m2",
-                "area": {
-                    "x1": 2330,
-                    "y1": 3235,
+                    "x1": 2170,
+                    "y1": 772,
                     "x2": 2648,
-                    "y2": 3265
+                    "y2": 802
                 }
             },
             {
                 "layer": "m3",
                 "area": {
                     "x1": 2618,
-                    "y1": 2690,
+                    "y1": 772,
                     "x2": 2648,
-                    "y2": 3265
+                    "y2": 1106
+                }
+            },
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 2618,
+                    "y1": 1076,
+                    "x2": 2776,
+                    "y2": 1106
+                }
+            },
+            {
+                "layer": "m3",
+                "area": {
+                    "x1": 2746,
+                    "y1": 1076,
+                    "x2": 2776,
+                    "y2": 1298
+                }
+            },
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 2618,
+                    "y1": 1268,
+                    "x2": 2776,
+                    "y2": 1298
+                }
+            },
+            {
+                "layer": "m3",
+                "area": {
+                    "x1": 2618,
+                    "y1": 1268,
+                    "x2": 2648,
+                    "y2": 2291
                 }
             }
         ],
@@ -1865,208 +1693,327 @@
             {
                 "layer": "m1-m2",
                 "area": {
+                    "x1": 2586,
+                    "y1": 2270,
+                    "x2": 2682,
+                    "y2": 2310
+                }
+            },
+            {
+                "layer": "m1-m2",
+                "area": {
+                    "x1": 1754,
+                    "y1": 530,
+                    "x2": 1786,
+                    "y2": 570
+                }
+            },
+            {
+                "layer": "m1-m2",
+                "area": {
                     "x1": 2010,
-                    "y1": 1570,
+                    "y1": 370,
                     "x2": 2106,
-                    "y2": 1610
+                    "y2": 410
+                }
+            },
+            {
+                "layer": "m1-m2",
+                "area": {
+                    "x1": 2010,
+                    "y1": 370,
+                    "x2": 2106,
+                    "y2": 410
                 }
             },
             {
                 "layer": "m1-m2",
                 "area": {
                     "x1": 2330,
-                    "y1": 3230,
+                    "y1": 530,
                     "x2": 2362,
-                    "y2": 3270
+                    "y2": 570
                 }
             },
             {
                 "layer": "m1-m2",
                 "area": {
-                    "x1": 2330,
-                    "y1": 3230,
-                    "x2": 2362,
-                    "y2": 3270
+                    "x1": 1754,
+                    "y1": 930,
+                    "x2": 1786,
+                    "y2": 970
+                }
+            },
+            {
+                "layer": "m1-m2",
+                "area": {
+                    "x1": 1754,
+                    "y1": 930,
+                    "x2": 1786,
+                    "y2": 970
                 }
             },
             {
                 "layer": "m1-m2",
                 "area": {
                     "x1": 2586,
-                    "y1": 3070,
+                    "y1": 770,
                     "x2": 2682,
-                    "y2": 3110
-                }
-            },
-            {
-                "layer": "m1-m2",
-                "area": {
-                    "x1": 1754,
-                    "y1": 3230,
-                    "x2": 1786,
-                    "y2": 3270
-                }
-            },
-            {
-                "layer": "m1-m2",
-                "area": {
-                    "x1": 1754,
-                    "y1": 3230,
-                    "x2": 1786,
-                    "y2": 3270
-                }
-            },
-            {
-                "layer": "m1-m2",
-                "area": {
-                    "x1": 1754,
-                    "y1": 2830,
-                    "x2": 1786,
-                    "y2": 2870
-                }
-            },
-            {
-                "layer": "m1-m2",
-                "area": {
-                    "x1": 1754,
-                    "y1": 2830,
-                    "x2": 1786,
-                    "y2": 2870
+                    "y2": 810
                 }
             },
             {
                 "layer": "m1-m2",
                 "area": {
                     "x1": 2586,
-                    "y1": 2670,
+                    "y1": 770,
                     "x2": 2682,
-                    "y2": 2710
+                    "y2": 810
+                }
+            },
+            {
+                "layer": "m2-m3",
+                "area": {
+                    "x1": 1642,
+                    "y1": 532,
+                    "x2": 1672,
+                    "y2": 562
+                }
+            },
+            {
+                "layer": "m2-m3",
+                "area": {
+                    "x1": 1642,
+                    "y1": 932,
+                    "x2": 1672,
+                    "y2": 962
+                }
+            },
+            {
+                "layer": "m2-m3",
+                "area": {
+                    "x1": 1754,
+                    "y1": 932,
+                    "x2": 1784,
+                    "y2": 962
+                }
+            },
+            {
+                "layer": "m2-m3",
+                "area": {
+                    "x1": 1754,
+                    "y1": 820,
+                    "x2": 1784,
+                    "y2": 850
+                }
+            },
+            {
+                "layer": "m2-m3",
+                "area": {
+                    "x1": 1642,
+                    "y1": 820,
+                    "x2": 1672,
+                    "y2": 850
+                }
+            },
+            {
+                "layer": "m2-m3",
+                "area": {
+                    "x1": 1642,
+                    "y1": 372,
+                    "x2": 1672,
+                    "y2": 402
                 }
             },
             {
                 "layer": "m2-m3",
                 "area": {
                     "x1": 2042,
-                    "y1": 1955,
+                    "y1": 372,
                     "x2": 2072,
-                    "y2": 1985
+                    "y2": 402
                 }
             },
             {
                 "layer": "m2-m3",
                 "area": {
-                    "x1": 1754,
-                    "y1": 1955,
-                    "x2": 1784,
-                    "y2": 1985
+                    "x1": 2042,
+                    "y1": 660,
+                    "x2": 2072,
+                    "y2": 690
                 }
             },
             {
                 "layer": "m2-m3",
                 "area": {
-                    "x1": 1754,
-                    "y1": 2835,
-                    "x2": 1784,
-                    "y2": 2865
+                    "x1": 2170,
+                    "y1": 660,
+                    "x2": 2200,
+                    "y2": 690
                 }
             },
             {
                 "layer": "m2-m3",
                 "area": {
-                    "x1": 1642,
-                    "y1": 2835,
-                    "x2": 1672,
-                    "y2": 2865
-                }
-            },
-            {
-                "layer": "m2-m3",
-                "area": {
-                    "x1": 1642,
-                    "y1": 3235,
-                    "x2": 1672,
-                    "y2": 3265
-                }
-            },
-            {
-                "layer": "m2-m3",
-                "area": {
-                    "x1": 1754,
-                    "y1": 3235,
-                    "x2": 1784,
-                    "y2": 3265
-                }
-            },
-            {
-                "layer": "m2-m3",
-                "area": {
-                    "x1": 1754,
-                    "y1": 3123,
-                    "x2": 1784,
-                    "y2": 3153
-                }
-            },
-            {
-                "layer": "m2-m3",
-                "area": {
-                    "x1": 1866,
-                    "y1": 3123,
-                    "x2": 1896,
-                    "y2": 3153
-                }
-            },
-            {
-                "layer": "m2-m3",
-                "area": {
-                    "x1": 1866,
-                    "y1": 3251,
-                    "x2": 1896,
-                    "y2": 3281
-                }
-            },
-            {
-                "layer": "m2-m3",
-                "area": {
-                    "x1": 2282,
-                    "y1": 3251,
-                    "x2": 2312,
-                    "y2": 3281
-                }
-            },
-            {
-                "layer": "m2-m3",
-                "area": {
-                    "x1": 2282,
-                    "y1": 3123,
-                    "x2": 2312,
-                    "y2": 3153
-                }
-            },
-            {
-                "layer": "m2-m3",
-                "area": {
-                    "x1": 2442,
-                    "y1": 3123,
-                    "x2": 2472,
-                    "y2": 3153
-                }
-            },
-            {
-                "layer": "m2-m3",
-                "area": {
-                    "x1": 2442,
-                    "y1": 3235,
-                    "x2": 2472,
-                    "y2": 3265
+                    "x1": 2170,
+                    "y1": 772,
+                    "x2": 2200,
+                    "y2": 802
                 }
             },
             {
                 "layer": "m2-m3",
                 "area": {
                     "x1": 2618,
-                    "y1": 3235,
+                    "y1": 772,
                     "x2": 2648,
-                    "y2": 3265
+                    "y2": 802
+                }
+            },
+            {
+                "layer": "m2-m3",
+                "area": {
+                    "x1": 2618,
+                    "y1": 1076,
+                    "x2": 2648,
+                    "y2": 1106
+                }
+            },
+            {
+                "layer": "m2-m3",
+                "area": {
+                    "x1": 2746,
+                    "y1": 1076,
+                    "x2": 2776,
+                    "y2": 1106
+                }
+            },
+            {
+                "layer": "m2-m3",
+                "area": {
+                    "x1": 2746,
+                    "y1": 1268,
+                    "x2": 2776,
+                    "y2": 1298
+                }
+            },
+            {
+                "layer": "m2-m3",
+                "area": {
+                    "x1": 2618,
+                    "y1": 1268,
+                    "x2": 2648,
+                    "y2": 1298
+                }
+            }
+        ]
+    },
+    {
+        "instance": "TraceNet",
+        "name": "VIN",
+        "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
+        "segments": [],
+        "vias": []
+    },
+    {
+        "instance": "TraceNet",
+        "name": "VO",
+        "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
+        "segments": [
+            {
+                "layer": "m3",
+                "area": {
+                    "x1": 2617,
+                    "y1": 1534,
+                    "x2": 2647,
+                    "y2": 1853
+                }
+            },
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 2617,
+                    "y1": 1823,
+                    "x2": 2855,
+                    "y2": 1853
+                }
+            },
+            {
+                "layer": "m3",
+                "area": {
+                    "x1": 2825,
+                    "y1": 1823,
+                    "x2": 2855,
+                    "y2": 3549
+                }
+            },
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 2617,
+                    "y1": 3519,
+                    "x2": 2855,
+                    "y2": 3549
+                }
+            },
+            {
+                "layer": "m3",
+                "area": {
+                    "x1": 2617,
+                    "y1": 3519,
+                    "x2": 2647,
+                    "y2": 3838
+                }
+            }
+        ],
+        "vias": [
+            {
+                "layer": "m1-m2",
+                "area": {
+                    "x1": 2586,
+                    "y1": 3770,
+                    "x2": 2682,
+                    "y2": 3810
+                }
+            },
+            {
+                "layer": "m2-m3",
+                "area": {
+                    "x1": 2617,
+                    "y1": 1823,
+                    "x2": 2647,
+                    "y2": 1853
+                }
+            },
+            {
+                "layer": "m2-m3",
+                "area": {
+                    "x1": 2825,
+                    "y1": 1823,
+                    "x2": 2855,
+                    "y2": 1853
+                }
+            },
+            {
+                "layer": "m2-m3",
+                "area": {
+                    "x1": 2825,
+                    "y1": 3519,
+                    "x2": 2855,
+                    "y2": 3549
+                }
+            },
+            {
+                "layer": "m2-m3",
+                "area": {
+                    "x1": 2617,
+                    "y1": 3519,
+                    "x2": 2647,
+                    "y2": 3549
                 }
             }
         ]
@@ -2075,59 +2022,88 @@
         "instance": "TraceNet",
         "name": "net4",
         "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
         "segments": [
             {
-                "layer": "m3",
-                "area": {
-                    "x1": 2618,
-                    "y1": 3318,
-                    "x2": 2648,
-                    "y2": 3493
-                }
-            },
-            {
                 "layer": "m2",
                 "area": {
-                    "x1": 2618,
-                    "y1": 3318,
-                    "x2": 2856,
-                    "y2": 3348
+                    "x1": 2057,
+                    "y1": 2674,
+                    "x2": 2184,
+                    "y2": 2704
                 }
             },
             {
                 "layer": "m3",
                 "area": {
-                    "x1": 2826,
-                    "y1": 470,
-                    "x2": 2856,
-                    "y2": 3348
+                    "x1": 2154,
+                    "y1": 2674,
+                    "x2": 2184,
+                    "y2": 2864
                 }
             },
             {
                 "layer": "m2",
                 "area": {
-                    "x1": 2330,
-                    "y1": 470,
-                    "x2": 2856,
-                    "y2": 500
+                    "x1": 2154,
+                    "y1": 2834,
+                    "x2": 2360,
+                    "y2": 2864
                 }
             },
             {
                 "layer": "m3",
                 "area": {
                     "x1": 2330,
-                    "y1": 470,
+                    "y1": 2722,
                     "x2": 2360,
-                    "y2": 660
+                    "y2": 2864
                 }
             },
             {
                 "layer": "m2",
                 "area": {
-                    "x1": 1769,
-                    "y1": 630,
+                    "x1": 1754,
+                    "y1": 2722,
                     "x2": 2360,
-                    "y2": 660
+                    "y2": 2752
+                }
+            },
+            {
+                "layer": "m3",
+                "area": {
+                    "x1": 1754,
+                    "y1": 2722,
+                    "x2": 1784,
+                    "y2": 2864
+                }
+            },
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 1626,
+                    "y1": 2834,
+                    "x2": 1784,
+                    "y2": 2864
+                }
+            },
+            {
+                "layer": "m3",
+                "area": {
+                    "x1": 1626,
+                    "y1": 1170,
+                    "x2": 1656,
+                    "y2": 2864
+                }
+            },
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 1626,
+                    "y1": 1170,
+                    "x2": 2057,
+                    "y2": 1200
                 }
             }
         ],
@@ -2135,91 +2111,713 @@
             {
                 "layer": "m1-m2",
                 "area": {
-                    "x1": 2586,
-                    "y1": 3470,
-                    "x2": 2682,
-                    "y2": 3510
-                }
-            },
-            {
-                "layer": "m1-m2",
-                "area": {
-                    "x1": 2330,
-                    "y1": 630,
-                    "x2": 2362,
-                    "y2": 670
-                }
-            },
-            {
-                "layer": "m1-m2",
-                "area": {
-                    "x1": 2330,
-                    "y1": 630,
-                    "x2": 2362,
-                    "y2": 670
-                }
-            },
-            {
-                "layer": "m1-m2",
-                "area": {
-                    "x1": 2586,
-                    "y1": 470,
-                    "x2": 2682,
-                    "y2": 510
+                    "x1": 2010,
+                    "y1": 1170,
+                    "x2": 2106,
+                    "y2": 1210
                 }
             },
             {
                 "layer": "m1-m2",
                 "area": {
                     "x1": 1754,
-                    "y1": 630,
+                    "y1": 2830,
                     "x2": 1786,
-                    "y2": 670
+                    "y2": 2870
+                }
+            },
+            {
+                "layer": "m1-m2",
+                "area": {
+                    "x1": 1754,
+                    "y1": 2830,
+                    "x2": 1786,
+                    "y2": 2870
+                }
+            },
+            {
+                "layer": "m1-m2",
+                "area": {
+                    "x1": 2010,
+                    "y1": 2670,
+                    "x2": 2106,
+                    "y2": 2710
+                }
+            },
+            {
+                "layer": "m1-m2",
+                "area": {
+                    "x1": 2330,
+                    "y1": 2830,
+                    "x2": 2362,
+                    "y2": 2870
+                }
+            },
+            {
+                "layer": "m1-m2",
+                "area": {
+                    "x1": 2330,
+                    "y1": 2830,
+                    "x2": 2362,
+                    "y2": 2870
                 }
             },
             {
                 "layer": "m2-m3",
                 "area": {
-                    "x1": 2618,
-                    "y1": 3318,
-                    "x2": 2648,
-                    "y2": 3348
+                    "x1": 2154,
+                    "y1": 2674,
+                    "x2": 2184,
+                    "y2": 2704
                 }
             },
             {
                 "layer": "m2-m3",
                 "area": {
-                    "x1": 2826,
-                    "y1": 3318,
-                    "x2": 2856,
-                    "y2": 3348
-                }
-            },
-            {
-                "layer": "m2-m3",
-                "area": {
-                    "x1": 2826,
-                    "y1": 470,
-                    "x2": 2856,
-                    "y2": 500
+                    "x1": 2154,
+                    "y1": 2834,
+                    "x2": 2184,
+                    "y2": 2864
                 }
             },
             {
                 "layer": "m2-m3",
                 "area": {
                     "x1": 2330,
-                    "y1": 470,
+                    "y1": 2834,
                     "x2": 2360,
-                    "y2": 500
+                    "y2": 2864
                 }
             },
             {
                 "layer": "m2-m3",
                 "area": {
                     "x1": 2330,
-                    "y1": 630,
+                    "y1": 2722,
                     "x2": 2360,
-                    "y2": 660
+                    "y2": 2752
+                }
+            },
+            {
+                "layer": "m2-m3",
+                "area": {
+                    "x1": 1754,
+                    "y1": 2722,
+                    "x2": 1784,
+                    "y2": 2752
+                }
+            },
+            {
+                "layer": "m2-m3",
+                "area": {
+                    "x1": 1754,
+                    "y1": 2834,
+                    "x2": 1784,
+                    "y2": 2864
+                }
+            },
+            {
+                "layer": "m2-m3",
+                "area": {
+                    "x1": 1626,
+                    "y1": 2834,
+                    "x2": 1656,
+                    "y2": 2864
+                }
+            },
+            {
+                "layer": "m2-m3",
+                "area": {
+                    "x1": 1626,
+                    "y1": 1170,
+                    "x2": 1656,
+                    "y2": 1200
+                }
+            }
+        ]
+    },
+    {
+        "instance": "TraceNet",
+        "name": "I_BIAS",
+        "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
+        "segments": [
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 1768,
+                    "y1": 3933,
+                    "x2": 2359,
+                    "y2": 3963
+                }
+            },
+            {
+                "layer": "m3",
+                "area": {
+                    "x1": 2329,
+                    "y1": 3773,
+                    "x2": 2359,
+                    "y2": 3963
+                }
+            },
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 2329,
+                    "y1": 3773,
+                    "x2": 2632,
+                    "y2": 3803
+                }
+            }
+        ],
+        "vias": [
+            {
+                "layer": "m1-m2",
+                "area": {
+                    "x1": 1754,
+                    "y1": 3930,
+                    "x2": 1786,
+                    "y2": 3970
+                }
+            },
+            {
+                "layer": "m1-m2",
+                "area": {
+                    "x1": 2330,
+                    "y1": 3930,
+                    "x2": 2362,
+                    "y2": 3970
+                }
+            },
+            {
+                "layer": "m1-m2",
+                "area": {
+                    "x1": 2330,
+                    "y1": 3930,
+                    "x2": 2362,
+                    "y2": 3970
+                }
+            },
+            {
+                "layer": "m1-m2",
+                "area": {
+                    "x1": 2586,
+                    "y1": 3770,
+                    "x2": 2682,
+                    "y2": 3810
+                }
+            },
+            {
+                "layer": "m2-m3",
+                "area": {
+                    "x1": 2329,
+                    "y1": 3933,
+                    "x2": 2359,
+                    "y2": 3963
+                }
+            },
+            {
+                "layer": "m2-m3",
+                "area": {
+                    "x1": 2329,
+                    "y1": 3773,
+                    "x2": 2359,
+                    "y2": 3803
+                }
+            }
+        ]
+    },
+    {
+        "instance": "TraceNet",
+        "name": "MP5_B_S",
+        "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
+        "segments": [
+            {
+                "layer": "locali",
+                "area": {
+                    "x1": 1626,
+                    "y1": 650,
+                    "x2": 1914,
+                    "y2": 690
+                }
+            }
+        ],
+        "vias": []
+    },
+    {
+        "instance": "TraceNet",
+        "name": "MP5_G_D",
+        "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
+        "segments": [
+            {
+                "layer": "locali",
+                "area": {
+                    "x1": 2010,
+                    "y1": 530,
+                    "x2": 2170,
+                    "y2": 570
+                }
+            }
+        ],
+        "vias": []
+    },
+    {
+        "instance": "TraceNet",
+        "name": "MP6_B_S",
+        "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
+        "segments": [
+            {
+                "layer": "locali",
+                "area": {
+                    "x1": 2202,
+                    "y1": 650,
+                    "x2": 2490,
+                    "y2": 690
+                }
+            }
+        ],
+        "vias": []
+    },
+    {
+        "instance": "TraceNet",
+        "name": "MP1_B_S",
+        "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
+        "segments": [
+            {
+                "layer": "locali",
+                "area": {
+                    "x1": 1626,
+                    "y1": 1450,
+                    "x2": 1914,
+                    "y2": 1490
+                }
+            }
+        ],
+        "vias": []
+    },
+    {
+        "instance": "TraceNet",
+        "name": "MP2_B_S",
+        "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
+        "segments": [
+            {
+                "layer": "locali",
+                "area": {
+                    "x1": 2202,
+                    "y1": 1450,
+                    "x2": 2490,
+                    "y2": 1490
+                }
+            }
+        ],
+        "vias": []
+    },
+    {
+        "instance": "TraceNet",
+        "name": "MP2_G_D",
+        "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
+        "segments": [
+            {
+                "layer": "locali",
+                "area": {
+                    "x1": 2586,
+                    "y1": 1330,
+                    "x2": 2746,
+                    "y2": 1370
+                }
+            }
+        ],
+        "vias": []
+    },
+    {
+        "instance": "TraceNet",
+        "name": "MN4_B_S",
+        "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
+        "segments": [
+            {
+                "layer": "locali",
+                "area": {
+                    "x1": 1626,
+                    "y1": 4050,
+                    "x2": 1914,
+                    "y2": 4090
+                }
+            }
+        ],
+        "vias": []
+    },
+    {
+        "instance": "TraceNet",
+        "name": "MN3_B_S",
+        "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
+        "segments": [
+            {
+                "layer": "locali",
+                "area": {
+                    "x1": 2202,
+                    "y1": 4050,
+                    "x2": 2490,
+                    "y2": 4090
+                }
+            }
+        ],
+        "vias": []
+    },
+    {
+        "instance": "TraceNet",
+        "name": "MN3_G_D",
+        "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
+        "segments": [
+            {
+                "layer": "locali",
+                "area": {
+                    "x1": 2586,
+                    "y1": 3930,
+                    "x2": 2746,
+                    "y2": 3970
+                }
+            }
+        ],
+        "vias": []
+    },
+    {
+        "instance": "TraceNet",
+        "name": "MN5_B_S",
+        "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
+        "segments": [
+            {
+                "layer": "locali",
+                "area": {
+                    "x1": 1626,
+                    "y1": 2950,
+                    "x2": 1914,
+                    "y2": 2990
+                }
+            }
+        ],
+        "vias": []
+    },
+    {
+        "instance": "TraceNet",
+        "name": "MN5_G_D",
+        "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
+        "segments": [
+            {
+                "layer": "locali",
+                "area": {
+                    "x1": 2010,
+                    "y1": 2830,
+                    "x2": 2170,
+                    "y2": 2870
+                }
+            }
+        ],
+        "vias": []
+    },
+    {
+        "instance": "TraceNet",
+        "name": "MN6_B_S",
+        "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
+        "segments": [
+            {
+                "layer": "locali",
+                "area": {
+                    "x1": 2202,
+                    "y1": 2950,
+                    "x2": 2490,
+                    "y2": 2990
+                }
+            }
+        ],
+        "vias": []
+    },
+    {
+        "instance": "TraceNet",
+        "name": "MP3_B_S",
+        "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
+        "segments": [
+            {
+                "layer": "locali",
+                "area": {
+                    "x1": 1626,
+                    "y1": 1050,
+                    "x2": 1914,
+                    "y2": 1090
+                }
+            }
+        ],
+        "vias": []
+    },
+    {
+        "instance": "TraceNet",
+        "name": "MP4_B_S",
+        "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
+        "segments": [
+            {
+                "layer": "locali",
+                "area": {
+                    "x1": 2202,
+                    "y1": 1050,
+                    "x2": 2490,
+                    "y2": 1090
+                }
+            }
+        ],
+        "vias": []
+    },
+    {
+        "instance": "TraceNet",
+        "name": "MN1_MN2_B_VSS_RAIL_BOT",
+        "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
+        "segments": [
+            {
+                "layer": "locali",
+                "area": {
+                    "x1": 1424,
+                    "y1": 2082,
+                    "x2": 3076,
+                    "y2": 2178
+                }
+            }
+        ],
+        "vias": [
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 1424,
+                    "y1": 2082,
+                    "x2": 1524,
+                    "y2": 2178
+                }
+            },
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 2976,
+                    "y1": 2082,
+                    "x2": 3076,
+                    "y2": 2178
+                }
+            }
+        ]
+    },
+    {
+        "instance": "TraceNet",
+        "name": "MP5_MP6_B_VDD_RAIL_BOT",
+        "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
+        "segments": [
+            {
+                "layer": "locali",
+                "area": {
+                    "x1": 1274,
+                    "y1": 182,
+                    "x2": 3226,
+                    "y2": 278
+                }
+            }
+        ],
+        "vias": [
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 1274,
+                    "y1": 182,
+                    "x2": 1374,
+                    "y2": 278
+                }
+            },
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 3126,
+                    "y1": 182,
+                    "x2": 3226,
+                    "y2": 278
+                }
+            }
+        ]
+    },
+    {
+        "instance": "TraceNet",
+        "name": "MP1_MP2_B_VDD_RAIL_TOP",
+        "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
+        "segments": [
+            {
+                "layer": "locali",
+                "area": {
+                    "x1": 1274,
+                    "y1": 1622,
+                    "x2": 3226,
+                    "y2": 1718
+                }
+            }
+        ],
+        "vias": [
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 1274,
+                    "y1": 1622,
+                    "x2": 1374,
+                    "y2": 1718
+                }
+            },
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 3126,
+                    "y1": 1622,
+                    "x2": 3226,
+                    "y2": 1718
+                }
+            }
+        ]
+    },
+    {
+        "instance": "TraceNet",
+        "name": "MN4_MN3_B_VSS_RAIL_TOP",
+        "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
+        "segments": [
+            {
+                "layer": "locali",
+                "area": {
+                    "x1": 1424,
+                    "y1": 4222,
+                    "x2": 3076,
+                    "y2": 4318
+                }
+            }
+        ],
+        "vias": [
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 1424,
+                    "y1": 4222,
+                    "x2": 1524,
+                    "y2": 4318
+                }
+            },
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 2976,
+                    "y1": 4222,
+                    "x2": 3076,
+                    "y2": 4318
+                }
+            }
+        ]
+    },
+    {
+        "instance": "TraceNet",
+        "name": "MN4_MN3_B_VSS_RAIL_BOT",
+        "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
+        "segments": [
+            {
+                "layer": "locali",
+                "area": {
+                    "x1": 1424,
+                    "y1": 3582,
+                    "x2": 3076,
+                    "y2": 3678
+                }
+            }
+        ],
+        "vias": [
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 1424,
+                    "y1": 3582,
+                    "x2": 1524,
+                    "y2": 3678
+                }
+            },
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 2976,
+                    "y1": 3582,
+                    "x2": 3076,
+                    "y2": 3678
+                }
+            }
+        ]
+    },
+    {
+        "instance": "TraceNet",
+        "name": "MN5_MN6_B_VSS_RAIL_TOP",
+        "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
+        "segments": [
+            {
+                "layer": "locali",
+                "area": {
+                    "x1": 1424,
+                    "y1": 3122,
+                    "x2": 3076,
+                    "y2": 3218
+                }
+            }
+        ],
+        "vias": [
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 1424,
+                    "y1": 3122,
+                    "x2": 1524,
+                    "y2": 3218
+                }
+            },
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 2976,
+                    "y1": 3122,
+                    "x2": 3076,
+                    "y2": 3218
                 }
             }
         ]

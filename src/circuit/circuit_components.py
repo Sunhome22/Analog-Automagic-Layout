@@ -87,6 +87,8 @@ class FunctionalComponent:
     name: str = field(default_factory=str)
     type: str = field(default_factory=str)
     cell: str = field(default_factory=str)
+    parent_cell: str = field(default_factory=str)
+    parent_cell_chain: str = field(default_factory=str)
     group: str = field(default_factory=str)
     schematic_connections: dict = field(default_factory=dict)
     layout_name: str = field(default_factory=str)
@@ -139,6 +141,14 @@ class DigitalBlock(FunctionalComponent):
     group_endpoint: str = field(default_factory=str)
     group_endpoint_bounding_box: RectArea | dict = field(default_factory=RectArea)
 
+    def __post_init__(self):
+        super().__post_init__()
+        if isinstance(self.overlap_distance, dict):
+            self.overlap_distance = OverlapDistance(**self.overlap_distance)
+
+        if isinstance(self.group_endpoint_bounding_box, dict):
+            self.group_endpoint_bounding_box = RectArea(**self.group_endpoint_bounding_box)
+
 # ============================================ Structural Component classes ============================================
 
 
@@ -147,6 +157,8 @@ class Pin:
     instance: str = field(default_factory=str)
     number_id: int = field(default_factory=int)
     cell: str = field(default_factory=str)
+    parent_cell: str = field(default_factory=str)
+    parent_cell_chain: str = field(default_factory=str)
     type: str = field(default_factory=str)
     name: str = field(default_factory=str)
     layout: RectAreaLayer | dict = field(default_factory=str)
@@ -161,6 +173,8 @@ class TraceNet:
     instance: str = field(default_factory=str)
     name: str = field(default_factory=str)
     cell: str = field(default_factory=str)
+    parent_cell: str = field(default_factory=str)
+    parent_cell_chain: str = field(default_factory=str)
     segments: List[RectAreaLayer] | dict = field(default_factory=list)
     vias: List[RectAreaLayer] | dict = field(default_factory=list)
 
@@ -180,6 +194,9 @@ class CircuitCell:
     number_id: int = field(default_factory=int)
     name: str = field(default_factory=str)
     cell: str = field(default_factory=str)
+    parent_cell: str = field(default_factory=str)
+    parent_cell_chain: str = field(default_factory=str)
+    group: str = field(default_factory=str)
     schematic_connections: dict = field(default_factory=dict)
     transform_matrix: TransformMatrix | dict = field(default_factory=TransformMatrix)
     bounding_box: RectArea | dict = field(default_factory=RectArea)
@@ -191,3 +208,5 @@ class CircuitCell:
 
         if isinstance(self.transform_matrix, dict):
             self.transform_matrix = TransformMatrix(**self.transform_matrix)
+
+
