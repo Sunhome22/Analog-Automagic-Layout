@@ -422,7 +422,7 @@ class SPICEparser:
                                              parent_cell_chain = self.parent_cell_chain,
                                              current_library=current_library)
 
-                self.prev_parent_cell_name += f"{user_created_circuit_cell.name}_{user_created_circuit_cell.cell}_"
+                self.prev_parent_cell_name += f"{user_created_circuit_cell.name}_{user_created_circuit_cell.cell}--"
                 self.__add_components_for_each_circuit_cell(current_parent_cell=user_created_circuit_cell.cell)
 
     def __parse(self):

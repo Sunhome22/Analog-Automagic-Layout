@@ -85,44 +85,47 @@ def main():
         components = MagicComponentsParser(project_properties=project_properties, components=components.get()).get()
 
         components_grouped_by_circuit_cell = defaultdict(list)
+        circuit_cells = list()
+
         for component in components:
             if isinstance(component, CircuitCell):
-                print("yo")
-            print(component.parent_cell_chain)
-            #if re.search(r'^(?:[^_]+_){2}([^_]+)$', component.parent_cell_chain):
-            #    print("he")
+                circuit_cells.append(component)
+            else:
+                components_grouped_by_circuit_cell[component.parent_cell_chain].append(component)
 
-            components_grouped_by_circuit_cell[component.parent_cell_chain].append(component)
+        for circuit_cell in circuit_cells:
+            for grouped_components in components_grouped_by_circuit_cell:
+                if (re.search(r"^(?:.*--)?(.*)$", grouped_components).group(1)
+                        == f"{circuit_cell.name}_{circuit_cell.cell}"):
+                    components_grouped_by_circuit_cell[grouped_components].append(circuit_cell)
 
-        #for grouped_components in components_grouped_by_circuit_cell:
-            #print(components_grouped_by_circuit_cell[grouped_components])
-            #if isinstance(component, CircuitCell):
-            #    print(component.parent_cell_chain)
-
-            #print(component.cell, component.parent_cell_chain)
+        save_to_json(components, file_name="src/json_converter/components_multiple_cell_test.json")
+        #
+        #
+        #     print(component.cell, component.parent_cell_chain)
 
         # Figures out connection types, nets and components that can overlap
-        single_connection, local_connections, connections, overlap_components, net_list = (
-            ConnectionLists(components=components).initialize_connections())
-
-        # Finds optimal structural component placements from solving LP problem
-        components = LinearOptimizationSolver(
-            components=components,
-            connections=connections,
-            local_connections=local_connections,
-            grid_size=grid_size,
-            overlap_components=overlap_components
-        ).solve_placement()
-
-        # Generates grid
-        grid, port_scaled_coords, used_area, port_coord = GridGeneration(
-            grid_size=grid_size,
-            components=components,
-            scale_factor=scale_factor
-        ).initialize_grid_generation()
-
-        draw_result(grid_size=grid_size, objects=components, used_area=used_area, scale_factor=scale_factor,
-                   draw_name=draw_name)
+        # single_connection, local_connections, connections, overlap_components, net_list = (
+        #     ConnectionLists(components=components).initialize_connections())
+        #
+        # # Finds optimal structural component placements from solving LP problem
+        # components = LinearOptimizationSolver(
+        #     components=components,
+        #     connections=connections,
+        #     local_connections=local_connections,
+        #     grid_size=grid_size,
+        #     overlap_components=overlap_components
+        # ).solve_placement()
+        #
+        # # Generates grid
+        # grid, port_scaled_coords, used_area, port_coord = GridGeneration(
+        #     grid_size=grid_size,
+        #     components=components,
+        #     scale_factor=scale_factor
+        # ).initialize_grid_generation()
+        #
+        # draw_result(grid_size=grid_size, objects=components, used_area=used_area, scale_factor=scale_factor,
+        #            draw_name=draw_name)
         #
         # # path, seg_list = initiate_astar(
         # #     grid=grid,
@@ -143,7 +146,7 @@ def main():
         #         component.transform_matrix.set([1, 0, i*1000, 0, 1, i*1000])
         #         component.bounding_box.set(used_area)
 
-        save_to_json(components, file_name="src/json_converter/components_multiple_cell_test.json")
+
 
         # Update components with trace information
         # components = TraceGenerator(components=components, project_properties=project_properties).get()
