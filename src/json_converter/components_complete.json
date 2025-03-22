@@ -4,6 +4,9 @@
         "number_id": 0,
         "name": "COMP",
         "cell": "JNW_BKLE",
+        "parent_cell": "",
+        "parent_cell_chain": "",
+        "group": "",
         "schematic_connections": {
             "VDD": "net1",
             "VIN": "net2",
@@ -31,6 +34,8 @@
         "instance": "Pin",
         "number_id": 1,
         "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
         "type": "ipin",
         "name": "VSS",
         "layout": {
@@ -47,6 +52,8 @@
         "instance": "Pin",
         "number_id": 2,
         "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
         "type": "ipin",
         "name": "VDD",
         "layout": {
@@ -63,6 +70,8 @@
         "instance": "Pin",
         "number_id": 3,
         "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
         "type": "ipin",
         "name": "VIP",
         "layout": {
@@ -79,6 +88,8 @@
         "instance": "Pin",
         "number_id": 4,
         "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
         "type": "ipin",
         "name": "VIN",
         "layout": {
@@ -95,6 +106,8 @@
         "instance": "Pin",
         "number_id": 5,
         "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
         "type": "opin",
         "name": "VO",
         "layout": {
@@ -111,6 +124,8 @@
         "instance": "Pin",
         "number_id": 6,
         "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
         "type": "ipin",
         "name": "I_BIAS",
         "layout": {
@@ -129,6 +144,8 @@
         "name": "MN1",
         "type": "nmos",
         "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
         "group": "diff1",
         "schematic_connections": {
             "D": "net3",
@@ -212,6 +229,8 @@
         "name": "MN2",
         "type": "nmos",
         "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
         "group": "diff1",
         "schematic_connections": {
             "D": "net2",
@@ -295,6 +314,8 @@
         "name": "MP5",
         "type": "pmos",
         "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
         "group": "load1",
         "schematic_connections": {
             "D": "net2",
@@ -378,6 +399,8 @@
         "name": "MP6",
         "type": "pmos",
         "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
         "group": "load1",
         "schematic_connections": {
             "D": "VO",
@@ -461,6 +484,8 @@
         "name": "MP1",
         "type": "pmos",
         "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
         "group": "load1",
         "schematic_connections": {
             "D": "net4",
@@ -544,6 +569,8 @@
         "name": "MP2",
         "type": "pmos",
         "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
         "group": "load1",
         "schematic_connections": {
             "D": "net3",
@@ -627,6 +654,8 @@
         "name": "MN4",
         "type": "nmos",
         "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
         "group": "mirror2",
         "schematic_connections": {
             "D": "net1",
@@ -710,6 +739,8 @@
         "name": "MN3",
         "type": "nmos",
         "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
         "group": "mirror2",
         "schematic_connections": {
             "D": "I_BIAS",
@@ -793,6 +824,8 @@
         "name": "MN5",
         "type": "nmos",
         "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
         "group": "mirror1",
         "schematic_connections": {
             "D": "net4",
@@ -876,6 +909,8 @@
         "name": "MN6",
         "type": "nmos",
         "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
         "group": "mirror1",
         "schematic_connections": {
             "D": "VO",
@@ -959,6 +994,8 @@
         "name": "MP3",
         "type": "pmos",
         "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
         "group": "load1",
         "schematic_connections": {
             "D": "net3",
@@ -1042,6 +1079,8 @@
         "name": "MP4",
         "type": "pmos",
         "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
         "group": "load1",
         "schematic_connections": {
             "D": "net2",
@@ -1123,6 +1162,8 @@
         "instance": "TraceNet",
         "name": "VIP",
         "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
         "segments": [],
         "vias": []
     },
@@ -1130,6 +1171,8 @@
         "instance": "TraceNet",
         "name": "VIN",
         "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
         "segments": [],
         "vias": []
     },
@@ -1137,6 +1180,8 @@
         "instance": "TraceNet",
         "name": "VO",
         "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
         "segments": [
             {
                 "layer": "m3",
@@ -1245,6 +1290,8 @@
         "instance": "TraceNet",
         "name": "I_BIAS",
         "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
         "segments": [
             {
                 "layer": "m2",
@@ -1299,6 +1346,8 @@
         "instance": "TraceNet",
         "name": "net3",
         "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
         "segments": [
             {
                 "layer": "m3",
@@ -1542,6 +1591,8 @@
         "instance": "TraceNet",
         "name": "net1",
         "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
         "segments": [
             {
                 "layer": "m2",
@@ -1668,6 +1719,8 @@
         "instance": "TraceNet",
         "name": "net2",
         "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
         "segments": [
             {
                 "layer": "m2",
@@ -2019,6 +2072,8 @@
         "instance": "TraceNet",
         "name": "net4",
         "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
         "segments": [
             {
                 "layer": "m3",
@@ -2217,6 +2272,8 @@
         "instance": "TraceNet",
         "name": "VSS",
         "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
         "segments": [
             {
                 "layer": "m1",
@@ -2261,6 +2318,8 @@
         "instance": "TraceNet",
         "name": "VDD",
         "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
         "segments": [
             {
                 "layer": "m1",
@@ -2305,6 +2364,8 @@
         "instance": "TraceNet",
         "name": "MP5_B_S",
         "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
         "segments": [
             {
                 "layer": "locali",
@@ -2322,6 +2383,8 @@
         "instance": "TraceNet",
         "name": "MP5_G_D",
         "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
         "segments": [
             {
                 "layer": "locali",
@@ -2339,6 +2402,8 @@
         "instance": "TraceNet",
         "name": "MP6_B_S",
         "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
         "segments": [
             {
                 "layer": "locali",
@@ -2356,6 +2421,8 @@
         "instance": "TraceNet",
         "name": "MP1_B_S",
         "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
         "segments": [
             {
                 "layer": "locali",
@@ -2373,6 +2440,8 @@
         "instance": "TraceNet",
         "name": "MP2_B_S",
         "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
         "segments": [
             {
                 "layer": "locali",
@@ -2390,6 +2459,8 @@
         "instance": "TraceNet",
         "name": "MP2_G_D",
         "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
         "segments": [
             {
                 "layer": "locali",
@@ -2407,6 +2478,8 @@
         "instance": "TraceNet",
         "name": "MN4_B_S",
         "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
         "segments": [
             {
                 "layer": "locali",
@@ -2424,6 +2497,8 @@
         "instance": "TraceNet",
         "name": "MN3_B_S",
         "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
         "segments": [
             {
                 "layer": "locali",
@@ -2441,6 +2516,8 @@
         "instance": "TraceNet",
         "name": "MN3_G_D",
         "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
         "segments": [
             {
                 "layer": "locali",
@@ -2458,6 +2535,8 @@
         "instance": "TraceNet",
         "name": "MN5_B_S",
         "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
         "segments": [
             {
                 "layer": "locali",
@@ -2475,6 +2554,8 @@
         "instance": "TraceNet",
         "name": "MN5_G_D",
         "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
         "segments": [
             {
                 "layer": "locali",
@@ -2492,6 +2573,8 @@
         "instance": "TraceNet",
         "name": "MN6_B_S",
         "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
         "segments": [
             {
                 "layer": "locali",
@@ -2509,6 +2592,8 @@
         "instance": "TraceNet",
         "name": "MP3_B_S",
         "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
         "segments": [
             {
                 "layer": "locali",
@@ -2526,6 +2611,8 @@
         "instance": "TraceNet",
         "name": "MP4_B_S",
         "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
         "segments": [
             {
                 "layer": "locali",
@@ -2543,6 +2630,8 @@
         "instance": "TraceNet",
         "name": "MN1_MN2_B_VSS_RAIL_TOP",
         "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
         "segments": [
             {
                 "layer": "locali",
@@ -2579,6 +2668,8 @@
         "instance": "TraceNet",
         "name": "MN1_MN2_B_VSS_RAIL_BOT",
         "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
         "segments": [
             {
                 "layer": "locali",
@@ -2613,8 +2704,48 @@
     },
     {
         "instance": "TraceNet",
+        "name": "MN1_MN2_B_VSS_RAIL_TOP/BOT",
+        "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
+        "segments": [
+            {
+                "layer": "locali",
+                "area": {
+                    "x1": 1424,
+                    "y1": 2022,
+                    "x2": 3076,
+                    "y2": 2118
+                }
+            }
+        ],
+        "vias": [
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 1424,
+                    "y1": 2022,
+                    "x2": 1524,
+                    "y2": 2118
+                }
+            },
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 2976,
+                    "y1": 2022,
+                    "x2": 3076,
+                    "y2": 2118
+                }
+            }
+        ]
+    },
+    {
+        "instance": "TraceNet",
         "name": "MP1_MP2_B_VDD_RAIL_TOP",
         "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
         "segments": [
             {
                 "layer": "locali",
@@ -2651,6 +2782,8 @@
         "instance": "TraceNet",
         "name": "MN4_MN3_B_VSS_RAIL_BOT",
         "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
         "segments": [
             {
                 "layer": "locali",
@@ -2687,6 +2820,8 @@
         "instance": "TraceNet",
         "name": "MN5_MN6_B_VSS_RAIL_TOP",
         "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
         "segments": [
             {
                 "layer": "locali",
@@ -2723,6 +2858,8 @@
         "instance": "TraceNet",
         "name": "MP3_MP4_B_VDD_RAIL_BOT",
         "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
         "segments": [
             {
                 "layer": "locali",

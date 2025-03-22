@@ -75,7 +75,7 @@ project_properties = ProjectProperties(directory="~/aicex/ip/jnw_bkle_sky130A",
 def main():
     # Create a logger
     logger = get_a_logger(__name__)
-    run = True
+    run = False
 
     if run:
         # Extracts component information from SPICE file
@@ -169,26 +169,26 @@ def main():
         # Create layout
         MagicLayoutCreator(project_properties=project_properties, components=components)
 
-        # DRC handling
-        DRCchecking(project_properties=project_properties)
-
-        # LVS handling
-        LVSchecking(project_properties=project_properties)
-
-
-
-        used_area = 0
-        for component in components:
-            if isinstance(component, CircuitCell):
-                used_area = component.bounding_box
-
-        draw_result(grid_size=grid_size, objects=components, used_area=used_area, scale_factor=scale_factor,
-                   draw_name=draw_name)
-        #save_to_json(components, file_name="src/json_converter/components_test.json")
-        # Debug log of all components
-        logger.debug(f"Components registered: ")
-        for component in components:
-            logger.debug(f"- {component}")
+        # # DRC handling
+        # DRCchecking(project_properties=project_properties)
+        #
+        # # LVS handling
+        # LVSchecking(project_properties=project_properties)
+        #
+        #
+        #
+        # used_area = 0
+        # for component in components:
+        #     if isinstance(component, CircuitCell):
+        #         used_area = component.bounding_box
+        #
+        # draw_result(grid_size=grid_size, objects=components, used_area=used_area, scale_factor=scale_factor,
+        #            draw_name=draw_name)
+        # #save_to_json(components, file_name="src/json_converter/components_test.json")
+        # # Debug log of all components
+        # logger.debug(f"Components registered: ")
+        # for component in components:
+        #     logger.debug(f"- {component}")
 
         save_to_json(components, file_name="src/json_converter/components_complete.json")
 if __name__ == '__main__':
