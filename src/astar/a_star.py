@@ -36,8 +36,19 @@ class PriorityQueue:
     def pop(self):
         return heapq.heappop(self.elements)[1]
 
+class Memoize:
+    def __init__(self, func):
+        self.func = func
+        self.memo = {}
 
+    def __call__(self, *args):
+        if args not in self.memo:
+            self.memo[args] = self.func(*args)
+        return self.memo[args]
 
+    def __get__(self, instance, owner):
+        # Bind the instance to the function
+        return lambda *args: self(instance, *args)
 
 
 class AstarAlgorithm:
@@ -71,7 +82,7 @@ class AstarAlgorithm:
     def cap_seg(self, seg):
         return seg if seg < self.minimum_segment_length else self.minimum_segment_length
 
-
+    @Memoize
     def a_star(self):
 
         goal_indices = {goal: i for i, goal in enumerate(self.goal_nodes)}

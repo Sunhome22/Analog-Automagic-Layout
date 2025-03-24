@@ -1,3 +1,4 @@
+
 # ==================================================================================================================== #
 # Copyright (C) 2024 Bjørn K.T. Solheim, Leidulv Tønnesland
 # ==================================================================================================================== #
@@ -117,12 +118,17 @@ def __local_bulk_to_rail_connection_for_sky130a_lib(self, component, rail: str, 
             generate_bulk_to_rail_segments(self=self, rail=rail, component=component, y_params=y_params['rail_bot'],
                                            group_endpoint="RAIL_BOT",group_name=group_name)
 
-        if component.group_endpoint == 'rail_top' or component.group_endpoint == 'rail_bot':
+        if re.search(r'^rail_top.*', component.group_endpoint):
             generate_bulk_to_rail_segments(self=self, rail=rail, component=component,
-                                           y_params=y_params[component.group_endpoint],
+                                           y_params=y_params['rail_top'],
                                            group_endpoint=component.group_endpoint.upper(),
                                            group_name=group_name)
 
+        if re.search(r'^rail_bot.*', component.group_endpoint):
+            generate_bulk_to_rail_segments(self=self, rail=rail, component=component,
+                                           y_params=y_params['rail_bot'],
+                                           group_endpoint=component.group_endpoint.upper(),
+                                           group_name=group_name)
 
 def generate_bulk_to_rail_segments(self, rail: str, component: Transistor, y_params: tuple,
                                    group_endpoint: str, group_name: str):
@@ -193,7 +199,7 @@ def get_component_group_endpoints_for_atr_sky130a_lib(self):
     possible_y_max_components = []
     possible_y_min_components = []
 
-    # Assignment of no rail endpoint
+    # Assignment of no rail endpoints
     for components in grouped_components_x:
         for component in self.transistor_components:
             top_component = components[-1][0][0]
@@ -218,17 +224,24 @@ def get_component_group_endpoints_for_atr_sky130a_lib(self):
         for min_y_component in min_y_components:
             for component in self.transistor_components:
                 if min_y_component == component:
-                    component.group_endpoint = "rail_bot"
+                    if component.group_endpoint == "no_rail_top/bot":
+                        component.group_endpoint = "rail_bot/no_rail_top"
+                    else:
+                        component.group_endpoint = "rail_bot"
 
     for max_y_components in list(find_max_y_components(possible_y_max_components).values()):
         for max_y_component in max_y_components:
             for component in self.transistor_components:
                 if max_y_component == component:
-                    if component.group_endpoint == "rail_bot":
+                    if component.group_endpoint == "rail_bot/no_rail_top":
                         component.group_endpoint = "rail_top/bot"
                     else:
-                        if component.group_endpoint != "no_rail_top/bot":  # Handling of special edge case
+                        if component.group_endpoint == "no_rail_top/bot":
+                            component.group_endpoint = "rail_top/no_rail_bot"
+                        else:
                             component.group_endpoint = "rail_top"
+
+
     # Logging
     for component in self.components:
         if isinstance(component, Transistor):
@@ -292,8 +305,8 @@ def place_transistor_endpoints_for_atr_sky130a_lib(self, component: Transistor):
         layout_name_top = re.sub(r".{3}$", "TAPTOP", component.layout_name)
         layout_name_bot = re.sub(r".{3}$", "TAPBOT", component.layout_name)
 
-        if component.group_endpoint == "rail_top" or component.group_endpoint == "no_rail_top":
-
+        if component.group_endpoint in {"rail_top", "no_rail_top", "rail_top/no_rail_bot", "rail_bot/no_rail_top",
+                                        "rail_top/bot", "no_rail_top/bot"}:
             self.magic_file_lines.extend([
                 f"use {layout_name_top} {component.group}_{component.name}_TAPTOP {self.current_component_library_path}",
                 f"transform {component.transform_matrix.a} {component.transform_matrix.b}"
@@ -303,32 +316,13 @@ def place_transistor_endpoints_for_atr_sky130a_lib(self, component: Transistor):
                 f"{component.group_endpoint_bounding_box.x2} {component.group_endpoint_bounding_box.y2}"
             ])
 
-        if component.group_endpoint == "rail_bot" or component.group_endpoint == "no_rail_bot":
+        if component.group_endpoint in {"rail_bot", "no_rail_bot", "rail_bot/no_rail_top", "rail_top/no_rail_bot",
+                                        "rail_top/bot", "no_rail_top/bot"}:
             self.magic_file_lines.extend([
                 f"use {layout_name_bot} {component.group}_{component.name}_TAPBOT {self.current_component_library_path}",
                 f"transform {component.transform_matrix.a} {component.transform_matrix.b}"
                 f" {component.transform_matrix.c} {component.transform_matrix.d}"
                 f" {component.transform_matrix.e} {component.transform_matrix.f - component.group_endpoint_bounding_box.y2}",
-                f"box {component.group_endpoint_bounding_box.x1} {component.group_endpoint_bounding_box.y1} "
-                f"{component.group_endpoint_bounding_box.x2} {component.group_endpoint_bounding_box.y2}"
-            ])
-
-        if component.group_endpoint == "rail_top/bot" or component.group_endpoint == "no_rail_top/bot":
-
-            self.magic_file_lines.extend([
-                f"use {layout_name_bot} {component.group}_{component.name}_TAPBOT {self.current_component_library_path}",
-                f"transform {component.transform_matrix.a} {component.transform_matrix.b}"
-                f" {component.transform_matrix.c} {component.transform_matrix.d}"
-                f" {component.transform_matrix.e} {component.transform_matrix.f - component.group_endpoint_bounding_box.y2}",
-                f"box {component.group_endpoint_bounding_box.x1} {component.group_endpoint_bounding_box.y1} "
-                f"{component.group_endpoint_bounding_box.x2} {component.group_endpoint_bounding_box.y2}"
-            ])
-
-            self.magic_file_lines.extend([
-                f"use {layout_name_top} {component.group}_{component.name}_TAPTOP {self.current_component_library_path}",
-                f"transform {component.transform_matrix.a} {component.transform_matrix.b}"
-                f" {component.transform_matrix.c} {component.transform_matrix.d}"
-                f" {component.transform_matrix.e} {component.transform_matrix.f + component.bounding_box.y2}",
                 f"box {component.group_endpoint_bounding_box.x1} {component.group_endpoint_bounding_box.y1} "
                 f"{component.group_endpoint_bounding_box.x2} {component.group_endpoint_bounding_box.y2}"
             ])
@@ -403,5 +397,6 @@ def magic_component_parsing_for_atr_sky130a_lib(self, layout_file_path: str, com
 
     except FileNotFoundError:
         self.logger.error(f"The file {layout_file_path} was not found.")
+
 
 

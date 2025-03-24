@@ -14,22 +14,41 @@
 
 from matplotlib import pyplot as plt, patches
 from circuit.circuit_components import Pin, CircuitCell, TraceNet
+from logger.logger import get_a_logger
+import tomllib
+
+logger = get_a_logger(__name__)
+
+def load_config(path="pyproject.toml"):
+    try:
+        with open(path, "rb") as f:
+            return tomllib.load(f)
+    except (FileNotFoundError, tomllib.TOMLDecodeError) as e:
+        logger.error(f"Error loading config: {e}")
 
 
-def draw_result(grid_size, objects, connections, used_area, scale_factor, draw_name):
+
+config = load_config()
+GRID_SIZE = config["generate_grid"]["GRID_SIZE"]
+SCALE_FACTOR = config["generate_grid"]["SCALE_FACTOR"]
+
+
+
+
+def draw_result( objects, connections, used_area, draw_name):
     connections2 =  [x for x in connections.values() if x is not None]
 
     # set up plot
     fix, ax = plt.subplots(figsize=(10, 10))
-    ax.set_xlim(0, grid_size)
-    ax.set_ylim(0, grid_size)
+    ax.set_xlim(0, GRID_SIZE)
+    ax.set_ylim(0, GRID_SIZE)
     path = True
 
 
 
     # draw grid
 
-    for i in range(grid_size + 1):
+    for i in range(GRID_SIZE + 1):
         ax.axhline(i, lw=0.5, color='gray', zorder=0)
         ax.axvline(i, lw=0.5, color='gray', zorder=0)
 
@@ -65,25 +84,26 @@ def draw_result(grid_size, objects, connections, used_area, scale_factor, draw_n
                         break
             plt.plot(x_values, y_values)
 
-            plt.plot([grid_size//2, grid_size//2], [0, grid_size])
+            plt.plot([GRID_SIZE//2, GRID_SIZE//2], [0, GRID_SIZE])
     else:
         scaled_points = []
         none = 0
         missing_paths = []
         for net in connections2:
+            logger.info(connections2)
             for p in net:
-
+                logger.info(p)
                 if p[1] is not None:
-                    scaled_points.append( [(used_area[0]-500 + x*scale_factor , used_area[1]-500 + y*scale_factor ) for x, y in p[1]])
+                    scaled_points.append( [(used_area.x1-500 + x*SCALE_FACTOR , used_area.y1-500 + y*SCALE_FACTOR ) for x, y in p[1]])
                 else:
                     missing_paths.append(p[0])
                     none += 1
 
         for con in scaled_points:
 
-            x_coords, y_coords = zip(*con)
-            plt.plot(x_coords, y_coords, linewidth=4, color='black')
-            plt.plot(x_coords, y_coords, linewidth=2, linestyle='-')
+            x_coordinates, y_coordinates = zip(*con)
+            plt.plot(x_coordinates, y_coordinates, linewidth=4, color='black')
+            plt.plot(x_coordinates, y_coordinates, linewidth=2, linestyle='-')
 
 
 

@@ -29,10 +29,10 @@ class Nets:
 
 @dataclass
 class Connection:
-    start_comp_id: int
+    start_comp_id: str
     start_area: str
     start_comp_name: str
-    end_comp_id: int
+    end_comp_id: str
     end_area: str
     end_comp_name: str
     cell: str
@@ -51,6 +51,7 @@ class Connection:
 
 
 
+
 class ConnectionLists:
 
     def __init__(self, input_components):
@@ -60,6 +61,7 @@ class ConnectionLists:
             if isinstance(component, Transistor):
                 self.components.append(component)
 
+
         self.connections = {
             "local_connections" : [],
             "component_connections" : [],
@@ -68,6 +70,7 @@ class ConnectionLists:
         }
 
         self.overlap_dict = {}
+        self.debug_dict = {}
         self.local_con_area = {}
         self.net_list = Nets(applicable_nets=[], pin_nets=[])
 
@@ -97,8 +100,8 @@ class ConnectionLists:
             if connection.start_comp_id == str(object_id) and (port == connection.start_area or port == connection.end_area):
                 if connection.start_area != "B" and connection.end_area != "B":
                     return connection.start_area + connection.end_area
-            else:
-                return port
+
+        return port
 
 
 
@@ -127,8 +130,9 @@ class ConnectionLists:
                             if component_1.schematic_connections[port_1] == component_2.schematic_connections[port_2]:
                                 net = component_1.schematic_connections[port_1]
                                 cell = component_1.cell
-
-
+                                if component_1.number_id == 7 and component_2.number_id == 12:
+                                    port_2_area = self.__get_local_connection_area(component_2.number_id, port_2)
+                                    self.logger.info(f"component 2 area {port_2_area}")
                                 port_1_area = self.__get_local_connection_area(component_1.number_id, port_1)
                                 port_2_area = self.__get_local_connection_area(component_2.number_id, port_2)
 
@@ -168,6 +172,8 @@ class ConnectionLists:
         n_transistors = []
         p_transistors = []
 
+
+
         for obj in self.components:
             if isinstance(obj, Transistor):
                 if obj.type == "pmos":
@@ -178,11 +184,14 @@ class ConnectionLists:
                     self.logger.error(f"Transistor type '{obj.type}' not handled yet")
 
 
-        top, side = overlap_pairs(n_transistors)
-        new_top, new_side = overlap_pairs(p_transistors)
+        top, side, debug_top, debug_side = overlap_pairs(n_transistors)
+        new_top, new_side, new_debug_top, new_debug_side = overlap_pairs(p_transistors)
 
         self.overlap_dict["side"] = side + new_side
         self.overlap_dict["top"] = top + new_top
+
+        self.debug_dict["side"] = debug_side + new_debug_side
+        self.debug_dict["top"] = debug_top + new_debug_top
 
     def __get_net_list(self):
         for obj in self.components:
@@ -196,7 +205,7 @@ class ConnectionLists:
 
 
 
-    def initialize_connections(self):
+    def get(self):
 
         self.__local_connection_list()
         self.__connection_list()
@@ -206,7 +215,7 @@ class ConnectionLists:
 
 
 
-        return  self.connections, self.overlap_dict, self.net_list
+        return  self.connections, self.overlap_dict, self.net_list, self.debug_dict
 
 
 
@@ -215,7 +224,9 @@ class ConnectionLists:
 
 def overlap_pairs(list1):
     top = []
+    top_debug = []
     side = []
+    side_debug = []
     duplicated_list = list1[:]
     for i in list1:
         for j in duplicated_list:
@@ -223,9 +234,11 @@ def overlap_pairs(list1):
 
                 if (i.bounding_box.x2 - i.bounding_box.x1) == (j.bounding_box.x2 - j.bounding_box.x1) and i.schematic_connections["B"] == j.schematic_connections["B"]:
                     top.append([i.number_id, j.number_id])
+                    top_debug.append([i.name, j.name])
 
                 if (i.bounding_box.y2 - i.bounding_box.y1) == (j.bounding_box.y2 - j.bounding_box.y1) and i.schematic_connections["B"] == j.schematic_connections["B"]:
                     side.append([i.number_id, j.number_id])
+                    side_debug.append([i.name, j.name])
         duplicated_list.remove(i)
-    return top, side
+    return top, side, top_debug, side_debug
 

@@ -82,18 +82,16 @@ def main():
 
     # Algorithms
 
-    connections, overlap_dict, net_list = ConnectionLists(input_components = components).initialize_connections()
+    connections, overlap_dict, net_list, debug_ov = ConnectionLists(input_components = components).get()
 
-    # for c in connections:
-    #     logger.info(c)
-    #     for val in connections[c]:
-    #         logger.info(val)
-    #
-    # return
+    logger.info(overlap_dict)
+    logger.info(debug_ov)
+
 
     components = LinearOptimizationSolver(components, connections,  overlap_dict).solve_placement()
 
     grid, port_scaled_coordinates, used_area, port_coordinates, routing_parameters= GridGeneration(components=components).initialize_grid_generation()
+    logger.info(f"used_area: {used_area}")
     for obj in components:
         if isinstance(obj, CircuitCell):
             obj.transform_matrix.set([1, 0, 0, 0, 1, 0])
@@ -107,6 +105,9 @@ def main():
                                     routing_parameters = routing_parameters
                                     ).get()
 
+    print(path)
+    return
+
     components = TraceGenerator(project_properties= project_properties,
                                 components = components,
                                 paths = path,
@@ -116,7 +117,7 @@ def main():
 
     #logger.info("Starting Drawing results")
     #path true:
-    #draw_result(grid_size, components, path, used_area, scale_factor, draw_name)
+    draw_result( components, path, used_area,  "new_test")
     #path false:
     #draw_result(grid_size, components, connections, used_area)
     #logger.info("Finished Drawing results")

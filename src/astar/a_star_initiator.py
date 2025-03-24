@@ -6,6 +6,9 @@ import tomllib
 import re
 
 
+
+
+
 class AstarInitiator:
     def __init__(self, components, grid, connections, port_scaled_coordinates, port_coordinates, net_list,
                  routing_parameters):
