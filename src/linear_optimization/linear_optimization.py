@@ -24,8 +24,7 @@ from logger.logger import get_a_logger
 
 class LinearOptimizationSolver:
 
-    def __init__(self, components: list[object], connections: list, local_connections: list,
-                 grid_size: int, overlap_components: dict):
+    def __init__(self, components, connections, overlap_components):
 
         self.logger = get_a_logger(__name__)
         self.current_file_directory = os.path.dirname(os.path.abspath(__file__))
@@ -43,18 +42,18 @@ class LinearOptimizationSolver:
         self.RUN = self.config["linear_optimization"]["RUN"]
         self.STOP_TOLERANCE = self.config["linear_optimization"]["STOP_TOLERANCE"]
         self.SOLVER_MSG = self.config["linear_optimization"]["SOLVER_MSG"]
-
+        self.GRID_SIZE = self.config["generate_grid"]["GRID_SIZE"]
         # Setup of problem space and solver
         self.problem_space = pulp.LpProblem("ComponentPlacement", pulp.LpMinimize)
-        self.solver = pulp.SCIP_PY(msg=self.SOLVER_MSG, mip=False, warmStart=False,
+        self.solver = pulp.SCIP_PY(msg=self.SOLVER_MSG, mip=False, warmStart=True,
                                    options=[f"limits/gap={self.STOP_TOLERANCE}"])
 
         # Inputs
         self.components = components
         self.overlap_components = overlap_components
-        self.connections = connections
-        self.local_connections = local_connections
-        self.grid_size = grid_size
+        self.connections = connections["component_connections"]
+
+
 
         # Data structures
         self.functional_components = []
@@ -79,6 +78,8 @@ class LinearOptimizationSolver:
 
         # Constraints
         self.x_possible, self.y_possible = self.__extract_possible_positions()
+        self.logger.info(f"X_possible {self.x_possible}")
+        self.logger.info(f"Y_possible {self.y_possible}")
         self.x = pulp.LpVariable.dicts(f"x_bin", [(i, xv) for i in self.component_ids for xv in self.x_possible],
                                        cat="Binary")
         self.y = pulp.LpVariable.dicts(f"y_bin", [(i, yv) for i in self.component_ids for yv in self.y_possible],
@@ -139,7 +140,7 @@ class LinearOptimizationSolver:
     def __constrain_mirror(self):
         for component in self.mirrored_components:
             self.problem_space += (self.coordinates_x[component[0].number_id] + self.width[component[0].number_id]
-                                   == self.grid_size - self.coordinates_x[component[1].number_id])
+                                   == self.GRID_SIZE - self.coordinates_x[component[1].number_id])
             self.problem_space += (self.coordinates_y[component[0].number_id]
                                    == self.coordinates_y[component[1].number_id])
 
@@ -166,17 +167,17 @@ class LinearOptimizationSolver:
                     y_intervals.append(h)
 
         for index, value in enumerate(x_intervals):
-            for x_pos in range(self.grid_size//2, self.grid_size - 1, value):
+            for x_pos in range(self.GRID_SIZE//2, self.GRID_SIZE - 1, value):
                 x.append(x_pos)
 
-            for x_pos in range(self.grid_size // 2, 0, -value):
+            for x_pos in range(self.GRID_SIZE // 2, 0, -value):
                 x.append(x_pos)
 
         for index, n in enumerate(y_intervals):
-            for y_pos in range(self.grid_size//2, self.grid_size - 1, n):
+            for y_pos in range(self.GRID_SIZE//2, self.GRID_SIZE - 1, n):
                 y.append(y_pos)
 
-            for y_pos in range(self.grid_size//2, 0, -n):
+            for y_pos in range(self.GRID_SIZE//2, -1, -n):
                 y.append(y_pos)
 
         x = list(set(x))
@@ -185,7 +186,7 @@ class LinearOptimizationSolver:
         y.sort()
         return x, y
 
-    def __get_port_parameters(self, component: object) -> tuple:
+    def __get_port_parameters(self, component) -> tuple:
         # staring off utilizing the first point in connections area as point of contact
         port_parameter = []
         port_parameter2 = []
@@ -251,8 +252,8 @@ class LinearOptimizationSolver:
             self.coordinates_y[c1] = pulp.lpSum([yv * self.y[(c1, yv)] for yv in self.y_possible])
 
         for c1 in self.component_ids:
-            self.problem_space += self.coordinates_x[c1] + self.width[c1] + (self.OFFSET_X//2) <= self.grid_size
-            self.problem_space += self.coordinates_y[c1] + self.height[c1] + (self.OFFSET_Y//2) <= self.grid_size
+            self.problem_space += self.coordinates_x[c1] + self.width[c1] + (self.OFFSET_X//2) <= self.GRID_SIZE
+            self.problem_space += self.coordinates_y[c1] + self.height[c1] + (self.OFFSET_Y//2) <= self.GRID_SIZE
 
             self.problem_space += self.x_max >= self.coordinates_x[c1] + self.width[c1]
             self.problem_space += self.x_min <= self.coordinates_x[c1]
@@ -269,43 +270,43 @@ class LinearOptimizationSolver:
                     self.problem_space += z1 + z2 + z3 + z4 == 1, f"NonOverlap_{c1}_{c2}"
                     if [c1,c2] in self.overlap_components["top"] and [c1, c2] in self.overlap_components["side"]:
                         self.problem_space += (self.coordinates_x[c1] + self.width[c1] <= self.coordinates_x[c2]
-                                               + self.grid_size * (1 - z1), f"LeftOf_{c1}_{c2}")
+                                               + self.GRID_SIZE * (1 - z1), f"LeftOf_{c1}_{c2}")
                         self.problem_space += (self.coordinates_x[c2] + self.width[c2] <= self.coordinates_x[c1]
-                                               + self.grid_size * (1 - z2), f"RightOf_{c1}_{c2}")
+                                               + self.GRID_SIZE * (1 - z2), f"RightOf_{c1}_{c2}")
                         self.problem_space += (self.coordinates_y[c1] + self.height[c1] <= self.coordinates_y[c2]
-                                               + self.grid_size * (1 - z3), f"Below_{c1}_{c2}")
+                                               + self.GRID_SIZE * (1 - z3), f"Below_{c1}_{c2}")
                         self.problem_space += (self.coordinates_y[c2] + self.height[c2] <= self.coordinates_y[c1]
-                                               + self.grid_size * (1 - z4), f"Above_{c1}_{c2}")
+                                               + self.GRID_SIZE * (1 - z4), f"Above_{c1}_{c2}")
 
                     elif [c1,c2] in self.overlap_components["side"]:
                         self.problem_space += (self.coordinates_x[c1] + self.width[c1] <= self.coordinates_x[c2]
-                                               + self.grid_size * (1 - z1), f"LeftOf_{c1}_{c2}")
+                                               + self.GRID_SIZE * (1 - z1), f"LeftOf_{c1}_{c2}")
                         self.problem_space += (self.coordinates_x[c2] + self.width[c2] <= self.coordinates_x[c1]
-                                               + self.grid_size * (1 - z2), f"RightOf_{c1}_{c2}")
+                                               + self.GRID_SIZE * (1 - z2), f"RightOf_{c1}_{c2}")
                         self.problem_space += (self.coordinates_y[c1] + self.height[c1] + self.OFFSET_Y
-                                               <= self.coordinates_y[c2] + self.grid_size * (1 - z3), f"Below_{c1}_{c2}")
+                                               <= self.coordinates_y[c2] + self.GRID_SIZE * (1 - z3), f"Below_{c1}_{c2}")
                         self.problem_space += (self.coordinates_y[c2] + self.height[c2] + self.OFFSET_Y
-                                               <= self.coordinates_y[c1] + self.grid_size * (1 - z4), f"Above_{c1}_{c2}")
+                                               <= self.coordinates_y[c1] + self.GRID_SIZE * (1 - z4), f"Above_{c1}_{c2}")
 
                     elif [c1,c2] in self.overlap_components["top"]:
                         self.problem_space += (self.coordinates_x[c1] + self.width[c1] + self.OFFSET_X
-                                               <= self.coordinates_x[c2] + self.grid_size * (1 - z1), f"LeftOf_{c1}_{c2}")
+                                               <= self.coordinates_x[c2] + self.GRID_SIZE * (1 - z1), f"LeftOf_{c1}_{c2}")
                         self.problem_space += (self.coordinates_x[c2] + self.width[c2] + self.OFFSET_X
-                                               <= self.coordinates_x[c1] + self.grid_size * (1 - z2), f"RightOf_{c1}_{c2}")
+                                               <= self.coordinates_x[c1] + self.GRID_SIZE * (1 - z2), f"RightOf_{c1}_{c2}")
                         self.problem_space += (self.coordinates_y[c1] + self.height[c1] <= self.coordinates_y[c2]
-                                               + self.grid_size * (1 - z3), f"Below_{c1}_{c2}")
+                                               + self.GRID_SIZE * (1 - z3), f"Below_{c1}_{c2}")
                         self.problem_space += (self.coordinates_y[c2] + self.height[c2] <= self.coordinates_y[c1]
-                                               + self.grid_size * (1 - z4), f"Above_{c1}_{c2}")
+                                               + self.GRID_SIZE * (1 - z4), f"Above_{c1}_{c2}")
                     else:
 
                         self.problem_space += (self.coordinates_x[c1] + self.width[c1] + self.OFFSET_X
-                                               <= self.coordinates_x[c2] + self.grid_size * (1 - z1), f"LeftOf_{c1}_{c2}")
+                                               <= self.coordinates_x[c2] + self.GRID_SIZE * (1 - z1), f"LeftOf_{c1}_{c2}")
                         self.problem_space += (self.coordinates_x[c2] + self.width[c2] + self.OFFSET_X
-                                               <= self.coordinates_x[c1] + self.grid_size * (1 - z2), f"RightOf_{c1}_{c2}")
+                                               <= self.coordinates_x[c1] + self.GRID_SIZE * (1 - z2), f"RightOf_{c1}_{c2}")
                         self.problem_space += (self.coordinates_y[c1] + self.height[c1]+ self.OFFSET_Y
-                                               <= self.coordinates_y[c2] + self.grid_size * (1 - z3), f"Below_{c1}_{c2}")
+                                               <= self.coordinates_y[c2] + self.GRID_SIZE * (1 - z3), f"Below_{c1}_{c2}")
                         self.problem_space += (self.coordinates_y[c2] + self.height[c2]+ self.OFFSET_Y
-                                               <= self.coordinates_y[c1] + self.grid_size * (1 - z4), f"Above_{c1}_{c2}")
+                                               <= self.coordinates_y[c1] + self.GRID_SIZE * (1 - z4), f"Above_{c1}_{c2}")
 
             component_list.remove(c1)
 
@@ -379,6 +380,7 @@ class LinearOptimizationSolver:
 
         # Add updated functional components back into list of all components
         return self.structural_components + self.functional_components
+
 
 
 

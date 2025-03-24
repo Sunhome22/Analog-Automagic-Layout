@@ -402,9 +402,10 @@ class MagicLayoutCreator:
         # Retrieve all sub cells
         for component in self.components:
             if isinstance(component, CircuitCell):
-                sub_cells.append(component.name)
+                sub_cells.append(f"{component.name}_{component.cell}")
 
         cells = sub_cells + [self.project_top_cell_name]
+        print(cells)
 
         # Iterate over found cells and generate .mag files for each one
         for cell in cells:
@@ -418,6 +419,7 @@ class MagicLayoutCreator:
             self.total_circuit_cells_added = 0
 
             for component in self.components:
+
                 if component.cell == "":
                     self.logger.error(f"{component.name} is missing a cell name")
                     continue
@@ -428,9 +430,11 @@ class MagicLayoutCreator:
                 if cell_name is None:
                     cell_name = component.cell
 
+                #print(cell_components)
                 cell_components.append(component)
 
             # Create file if component list is not empty
+            print(cell_name)
             self.__magic_file_creator(components=cell_components, file_name=cell_name)
 
         self.logger.info("Process complete!")

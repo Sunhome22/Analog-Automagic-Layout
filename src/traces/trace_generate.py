@@ -34,10 +34,7 @@ class NewSegment:
         self.lost_points = lost_points
 
 
-def direction(p1, p2):
-    dx = p2[0] - p1[0]
-    dy = p2[1] - p1[1]
-    return dx, dy
+
 
 
 def _check_net_constraint_vioaltion(netlist):
@@ -55,33 +52,7 @@ def _check_net_constraint_vioaltion(netlist):
                                 print("ERROR")
         return
 
-def segment_path(path):
-    if path is None or len(path) < 2:
-        return []  # No segments for a path with less than 2 points
 
-    segments = []
-    current_segment = [path[0]]  # Start with the first point
-    # Track the initial direction
-    current_direction = direction(path[0], path[1])
-
-    for i in range(1, len(path)):
-        next_direction = direction(path[i - 1], path[i])
-        if next_direction != current_direction:
-            # Direction changed, end the current segment
-            current_segment.append(path[i - 1])
-            segments.append(current_segment)
-            # Start a new segment
-            current_segment = [path[i - 1]]
-            current_direction = next_direction
-
-        # Add the current point to the segment
-        current_segment.append(path[i])
-
-    # Add the final segment
-    if current_segment:
-        segments.append(current_segment)
-
-    return segments
 def calculate_segment_length(segment):
     return sum(
         math.sqrt((segment[i][0] - segment[i - 1][0])**2 + (segment[i][1] - segment[i - 1][1])**2)

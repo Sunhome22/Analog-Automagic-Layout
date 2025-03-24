@@ -1,6 +1,7 @@
 #!/pri/bjs1/Analog-Automagic-Layout/venv/bin/python
 import re
 
+from cell.cell_creator import CellCreator
 # #!/home/bjorn/Analog-Automagic-Layout/venv/bin/python
 # ==================================================================================================================== #
 # Copyright (C) 2024 Bjørn K.T. Solheim, Leidulv Tønnesland
@@ -25,7 +26,6 @@ from magic.magic_component_parser import MagicComponentsParser
 from json_converter.json_converter import save_to_json, load_from_json
 from logger.logger import get_a_logger
 from circuit.circuit_components import TraceNet, RectAreaLayer, RectArea
-from astar.a_star import initiate_astar
 from draw_result.draw import draw_result
 from linear_optimization.linear_optimization import *
 from grid.generate_grid import *
@@ -79,63 +79,30 @@ def main():
 
     if run:
         # Extracts component information from SPICE file
-        components = SPICEparser(project_properties=project_properties)
+        components = SPICEparser(project_properties=project_properties).get()
 
         # Updates component attributes with information from it's associated Magic files
-        components = MagicComponentsParser(project_properties=project_properties, components=components.get()).get()
+        components = MagicComponentsParser(project_properties=project_properties, components=components).get()
 
-        components_grouped_by_circuit_cell = defaultdict(list)
-        circuit_cells = list()
-
-        for component in components:
-            if isinstance(component, CircuitCell):
-                circuit_cells.append(component)
-            else:
-                components_grouped_by_circuit_cell[component.parent_cell_chain].append(component)
-
-        for circuit_cell in circuit_cells:
-            for grouped_components in components_grouped_by_circuit_cell:
-                if (re.search(r"^(?:.*--)?(.*)$", grouped_components).group(1)
-                        == f"{circuit_cell.name}_{circuit_cell.cell}"):
-                    components_grouped_by_circuit_cell[grouped_components].append(circuit_cell)
+        components = CellCreator(project_properties=project_properties, components=components).get()
 
         save_to_json(components, file_name="src/json_converter/components_multiple_cell_test.json")
         #
         #
         #     print(component.cell, component.parent_cell_chain)
 
-        # Figures out connection types, nets and components that can overlap
-        # single_connection, local_connections, connections, overlap_components, net_list = (
-        #     ConnectionLists(components=components).initialize_connections())
-        #
-        # # Finds optimal structural component placements from solving LP problem
-        # components = LinearOptimizationSolver(
-        #     components=components,
+        #Figures out connection types, nets and components that can overlap
+
+
+        # path, seg_list = initiate_astar(
+        #     grid=grid,
         #     connections=connections,
-        #     local_connections=local_connections,
-        #     grid_size=grid_size,
-        #     overlap_components=overlap_components
-        # ).solve_placement()
-        #
-        # # Generates grid
-        # grid, port_scaled_coords, used_area, port_coord = GridGeneration(
-        #     grid_size=grid_size,
+        #    local_connections=local_connections,
         #     components=components,
-        #     scale_factor=scale_factor
-        # ).initialize_grid_generation()
-        #
-        # draw_result(grid_size=grid_size, objects=components, used_area=used_area, scale_factor=scale_factor,
-        #            draw_name=draw_name)
-        #
-        # # path, seg_list = initiate_astar(
-        # #     grid=grid,
-        # #     connections=connections,
-        # #    local_connections=local_connections,
-        # #     components=components,
-        # #     port_scaled_coords=port_scaled_coords,
-        # #     net_list=net_list)
-        #
-        # # components = initiate_write_traces(components, path, port_coord, seg_list, scale_factor, net_list)
+        #     port_scaled_coords=port_scaled_coords,
+        #     net_list=net_list)
+
+        # components = initiate_write_traces(components, path, port_coord, seg_list, scale_factor, net_list)
         # # MagicLayoutCreator(project_properties=project_properties, components=components)
         #
         # # temp setting
@@ -146,7 +113,8 @@ def main():
         #         component.transform_matrix.set([1, 0, i*1000, 0, 1, i*1000])
         #         component.bounding_box.set(used_area)
 
-
+        #  draw_result(grid_size=grid_size, objects=components, used_area=used_area, scale_factor=scale_factor,
+        #                         draw_name=draw_name)
 
         # Update components with trace information
         # components = TraceGenerator(components=components, project_properties=project_properties).get()
@@ -161,10 +129,10 @@ def main():
         # LVSchecking(project_properties=project_properties)
 
     else:
-        components = load_from_json(file_name="src/json_converter/components_(edge_case_test_for_endpoints).json")
+        components = load_from_json(file_name="src/json_converter/components_multiple_cell_test.json")
 
         # Update components with trace information
-        components = TraceGenerator(components=components, project_properties=project_properties).get()
+        # components = TraceGenerator(components=components, project_properties=project_properties).get()
 
         # Create layout
         MagicLayoutCreator(project_properties=project_properties, components=components)

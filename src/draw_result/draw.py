@@ -16,7 +16,7 @@ from matplotlib import pyplot as plt, patches
 from circuit.circuit_components import Pin, CircuitCell, TraceNet
 import os
 
-
+# Bjørn's simple drawer of component placements
 def draw_result(grid_size, objects, used_area, scale_factor, draw_name):
     current_file_directory = os.path.dirname(os.path.abspath(__file__))
     # set up plot
