@@ -15,6 +15,7 @@
 - [x] Remove layer name dependency of technology from magic layout creator. 
 - [ ] When adding multiple circuit cells the set of components only getting added once. 
 - [ ] Fix gathering of deeper information when cells inherit other cells. Overlap distance is for example not handled
+- [x] Fix missing rail and tap in a specific layout edge case (see .json file)
 
 ## Notes
 - Vias get turned into multiple smaller ones when converting to GDSII. Always want atleast two, however

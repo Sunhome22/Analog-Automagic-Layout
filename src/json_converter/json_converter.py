@@ -18,6 +18,7 @@ import json
 from circuit.circuit_components import *
 from dataclasses import asdict
 from logger.logger import get_a_logger
+import sys
 # =============================================== JSON converter =======================================================
 
 logger = get_a_logger(__name__)
@@ -56,6 +57,7 @@ def load_from_json(file_name: str):
 
     except FileNotFoundError:
         logger.error(f"'{file_name}' could not be found")
+        sys.exit()
 
     # Loop over JSON data
     for component in json_data:

@@ -198,7 +198,7 @@ def get_component_group_endpoints_for_atr_sky130a_lib(self):
     possible_y_max_components = []
     possible_y_min_components = []
 
-    # Assignment of no rail endpoint
+    # Assignment of no rail endpoints
     for components in grouped_components_x:
         for component in self.transistor_components:
             top_component = components[-1][0][0]
@@ -304,7 +304,8 @@ def place_transistor_endpoints_for_atr_sky130a_lib(self, component: Transistor):
         layout_name_top = re.sub(r".{3}$", "TAPTOP", component.layout_name)
         layout_name_bot = re.sub(r".{3}$", "TAPBOT", component.layout_name)
 
-        if component.group_endpoint in {"rail_top", "no_rail_top", "rail_top/no_rail_bot", "rail_bot/no_rail_top"}:
+        if component.group_endpoint in {"rail_top", "no_rail_top", "rail_top/no_rail_bot", "rail_bot/no_rail_top",
+                                        "rail_top/bot", "no_rail_top/bot"}:
             self.magic_file_lines.extend([
                 f"use {layout_name_top} {component.group}_{component.name}_TAPTOP {self.current_component_library_path}",
                 f"transform {component.transform_matrix.a} {component.transform_matrix.b}"
@@ -314,32 +315,13 @@ def place_transistor_endpoints_for_atr_sky130a_lib(self, component: Transistor):
                 f"{component.group_endpoint_bounding_box.x2} {component.group_endpoint_bounding_box.y2}"
             ])
 
-        if component.group_endpoint in {"rail_bot", "no_rail_bot", "rail_bot/no_rail_top", "rail_top/no_rail_bot"}:
+        if component.group_endpoint in {"rail_bot", "no_rail_bot", "rail_bot/no_rail_top", "rail_top/no_rail_bot",
+                                        "rail_top/bot", "no_rail_top/bot"}:
             self.magic_file_lines.extend([
                 f"use {layout_name_bot} {component.group}_{component.name}_TAPBOT {self.current_component_library_path}",
                 f"transform {component.transform_matrix.a} {component.transform_matrix.b}"
                 f" {component.transform_matrix.c} {component.transform_matrix.d}"
                 f" {component.transform_matrix.e} {component.transform_matrix.f - component.group_endpoint_bounding_box.y2}",
-                f"box {component.group_endpoint_bounding_box.x1} {component.group_endpoint_bounding_box.y1} "
-                f"{component.group_endpoint_bounding_box.x2} {component.group_endpoint_bounding_box.y2}"
-            ])
-
-        if component.group_endpoint == "rail_top/bot" or component.group_endpoint == "no_rail_top/bot":
-
-            self.magic_file_lines.extend([
-                f"use {layout_name_bot} {component.group}_{component.name}_TAPBOT {self.current_component_library_path}",
-                f"transform {component.transform_matrix.a} {component.transform_matrix.b}"
-                f" {component.transform_matrix.c} {component.transform_matrix.d}"
-                f" {component.transform_matrix.e} {component.transform_matrix.f - component.group_endpoint_bounding_box.y2}",
-                f"box {component.group_endpoint_bounding_box.x1} {component.group_endpoint_bounding_box.y1} "
-                f"{component.group_endpoint_bounding_box.x2} {component.group_endpoint_bounding_box.y2}"
-            ])
-
-            self.magic_file_lines.extend([
-                f"use {layout_name_top} {component.group}_{component.name}_TAPTOP {self.current_component_library_path}",
-                f"transform {component.transform_matrix.a} {component.transform_matrix.b}"
-                f" {component.transform_matrix.c} {component.transform_matrix.d}"
-                f" {component.transform_matrix.e} {component.transform_matrix.f + component.bounding_box.y2}",
                 f"box {component.group_endpoint_bounding_box.x1} {component.group_endpoint_bounding_box.y1} "
                 f"{component.group_endpoint_bounding_box.x2} {component.group_endpoint_bounding_box.y2}"
             ])

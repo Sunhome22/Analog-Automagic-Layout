@@ -161,7 +161,7 @@ def main():
         # LVSchecking(project_properties=project_properties)
 
     else:
-        components = load_from_json(file_name="src/json_converter/components_for_comp_circuit_lvs_clean.json")
+        components = load_from_json(file_name="src/json_converter/components_(edge_case_test_for_endpoints).json")
 
         # Update components with trace information
         components = TraceGenerator(components=components, project_properties=project_properties).get()
