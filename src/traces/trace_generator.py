@@ -81,7 +81,8 @@ class TraceGenerator:
         self.scale_offset_y = 0
         self.mapped_rectangles = []
         self.adjustment = self.used_area.x1 - self.GRID_LEEWAY_X, self.used_area.y1 - self.GRID_LEEWAY_Y
-
+        #Debug
+        self.net_debug = None
         self.__generate_rails()
         self.__generate_traces()
 
@@ -156,6 +157,9 @@ class TraceGenerator:
 
         self.scale_offset_x /= len(goal_nodes)
         self.scale_offset_y /= len(goal_nodes)
+        self.logger.info(f"net: {self.net_debug}")
+        self.logger.info(f"Scale offset x: {self.scale_offset_x}")
+        self.logger.info(f"Scale offset y: {self.scale_offset_y}")
 
     def __calculate_real_coordinates(self, segment):
         start_x,start_y = segment[0]
@@ -268,9 +272,45 @@ class TraceGenerator:
 
     def __generate_traces(self):
         for net in self.paths:
+            self.net_debug = net
             self.__map_segments_to_rectangles(path_info=self.paths[net])
             self.__write_traces(net = net)
             self.__write_labels(net = net )
 
     def get(self):
         return self.components
+
+
+
+    """Helper functions"""
+def direction(p1, p2):
+    dx = p2[0] - p1[0]
+    dy = p2[1] - p1[1]
+    return dx, dy
+def segment_path(path):
+    if path is None or len(path) < 2:
+        return []  # No segments for a path with less than 2 points
+
+    segments = []
+    current_segment = [path[0]]  # Start with the first point
+    # Track the initial direction
+    current_direction = direction(path[0], path[1])
+
+    for i in range(1, len(path)):
+        next_direction = direction(path[i - 1], path[i])
+        if next_direction != current_direction:
+            # Direction changed, end the current segment
+            current_segment.append(path[i - 1])
+            segments.append(current_segment)
+            # Start a new segment
+            current_segment = [path[i - 1]]
+            current_direction = next_direction
+
+        # Add the current point to the segment
+        current_segment.append(path[i])
+
+    # Add the final segment
+    if current_segment:
+        segments.append(current_segment)
+
+    return segments

@@ -84,13 +84,17 @@ def main():
 
     connections, overlap_dict, net_list, debug_ov = ConnectionLists(input_components = components).get()
 
-    logger.info(overlap_dict)
-    logger.info(debug_ov)
-
 
     components = LinearOptimizationSolver(components, connections,  overlap_dict).solve_placement()
 
     grid, port_scaled_coordinates, used_area, port_coordinates, routing_parameters= GridGeneration(components=components).initialize_grid_generation()
+
+    logger.info(f"Obj 10 and port D non scaled: {port_coordinates["10D"]}")
+    logger.info(f"Obj 10 and port D scaled: {port_scaled_coordinates["10D"]}")
+    logger.info(f"Obj 16 and port D non scaled: {port_coordinates["16D"]}")
+    logger.info(f"Obj 16 and port D  scaled: {port_scaled_coordinates["16D"]}")
+    logger.info(f"used area: {used_area}")
+    return
     logger.info(f"used_area: {used_area}")
     for obj in components:
         if isinstance(obj, CircuitCell):
@@ -105,8 +109,7 @@ def main():
                                     routing_parameters = routing_parameters
                                     ).get()
 
-    print(path)
-    return
+
 
     components = TraceGenerator(project_properties= project_properties,
                                 components = components,

@@ -89,24 +89,27 @@ def draw_result( objects, connections, used_area, draw_name):
         scaled_points = []
         none = 0
         missing_paths = []
-        for net in connections2:
-            logger.info(connections2)
-            for p in net:
-                logger.info(p)
-                if p[1] is not None:
-                    scaled_points.append( [(used_area.x1-500 + x*SCALE_FACTOR , used_area.y1-500 + y*SCALE_FACTOR ) for x, y in p[1]])
+        for net in connections:
+            for p in connections[net]['segments']:
+                if p is not None:
+                    scaled_points.append( [(used_area.x1-500 + x*SCALE_FACTOR , used_area.y1-500 + y*SCALE_FACTOR ) for x, y in p])
                 else:
-                    missing_paths.append(p[0])
+                    missing_paths.append(p)
                     none += 1
 
-        for con in scaled_points:
+                if scaled_points[-1]:
+                    x_coordinates, y_coordinates = zip(*scaled_points[-1])
+                    plt.plot(x_coordinates, y_coordinates, linewidth=4, color='black')
+                    plt.plot(x_coordinates, y_coordinates, linewidth=2, linestyle='-')
 
-            x_coordinates, y_coordinates = zip(*con)
-            plt.plot(x_coordinates, y_coordinates, linewidth=4, color='black')
-            plt.plot(x_coordinates, y_coordinates, linewidth=2, linestyle='-')
+        # for con in scaled_points:
+        #
+        #     x_coordinates, y_coordinates = zip(*scaled_points[-1])
+        #     plt.plot(x_coordinates, y_coordinates, linewidth=4, color='black')
+        #     plt.plot(x_coordinates, y_coordinates, linewidth=2, linestyle='-')
 
 
 
 
     plt.title('OBJ placement')
-    plt.savefig('results/'+draw_name+'.png')
+    plt.savefig('src/results/'+draw_name+'.png')
