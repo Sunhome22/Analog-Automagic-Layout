@@ -13,8 +13,11 @@ class AstarInitiator:
     def __init__(self, components, grid, connections, port_scaled_coordinates, port_coordinates, net_list,
                  routing_parameters):
         self.logger = get_a_logger(__name__)
+
         self.config = self.__load_config()
         self.RUN_MULTIPLE_ASTAR = self.config["a_star_initiator"]["RUN_MULTIPLE_ASTAR"]
+        self.CUSTOM_NET_ORDER = self.config["a_star_initiator"]["CUSTOM_NET_ORDER"]
+        self.NET_ORDER = self.config["a_star_initiator"]["NET_ORDER"]
 
         self.routing_parameters = routing_parameters
         self.components = components
@@ -28,6 +31,7 @@ class AstarInitiator:
         self.real_goal_nodes = []
         self.path = {}
         self.seg_list = {}
+        self.debug_skip = True
 
     def __load_config(self, path="pyproject.toml"):
         try:
@@ -59,11 +63,14 @@ class AstarInitiator:
                             real_start = (int(self.port_coordinates[con.start_comp_id + con.start_area[0]][0]),
                                           int(self.port_coordinates[con.start_comp_id + con.start_area[0]][1]))
 
+
+
                         if con.end_comp_id != "" and placed_object.number_id == int(con.end_comp_id):
                             end = (int(self.port_scaled_coordinates[con.end_comp_id + con.end_area[0]][0]),
                                    int(self.port_scaled_coordinates[con.end_comp_id + con.end_area[0]][2]))
                             real_end = (int(self.port_coordinates[con.end_comp_id + con.end_area[0]][0]),
                                         int(self.port_coordinates[con.end_comp_id + con.end_area[0]][1]))
+
 
                     break_condition = {
                         "component_connection": [start is not None, end is not None],
@@ -72,19 +79,23 @@ class AstarInitiator:
                     if all(break_condition["component_connection"]):
 
                         if len(con.start_area) >= 2 or len(con.end_area) >= 2:
+
                             start, real_start, end, real_end = check_start_end_port(con, self.port_scaled_coordinates,
                                                                                     self.port_coordinates)
+
                         self.goal_nodes.extend([start, end])
                         self.real_goal_nodes.extend([real_start, real_end])
+
                         break
                     elif all(break_condition["single_connection"]):
                         self.goal_nodes.append(start)
                         self.real_goal_nodes.append(real_start)
                         break
 
-        self.goal_nodes = list(set(self.goal_nodes))
+        self.goal_nodes =  list(dict.fromkeys(self.goal_nodes))
 
-        self.real_goal_nodes = list(set(self.real_goal_nodes))
+        self.real_goal_nodes =  list(dict.fromkeys(self.real_goal_nodes))
+
 
     def __lock_or_unlock_port(self, lock):
 
@@ -111,7 +122,7 @@ class AstarInitiator:
                 for x, y in segment:
                     for i in range(-self.routing_parameters.trace_width_scaled,
                                    self.routing_parameters.trace_width_scaled + 1):
-                        for p in range(-2, 3):
+                        for p in range(-self.routing_parameters.trace_width_scaled, self.routing_parameters.trace_width_scaled + 1):
                             self.grid_vertical[y + p][x + i] = 1
 
             # horizontal
@@ -119,12 +130,13 @@ class AstarInitiator:
                 for x, y in segment:
                     for i in range(-self.routing_parameters.trace_width_scaled,
                                    self.routing_parameters.trace_width_scaled + 1):
-                        for p in range(-2, 3):
+                        for p in range(-self.routing_parameters.trace_width_scaled, self.routing_parameters.trace_width_scaled + 1):
                             self.grid_horizontal[y + i][x + p] = 1
 
     def __run_multiple_astar_multiple_times(self, net):
         best_path = None
         best_length = float('inf')
+
         if self.RUN_MULTIPLE_ASTAR:
             self.logger.info(f"Running A* multiple times for net: {net}")
             for start in self.goal_nodes:
@@ -151,7 +163,12 @@ class AstarInitiator:
     def __initiate_astar(self):
         self.logger.info("Starting Initiate A*")
 
-        for net in self.net_list.pin_nets + self.net_list.applicable_nets:
+
+        local_net_order = self.NET_ORDER if self.CUSTOM_NET_ORDER else self.net_list.pin_nets + self.net_list.applicable_nets
+
+
+
+        for net in local_net_order:
             # Skipping these nets, that are handled by other routing algorithm
             if self.__check_vdd_vss(net):
                 continue
@@ -161,12 +178,10 @@ class AstarInitiator:
             if len(self.goal_nodes) == 0:
                 self.__extract_goal_nodes(connection_list=self.connections["single_connections"], net=net)
 
-            self.logger.info(f"goal nodes in net: {net}, goal_nodes: {self.goal_nodes}")
             # Make goal nodes walkable
             self.__lock_or_unlock_port(lock=0)
 
             if len(self.goal_nodes) > 1:
-                self.logger.info(f"Starting A* for net: {net}")
                 p = self.__run_multiple_astar_multiple_times(net = net)
             elif len(self.goal_nodes) == 0:
                 self.logger.error(f"No goal nodes found in net: {net}")

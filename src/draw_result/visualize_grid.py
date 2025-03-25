@@ -2,8 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
 def visualize_grid(grid):
-    import matplotlib.pyplot as plt
-    import numpy as np
+
 
     # Example nested list (grid)
 

@@ -100,17 +100,17 @@ class GridGeneration:
 
 
     def __calculate_non_overlap_parameters(self):
-        self.routing_parameters.trace_width_scaled = math.ceil((self.TRACE_WIDTH+self.VIA_MINIMUM_DISTANCE+self.VIA_PADDING*2)/self.SCALE_FACTOR)
+        self.routing_parameters.trace_width_scaled = math.ceil((self.TRACE_WIDTH+self.VIA_MINIMUM_DISTANCE+self.VIA_PADDING*2)/self.SCALE_FACTOR) +1
         for obj in self.components:
             if not check_instance(obj):
                 for port in obj.layout_ports:
                     if not port.type == "G":
-                        self.routing_parameters.port_width_scaled = math.ceil(((port.area.x2-port.area.x1)/2 +self.VIA_MINIMUM_DISTANCE+self.VIA_PADDING*2+self.TRACE_WIDTH/2)/self.SCALE_FACTOR)
+                        self.routing_parameters.port_width_scaled = math.ceil(((port.area.x2-port.area.x1)/2 +self.VIA_MINIMUM_DISTANCE+self.VIA_PADDING*2+self.TRACE_WIDTH/2)/self.SCALE_FACTOR) +1
 
                     else:
-                        self.routing_parameters.gate_width_scaled = math.ceil(((port.area.x2-port.area.x1)/2 +self.VIA_MINIMUM_DISTANCE+self.VIA_PADDING*2+self.TRACE_WIDTH/2)/self.SCALE_FACTOR)
+                        self.routing_parameters.gate_width_scaled = math.ceil(((port.area.x2-port.area.x1)/2 +self.VIA_MINIMUM_DISTANCE+self.VIA_PADDING*2+self.TRACE_WIDTH/2)/self.SCALE_FACTOR) +1
 
-                    self.routing_parameters.port_height_scaled = math.ceil(((port.area.y2-port.area.y1)/2 +self.VIA_MINIMUM_DISTANCE+self.VIA_PADDING*2+self.TRACE_WIDTH/2)/self.SCALE_FACTOR)
+                    self.routing_parameters.port_height_scaled = math.ceil(((port.area.y2-port.area.y1)/2 +self.VIA_MINIMUM_DISTANCE+self.VIA_PADDING*2+self.TRACE_WIDTH/2)/self.SCALE_FACTOR) +1
                     if self.routing_parameters.port_width_scaled != 0 and self.routing_parameters.gate_width_scaled != 0:
                         break
 

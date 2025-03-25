@@ -13,6 +13,8 @@
 # If not, see <https://www.gnu.org/licenses/>.
 # ==================================================================================================================== #
 # ================================================== Libraries =========================================================
+from fontTools.misc.bezierTools import rectArea
+
 from circuit.circuit_spice_parser import SPICEparser
 from magic.magic_layout_creator import MagicLayoutCreator
 from magic.magic_component_parser import MagicComponentsParser
@@ -22,9 +24,9 @@ from draw_result.draw import draw_result
 from linear_optimization.linear_optimization import *
 from grid.generate_grid import GridGeneration
 from connections.connections import *
-from circuit.circuit_components import Transistor
+from circuit.circuit_components import Transistor, RectArea
 from astar.a_star_initiator import AstarInitiator
-
+import cProfile
 
 import os
 
@@ -89,13 +91,6 @@ def main():
 
     grid, port_scaled_coordinates, used_area, port_coordinates, routing_parameters= GridGeneration(components=components).initialize_grid_generation()
 
-    logger.info(f"Obj 10 and port D non scaled: {port_coordinates["10D"]}")
-    logger.info(f"Obj 10 and port D scaled: {port_scaled_coordinates["10D"]}")
-    logger.info(f"Obj 16 and port D non scaled: {port_coordinates["16D"]}")
-    logger.info(f"Obj 16 and port D  scaled: {port_scaled_coordinates["16D"]}")
-    logger.info(f"used area: {used_area}")
-    return
-    logger.info(f"used_area: {used_area}")
     for obj in components:
         if isinstance(obj, CircuitCell):
             obj.transform_matrix.set([1, 0, 0, 0, 1, 0])
@@ -108,6 +103,7 @@ def main():
                                     net_list = net_list,
                                     routing_parameters = routing_parameters
                                     ).get()
+
 
 
 
