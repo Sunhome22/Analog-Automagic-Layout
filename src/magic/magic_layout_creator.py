@@ -140,8 +140,8 @@ class MagicLayoutCreator:
         previous_segment = None
         via_count = 0
 
-        for segment in trace_net.segments:
 
+        for segment in trace_net.segments:
             if previous_segment and previous_segment.layer != segment.layer:
 
                 # Calculate overlap
@@ -200,7 +200,7 @@ class MagicLayoutCreator:
                         # Check for overlap between the port and the segment and add vias accordingly
                         if not (segment.area.x2 < port_pos.x1 or segment.area.x1 > port_pos.x2 or
                                 segment.area.y2 < port_pos.y1 or segment.area.y1 > port_pos.y2):
-
+                            print(port)
                             self.__via_placer(start_layer=segment.layer, end_layer=port.layer, area=port_pos,
                                               trace_net=trace_net)
 
@@ -323,7 +323,7 @@ class MagicLayoutCreator:
     def __circuit_cell_component_creator(self, component):
 
         self.magic_file_lines.extend([
-            f"use {component.name} {component.name} ",
+            f"use {component.parent_cell_chain} {component.parent_cell_chain} ",
             f"transform {component.transform_matrix.a} {component.transform_matrix.b}"
             f" {component.transform_matrix.c} {component.transform_matrix.d}"
             f" {component.transform_matrix.e} {component.transform_matrix.f}",
@@ -402,7 +402,7 @@ class MagicLayoutCreator:
         # Retrieve all sub cells
         for component in self.components:
             if isinstance(component, CircuitCell):
-                sub_cells.append(f"{component.name}_{component.cell}")
+                sub_cells.append(f"{component.parent_cell_chain}")
 
         cells = sub_cells + [self.project_top_cell_name]
         print(cells)
@@ -419,16 +419,23 @@ class MagicLayoutCreator:
             self.total_circuit_cells_added = 0
 
             for component in self.components:
+                if isinstance(component, CircuitCell):
+                    if component.parent_cell_chain == cell or component.parent_cell == cell:
+                        cell_components.append(component)
+                        cell_name = cell
 
                 if component.cell == "":
                     self.logger.error(f"{component.name} is missing a cell name")
                     continue
 
                 if component.cell != cell:
+                    #print(component.cell)
+                    # and f"{component.name}_{component.cell}" != cell:
                     continue
 
+
                 if cell_name is None:
-                    cell_name = component.cell
+                    cell_name = component.parent_cell_chain
 
                 #print(cell_components)
                 cell_components.append(component)
@@ -436,6 +443,7 @@ class MagicLayoutCreator:
             # Create file if component list is not empty
             print(cell_name)
             self.__magic_file_creator(components=cell_components, file_name=cell_name)
+
 
         self.logger.info("Process complete!")
 

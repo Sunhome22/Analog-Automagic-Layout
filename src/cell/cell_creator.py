@@ -73,10 +73,17 @@ class CellCreator:
             grid, port_scaled_coordinates, used_area, port_coordinates, routing_parameters = GridGeneration(
                 components=components).initialize_grid_generation()
 
+            origin_scaled_used_area = RectArea(x1=0, y1=0, x2=used_area.x2 - used_area.x1, y2=used_area.y2 - used_area.y1)
+
             for component in components:
                 if isinstance(component, CircuitCell):
-                    component.transform_matrix.set([1, 0, index*1000, 0, 1, 0])
-                    component.bounding_box = used_area
+                    component.transform_matrix.set([1, 0, index*2100, 0, 1, 0])
+                    component.bounding_box = origin_scaled_used_area
+
+                # Scale other placed components to origin also
+                elif isinstance(component, (Transistor, Capacitor, Resistor)):
+                    component.transform_matrix.c -= used_area.x1
+                    component.transform_matrix.f -= used_area.y1
 
             # path = AstarInitiator(grid=grid,
             #                       connections=connections,
@@ -91,7 +98,7 @@ class CellCreator:
                                         components=components,
                                         paths=[],
                                         net_list=net_list,
-                                        used_area=used_area
+                                        used_area=origin_scaled_used_area
                                         ).get()
 
             # Update component information

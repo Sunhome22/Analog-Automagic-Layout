@@ -376,7 +376,7 @@ class SPICEparser:
                 port_definitions = self.__get_layout_port_definitions(line_words[-1], self.subcircuits)
 
                 # Create circuit cell component and add extracted parameters
-                circuit_cell = CircuitCell(name=line_words[0],
+                circuit_cell = CircuitCell(name=f"{line_words[0]}",
                                            cell=line_words[-1],
                                            parent_cell=current_cell,
                                            parent_cell_chain=f"{line_words[0]}_{line_words[-1]}",
