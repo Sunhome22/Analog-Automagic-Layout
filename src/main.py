@@ -86,6 +86,7 @@ def main():
 
         components = CellCreator(project_properties=project_properties, components=components).get()
 
+
         save_to_json(components, file_name="src/json_converter/components_multiple_cell_test.json")
         #
         #

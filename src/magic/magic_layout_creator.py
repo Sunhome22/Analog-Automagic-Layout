@@ -30,7 +30,7 @@ import copy
 
 
 class MagicLayoutCreator:
-
+    logger = get_a_logger(__name__)
     def __init__(self, project_properties, components):
         self.project_properties = project_properties
         self.project_top_cell_name = project_properties.top_cell_name
@@ -52,7 +52,6 @@ class MagicLayoutCreator:
         self.METAL_LAYERS = self.config["magic_layout_creator"]["METAL_LAYERS"]
         self.VIA_MAP = self.config["magic_layout_creator"]["VIA_MAP"]
 
-        self.logger = get_a_logger(__name__)
         self.__generate_magic_files()
 
     def __load_config(self, path="pyproject.toml"):
@@ -174,12 +173,12 @@ class MagicLayoutCreator:
 
         return via_count
 
-    def __add_trace_net_connection_point(self, trace_net: TraceNet):
+    def __add_trace_net_connection_point(self, trace_net: TraceNet, components):
         """Creates a connection point based on which layer a trace segment wants to connect to a port.
         Multiple connections to a port will show as the connection point being added multiple times"""
 
         # Iterate over all components and filter out things that does not have ports
-        for component in self.components:
+        for component in components:
             if not isinstance(component, (Pin, CircuitCell, TraceNet)):
 
                 # Iterate over all ports for every segment of the current trace net
@@ -200,7 +199,7 @@ class MagicLayoutCreator:
                         # Check for overlap between the port and the segment and add vias accordingly
                         if not (segment.area.x2 < port_pos.x1 or segment.area.x1 > port_pos.x2 or
                                 segment.area.y2 < port_pos.y1 or segment.area.y1 > port_pos.y2):
-                            print(port)
+
                             self.__via_placer(start_layer=segment.layer, end_layer=port.layer, area=port_pos,
                                               trace_net=trace_net)
 
@@ -354,7 +353,7 @@ class MagicLayoutCreator:
         # Place connection points
         for component in components:
             if isinstance(component, TraceNet):
-                self.__add_trace_net_connection_point(trace_net=component)
+                self.__add_trace_net_connection_point(trace_net=component, components=components)
 
         # Place trace nets
         for component in components:
@@ -405,12 +404,12 @@ class MagicLayoutCreator:
                 sub_cells.append(f"{component.parent_cell_chain}")
 
         cells = sub_cells + [self.project_top_cell_name]
-        print(cells)
 
         # Iterate over found cells and generate .mag files for each one
         for cell in cells:
             cell_name = None
             cell_components = []
+
             self.magic_file_lines = []
             self.total_functional_components_added = 0
             self.total_connection_points_added = 0
@@ -420,8 +419,16 @@ class MagicLayoutCreator:
 
             for component in self.components:
                 if isinstance(component, CircuitCell):
-                    if component.parent_cell_chain == cell or component.parent_cell == cell:
-                        cell_components.append(component)
+
+                    # Place all circuit cells in top cell
+                    if cell == component.parent_cell:
+                        for comp in self.components:
+                            if isinstance(comp, CircuitCell):
+                                cell_components.append(comp)
+                        cell_name = self.project_top_cell_name
+
+                    # Assign new cell name on change
+                    if component.parent_cell_chain == cell:
                         cell_name = cell
 
                 if component.cell == "":
@@ -429,19 +436,14 @@ class MagicLayoutCreator:
                     continue
 
                 if component.cell != cell:
-                    #print(component.cell)
-                    # and f"{component.name}_{component.cell}" != cell:
                     continue
-
 
                 if cell_name is None:
                     cell_name = component.parent_cell_chain
 
-                #print(cell_components)
                 cell_components.append(component)
 
             # Create file if component list is not empty
-            print(cell_name)
             self.__magic_file_creator(components=cell_components, file_name=cell_name)
 
 

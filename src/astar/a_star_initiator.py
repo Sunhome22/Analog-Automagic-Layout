@@ -10,9 +10,11 @@ import re
 
 
 class AstarInitiator:
+    logger = get_a_logger(__name__)
+
     def __init__(self, components, grid, connections, port_scaled_coordinates, port_coordinates, net_list,
                  routing_parameters):
-        self.logger = get_a_logger(__name__)
+
         self.config = self.__load_config()
         self.RUN_MULTIPLE_ASTAR = self.config["a_star_initiator"]["RUN_MULTIPLE_ASTAR"]
 

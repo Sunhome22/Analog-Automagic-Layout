@@ -35,6 +35,7 @@ class TraceRectangle:
 # =============================================== Trace Generator ======================================================
 
 class TraceGenerator:
+    logger = get_a_logger(__name__)
 
     def __init__(self, project_properties, components, paths, net_list, used_area):
         self.project_properties = project_properties
@@ -49,7 +50,6 @@ class TraceGenerator:
         self.paths = paths
         self.net_list = net_list
         self.used_area = used_area
-        self.logger = get_a_logger(__name__)
 
         # Load config
         self.config = self.__load_config()

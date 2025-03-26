@@ -36,17 +36,18 @@ from traces.trace_generator import TraceGenerator
 # =================================================== Cell Creator =====================================================
 
 class CellCreator:
+    logger = get_a_logger(__name__)
+
     def __init__(self, project_properties, components):
         self.project_directory = project_properties.directory
         self.project_properties = project_properties
         self.component_libraries = project_properties.component_libraries
         self.components = components
-        self.logger = get_a_logger(__name__)
         self.updated_components = list()
 
-        self.__create_cell()
+        self.__create_cells()
 
-    def __create_cell(self):
+    def __create_cells(self):
         components_grouped_by_circuit_cell = defaultdict(list)
         circuit_cells = list()
 
@@ -68,7 +69,8 @@ class CellCreator:
             connections, overlap_dict, net_list = ConnectionLists(
                 input_components=components_grouped_by_circuit_cell[grouped_components]).get()
 
-            components = LinearOptimizationSolver(components_grouped_by_circuit_cell[grouped_components], connections, overlap_dict).solve_placement()
+            components = LinearOptimizationSolver(components_grouped_by_circuit_cell[grouped_components],
+                                                  connections, overlap_dict).solve_placement()
 
             grid, port_scaled_coordinates, used_area, port_coordinates, routing_parameters = GridGeneration(
                 components=components).initialize_grid_generation()
@@ -77,7 +79,7 @@ class CellCreator:
 
             for component in components:
                 if isinstance(component, CircuitCell):
-                    component.transform_matrix.set([1, 0, index*2100, 0, 1, 0])
+                    component.transform_matrix.set([1, 0, index*2000, 0, 1, 0])
                     component.bounding_box = origin_scaled_used_area
 
                 # Scale other placed components to origin also

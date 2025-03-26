@@ -36,7 +36,7 @@ from logger.logger import get_a_logger
 
 
 class SPICEparser:
-
+    logger = get_a_logger(__name__)
     def __init__(self, project_properties):
         self.project_top_cell_name = project_properties.top_cell_name
         self.project_directory = project_properties.directory
@@ -49,7 +49,6 @@ class SPICEparser:
         self.prev_parent_cell_name = ''
         self.parent_cell_chain = ''
 
-        self.logger = get_a_logger(__name__)
         self.__parse()
 
     def __generate_spice_file_for_schematic(self):

@@ -41,7 +41,7 @@ TIME_LIMIT = 2
 MIRROR = true
 RUN = true
 
-STOP_TOLERANCE = 0.2
+STOP_TOLERANCE = 0.05
 SOLVER_MSG = true
 
 # Magic layout creator config options
