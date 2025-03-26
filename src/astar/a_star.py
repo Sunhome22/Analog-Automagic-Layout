@@ -19,7 +19,7 @@ import heapq
 
 
 
-logger = get_a_logger(__name__)
+
 
 class PriorityQueue:
     """Priority Queue for managing open set nodes."""
@@ -52,6 +52,7 @@ class Memoize:
 
 
 class AstarAlgorithm:
+    logger = get_a_logger(__name__)
     def __init__(self, grid_vertical, grid_horizontal, start, goal_nodes, minimum_segment_length):
         #Inputs
         self.grid_vertical = grid_vertical
@@ -64,7 +65,7 @@ class AstarAlgorithm:
         self.height = len(grid_vertical)
         self.width = len(grid_vertical[0]) if self.height > 0 else 0
 
-        self.logger = get_a_logger(__name__)
+
 
     def in_bounds(self, pos):
         x, y = pos
@@ -125,6 +126,8 @@ class AstarAlgorithm:
                 if not (self.in_bounds(neighbor) and self.is_walkable(neighbor, current)):
                     continue
 
+                if not self.is_walkable(neighbor, current):
+                    self.logger.error("Node not walkable but still going")
                 # Initialize prospective state variables.
                 prospective_last_dir = None
                 prospective_seg_len = 0

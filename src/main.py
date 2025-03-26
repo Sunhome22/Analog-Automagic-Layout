@@ -78,16 +78,18 @@ def main():
     # Update component attributes with information from it's associated Magic files
     components = MagicComponentsParser(project_properties=project_properties,
                                        components=components.get()).get()
-   # components = load_from_json(file_name=f"{os.path.dirname(os.path.abspath(__file__))}/results/"f""f"Full_test_2.json")
 
-
+    #Load from json to skip placement (spice parser and magic component parser are also unnecessary)
+    components = load_from_json(f"{os.path.dirname(os.path.abspath(__file__))}/results/"
+                                f"Only_placement")
 
     # Algorithms
 
     connections, overlap_dict, net_list, debug_ov = ConnectionLists(input_components = components).get()
 
 
-    components = LinearOptimizationSolver(components, connections,  overlap_dict).solve_placement()
+    #components = LinearOptimizationSolver(components, connections,  overlap_dict).solve_placement()
+
 
     grid, port_scaled_coordinates, used_area, port_coordinates, routing_parameters= GridGeneration(components=components).initialize_grid_generation()
 

@@ -36,11 +36,10 @@ class RoutingSizingParameters:
     minimum_segment_length: int = field(default_factory=int)
 
 class GridGeneration:
-
+    logger = get_a_logger(__name__)
     def __init__(self, components):
 
-        #LOGGER
-        self.logger = get_a_logger(__name__)
+
 
         #LOAD CONFIG
         self.config = self.__load_config()

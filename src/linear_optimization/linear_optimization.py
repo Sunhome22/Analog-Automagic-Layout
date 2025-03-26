@@ -23,10 +23,10 @@ from logger.logger import get_a_logger
 
 
 class LinearOptimizationSolver:
-
+    logger = get_a_logger(__name__)
     def __init__(self, components, connections, overlap_components):
 
-        self.logger = get_a_logger(__name__)
+
         self.current_file_directory = os.path.dirname(os.path.abspath(__file__))
 
         # Load config

@@ -25,12 +25,13 @@ import libraries.atr_sky130a_lib as atr
 
 
 class MagicComponentsParser:
+    logger = get_a_logger(__name__)
     def __init__(self, project_properties, components):
         self.project_directory = project_properties.directory
         self.component_libraries = project_properties.component_libraries
         self.current_component_library_path = None
         self.components = components
-        self.logger = get_a_logger(__name__)
+
 
         # Component specific (gets reset for every component)
         self.found_transistor_well = False

@@ -41,4 +41,4 @@ def heatmap_test(grid, name):
     ax = sns.heatmap(grid, cmap='coolwarm', cbar=True, linewidths=0.5)
     ax.invert_yaxis()
     plt.title("120x60 Grid Visualization")
-    plt.savefig('results/'+name+'.png')
+    plt.savefig('src/results/'+name+'.png')

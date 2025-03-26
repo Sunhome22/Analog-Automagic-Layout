@@ -30,7 +30,7 @@ import copy
 
 
 class MagicLayoutCreator:
-
+    logger = get_a_logger(__name__)
     def __init__(self, project_properties, components):
         self.project_properties = project_properties
         self.project_top_cell_name = project_properties.top_cell_name
@@ -45,7 +45,7 @@ class MagicLayoutCreator:
         self.total_trace_nets_added = 0
         self.total_vias_added = 0
         self.total_circuit_cells_added = 0
-        self.logger = get_a_logger(__name__)
+
         self.config = self.__load_config()
 
 

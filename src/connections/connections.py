@@ -53,9 +53,9 @@ class Connection:
 
 
 class ConnectionLists:
-
+    logger = get_a_logger(__name__)
     def __init__(self, input_components):
-        self.logger = get_a_logger(__name__)
+
         self.components = []
         for component in input_components:
             if isinstance(component, Transistor):
