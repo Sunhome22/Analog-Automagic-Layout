@@ -420,13 +420,6 @@ class MagicLayoutCreator:
             for component in self.components:
                 if isinstance(component, CircuitCell):
 
-                    # Place all circuit cells in top cell
-                    if cell == component.parent_cell:
-                        for comp in self.components:
-                            if isinstance(comp, CircuitCell):
-                                cell_components.append(comp)
-                        cell_name = self.project_top_cell_name
-
                     # Assign new cell name on change
                     if component.parent_cell_chain == cell:
                         cell_name = cell
@@ -442,6 +435,13 @@ class MagicLayoutCreator:
                     cell_name = component.parent_cell_chain
 
                 cell_components.append(component)
+
+            # Place all circuit cells in top cell
+            if cell == self.project_top_cell_name:
+                for comp in self.components:
+                    if isinstance(comp, CircuitCell):
+                        cell_components.append(comp)
+                cell_name = self.project_top_cell_name
 
             # Create file if component list is not empty
             self.__magic_file_creator(components=cell_components, file_name=cell_name)

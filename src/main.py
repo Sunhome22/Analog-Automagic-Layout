@@ -75,7 +75,7 @@ project_properties = ProjectProperties(directory="~/aicex/ip/jnw_bkle_sky130A",
 def main():
     # Create a logger
     logger = get_a_logger(__name__)
-    run = False
+    run = True
 
     if run:
         # Extracts component information from SPICE file
@@ -85,9 +85,9 @@ def main():
         components = MagicComponentsParser(project_properties=project_properties, components=components).get()
 
         components = CellCreator(project_properties=project_properties, components=components).get()
+        save_to_json(components, file_name="src/json_converter/components_with_traces_update_1.json")
+        MagicLayoutCreator(project_properties=project_properties, components=components)
 
-
-        save_to_json(components, file_name="src/json_converter/components_multiple_cell_test.json")
         #
         #
         #     print(component.cell, component.parent_cell_chain)
@@ -130,7 +130,7 @@ def main():
         # LVSchecking(project_properties=project_properties)
 
     else:
-        components = load_from_json(file_name="src/json_converter/components_multiple_cell_test.json")
+        components = load_from_json(file_name="src/json_converter/components_multiple_cell_test_1.json")
         #components = load_from_json(file_name="src/json_converter/components_for_comp_circuit_lvs_clean.json")
         # Update components with trace information
         # components = TraceGenerator(components=components, project_properties=project_properties).get()

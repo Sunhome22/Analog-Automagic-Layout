@@ -30,8 +30,8 @@ dependencies = {file = ["requirements.txt"]}
 #                     between primal and dual solutions
 
 [linear_optimization]
-UNIT_HEIGHT = 100
-UNIT_WIDTH = 64
+UNIT_HEIGHT = 400
+UNIT_WIDTH = 576
 OFFSET_X = 184
 OFFSET_Y = 700
 ALPHA = 0.001
@@ -67,16 +67,30 @@ INIT_RAIL_RING_OFFSET_X = 150
 RAIL_RING_OFFSET = 150
 RAIL_RING_WIDTH = 100
 
+# Generate grid config options
+# -> Grid size - area the components have to fit within
+# -> Scale factor - shrink factor for routing space representation
+# -> Via minimum distance - minimum offset between via points
+# -> Trace width - width of traces
+# -> Grid leeway x/y - extra space outside of component placement for additional routing space
+
 [generate_grid]
 GRID_SIZE = 4500
-SCALE_FACTOR =16
+SCALE_FACTOR = 16
 TRACE_WIDTH = 30
 VIA_MINIMUM_DISTANCE = 20
-GRID_LEEWAY_X = 500
+GRID_LEEWAY_X = 300
 GRID_LEEWAY_Y = 500
+# Astar initiator config options
+# -> Run multiple astar - allows a star to be executed with each goal node as initial position to find the shortest path
+# -> Custom net order - allows predefined order of nets in a star execution
+# -> Net order - the predefined order
 
 [a_star_initiator]
 RUN_MULTIPLE_ASTAR = false
+CUSTOM_NET_ORDER = true
+NET_ORDER = ["I_BIAS","net4", "VIN", "net2", "VO", "net1",  "net3", "VIP"]
+
 
 [DRAW_RESULT]
 FILE_NAME = 'Temporary_check'

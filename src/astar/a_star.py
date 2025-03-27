@@ -16,10 +16,10 @@ from itertools import combinations
 
 from logger.logger import get_a_logger
 import heapq
+from draw_result.visualize_grid import heatmap_test
 
 
 
-logger = get_a_logger(__name__)
 
 class PriorityQueue:
     """Priority Queue for managing open set nodes."""
@@ -36,22 +36,9 @@ class PriorityQueue:
     def pop(self):
         return heapq.heappop(self.elements)[1]
 
-class Memoize:
-    def __init__(self, func):
-        self.func = func
-        self.memo = {}
-
-    def __call__(self, *args):
-        if args not in self.memo:
-            self.memo[args] = self.func(*args)
-        return self.memo[args]
-
-    def __get__(self, instance, owner):
-        # Bind the instance to the function
-        return lambda *args: self(instance, *args)
-
 
 class AstarAlgorithm:
+    logger = get_a_logger(__name__)
     def __init__(self, grid_vertical, grid_horizontal, start, goal_nodes, minimum_segment_length):
         #Inputs
         self.grid_vertical = grid_vertical
@@ -64,7 +51,7 @@ class AstarAlgorithm:
         self.height = len(grid_vertical)
         self.width = len(grid_vertical[0]) if self.height > 0 else 0
 
-        self.logger = get_a_logger(__name__)
+
 
     def in_bounds(self, pos):
         x, y = pos
@@ -82,9 +69,22 @@ class AstarAlgorithm:
     def cap_seg(self, seg):
         return seg if seg < self.minimum_segment_length else self.minimum_segment_length
 
-    @Memoize
-    def a_star(self):
+    @staticmethod
+    def __manhattan( a, b):
+        return abs(a[0] - b[0]) + abs(a[1] - b[1])
 
+    @classmethod
+    def __heuristic(cls,current, mask, goals):
+        # Get unvisited goals.
+        unvisited = [goal for i, goal in enumerate(goals) if not (mask & (1 << i))]
+        if not unvisited:
+            return 0
+
+        return min(cls.__manhattan(current, goal) for goal in unvisited)
+
+
+
+    def a_star(self):
         goal_indices = {goal: i for i, goal in enumerate(self.goal_nodes)}
         all_visited = (1 << len(self.goal_nodes)) - 1
 
@@ -98,7 +98,7 @@ class AstarAlgorithm:
         if init_after_goal:
             init_mask |= (1 << goal_indices[self.start])
         g_start = 0
-        f_start = g_start + heuristic(self.start, init_mask, self.goal_nodes)
+        f_start = g_start + self.__heuristic(self.start, init_mask, self.goal_nodes)
         # Initial state: no previous direction (None), segment length 0.
         open_set.push((g_start, self.start, init_mask, [self.start], None, 0, init_after_goal, False), f_start)
 
@@ -152,7 +152,10 @@ class AstarAlgorithm:
                         # 1. We're coming after a goal,
                         # 2. The current segment has reached minimum length,
                         # 3. The previous move was not already a reversal.
-                        if not after_goal or seg_len < self.minimum_segment_length or last_was_reversal:
+                        if not after_goal or seg_len < self.minimum_segment_length:
+                            continue
+
+                        if last_was_reversal and len(path) >= 2 and neighbor == path[-2]:
                             continue
                         prospective_last_dir = d
                         prospective_seg_len = 1
@@ -187,7 +190,7 @@ class AstarAlgorithm:
                 cost_increment = 0 if (edge in edge_set or edge_rev in edge_set) else 1
 
                 new_g = g + cost_increment
-                new_f = new_g + heuristic(neighbor, new_mask, self.goal_nodes)
+                new_f = new_g + self.__heuristic(neighbor, new_mask, self.goal_nodes)
                 open_set.push(
                     (new_g, neighbor, new_mask, path + [neighbor],
                      prospective_last_dir, prospective_seg_len, new_after_goal, prospective_last_was_reversal),
@@ -197,18 +200,61 @@ class AstarAlgorithm:
         return None, None
 
 
-def heuristic(current, mask, goals):
-
-    # Get unvisited goals.
-    unvisited = [goal for i, goal in enumerate(goals) if not (mask & (1 << i))]
-    if not unvisited:
-        return 0
-
-    return min(manhattan(current, goal) for goal in unvisited)
 
 
-def manhattan(a, b):
-    return abs(a[0] - b[0]) + abs(a[1] - b[1])
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

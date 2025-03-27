@@ -12,6 +12,20 @@
 # If not, see <https://www.gnu.org/licenses/>.
 # ==================================================================================================================== #
 
+# ==================================================================================================================== #
+# Copyright (C) 2024 Bjørn K.T. Solheim, Leidulv Tønnesland
+# ==================================================================================================================== #
+# This program is free software: you can redistribute it and/or modify it under the terms of
+# the GNU General Public License as published by the Free Software Foundation, version 3.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+# without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+# See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along with this program.
+# If not, see <https://www.gnu.org/licenses/>.
+# ==================================================================================================================== #
+
 from dataclasses import dataclass
 from circuit.circuit_components import Pin, CircuitCell, Transistor
 from logger.logger import get_a_logger
@@ -54,13 +68,16 @@ class Connection:
 
 class ConnectionLists:
     logger = get_a_logger(__name__)
-
     def __init__(self, input_components):
 
-        self.components = []
+        self.transistors = []
+        self.pins = []
         for component in input_components:
             if isinstance(component, Transistor):
-                self.components.append(component)
+                self.transistors.append(component)
+            elif isinstance(component, Pin):
+                self.pins.append(component)
+
 
 
         self.connections = {
@@ -71,13 +88,14 @@ class ConnectionLists:
         }
 
         self.overlap_dict = {}
+
         self.local_con_area = {}
         self.net_list = Nets(applicable_nets=[], pin_nets=[])
 
 
     def __local_connection_list(self):
 
-        for obj in self.components:
+        for obj in self.transistors:
             if not isinstance(obj, (Pin, CircuitCell)):
                 ports = obj.schematic_connections
 
@@ -107,7 +125,7 @@ class ConnectionLists:
 
     def __connection_list(self):
 
-        object_list = self.components
+        object_list = self.transistors
 
         for component_1 in object_list:
             for component_2 in object_list:
@@ -150,21 +168,20 @@ class ConnectionLists:
     def __single_connection_list(self):
 
 
-        for component in self.components:
-            if not isinstance(component, (Pin, CircuitCell)):
-                for port in component.schematic_connections:
-                    if port == "B" or port == "b":
-                        continue
+        for component in self.transistors:
+            for port in component.schematic_connections:
+                if port == "B" or port == "b":
+                    continue
+                in_connection_list = False
+                for con in self.connections["component_connections"]:
+
+
+                    if (con.start_comp_id == str(component.number_id) and port in con.start_area) or (con.end_comp_id == str(component.number_id) and port in con.end_area):
+                        in_connection_list = True
+                        break
+                if not in_connection_list:
+                    self.connections["single_connections"].append(Connection(component.number_id, port, component.name,"" ,"" ,"" , component.cell, component.schematic_connections[port]))
                     in_connection_list = False
-                    for con in self.connections["component_connections"]:
-
-
-                        if (con.start_comp_id == str(component.number_id) and port in con.start_area) or (con.end_comp_id == str(component.number_id) and port in con.end_area):
-                            in_connection_list = True
-                            break
-                    if not in_connection_list:
-                        self.connections["single_connections"].append(Connection(component.number_id, port, component.name,"" ,"" ,"" , component.cell, component.schematic_connections[port]))
-                        in_connection_list = False
 
 
 
@@ -174,7 +191,7 @@ class ConnectionLists:
 
 
 
-        for obj in self.components:
+        for obj in self.transistors:
             if isinstance(obj, Transistor):
                 if obj.type == "pmos":
                     p_transistors.append(obj)
@@ -191,13 +208,15 @@ class ConnectionLists:
         self.overlap_dict["top"] = top + new_top
 
     def __get_net_list(self):
-        for obj in self.components:
-            if isinstance(obj, Pin):
-                self.net_list.pin_nets.append(obj.name)
-            elif not isinstance(obj, CircuitCell):
-                for port_net in obj.schematic_connections.values():
-                    if port_net not in self.net_list.applicable_nets:
-                        self.net_list.applicable_nets.append(port_net)
+        self.logger.info("running get_net_list")
+        for obj in self.pins:
+            self.net_list.pin_nets.append(obj.name)
+
+        for obj in self.transistors:
+
+            for port_net in obj.schematic_connections.values():
+                if port_net not in self.net_list.applicable_nets + self.net_list.pin_nets:
+                    self.net_list.applicable_nets.append(port_net)
         self.net_list.applicable_nets = [item for item in self.net_list.applicable_nets if item not in self.net_list.pin_nets]
 
 
@@ -221,7 +240,9 @@ class ConnectionLists:
 
 def overlap_pairs(list1):
     top = []
+
     side = []
+
     duplicated_list = list1[:]
     for i in list1:
         for j in duplicated_list:
@@ -230,9 +251,10 @@ def overlap_pairs(list1):
                 if (i.bounding_box.x2 - i.bounding_box.x1) == (j.bounding_box.x2 - j.bounding_box.x1) and i.schematic_connections["B"] == j.schematic_connections["B"]:
                     top.append([i.number_id, j.number_id])
 
+
                 if (i.bounding_box.y2 - i.bounding_box.y1) == (j.bounding_box.y2 - j.bounding_box.y1) and i.schematic_connections["B"] == j.schematic_connections["B"]:
                     side.append([i.number_id, j.number_id])
+
         duplicated_list.remove(i)
     return top, side
-
 
