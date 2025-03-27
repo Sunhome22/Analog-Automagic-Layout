@@ -28,10 +28,11 @@ dependencies = {file = ["requirements.txt"]}
 # -> Run - Boolean used for debugging. Turns on or off the execution of linear optimization
 # -> Stop_tolerance - MIP gap threshold percentage for when to stop searching with respect to the relative difference
 #                     between primal and dual solutions
+# Tip: If all components are the same size set unit height and width to the size of the components
 
 [linear_optimization]
-UNIT_HEIGHT = 100
-UNIT_WIDTH = 64
+UNIT_HEIGHT = 400
+UNIT_WIDTH = 576
 OFFSET_X = 184
 OFFSET_Y = 700
 ALPHA = 0.001
@@ -41,7 +42,7 @@ TIME_LIMIT = 2
 MIRROR = true
 RUN = true
 
-STOP_TOLERANCE = 0.05
+STOP_TOLERANCE = 0.0001
 SOLVER_MSG = true
 
 # Magic layout creator config options
@@ -87,12 +88,10 @@ GRID_LEEWAY_Y = 500
 # -> Net order - the predefined order
 
 [a_star_initiator]
-RUN_MULTIPLE_ASTAR = true
+RUN_MULTIPLE_ASTAR = false
 CUSTOM_NET_ORDER = true
-NET_ORDER1 = ["net3","VO", "VIN", "VIP", "I_BIAS", "net4", "net1", "net2"]
-NET_ORDER = ["VIN", "net2", "VO", "net1", "I_BIAS", "net3", "VIP", "net4"]
-test_order2 = ["net3","VIP","VO","net1","I_BIAS","VIN","net4","net2"]
-test_order3 = ["VIP","VO","VIN","net1","net4","net2","net3","I_BIAS"]
+NET_ORDER = ["I_BIAS","net4","VO","VIN", "net2", "net1",  "net3", "VIP"]
+
 
 [DRAW_RESULT]
 FILE_NAME = 'Temporary_check'

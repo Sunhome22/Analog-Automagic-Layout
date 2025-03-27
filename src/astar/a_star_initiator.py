@@ -36,7 +36,6 @@ class AstarInitiator:
         self.seg_list = {}
 
 
-
     def __load_config(self, path="pyproject.toml"):
         try:
             with open(path, "rb") as f:
@@ -150,6 +149,7 @@ class AstarInitiator:
         best_path = None
         best_length = float('inf')
         best_start = None
+        path = []
         if self.RUN_MULTIPLE_ASTAR:
             self.logger.info(f"Running A* multiple times for net: {net}")
             for start in self.goal_nodes:
@@ -165,10 +165,19 @@ class AstarInitiator:
             self.logger.info(f"Best start for net: {net} is node: {best_start}")
             return best_path
         else:
-            self.logger.info(f"Running A* one times for net: {net}")
-            path, _ = AstarAlgorithm(self.grid_vertical, self.grid_horizontal, self.goal_nodes[0], self.goal_nodes,
+            self.logger.info(f"Running A* one time for net: {net}")
+            for start in self.goal_nodes:
+
+                path, _ = AstarAlgorithm(self.grid_vertical, self.grid_horizontal, start, self.goal_nodes,
                              self.routing_parameters.port_width_scaled).a_star()
-            self.logger.info(f"Finished running A* one times for net: {net}")
+                if not path is None:
+                    break
+                else:
+                    self.logger.info(f"Viable path not found, rerunning with different start node")
+            if not path:
+                self.logger.info(f"Finished running A* no path found for net: {net}")
+            else:
+                self.logger.info(f"Finished running A* one time for net: {net}")
 
             return path
 

@@ -78,8 +78,11 @@ class LinearOptimizationSolver:
 
         # Constraints
         self.x_possible, self.y_possible = self.__extract_possible_positions()
+
         self.logger.info(f"X_possible {self.x_possible}")
         self.logger.info(f"Y_possible {self.y_possible}")
+
+
         self.x = pulp.LpVariable.dicts(f"x_bin", [(i, xv) for i in self.component_ids for xv in self.x_possible],
                                        cat="Binary")
         self.y = pulp.LpVariable.dicts(f"y_bin", [(i, yv) for i in self.component_ids for yv in self.y_possible],
@@ -163,8 +166,12 @@ class LinearOptimizationSolver:
                 w = component.bounding_box.x2 - component.bounding_box.x1
                 if w not in x_intervals:
                     x_intervals.append(w)
+                    # if w+self.OFFSET_X not in x_intervals:
+                    #     x_intervals.append(w+self.OFFSET_X)
                 if h not in y_intervals:
                     y_intervals.append(h)
+                    # if h+self.OFFSET_Y not in y_intervals:
+                    #     y_intervals.append(h+self.OFFSET_Y)
 
         for index, value in enumerate(x_intervals):
             for x_pos in range(self.GRID_SIZE//2, self.GRID_SIZE - 1, value):
