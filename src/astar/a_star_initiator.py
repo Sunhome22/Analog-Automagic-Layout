@@ -12,6 +12,7 @@ from copy import deepcopy
 
 class AstarInitiator:
     logger = get_a_logger(__name__)
+    TRACE_ON_GRID = 0.9
     def __init__(self, components, grid, connections, port_scaled_coordinates, port_coordinates, net_list,
                  routing_parameters):
 
@@ -34,14 +35,8 @@ class AstarInitiator:
         self.path = {}
         self.seg_list = {}
 
-       #Temporary debug variables
 
-        self.debug_grid_vertical_normal = deepcopy(grid)
-        self.debug_grid_horizontal_normal = deepcopy(grid)
-        self.debug_grid_vertical_actual = deepcopy(grid)
-        self.debug_grid_horizontal_actual = deepcopy(grid)
 
-        self.debug_mode = True
     def __load_config(self, path="pyproject.toml"):
         try:
             with open(path, "rb") as f:
@@ -113,15 +108,16 @@ class AstarInitiator:
         for node in self.goal_nodes:
             for key in self.port_scaled_coordinates:
                 if (int(self.port_scaled_coordinates[key][0]), int(self.port_scaled_coordinates[key][2])) == node:
-                    w = self.routing_parameters.gate_width_scaled if key[
-                                                                         1] == "G" else self.routing_parameters.port_width_scaled
+                    w = self.routing_parameters.gate_width_scaled if key[1] == "G" else self.routing_parameters.port_width_scaled
 
                     break
 
             for y in range(node[1] - h, node[1] + h + 1):
                 for x in range(node[0] - w, node[0] + w + 1):
-                    self.grid_vertical[y][x] = lock
-                    self.grid_horizontal[y][x] = lock
+                    if not self.grid_vertical[y][x] == self.TRACE_ON_GRID:
+                        self.grid_vertical[y][x] = lock
+                    if not self.grid_horizontal[y][x] == self.TRACE_ON_GRID:
+                        self.grid_horizontal[y][x] = lock
 
     def __update_grid(self, net):
 
@@ -133,8 +129,8 @@ class AstarInitiator:
                 for x, y in segment:
                     for i in range(-self.routing_parameters.trace_width_scaled,
                                    self.routing_parameters.trace_width_scaled + 1):
-                        for p in range(-self.routing_parameters.trace_width_scaled-5, self.routing_parameters.trace_width_scaled + 6):
-                            self.grid_vertical[y + p][x + i] = 1
+                        for p in range(-self.routing_parameters.trace_width_scaled-4, self.routing_parameters.trace_width_scaled +  5):
+                            self.grid_vertical[y + p][x + i] = self.TRACE_ON_GRID
 
             # horizontal
             if segment[0][1] - segment[-1][1] == 0:
@@ -143,45 +139,11 @@ class AstarInitiator:
                 for x, y in segment:
                     for i in range(-self.routing_parameters.trace_width_scaled,
                                    self.routing_parameters.trace_width_scaled + 1):
-                        for p in range(-self.routing_parameters.trace_width_scaled-5, self.routing_parameters.trace_width_scaled +6):
-                            self.grid_horizontal[y + i][x + p] = 1
-
-    def __debug_update_grid(self, net):
+                        for p in range(-self.routing_parameters.trace_width_scaled-4, self.routing_parameters.trace_width_scaled +5):
+                            self.grid_horizontal[y + i][x + p] = self.TRACE_ON_GRID
 
 
-        if net == "net2":
-            c = 0.3
-        else:
-            c = 0.7
-        for segment in self.seg_list[net]:
 
-            # vertical
-            if segment[0][0] - segment[-1][0] == 0:
-
-                for x, y in segment:
-                    for p in range(-self.routing_parameters.trace_width_scaled-5 ,
-                                   self.routing_parameters.trace_width_scaled + 6):
-                        self.debug_grid_vertical_normal[y+p][x] = c
-
-                    for i in range(-self.routing_parameters.trace_width_scaled,
-                                   self.routing_parameters.trace_width_scaled + 1):
-                        for p in range(-self.routing_parameters.trace_width_scaled-4, self.routing_parameters.trace_width_scaled + 6):
-
-                                self.debug_grid_vertical_actual[y+p][x+i] = c
-
-            # horizontal
-            elif segment[0][1] - segment[-1][1] == 0:
-
-                for x, y in segment:
-                    for p in range(-self.routing_parameters.trace_width_scaled-5 ,
-                                   self.routing_parameters.trace_width_scaled + 6):
-                        self.debug_grid_horizontal_normal[y][x+p] = c
-                    for i in range(-self.routing_parameters.trace_width_scaled,
-                                       self.routing_parameters.trace_width_scaled + 1):
-                        for p in range(-self.routing_parameters.trace_width_scaled-5,
-                                           self.routing_parameters.trace_width_scaled +6):
-
-                            self.debug_grid_horizontal_actual[y+i][x+p] = c
 
 
     def __run_multiple_astar_multiple_times(self, net):
@@ -210,31 +172,7 @@ class AstarInitiator:
 
             return path
 
-    def __debug_run_multiple_astar_multiple_times(self, net):
 
-        if net == "net2":
-            start = (42,152)
-        elif net =="VO":
-            start = (78,33)
-        elif net == "net1":
-            start = (42,202)
-        elif net == "I_BIAS":
-            start =(24,212)
-        elif net =="net3":
-            start=(24,68)
-        elif net == "net4":
-            start = (42, 83)
-        else:
-            self.logger.error(f"No start found for {net}")
-            return
-
-
-        path, length = AstarAlgorithm(self.grid_vertical, self.grid_horizontal, start, self.goal_nodes,
-                                              self.routing_parameters.port_width_scaled).a_star()
-
-
-
-        return path
 
     @staticmethod
     def __check_vdd_vss(net):
@@ -246,13 +184,12 @@ class AstarInitiator:
 
         local_net_order = self.NET_ORDER if self.CUSTOM_NET_ORDER else self.net_list.pin_nets + self.net_list.applicable_nets
 
-
-
         for net in local_net_order:
             # Skipping these nets, that are handled by other routing algorithm
             if self.__check_vdd_vss(net):
                 continue
 
+            self.logger.info(net)
             self.__extract_goal_nodes(connection_list=self.connections["component_connections"], net=net)
 
             if len(self.goal_nodes) == 0:
@@ -262,10 +199,7 @@ class AstarInitiator:
             self.__lock_or_unlock_port(lock=0)
 
             if len(self.goal_nodes) > 1:
-                if self.debug_mode:
-                    p = self.__debug_run_multiple_astar_multiple_times( net =net)
-                else:
-                    p = self.__run_multiple_astar_multiple_times(net = net)
+                p = self.__run_multiple_astar_multiple_times(net = net)
             elif len(self.goal_nodes) == 0:
                 self.logger.error(f"No goal nodes found in net: {net}")
                 p = []
@@ -281,17 +215,9 @@ class AstarInitiator:
             segments = segment_path(p)
             self.path.setdefault(net, {})["segments"] = segments
             self.seg_list.setdefault(net, []).extend(segments)
-            if net == "net2" or net == "net3":
-                self.__debug_update_grid(net = net)
-
 
             self.__update_grid(net=net)
-        heatmap_test(self.debug_grid_vertical_normal, "debug_vertical_normal_6")
-        heatmap_test(self.debug_grid_horizontal_normal, "debug_horizontal_normal_6")
-        # heatmap_test(self.debug_grid_vertical_actual, "debug_vertical_actual")
-        # heatmap_test(self.debug_grid_horizontal_actual, "debug_horizontal_actual")
-        # heatmap_test(self.debug_grid_vertical, "debug_vertical")
-        # heatmap_test(self.debug_grid_horizontal, "debug_horizontal")
+
         self.logger.info("Finished A*")
 
     def get(self):

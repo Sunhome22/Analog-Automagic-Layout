@@ -63,7 +63,7 @@ VIA_PADDING = 7
 
 [trace_generator]
 INIT_RAIL_RING_OFFSET_Y = 350
-INIT_RAIL_RING_OFFSET_X = 1500
+INIT_RAIL_RING_OFFSET_X = 150
 RAIL_RING_OFFSET = 150
 RAIL_RING_WIDTH = 100
 
@@ -79,7 +79,7 @@ GRID_SIZE = 4500
 SCALE_FACTOR =16
 TRACE_WIDTH = 30
 VIA_MINIMUM_DISTANCE = 20
-GRID_LEEWAY_X = 1000
+GRID_LEEWAY_X = 300
 GRID_LEEWAY_Y = 500
 # Astar initiator config options
 # -> Run multiple astar - allows a star to be executed with each goal node as initial position to find the shortest path

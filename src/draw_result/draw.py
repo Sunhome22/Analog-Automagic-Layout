@@ -27,15 +27,18 @@ def load_config(path="pyproject.toml"):
         logger.error(f"Error loading config: {e}")
 
 
-
 config = load_config()
 GRID_SIZE = config["generate_grid"]["GRID_SIZE"]
 SCALE_FACTOR = config["generate_grid"]["SCALE_FACTOR"]
+GRID_LEEWAY_X = config["generate_grid"]["GRID_LEEWAY_X"]
+GRID_LEEWAY_Y = config["generate_grid"]["GRID_LEEWAY_Y"]
 
 
 
 
 def draw_result( objects, connections, used_area, draw_name):
+
+
     connections2 =  [x for x in connections.values() if x is not None]
 
     # set up plot
@@ -92,7 +95,7 @@ def draw_result( objects, connections, used_area, draw_name):
         for net in connections:
             for p in connections[net]['segments']:
                 if p is not None:
-                    scaled_points.append( [(used_area.x1-500 + x*SCALE_FACTOR , used_area.y1-500 + y*SCALE_FACTOR ) for x, y in p])
+                    scaled_points.append( [(used_area.x1-GRID_LEEWAY_X+ x*SCALE_FACTOR , used_area.y1-GRID_LEEWAY_Y + y*SCALE_FACTOR ) for x, y in p])
                 else:
                     missing_paths.append(p)
                     none += 1

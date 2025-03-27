@@ -83,7 +83,8 @@ class TraceGenerator:
         self.adjustment = self.used_area.x1 - self.GRID_LEEWAY_X, self.used_area.y1 - self.GRID_LEEWAY_Y
 
 
-
+        #Debug
+        self.debug_net = None
 
         self.__generate_rails()
         self.__generate_traces()
@@ -162,6 +163,12 @@ class TraceGenerator:
 
         self.scale_offset_x /= len(goal_nodes)
         self.scale_offset_y /= len(goal_nodes)
+
+        self.logger.info(f"Offset for net {self.debug_net}")
+        self.logger.info(f"Offset x: {self.scale_offset_x}")
+        self.logger.info(f"Offset y: {self.scale_offset_y}")
+
+
 
 
     def __calculate_real_coordinates(self, segment):
@@ -275,7 +282,7 @@ class TraceGenerator:
 
     def __generate_traces(self):
         for net in self.paths:
-
+            self.debug_net = net
             self.__map_segments_to_rectangles(path_info=self.paths[net])
             self.__write_traces(net = net)
             self.__write_labels(net = net )
