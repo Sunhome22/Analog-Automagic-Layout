@@ -203,7 +203,8 @@ class SPICEparser:
         return component_category, component_type
 
 
-    def __get_component(self, spice_line: str, cell: str, parent_cell: str, parent_cell_chain: str, current_library: str):
+    def __get_component(self, spice_line: str, cell: str, named_cell: str, parent_cell: str, parent_cell_chain: str,
+                        current_library: str):
         component_category = None
         component_type = None
 
@@ -247,6 +248,7 @@ class SPICEparser:
                                         type=component_type,
                                         number_id=len(self.components),
                                         cell=cell,
+                                        named_cell=named_cell,
                                         parent_cell = parent_cell,
                                         parent_cell_chain = parent_cell_chain,
                                         group=filtered_group,
@@ -269,6 +271,7 @@ class SPICEparser:
                                     type=component_type,
                                     number_id=len(self.components),
                                     cell=cell,
+                                    named_cell=named_cell,
                                     parent_cell=parent_cell,
                                     parent_cell_chain=parent_cell_chain,
                                     group=filtered_group,
@@ -291,6 +294,7 @@ class SPICEparser:
                                       type=component_type,
                                       number_id=len(self.components),
                                       cell=cell,
+                                      named_cell=named_cell,
                                       parent_cell=parent_cell,
                                       parent_cell_chain=parent_cell_chain,
                                       group=filtered_group,
@@ -312,6 +316,7 @@ class SPICEparser:
                                           type="",
                                           number_id=len(self.components),
                                           cell=cell,
+                                          named_cell=named_cell,
                                           parent_cell=parent_cell,
                                           parent_cell_chain=parent_cell_chain,
                                           group=filtered_group,
@@ -331,7 +336,7 @@ class SPICEparser:
             line_words = spice_line.split()
 
             pin_type = ''.join(re.findall(r'[a-zA-Z]+', line_words[0]))
-            pin = Pin(type=pin_type, cell=cell, parent_cell=parent_cell, parent_cell_chain=parent_cell_chain,
+            pin = Pin(type=pin_type, cell=cell, named_cell=named_cell, parent_cell=parent_cell, parent_cell_chain=parent_cell_chain,
                       name=line_words[1], number_id=len(self.components))
             pin.instance = pin.__class__.__name__  # add instance type
             self.components.append(pin)
@@ -377,6 +382,7 @@ class SPICEparser:
                 # Create circuit cell component and add extracted parameters
                 circuit_cell = CircuitCell(name=f"{line_words[0]}",
                                            cell=line_words[-1],
+                                           named_cell=f"{line_words[0]}_{line_words[-1]}",
                                            parent_cell=current_cell,
                                            parent_cell_chain=f"{line_words[0]}_{line_words[-1]}",
                                            group=filtered_group,
@@ -416,7 +422,8 @@ class SPICEparser:
                         current_library = self.__get_current_component_library(line)
 
                         self.__get_component(spice_line=line,
-                                             cell=f"{user_created_circuit_cell.name}_{user_created_circuit_cell.cell}",
+                                             cell = user_created_circuit_cell.cell,
+                                             named_cell=f"{user_created_circuit_cell.name}_{user_created_circuit_cell.cell}",
                                              parent_cell=user_created_circuit_cell.parent_cell,
                                              parent_cell_chain = self.parent_cell_chain,
                                              current_library=current_library)
@@ -443,7 +450,7 @@ class SPICEparser:
         # Summary of parsing
         for component in self.components:
             self.logger.info(f"Found '{component.__class__.__name__}' "
-                             f"named '{component.name}' from cell '{component.cell}' of parent cell "
+                             f"named '{component.name}' from named cell '{component.named_cell}' of parent cell "
                              f"'{component.parent_cell}'")
 
         self.logger.info("Process complete! Components extracted from SPICE file: "

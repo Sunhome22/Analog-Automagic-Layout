@@ -130,7 +130,7 @@ def main():
         # LVSchecking(project_properties=project_properties)
 
     else:
-        components = load_from_json(file_name="src/json_converter/components_multiple_cell_test_1.json")
+        components = load_from_json(file_name="src/json_converter/components_with_traces_update_1.json")
         #components = load_from_json(file_name="src/json_converter/components_for_comp_circuit_lvs_clean.json")
         # Update components with trace information
         # components = TraceGenerator(components=components, project_properties=project_properties).get()

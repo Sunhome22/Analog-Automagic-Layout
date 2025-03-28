@@ -101,7 +101,7 @@ class TraceGenerator:
     def __generate_trace_box_around_cell(self, component, offset_x: int, offset_y: int, width: int, layer: str):
         """Width extends outwards from offset"""
 
-        trace = TraceNet(name=component.name, cell=self.circuit_cell.parent_cell_chain)
+        trace = TraceNet(name=component.name, cell=self.circuit_cell.cell, named_cell=self.circuit_cell.parent_cell_chain)
         trace.instance = trace.__class__.__name__
 
         left_segment = RectArea(x1=self.circuit_cell.bounding_box.x1 - offset_x - width,
@@ -200,7 +200,8 @@ class TraceGenerator:
     def __write_traces(self, net):
         trace = TraceNet()
         trace.instance = trace.__class__.__name__
-        trace.cell = self.circuit_cell.parent_cell_chain
+        trace.named_cell = self.circuit_cell.parent_cell_chain
+        trace.cell = self.circuit_cell.cell
         trace.name = net
 
         for index, rectangle in enumerate(self.mapped_rectangles):

@@ -70,7 +70,7 @@ def generate_local_traces_for_atr_sky130a_lib(self):
 
 
 def __local_bulk_to_source_connection_for_atr_sky130a_lib(self, component):
-    trace = TraceNet(name=f"{component.name}_B_S", cell=component.cell)
+    trace = TraceNet(name=f"{component.name}_B_S", named_cell=component.named_cell)
     trace.instance = trace.__class__.__name__
 
     bulk_x1 = next((port.area.x1 for port in component.layout_ports if port.type == 'B'))
@@ -86,7 +86,7 @@ def __local_bulk_to_source_connection_for_atr_sky130a_lib(self, component):
 
 
 def __local_gate_to_drain_connection_for_sky130a_lib(self, component: object):
-    trace = TraceNet(name=f"{component.name}_G_D", cell=component.cell)
+    trace = TraceNet(name=f"{component.name}_G_D", named_cell=component.named_cell)
     trace.instance = trace.__class__.__name__
 
     gate_x1 = next((port.area.x1 for port in component.layout_ports if port.type == 'G'))
@@ -131,7 +131,7 @@ def __local_bulk_to_rail_connection_for_sky130a_lib(self, component, rail: str, 
 
 def generate_bulk_to_rail_segments(self, rail: str, component: Transistor, y_params: tuple,
                                    group_endpoint: str, group_name: str):
-    trace = TraceNet(name=f"{group_name}_B_{rail}_{group_endpoint}", cell=component.cell)
+    trace = TraceNet(name=f"{group_name}_B_{rail}_{group_endpoint}", named_cell=component.named_cell)
     trace.instance = trace.__class__.__name__
 
     bulk_x1 = next((port.area.x1 for port in component.layout_ports if port.type == 'B'))

@@ -120,8 +120,8 @@ class MagicComponentsParser:
         # Check if both bounding box info and layout port info is present
         if not all(getattr(component.bounding_box, field.name) == 0 for field
                    in fields(component.bounding_box)) and component.layout_ports:
-            self.logger.info(f"Found layout ports and bounding box for '{component.name}' from cell "
-                             f"'{component.cell}' in '{component.parent_cell}' with layout '{component.layout_name}'")
+            self.logger.info(f"Found layout ports and bounding box for '{component.name}' from named cell "
+                             f"'{component.named_cell}' in '{component.parent_cell}' with layout '{component.layout_name}'")
 
         # Check if both bounding box info and layout port info is missing
         elif not component.layout_ports and all(getattr(component.bounding_box, field.name) == 0 for field

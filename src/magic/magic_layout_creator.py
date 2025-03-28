@@ -207,7 +207,7 @@ class MagicLayoutCreator:
 
                             self.logger.info(f"Connection placed on port '{port.type}' of '{component.name}' "
                                              f"between layer '{port.layer}' and '{segment.layer}' "
-                                             f"for trace net '{trace_net.name}' of '{trace_net.cell}'")
+                                             f"for trace net '{trace_net.name}' of '{trace_net.named_cell}'")
 
     def __get_inbetween_metal_layers(self, start_layer: str, end_layer: str, metal_layer_list: list):
         """Gets all metal layers, including start and end layer, and deals with if their positions are
@@ -322,7 +322,7 @@ class MagicLayoutCreator:
     def __circuit_cell_component_creator(self, component):
 
         self.magic_file_lines.extend([
-            f"use {component.parent_cell_chain} {component.parent_cell_chain} ",
+            f"use {component.cell} {component.parent_cell_chain} ",
             f"transform {component.transform_matrix.a} {component.transform_matrix.b}"
             f" {component.transform_matrix.c} {component.transform_matrix.d}"
             f" {component.transform_matrix.e} {component.transform_matrix.f}",
@@ -396,18 +396,18 @@ class MagicLayoutCreator:
                          f"Circuit cells: {self.total_circuit_cells_added}")
 
     def __generate_magic_files(self):
-        sub_cells = []
+        parent_cell_chains = []
 
         # Retrieve all sub cells
         for component in self.components:
             if isinstance(component, CircuitCell):
-                sub_cells.append(f"{component.parent_cell_chain}")
+                parent_cell_chains.append(f"{component.parent_cell_chain}")
 
-        cells = sub_cells + [self.project_top_cell_name]
-
+        all_parent_cell_chains = parent_cell_chains + [self.project_top_cell_name]
+        print(all_parent_cell_chains)
         # Iterate over found cells and generate .mag files for each one
-        for cell in cells:
-            cell_name = None
+        for parent_cell_chain in all_parent_cell_chains:
+            cell = None
             cell_components = []
 
             self.magic_file_lines = []
@@ -421,30 +421,34 @@ class MagicLayoutCreator:
                 if isinstance(component, CircuitCell):
 
                     # Assign new cell name on change
-                    if component.parent_cell_chain == cell:
-                        cell_name = cell
+                    if component.parent_cell_chain == parent_cell_chain:
+                        cell = component.cell
 
-                if component.cell == "":
-                    self.logger.error(f"{component.name} is missing a cell name")
+                if component.named_cell == "":
+                    self.logger.error(f"{component.name} is missing a named cell")
                     continue
 
-                if component.cell != cell:
+                if component.named_cell != parent_cell_chain:
                     continue
 
-                if cell_name is None:
-                    cell_name = component.parent_cell_chain
+                if cell is None:
+                    cell = component.cell
 
-                cell_components.append(component)
+                if not isinstance(component, CircuitCell):
+                    cell_components.append(component)
 
-            # Place all circuit cells in top cell
-            if cell == self.project_top_cell_name:
-                for comp in self.components:
-                    if isinstance(comp, CircuitCell):
-                        cell_components.append(comp)
-                cell_name = self.project_top_cell_name
+            # Top cell handling
+            if parent_cell_chain == self.project_top_cell_name:
+                cell = self.project_top_cell_name
+
+            # Add circuit cells that has the current cell as parent
+            for comp in self.components:
+                if isinstance(comp, CircuitCell) and comp.parent_cell == cell:
+                    cell_components.append(comp)
+
 
             # Create file if component list is not empty
-            self.__magic_file_creator(components=cell_components, file_name=cell_name)
+            self.__magic_file_creator(components=cell_components, file_name=cell)
 
 
         self.logger.info("Process complete!")

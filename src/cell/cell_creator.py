@@ -47,14 +47,14 @@ class CellCreator:
         self.updated_components = list()
 
         self.__create_cells()
-    def __use_earlier_solution_for_cell(self, cell_nr, base_cell, solved_circuit_cells,
+    def __use_earlier_solution_for_cell(self, cell_nr, cell, solved_circuit_cells,
                                         components_grouped_by_circuit_cell, grouped_components):
 
         for comp in components_grouped_by_circuit_cell[grouped_components]:
 
             # Circuit cell
             if isinstance(comp, CircuitCell):
-                for component in solved_circuit_cells[base_cell]:
+                for component in solved_circuit_cells[cell]:
                     if isinstance(component, CircuitCell):
                         comp.bounding_box = component.bounding_box
 
@@ -63,21 +63,21 @@ class CellCreator:
 
             # Transistors, Resistors, Capacitors
             if isinstance(comp, (Transistor, Resistor, Capacitor)):
-                for component in solved_circuit_cells[base_cell]:
+                for component in solved_circuit_cells[cell]:
                     if isinstance(component, (Transistor, Resistor, Capacitor)) and comp.name == component.name:
                         comp.transform_matrix = component.transform_matrix
                         comp.group_endpoint = component.group_endpoint
 
             # Pins
             if isinstance(comp, Pin):
-                for component in solved_circuit_cells[base_cell]:
+                for component in solved_circuit_cells[cell]:
                     if isinstance(component, Pin) and comp.name == component.name:
                         comp.layout = component.layout
 
         # Trace nets
-        for component in copy.deepcopy(solved_circuit_cells[base_cell]):
+        for component in copy.deepcopy(solved_circuit_cells[cell]):
             if isinstance(component, TraceNet):
-                component.cell = grouped_components
+                component.named_cell = grouped_components
                 components_grouped_by_circuit_cell[grouped_components].append(component)
 
         # Append everything for this cell to the list of updated components
@@ -105,13 +105,13 @@ class CellCreator:
             """With every iteration there is a set of components along with their associated circuit cell"""
 
             # Check if current circuit cell already has been solved
-            base_cell = re.search(r'[^_]+$', grouped_components).group(0)
-            if base_cell in solved_circuit_cells.keys():
-                self.logger.info(f"Using previously found solution for base cell '{base_cell}' "
-                                 f"with respect to cell '{grouped_components}'")
+            cell = re.search(r'[^_]+$', grouped_components).group(0)
+            if cell in solved_circuit_cells.keys():
+                self.logger.info(f"Using previously found solution for cell '{cell}' "
+                                 f"with respect to parent cell chain '{grouped_components}'")
                 self.__use_earlier_solution_for_cell(
                     cell_nr=cell_nr,
-                    base_cell=base_cell,
+                    cell=cell,
                     solved_circuit_cells=solved_circuit_cells,
                     components_grouped_by_circuit_cell=components_grouped_by_circuit_cell,
                     grouped_components=grouped_components
@@ -160,7 +160,7 @@ class CellCreator:
             # Update components
             for component in components:
                 self.updated_components.append(component)
-                solved_circuit_cells[base_cell].append(component)
+                solved_circuit_cells[cell].append(component)
 
             components.clear()
 
