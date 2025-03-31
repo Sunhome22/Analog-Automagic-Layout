@@ -17,9 +17,9 @@ from itertools import combinations
 from logger.logger import get_a_logger
 import heapq
 from draw_result.visualize_grid import heatmap_test
-
-
-
+from numba import njit
+import cProfile
+import pstats
 
 class PriorityQueue:
     """Priority Queue for managing open set nodes."""
@@ -57,6 +57,7 @@ class AstarAlgorithm:
         x, y = pos
         return 0 <= x < self.width and 0 <= y < self.height
 
+
     def is_walkable(self, pos, current_position):
         x, y = pos
         old_x, old_y = current_position
@@ -69,22 +70,9 @@ class AstarAlgorithm:
     def cap_seg(self, seg):
         return seg if seg < self.minimum_segment_length else self.minimum_segment_length
 
-    @staticmethod
-    def __manhattan( a, b):
-        return abs(a[0] - b[0]) + abs(a[1] - b[1])
-
-    @classmethod
-    def __heuristic(cls,current, mask, goals):
-        # Get unvisited goals.
-        unvisited = [goal for i, goal in enumerate(goals) if not (mask & (1 << i))]
-        if not unvisited:
-            return 0
-
-        return min(cls.__manhattan(current, goal) for goal in unvisited)
-
-
-
     def a_star(self):
+        ghost_length = 0
+        retrace_penalty = 0
         goal_indices = {goal: i for i, goal in enumerate(self.goal_nodes)}
         all_visited = (1 << len(self.goal_nodes)) - 1
 
@@ -98,7 +86,7 @@ class AstarAlgorithm:
         if init_after_goal:
             init_mask |= (1 << goal_indices[self.start])
         g_start = 0
-        f_start = g_start + self.__heuristic(self.start, init_mask, self.goal_nodes)
+        f_start = g_start + _heuristic(self.start, init_mask, self.goal_nodes)
         # Initial state: no previous direction (None), segment length 0.
         open_set.push((g_start, self.start, init_mask, [self.start], None, 0, init_after_goal, False), f_start)
 
@@ -144,6 +132,7 @@ class AstarAlgorithm:
                         # do not increase segment length.
                         if edge in edge_set or edge_rev in edge_set:
                             prospective_seg_len = seg_len
+                            ghost_length = seg_len + 1
                         else:
                             prospective_seg_len = seg_len + 1
                         prospective_last_was_reversal = False
@@ -155,8 +144,10 @@ class AstarAlgorithm:
                         if not after_goal or seg_len < self.minimum_segment_length:
                             continue
 
-                        if last_was_reversal and len(path) >= 2 and neighbor == path[-2]:
-                            continue
+
+
+                        # if last_was_reversal and len(path) >= 2 and neighbor == path[-2]:
+                        #     continue
                         prospective_last_dir = d
                         prospective_seg_len = 1
                         prospective_last_was_reversal = True
@@ -164,8 +155,11 @@ class AstarAlgorithm:
                         # Turning into a new segment.
                         # You can only turn if your current (non-retracing) segment
                         # is at least minimum_segment_length.
+
+                        #if we are retracing we should be able to switch direction into a known edge
                         if seg_len < self.minimum_segment_length:
                             continue
+
                         prospective_last_dir = d
                         prospective_seg_len = 1
                         prospective_last_was_reversal = False
@@ -184,13 +178,14 @@ class AstarAlgorithm:
                     new_mask |= (1 << goal_indices[neighbor])
                     new_after_goal = True
 
+
                 # Compute cost: if moving along a retraced edge, cost increment is 0.
                 edge = (current, neighbor)
                 edge_rev = (neighbor, current)
                 cost_increment = 0 if (edge in edge_set or edge_rev in edge_set) else 1
 
                 new_g = g + cost_increment
-                new_f = new_g + self.__heuristic(neighbor, new_mask, self.goal_nodes)
+                new_f = new_g + _heuristic(neighbor, new_mask, self.goal_nodes)
                 open_set.push(
                     (new_g, neighbor, new_mask, path + [neighbor],
                      prospective_last_dir, prospective_seg_len, new_after_goal, prospective_last_was_reversal),
@@ -206,7 +201,18 @@ class AstarAlgorithm:
 
 
 
+@njit
+def _manhattan(a, b):
+    return abs(a[0] - b[0]) + abs(a[1] - b[1])
 
+
+def _heuristic(current, mask, goals):
+    # Get unvisited goals.
+    unvisited = [goal for i, goal in enumerate(goals) if not (mask & (1 << i))]
+    if not unvisited:
+        return 0
+
+    return min(_manhattan(current, goal) for goal in unvisited)
 
 
 

@@ -43,6 +43,8 @@ class LinearOptimizationSolver:
         self.STOP_TOLERANCE = self.config["linear_optimization"]["STOP_TOLERANCE"]
         self.SOLVER_MSG = self.config["linear_optimization"]["SOLVER_MSG"]
         self.GRID_SIZE = self.config["generate_grid"]["GRID_SIZE"]
+        self.VERTICAL_SYMMETRY = self.config["linear_optimization"]["VERTICAL_SYMMETRY"]
+        self.HORIZONTAL_SYMMETRY = self.config["linear_optimization"]["HORIZONTAL_SYMMETRY"]
         # Setup of problem space and solver
         self.problem_space = pulp.LpProblem("ComponentPlacement", pulp.LpMinimize)
         self.solver = pulp.SCIP_PY(msg=self.SOLVER_MSG, mip=False, warmStart=True,
@@ -141,11 +143,18 @@ class LinearOptimizationSolver:
         return mirrored_objects
 
     def __constrain_mirror(self):
-        for component in self.mirrored_components:
-            self.problem_space += (self.coordinates_x[component[0].number_id] + self.width[component[0].number_id]
-                                   == self.GRID_SIZE - self.coordinates_x[component[1].number_id])
-            self.problem_space += (self.coordinates_y[component[0].number_id]
-                                   == self.coordinates_y[component[1].number_id])
+        if self.VERTICAL_SYMMETRY:
+            for component in self.mirrored_components:
+                self.problem_space += (self.coordinates_x[component[0].number_id] + self.width[component[0].number_id]
+                                       == self.GRID_SIZE - self.coordinates_x[component[1].number_id])
+                self.problem_space += (self.coordinates_y[component[0].number_id]
+                                       == self.coordinates_y[component[1].number_id])
+        if self.HORIZONTAL_SYMMETRY:
+            for component in self.mirrored_components:
+                self.problem_space += (self.coordinates_x[component[0].number_id] ==  self.coordinates_x[component[1].number_id])
+                self.problem_space += (self.coordinates_y[component[0].number_id] + self.height[component[0].number_id]
+                                       == self.GRID_SIZE-self.coordinates_y[component[1].number_id])
+
 
     @staticmethod
     def __element_in_sublist(element: object, big_list: list) -> bool:

@@ -6,7 +6,8 @@ from logger.logger import get_a_logger
 import tomllib
 import re
 from copy import deepcopy
-
+import cProfile
+import pstats
 
 
 
@@ -170,6 +171,7 @@ class AstarInitiator:
 
                 path, _ = AstarAlgorithm(self.grid_vertical, self.grid_horizontal, start, self.goal_nodes,
                              self.routing_parameters.port_width_scaled).a_star()
+
                 if not path is None:
                     break
                 else:

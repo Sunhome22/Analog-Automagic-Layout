@@ -41,8 +41,11 @@ THETA = 5
 TIME_LIMIT = 2
 MIRROR = true
 RUN = true
+VERTICAL_SYMMETRY = true
+HORIZONTAL_SYMMETRY = false
 
-STOP_TOLERANCE = 0.0001
+
+STOP_TOLERANCE = 0.1
 SOLVER_MSG = true
 
 # Magic layout creator config options
@@ -90,7 +93,7 @@ GRID_LEEWAY_Y = 500
 [a_star_initiator]
 RUN_MULTIPLE_ASTAR = false
 CUSTOM_NET_ORDER = true
-NET_ORDER = ["I_BIAS","net4","VO","VIN", "net2", "net1",  "net3", "VIP"]
+NET_ORDER = ["I_BIAS","net4","VIN", "net2","VO",  "net1",  "net3", "VIP"]
 
 
 [DRAW_RESULT]
