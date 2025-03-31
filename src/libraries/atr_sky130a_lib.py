@@ -376,26 +376,29 @@ def get_component_endpoint_bounding_box_for_atr_sky130a_lib(text_line: str, comp
         component.group_endpoint_bounding_box.set(map(int, text_line_words[2:6]))
 
 
-def magic_component_parsing_for_atr_sky130a_lib(self, layout_file_path: str, component: Transistor):
+def magic_component_parsing_for_atr_sky130a_lib(self, layout_file_path: str, component):
     try:
         with open(layout_file_path, "r") as magic_file:
             for text_line in magic_file:
                 get_component_bounding_box_for_atr_sky130a_lib(text_line=text_line, component=component, self=self)
-                get_overlap_difference_for_atr_sky130a_lib(text_line=text_line, component=component, self=self)
+                if isinstance(component, Transistor):
+                    get_overlap_difference_for_atr_sky130a_lib(text_line=text_line, component=component, self=self)
     except FileNotFoundError:
         self.logger.error(f"The file {layout_file_path} was not found.")
 
-    # It's safe to assumes that top and bottom taps have equal bounding boxes.
-    transistor_endpoint_layout_name = re.sub(r".{3}$", "TAPTOP", component.layout_name)
-    layout_file_path = os.path.expanduser(f"{self.current_component_library_path}/"
-                                          f"{transistor_endpoint_layout_name}.mag")
-    try:
-        with open(layout_file_path, "r") as magic_file:
-            for text_line in magic_file:
-                get_component_endpoint_bounding_box_for_atr_sky130a_lib(text_line=text_line, component=component)
 
-    except FileNotFoundError:
-        self.logger.error(f"The file {layout_file_path} was not found.")
+    if isinstance(component, Transistor):
+        # It's safe to assumes that top and bottom taps have equal bounding boxes.
+        transistor_endpoint_layout_name = re.sub(r".{3}$", "TAPTOP", component.layout_name)
+        layout_file_path = os.path.expanduser(f"{self.current_component_library_path}/"
+                                              f"{transistor_endpoint_layout_name}.mag")
+        try:
+            with open(layout_file_path, "r") as magic_file:
+                for text_line in magic_file:
+                    get_component_endpoint_bounding_box_for_atr_sky130a_lib(text_line=text_line, component=component)
+
+        except FileNotFoundError:
+            self.logger.error(f"The file {layout_file_path} was not found.")
 
 
 

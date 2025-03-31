@@ -77,11 +77,27 @@ class MagicComponentsParser:
 
         return self.components
 
+
+    @staticmethod
+    def __get_port_metal_layer(input_value):
+        if input_value in ['locali', 'metal1', 'metal2', 'metal3', 'metal4', 'metal5']:
+            return input_value
+
+        metal_mapping = {
+            'm1': 'metal1',
+            'm2': 'metal2',
+            'm3': 'metal3',
+            'm4': 'metal4',
+            'm5.': 'metal5'
+        }
+        return metal_mapping.get(input_value, "Invalid metal")
+
     @staticmethod
     def __get_component_port_info(text_line: str, component: object):
 
         if re.search(r'flabel', text_line):
             text_line_words = text_line.split()
+
 
             layout_port = LayoutPort(type=text_line_words[-1], layer=text_line_words[1],
                                      area=RectArea(x1=int(text_line_words[3]), y1=int(text_line_words[4]),
