@@ -15,8 +15,8 @@
 # ==================================================== Notes ===========================================================
 """
     Naming conversions for circuit components:
-    - R	Resistors
-    - C	Capacitors
+    - RP/RX HPO/XHPO Resistors
+    - CM/CV MIM/VPP Capacitors
     - QN/QP	NPN/PNP Bipolar transistor
     - MN/MP NMOS/PMOS transistor
     - U	Circuit cells/Integrated circuits
@@ -192,7 +192,11 @@ class SPICEparser:
             ("M", "N"): "nmos",
             ("M", "P"): "pmos",
             ("Q", "N"): "npn",
-            ("Q", "P"): "pnp"
+            ("Q", "P"): "pnp",
+            ("C", "M"): "mim",
+            ("C", "V"): "vpp",
+            ("R", "H"): "hpo",
+            ("R", "X"): "xhpo"
         }
 
         # The first letter of the filtered name defines category
@@ -229,8 +233,8 @@ class SPICEparser:
             except IndexError as e:
                 self.logger.error(f"Incorrect naming of component on spice line: '{spice_line}'")
                 self.logger.error(f"Naming conversions for circuit components:")
-                self.logger.error(f"- xR? Resistors")
-                self.logger.error(f"- xC? Capacitors")
+                self.logger.error(f"- xRH?/xRX? HPO/XHPO Resistors")
+                self.logger.error(f"- xCM?/xCV MIM/VPP Capacitors")
                 self.logger.error(f"- xQN?/xQP? NPN/PNP")
                 self.logger.error(f"- xMN?/xMP? NMOS/PMOS")
                 self.logger.error(f"- xD? Digital Blocks")
@@ -314,7 +318,7 @@ class SPICEparser:
 
                 # Create digital block component and add extracted parameters
                 digital_block = DigitalBlock(name=filtered_name,
-                                          type=None,
+                                          type="digital",
                                           number_id=len(self.components),
                                           cell=cell,
                                           named_cell=named_cell,
@@ -329,8 +333,8 @@ class SPICEparser:
                 digital_block.instance = digital_block.__class__.__name__  # add instance type
                 self.components.append(digital_block)
 
-            #else:
-            #    self.logger.error(f"SPICE line '{spice_line}' is not handled!")
+            else:
+               self.logger.error(f"SPICE line '{spice_line}' is not handled!")
 
         # Check SPICE line for pin identifier
         if re.match(r'^\*\.', spice_line):
@@ -366,8 +370,8 @@ class SPICEparser:
             except IndexError as e:
                 self.logger.error(f"Incorrect naming of component on spice line: '{spice_line}'")
                 self.logger.error(f"Naming conversions for circuit components:")
-                self.logger.error(f"- xR? Resistors")
-                self.logger.error(f"- xC? Capacitors")
+                self.logger.error(f"- xRP?/xRX? HPO/XHPO Resistors")
+                self.logger.error(f"- xCM?/xCV? MIM/VPP Capacitors")
                 self.logger.error(f"- xQN?/xQP? NPN/PNP")
                 self.logger.error(f"- xMN?/xMP? NMOS/PMOS")
                 self.logger.error(f"- xD? Digital Blocks")
@@ -400,7 +404,7 @@ class SPICEparser:
                 current_library = self.__get_current_component_library(spice_line)
                 self.__get_component(spice_line=spice_line,
                                      cell=self.project_top_cell_name,
-                                     named_cell='TOP CELL',
+                                     named_cell=self.project_top_cell_name,
                                      parent_cell=self.project_top_cell_name,
                                      parent_cell_chain=self.project_top_cell_name,
                                      current_library=current_library)
