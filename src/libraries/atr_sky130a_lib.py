@@ -336,6 +336,7 @@ def get_overlap_difference_for_atr_sky130a_lib(self, text_line: str, component: 
         if self.found_transistor_well:
 
             line_words = text_line.split()
+
             self.transistor_well_size = RectArea(x1=int(line_words[1]), y1=int(line_words[2]), x2=int(line_words[3]),
                                                  y2=int(line_words[4]))
             self.found_transistor_well = False

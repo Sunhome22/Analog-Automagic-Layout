@@ -308,12 +308,13 @@ class SPICEparser:
 
             #  --- Digital Blocks ---
             elif component_category == 'D':
+
                 # Get port definitions for component
                 port_definitions = self.__get_layout_port_definitions(line_words[-1], self.subcircuits)
 
                 # Create digital block component and add extracted parameters
                 digital_block = DigitalBlock(name=filtered_name,
-                                          type="",
+                                          type=None,
                                           number_id=len(self.components),
                                           cell=cell,
                                           named_cell=named_cell,
@@ -394,9 +395,18 @@ class SPICEparser:
                 self.components.append(circuit_cell)
                 self.user_created_circuit_cells.append(circuit_cell)
 
+            # --- Components in top circuit cell ---
+            if current_cell == self.project_top_cell_name:
+                current_library = self.__get_current_component_library(spice_line)
+                self.__get_component(spice_line=spice_line,
+                                     cell=self.project_top_cell_name,
+                                     named_cell='TOP CELL',
+                                     parent_cell=self.project_top_cell_name,
+                                     parent_cell_chain=self.project_top_cell_name,
+                                     current_library=current_library)
+
     def __add_components_for_each_circuit_cell(self, current_parent_cell):
         """Recursive adding of components within each circuit cell"""
-
         for user_created_circuit_cell in self.user_created_circuit_cells:
             if user_created_circuit_cell.parent_cell == current_parent_cell:
 
@@ -409,6 +419,7 @@ class SPICEparser:
                 if current_parent_cell == self.project_top_cell_name:
                     self.parent_cell_chain = f"{user_created_circuit_cell.name}_{user_created_circuit_cell.cell}"
                     self.prev_parent_cell_name = ''
+
 
                 # Extracting components inside current cell
                 for line in self.spice_file_content:
@@ -446,6 +457,7 @@ class SPICEparser:
             current_cell = self.__get_current_circuit_cell(line)
             self.__build_list_of_circuit_cells(spice_line=line, current_cell=current_cell)
         self.__add_components_for_each_circuit_cell(current_parent_cell=self.project_top_cell_name)
+
 
         # Summary of parsing
         for component in self.components:

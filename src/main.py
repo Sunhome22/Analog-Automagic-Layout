@@ -75,7 +75,7 @@ project_properties = ProjectProperties(directory="~/aicex/ip/jnw_bkle_sky130A",
 def main():
     # Create a logger
     logger = get_a_logger(__name__)
-    run = False
+    run = True
 
     if run:
         # Extracts component information from SPICE file
@@ -84,9 +84,10 @@ def main():
         # Updates component attributes with information from it's associated Magic files
         components = MagicComponentsParser(project_properties=project_properties, components=components).get()
         save_to_json(components, file_name="src/json_converter/components_temp_before_cell_creator.json")
-        components = CellCreator(project_properties=project_properties, components=components).get()
-        save_to_json(components, file_name="src/json_converter/components_with_traces_update_1.json")
-        MagicLayoutCreator(project_properties=project_properties, components=components)
+
+        #components = CellCreator(project_properties=project_properties, components=components).get()
+        #save_to_json(components, file_name="src/json_converter/components_with_traces_update_1.json")
+        #MagicLayoutCreator(project_properties=project_properties, components=components)
 
         #
         #
