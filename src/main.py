@@ -72,58 +72,60 @@ def main():
     # Create a logger
     logger = get_a_logger(__name__)
 
-    # # Extracts component information from SPICE file
-    components = SPICEparser(project_properties=project_properties)
-    #
-    # # Update component attributes with information from it's associated Magic files
-    components = MagicComponentsParser(project_properties=project_properties,
-                                        components=components.get()).get()
-    #
-    # Algorithms
-    #components = load_from_json(file_name=f"{os.path.dirname(os.path.abspath(__file__))}/results/SpeedTest.json")
-    connections, overlap_dict, net_list, debug_ov = ConnectionLists(input_components = components).get()
+    # # # Extracts component information from SPICE file
+    # components = SPICEparser(project_properties=project_properties)
+    # #
+    # # # Update component attributes with information from it's associated Magic files
+    # components = MagicComponentsParser(project_properties=project_properties,
+    #                                     components=components.get()).get()
     #
     #
-    components = LinearOptimizationSolver(components, connections,  overlap_dict).solve_placement()
-
-
-
-    grid, port_scaled_coordinates, used_area, port_coordinates, routing_parameters= GridGeneration(components=components).initialize_grid_generation()
-
-    for obj in components:
-        if isinstance(obj, CircuitCell):
-            obj.transform_matrix.set([1, 0, 0, 0, 1, 0])
-            obj.bounding_box = used_area
-    path = AstarInitiator(grid = grid,
-                                    connections = connections,
-                                    components = components,
-                                    port_scaled_coordinates = port_scaled_coordinates,
-                                    port_coordinates = port_coordinates,
-                                    net_list = net_list,
-                                    routing_parameters = routing_parameters
-                                    ).get()
-
-
-
-
-    components = TraceGenerator(project_properties= project_properties,
-                                components = components,
-                                paths = path,
-                                net_list=net_list,
-                                used_area= used_area
-                                        ).get()
-
-    #logger.info("Starting Drawing results")
-    #path true:
-    draw_result( components, path, used_area,  "new_test")
+    # # Algorithms
+    # #components = load_from_json(file_name=f"{os.path.dirname(os.path.abspath(__file__))}/results/SpeedTest.json")
+    # connections, overlap_dict, net_list, debug_ov = ConnectionLists(input_components = components).get()
+    #
+    #
+    # components = LinearOptimizationSolver(components, connections,  overlap_dict).solve_placement()
+    #
+    # save_to_json(objects=components, file_name=f"{os.path.dirname(os.path.abspath(__file__))}/results/"
+    #                                            f"Components_Placement.json")
+    #
+    # grid, port_scaled_coordinates, used_area, port_coordinates, routing_parameters= GridGeneration(components=components).initialize_grid_generation()
+    #
+    # for obj in components:
+    #     if isinstance(obj, CircuitCell):
+    #         obj.transform_matrix.set([1, 0, 0, 0, 1, 0])
+    #         obj.bounding_box = used_area
+    # path = AstarInitiator(grid = grid,
+    #                                 connections = connections,
+    #                                 components = components,
+    #                                 port_scaled_coordinates = port_scaled_coordinates,
+    #                                 port_coordinates = port_coordinates,
+    #                                 net_list = net_list,
+    #                                 routing_parameters = routing_parameters
+    #                                 ).get()
+    #
+    #
+    #
+    #
+    # components = TraceGenerator(project_properties= project_properties,
+    #                             components = components,
+    #                             paths = path,
+    #                             net_list=net_list,
+    #                             used_area= used_area
+    #                                     ).get()
+    #
+    # #logger.info("Starting Drawing results")
+    # #path true:
+    # draw_result( components, path, used_area,  "new_test")
     #path false:
     #draw_result(grid_size, components, connections, used_area)
     #logger.info("Finished Drawing results")
-    save_to_json(objects=components, file_name=f"{os.path.dirname(os.path.abspath(__file__))}/results/"
-                                               f"Full_test_traces_3.json")
 
 
 
+    components = load_from_json(file_name=f"{os.path.dirname(os.path.abspath(__file__))}/results/"
+                                               f"Components_Placement.json")
 
     # Create layout
     MagicLayoutCreator(project_properties=project_properties, components=components)

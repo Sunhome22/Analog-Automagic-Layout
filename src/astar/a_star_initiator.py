@@ -130,7 +130,8 @@ class AstarInitiator:
                     for i in range(-self.routing_parameters.trace_width_scaled,
                                    self.routing_parameters.trace_width_scaled + 1):
                         for p in range(-self.routing_parameters.trace_width_scaled-4, self.routing_parameters.trace_width_scaled +  5):
-                            self.grid_vertical[y + p][x + i] = self.TRACE_ON_GRID
+                            if y+p < len(self.grid_vertical)-1 and x+i < len(self.grid_vertical[0])-1:
+                                self.grid_vertical[y + p][x + i] = self.TRACE_ON_GRID
 
             # horizontal
             if segment[0][1] - segment[-1][1] == 0:
@@ -140,7 +141,8 @@ class AstarInitiator:
                     for i in range(-self.routing_parameters.trace_width_scaled,
                                    self.routing_parameters.trace_width_scaled + 1):
                         for p in range(-self.routing_parameters.trace_width_scaled-4, self.routing_parameters.trace_width_scaled +5):
-                            self.grid_horizontal[y + i][x + p] = self.TRACE_ON_GRID
+                            if y + i < len(self.grid_horizontal)-1 and x + p < len(self.grid_horizontal[0])-1:
+                                self.grid_horizontal[y + i][x + p] = self.TRACE_ON_GRID
 
 
 

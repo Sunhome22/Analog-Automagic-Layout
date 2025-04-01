@@ -118,7 +118,7 @@ class LinearOptimizationSolver:
         for component in self.functional_components:
             group = []
             for component2 in components2:
-                if component.group == component2.group and component != component2 and component.group is not None:
+                if component.group == component2.group and component != component2 and component.group is not None and component.type == component2.type and component.bounding_box == component2.bounding_box:
                     group.append([component, component2])
 
             if len(group) == 1 and ([group[0][1], group[0][0]]) not in mirrored_objects:
@@ -230,8 +230,10 @@ class LinearOptimizationSolver:
         for conn in self.connections:
 
             if not conn.end_comp_id == '' and conn.start_comp_id != conn.end_comp_id:
-                start_port_parameters, end_port_parameters = self.__get_port_parameters(conn)
 
+                start_port_parameters, end_port_parameters = self.__get_port_parameters(conn)
+                self.logger.info(f"Connection: {conn}")
+                self.logger.info(f"port start {start_port_parameters}, port end {end_port_parameters}")
                 self.d_x[(conn.start_comp_id, conn.end_comp_id)] = pulp.LpVariable(
                     f"d_x_{conn.start_comp_id}_{conn.end_comp_id}_{i}", 0, cat='Continuous')
                 self.d_y[(conn.start_comp_id, conn.end_comp_id)] = pulp.LpVariable(

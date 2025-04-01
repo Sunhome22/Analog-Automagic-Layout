@@ -79,7 +79,7 @@ RAIL_RING_WIDTH = 100
 # -> Grid leeway x/y - extra space outside of component placement for additional routing space
 
 [generate_grid]
-GRID_SIZE = 4500
+GRID_SIZE = 7000
 SCALE_FACTOR =16
 TRACE_WIDTH = 30
 VIA_MINIMUM_DISTANCE = 20

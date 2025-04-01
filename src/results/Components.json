@@ -150,12 +150,12 @@
             }
         ],
         "transform_matrix": {
-            "a": 1,
+            "a": 0,
             "b": 0,
-            "c": 3500,
+            "c": 0,
             "d": 0,
-            "e": 1,
-            "f": 2700
+            "e": 0,
+            "f": 0
         },
         "bounding_box": {
             "x1": 0,
@@ -235,12 +235,12 @@
             }
         ],
         "transform_matrix": {
-            "a": 1,
+            "a": 0,
             "b": 0,
-            "c": 2924,
+            "c": 0,
             "d": 0,
-            "e": 1,
-            "f": 2700
+            "e": 0,
+            "f": 0
         },
         "bounding_box": {
             "x1": 0,
@@ -320,12 +320,12 @@
             }
         ],
         "transform_matrix": {
-            "a": 1,
+            "a": 0,
             "b": 0,
-            "c": 2988,
+            "c": 0,
             "d": 0,
-            "e": 1,
-            "f": 1500
+            "e": 0,
+            "f": 0
         },
         "bounding_box": {
             "x1": 0,
@@ -405,12 +405,12 @@
             }
         ],
         "transform_matrix": {
-            "a": 1,
+            "a": 0,
             "b": 0,
-            "c": 3500,
+            "c": 0,
             "d": 0,
-            "e": 1,
-            "f": 1500
+            "e": 0,
+            "f": 0
         },
         "bounding_box": {
             "x1": 0,
@@ -490,12 +490,12 @@
             }
         ],
         "transform_matrix": {
-            "a": 1,
+            "a": 0,
             "b": 0,
-            "c": 2988,
+            "c": 0,
             "d": 0,
-            "e": 1,
-            "f": 700
+            "e": 0,
+            "f": 0
         },
         "bounding_box": {
             "x1": 0,
@@ -575,12 +575,12 @@
             }
         ],
         "transform_matrix": {
-            "a": 1,
+            "a": 0,
             "b": 0,
-            "c": 3500,
+            "c": 0,
             "d": 0,
-            "e": 1,
-            "f": 700
+            "e": 0,
+            "f": 0
         },
         "bounding_box": {
             "x1": 0,
@@ -660,12 +660,12 @@
             }
         ],
         "transform_matrix": {
-            "a": 1,
+            "a": 0,
             "b": 0,
-            "c": 2924,
+            "c": 0,
             "d": 0,
-            "e": 1,
-            "f": 3500
+            "e": 0,
+            "f": 0
         },
         "bounding_box": {
             "x1": 0,
@@ -745,12 +745,12 @@
             }
         ],
         "transform_matrix": {
-            "a": 1,
+            "a": 0,
             "b": 0,
-            "c": 3500,
+            "c": 0,
             "d": 0,
-            "e": 1,
-            "f": 3500
+            "e": 0,
+            "f": 0
         },
         "bounding_box": {
             "x1": 0,
@@ -830,12 +830,12 @@
             }
         ],
         "transform_matrix": {
-            "a": 1,
+            "a": 0,
             "b": 0,
-            "c": 2924,
+            "c": 0,
             "d": 0,
-            "e": 1,
-            "f": 3100
+            "e": 0,
+            "f": 0
         },
         "bounding_box": {
             "x1": 0,
@@ -915,12 +915,12 @@
             }
         ],
         "transform_matrix": {
-            "a": 1,
+            "a": 0,
             "b": 0,
-            "c": 3500,
+            "c": 0,
             "d": 0,
-            "e": 1,
-            "f": 3100
+            "e": 0,
+            "f": 0
         },
         "bounding_box": {
             "x1": 0,
@@ -1000,12 +1000,12 @@
             }
         ],
         "transform_matrix": {
-            "a": 1,
+            "a": 0,
             "b": 0,
-            "c": 3500,
+            "c": 0,
             "d": 0,
-            "e": 1,
-            "f": 1100
+            "e": 0,
+            "f": 0
         },
         "bounding_box": {
             "x1": 0,
@@ -1085,12 +1085,12 @@
             }
         ],
         "transform_matrix": {
-            "a": 1,
+            "a": 0,
             "b": 0,
-            "c": 2988,
+            "c": 0,
             "d": 0,
-            "e": 1,
-            "f": 1100
+            "e": 0,
+            "f": 0
         },
         "bounding_box": {
             "x1": 0,
@@ -1113,18 +1113,18 @@
     {
         "instance": "Resistor",
         "number_id": 19,
-        "name": "RP1",
-        "type": "hpo",
+        "name": "R1",
+        "type": null,
         "cell": "COMP",
         "parent_cell": "",
         "parent_cell_chain": "",
-        "group": null,
+        "group": "Test",
         "schematic_connections": {
-            "N": "net5",
+            "N": "VSS",
             "P": "VO",
             "B": "VSS"
         },
-        "layout_name": "JNWTR_RPPO2",
+        "layout_name": "JNWTR_RPPO16",
         "layout_library": "JNW_TR_SKY130A",
         "layout_ports": [
             {
@@ -1133,7 +1133,7 @@
                 "area": {
                     "x1": 8,
                     "y1": 8,
-                    "x2": 716,
+                    "x2": 2228,
                     "y2": 64
                 }
             },
@@ -1141,9 +1141,9 @@
                 "type": "P",
                 "layer": "locali",
                 "area": {
-                    "x1": 398,
+                    "x1": 1910,
                     "y1": 1460,
-                    "x2": 542,
+                    "x2": 2054,
                     "y2": 1580
                 }
             },
@@ -1159,81 +1159,196 @@
             }
         ],
         "transform_matrix": {
-            "a": 1,
+            "a": 0,
             "b": 0,
-            "c": 3500,
+            "c": 0,
             "d": 0,
-            "e": 1,
-            "f": 4700
+            "e": 0,
+            "f": 0
         },
         "bounding_box": {
             "x1": 0,
             "y1": 0,
-            "x2": 724,
+            "x2": 2236,
             "y2": 1720
         }
     },
     {
-        "instance": "Resistor",
+        "instance": "Capacitor",
         "number_id": 20,
-        "name": "RP2",
-        "type": "hpo",
+        "name": "CM3",
+        "type": "mim",
         "cell": "COMP",
         "parent_cell": "",
         "parent_cell_chain": "",
-        "group": null,
+        "group": "Test",
         "schematic_connections": {
-            "N": "VSS",
-            "P": "net5",
+            "A": "VO",
             "B": "VSS"
         },
-        "layout_name": "JNWTR_RPPO2",
+        "layout_name": "JNWTR_CAPX1",
         "layout_library": "JNW_TR_SKY130A",
         "layout_ports": [
             {
+                "type": "A",
+                "layer": "m3",
+                "area": {
+                    "x1": 0,
+                    "y1": 0,
+                    "x2": 540,
+                    "y2": 50
+                }
+            },
+            {
                 "type": "B",
-                "layer": "locali",
+                "layer": "m4",
                 "area": {
-                    "x1": 8,
-                    "y1": 8,
-                    "x2": 716,
-                    "y2": 64
-                }
-            },
-            {
-                "type": "P",
-                "layer": "locali",
-                "area": {
-                    "x1": 398,
-                    "y1": 1460,
-                    "x2": 542,
-                    "y2": 1580
-                }
-            },
-            {
-                "type": "N",
-                "layer": "locali",
-                "area": {
-                    "x1": 182,
-                    "y1": 1460,
-                    "x2": 326,
-                    "y2": 1580
+                    "x1": 0,
+                    "y1": 0,
+                    "x2": 540,
+                    "y2": 50
                 }
             }
         ],
         "transform_matrix": {
-            "a": 1,
+            "a": 0,
             "b": 0,
-            "c": 2476,
+            "c": 0,
             "d": 0,
-            "e": 1,
-            "f": 4700
+            "e": 0,
+            "f": 0
         },
         "bounding_box": {
             "x1": 0,
             "y1": 0,
-            "x2": 724,
-            "y2": 1720
+            "x2": 540,
+            "y2": 540
+        }
+    },
+    {
+        "instance": "Capacitor",
+        "number_id": 21,
+        "name": "CM4",
+        "type": "mim",
+        "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
+        "group": "Test",
+        "schematic_connections": {
+            "A": "VO",
+            "B": "VSS"
+        },
+        "layout_name": "AALMISC_CAP100f",
+        "layout_library": "AAL_MISC_SKY130A",
+        "layout_ports": [
+            {
+                "type": "B",
+                "layer": "metal4",
+                "area": {
+                    "x1": 0,
+                    "y1": 0,
+                    "x2": 740,
+                    "y2": 50
+                }
+            },
+            {
+                "type": "A",
+                "layer": "metal3",
+                "area": {
+                    "x1": 0,
+                    "y1": 0,
+                    "x2": 740,
+                    "y2": 50
+                }
+            }
+        ],
+        "transform_matrix": {
+            "a": 0,
+            "b": 0,
+            "c": 0,
+            "d": 0,
+            "e": 0,
+            "f": 0
+        },
+        "bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 740,
+            "y2": 740
+        }
+    },
+    {
+        "instance": "Transistor",
+        "number_id": 22,
+        "name": "QP1",
+        "type": "pnp",
+        "cell": "COMP",
+        "parent_cell": "",
+        "parent_cell_chain": "",
+        "group": "Test",
+        "schematic_connections": {
+            "C": "VSS",
+            "B": "VSS",
+            "E": "VO"
+        },
+        "layout_name": "AALMISC_PNP_W3p40L3p40",
+        "layout_library": "AAL_MISC_SKY130A",
+        "layout_ports": [
+            {
+                "type": "E",
+                "layer": "locali",
+                "area": {
+                    "x1": 554,
+                    "y1": 626,
+                    "x2": 802,
+                    "y2": 730
+                }
+            },
+            {
+                "type": "C",
+                "layer": "locali",
+                "area": {
+                    "x1": 613,
+                    "y1": 1252,
+                    "x2": 714,
+                    "y2": 1301
+                }
+            },
+            {
+                "type": "B",
+                "layer": "locali",
+                "area": {
+                    "x1": 590,
+                    "y1": 1102,
+                    "x2": 708,
+                    "y2": 1142
+                }
+            }
+        ],
+        "transform_matrix": {
+            "a": 0,
+            "b": 0,
+            "c": 0,
+            "d": 0,
+            "e": 0,
+            "f": 0
+        },
+        "bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 1340,
+            "y2": 1340
+        },
+        "overlap_distance": {
+            "x": 0,
+            "y": 0
+        },
+        "group_endpoint": "",
+        "group_endpoint_bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 0,
+            "y2": 0
         }
     }
 ]

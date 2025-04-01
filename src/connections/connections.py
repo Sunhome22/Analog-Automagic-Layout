@@ -13,7 +13,7 @@
 # ==================================================================================================================== #
 
 from dataclasses import dataclass
-from circuit.circuit_components import Pin, CircuitCell, Transistor
+from circuit.circuit_components import Pin, CircuitCell, Transistor, Resistor, Capacitor
 from logger.logger import get_a_logger
 
 
@@ -56,11 +56,11 @@ class ConnectionLists:
     logger = get_a_logger(__name__)
     def __init__(self, input_components):
 
-        self.transistors = []
+        self.components = []
         self.pins = []
         for component in input_components:
-            if isinstance(component, Transistor):
-                self.transistors.append(component)
+            if isinstance(component, (Transistor, Resistor, Capacitor)):
+                self.components.append(component)
             elif isinstance(component, Pin):
                 self.pins.append(component)
 
@@ -81,18 +81,18 @@ class ConnectionLists:
 
     def __local_connection_list(self):
 
-        for obj in self.transistors:
-            if not isinstance(obj, (Pin, CircuitCell)):
-                ports = obj.schematic_connections
+        for obj in self.components:
 
-                for key in ports:
-                    for key1 in ports:
+            ports = obj.schematic_connections
 
-                        if key != key1:
-                            entry = [Connection(obj.number_id, key, obj.name, obj.number_id, obj.name, obj.cell, key1,ports[key]),
-                                     Connection(obj.number_id, key1, obj.name, obj.number_id, key, obj.name, obj.cell, ports[key])]
-                            if ports[key] == ports[key1] and not any(isinstance(obj, Connection) and obj == target for target in entry for obj in self.connections["local_connections"]):
-                                self.connections["local_connections"].append(Connection(obj.number_id, key, obj.name, obj.number_id, key1, obj.name, obj.cell, ports[key]))
+            for key in ports:
+                for key1 in ports:
+
+                    if key != key1:
+                        entry = [Connection(obj.number_id, key, obj.name, obj.number_id, obj.name, obj.cell, key1,ports[key]),
+                                 Connection(obj.number_id, key1, obj.name, obj.number_id, key, obj.name, obj.cell, ports[key])]
+                        if ports[key] == ports[key1] and not any(isinstance(obj, Connection) and obj == target for target in entry for obj in self.connections["local_connections"]):
+                            self.connections["local_connections"].append(Connection(obj.number_id, key, obj.name, obj.number_id, key1, obj.name, obj.cell, ports[key]))
 
 
 
@@ -105,41 +105,41 @@ class ConnectionLists:
                 if connection.start_area != "B" and connection.end_area != "B":
                     return connection.start_area + connection.end_area
 
+
         return port
 
 
 
     def __connection_list(self):
 
-        object_list = self.transistors
+        object_list = self.components[:]
 
         for component_1 in object_list:
             for component_2 in object_list:
                 conditions = [
-                            not isinstance(component_1, (Pin, CircuitCell)),
-                            not isinstance(component_2, (Pin,CircuitCell)),
                             component_1 != component_2,
                             component_1.cell == component_2.cell
                             ]
 
                 if all(conditions):
                     for port_1 in component_1.schematic_connections:
-                        if port_1 == "B":
+                        if port_1 == "B" and isinstance(component_1, Transistor) and (component_1.type == "nmos" or component_1.type == "pmos"):
                             continue
 
                         for port_2 in component_2.schematic_connections:
-                            if port_2 == "B":
+                            if port_2 == "B" and isinstance(component_2, Transistor) and (component_2.type == "nmos" or component_2.type == "pmos"):
                                 continue
 
                             if component_1.schematic_connections[port_1] == component_2.schematic_connections[port_2]:
                                 net = component_1.schematic_connections[port_1]
                                 cell = component_1.cell
-                                if component_1.number_id == 7 and component_2.number_id == 12:
-                                    port_2_area = self.__get_local_connection_area(component_2.number_id, port_2)
-                                    self.logger.info(f"component 2 area {port_2_area}")
+
                                 port_1_area = self.__get_local_connection_area(component_1.number_id, port_1)
                                 port_2_area = self.__get_local_connection_area(component_2.number_id, port_2)
-
+                                if component_1.number_id == 20 or component_1.number_id == "20":
+                                    self.logger.info(f"Component1 20,port: {port_1}, port area: {port_1_area}")
+                                if component_2.number_id == 20 or component_2.number_id == "20":
+                                    self.logger.info(f"Component2 20,port: {port_2}, port area: {port_2_area}")
 
                                 entry = [Connection(component_1.number_id, port_1_area, component_1.name, component_2.number_id, port_2_area, component_2.name, cell, net),
                                          Connection(component_2.number_id, port_2_area, component_2.name, component_1.number_id, port_1_area, component_1.name, cell, net)]
@@ -154,9 +154,9 @@ class ConnectionLists:
     def __single_connection_list(self):
 
 
-        for component in self.transistors:
+        for component in self.components:
             for port in component.schematic_connections:
-                if port == "B" or port == "b":
+                if port == "B" and isinstance(component, Transistor) and (component.type == "nmos" or component.type =="pmos"):
                     continue
                 in_connection_list = False
                 for con in self.connections["component_connections"]:
@@ -177,14 +177,14 @@ class ConnectionLists:
 
 
 
-        for obj in self.transistors:
+        for obj in self.components:
             if isinstance(obj, Transistor):
                 if obj.type == "pmos":
                     p_transistors.append(obj)
                 elif obj.type== "nmos":
                     n_transistors.append(obj)
                 else:
-                    self.logger.error(f"Transistor type '{obj.type}' not handled yet")
+                    self.logger.info(f"Transistor type '{obj.type}' no overlap")
 
 
         top, side, debug_top, debug_side = overlap_pairs(n_transistors)
@@ -201,7 +201,7 @@ class ConnectionLists:
         for obj in self.pins:
             self.net_list.pin_nets.append(obj.name)
 
-        for obj in self.transistors:
+        for obj in self.components:
 
             for port_net in obj.schematic_connections.values():
                 if port_net not in self.net_list.applicable_nets + self.net_list.pin_nets:

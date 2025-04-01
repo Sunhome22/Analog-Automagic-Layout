@@ -16,7 +16,7 @@
 """
     Naming conversions for circuit components:
     - R	Resistors
-    - C	Capacitors
+    - CM/CV MIM/VPP Capacitors
     - QN/QP	NPN/PNP Bipolar transistor
     - MN/MP NMOS/PMOS transistor
     - U	Circuit cells/Integrated circuits
@@ -191,7 +191,11 @@ class SPICEparser:
             ("M", "N"): "nmos",
             ("M", "P"): "pmos",
             ("Q", "N"): "npn",
-            ("Q", "P"): "pnp"
+            ("Q", "P"): "pnp",
+            ("C", "M"): "mim",
+            ("C", "V"): "vpp",
+            ("R", "P"): "hpo",
+            ("R", "X"): "xhpo"
         }
 
         # The first letter of the filtered name defines category
@@ -227,8 +231,8 @@ class SPICEparser:
             except IndexError as e:
                 self.logger.error(f"Incorrect naming of component on spice line: '{spice_line}'")
                 self.logger.error(f"Naming conversions for circuit components:")
-                self.logger.error(f"- xR? Resistors")
-                self.logger.error(f"- xC? Capacitors")
+                self.logger.error(f"- xRP?/xPX? HPO/XHPO Resistors")
+                self.logger.error(f"- xCM?/xCV? MIM/VPP Capacitors")
                 self.logger.error(f"- xQN?/xQP? NPN/PNP")
                 self.logger.error(f"- xMN?/xMP? NMOS/PMOS")
                 self.logger.error(f"- xD? Digital Blocks")
