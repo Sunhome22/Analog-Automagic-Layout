@@ -155,9 +155,9 @@ def generate_bulk_to_rail_segments(self, rail: str, component: Transistor, y_par
                                  x2=structural_component.layout.area.x2,
                                  y2=y_params[0] + component.transform_matrix.f + (bulk_width // 2) + y_params[1])
 
-            trace.vias.append(RectAreaLayer(layer='locali-m1', area=via_left))
-            trace.vias.append(RectAreaLayer(layer='locali-m1', area=via_right))
-            trace.segments.append(RectAreaLayer(layer='locali', area=segment))
+            trace.vias.append(RectAreaLayer(layer='m3-m4', area=via_left))
+            trace.vias.append(RectAreaLayer(layer='m3-m4', area=via_right))
+            trace.segments.append(RectAreaLayer(layer='m4', area=segment))
 
     self.components.append(trace)
 

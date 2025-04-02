@@ -85,9 +85,9 @@ def main():
         components = MagicComponentsParser(project_properties=project_properties, components=components).get()
         save_to_json(components, file_name="src/json_converter/components_temp_before_cell_creator.json")
 
-        #components = CellCreator(project_properties=project_properties, components=components).get()
-        #save_to_json(components, file_name="src/json_converter/components_with_traces_update_1.json")
-        #MagicLayoutCreator(project_properties=project_properties, components=components)
+        components = CellCreator(project_properties=project_properties, components=components).get()
+        save_to_json(components, file_name="src/json_converter/components_with_traces_update_1.json")
+        MagicLayoutCreator(project_properties=project_properties, components=components)
 
         #
         #

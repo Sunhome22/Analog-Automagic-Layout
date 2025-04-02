@@ -144,7 +144,7 @@ class TraceGenerator:
                     component,
                     offset_x=self.INIT_RAIL_RING_OFFSET_X + self.RAIL_RING_OFFSET * rail_number,
                     offset_y=self.INIT_RAIL_RING_OFFSET_Y + self.RAIL_RING_OFFSET * rail_number,
-                    width=self.RAIL_RING_WIDTH, layer="m1"
+                    width=self.RAIL_RING_WIDTH, layer="m3"
                 )
                 rail_number += 1
 

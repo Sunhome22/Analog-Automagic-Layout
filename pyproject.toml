@@ -35,7 +35,7 @@ UNIT_WIDTH = 576
 OFFSET_X = 184
 OFFSET_Y = 700
 ALPHA = 0.001
-BETA = 100
+BETA = 10
 THETA = 5
 TIME_LIMIT = 2
 MIRROR = true
@@ -52,8 +52,8 @@ SOLVER_MSG = true
 
 [magic_layout_creator]
 TECHNOLOGY = 'sky130A'
-METAL_LAYERS = ['locali', 'm1', 'm2', 'm3', 'm4']
-VIA_MAP = {"locali-m1" = "viali", "m1-m2" = "via1", "m2-m3" = "via2", "m3-m4" = "via3"}
+METAL_LAYERS = ['locali', 'm1', 'm2', 'm3', 'm4', 'm5']
+VIA_MAP = {"locali-m1" = "viali", "m1-m2" = "via1", "m2-m3" = "via2", "m3-m4" = "via3", "m4-m5" = "via4"}
 VIA_PADDING = 7
 
 # Trace generator config options

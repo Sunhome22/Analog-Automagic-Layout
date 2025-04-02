@@ -37,7 +37,7 @@
 - Our system does not use instance names defined by xschem, we roll our one.
 - Were the ports should be, could be a specification like top, bottom, left, right of cell.
 - Is it safe to say that all components always will have a FIXED_BBOX parameter? No
-- 
+- Do routing in m3 and m4
 
 ## Notes on running multiple cells
 - Spice parsing and magic layout parsing will happen once also. 

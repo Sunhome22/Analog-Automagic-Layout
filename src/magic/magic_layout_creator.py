@@ -193,7 +193,8 @@ class MagicLayoutCreator:
 
                         # Hinder placement of connection points to bulks since they are always connected in the
                         # lowest metal
-                        if port.type == "B" or segment.layer == self.METAL_LAYERS[0]:
+                        if (port.type == "B" or segment.layer == self.METAL_LAYERS[0]
+                                or segment.layer == self.METAL_LAYERS[5]):
                             continue
 
                         # Check for overlap between the port and the segment and add vias accordingly

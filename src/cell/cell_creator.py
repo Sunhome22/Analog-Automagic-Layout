@@ -141,18 +141,18 @@ class CellCreator:
                 components=components).initialize_grid_generation()
 
 
-            paths = AstarInitiator(grid=grid,
-                                  connections=connections,
-                                  components=components,
-                                  port_scaled_coordinates=port_scaled_coordinates,
-                                  port_coordinates=port_coordinates,
-                                  net_list=net_list,
-                                  routing_parameters=routing_parameters
-                                  ).get()
+            # paths = AstarInitiator(grid=grid,
+            #                       connections=connections,
+            #                       components=components,
+            #                       port_scaled_coordinates=port_scaled_coordinates,
+            #                       port_coordinates=port_coordinates,
+            #                       net_list=net_list,
+            #                       routing_parameters=routing_parameters
+            #                       ).get()
 
             components = TraceGenerator(project_properties=self.project_properties,
                                         components=components,
-                                        paths=paths,
+                                        paths=[],
                                         net_list=net_list,
                                         used_area=origin_scaled_used_area
                                         ).get()
