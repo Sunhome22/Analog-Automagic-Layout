@@ -16,7 +16,8 @@
 - [ ] When adding multiple circuit cells the set of components only getting added once. 
 - [ ] Fix gathering of deeper information when cells inherit other cells. Overlap distance is for example not handled
 - [x] Fix missing rail and tap in a specific layout edge case (see .json file)
-- [ ] Deal with 15 vs 16 net missmatch when placing multiple cell within each other but not connected.
+- [x] Deal with 15 vs 16 net missmatch when placing multiple cell within each other but not connected.
+- [] How many VDD nets is common to have. Is it ok to assume all cells have the same number of VDD nets?
 
 ## Notes
 - Vias get turned into multiple smaller ones when converting to GDSII. Always want atleast two, however

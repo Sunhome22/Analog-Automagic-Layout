@@ -333,9 +333,6 @@ class SPICEparser:
                 digital_block.instance = digital_block.__class__.__name__  # add instance type
                 self.components.append(digital_block)
 
-            else:
-               self.logger.error(f"SPICE line '{spice_line}' is not handled!")
-
         # Check SPICE line for pin identifier
         if re.match(r'^\*\.', spice_line):
             line_words = spice_line.split()

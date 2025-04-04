@@ -50,39 +50,42 @@ class CellCreator:
     def __use_earlier_solution_for_cell(self, cell_nr, cell, solved_circuit_cells,
                                         components_grouped_by_circuit_cell, grouped_components):
 
-        for comp in components_grouped_by_circuit_cell[grouped_components]:
+        for new_component in components_grouped_by_circuit_cell[grouped_components]:
 
             # Circuit cell
-            if isinstance(comp, CircuitCell):
-                for component in solved_circuit_cells[cell]:
-                    if isinstance(component, CircuitCell):
-                        comp.bounding_box = component.bounding_box
-
+            if isinstance(new_component, CircuitCell):
+                for solved_component in solved_circuit_cells[cell]:
+                    if isinstance(solved_component, CircuitCell):
+                        new_component.bounding_box = solved_component.bounding_box
+                        component_width = solved_component.bounding_box.x2 - solved_component.bounding_box.x1
                         # Proper placement of cell is yet to be done!!
-                        comp.transform_matrix.set([1, 0, cell_nr * 2000, 0, 1, 0])
+                        new_component.transform_matrix.set([1, 0, cell_nr * component_width, 0, 1, 0])
 
-            # Transistors, Resistors, Capacitors
-            if isinstance(comp, (Transistor, Resistor, Capacitor)):
-                for component in solved_circuit_cells[cell]:
-                    if isinstance(component, (Transistor, Resistor, Capacitor)) and comp.name == component.name:
-                        comp.transform_matrix = component.transform_matrix
-                        comp.group_endpoint = component.group_endpoint
+            # Transistors
+            if isinstance(new_component, (Transistor, Resistor, Capacitor)):
+                for solved_component in solved_circuit_cells[cell]:
+                    if (isinstance(solved_component, (Transistor, Resistor, Capacitor)) and
+                            new_component.name == solved_component.name):
+                        new_component.transform_matrix = solved_component.transform_matrix
+                        if (isinstance(solved_component, Transistor) and
+                                (solved_component.type == "nmos" or solved_component.type == "pmos")):
+                            new_component.group_endpoint = solved_component.group_endpoint
 
             # Pins
-            if isinstance(comp, Pin):
-                for component in solved_circuit_cells[cell]:
-                    if isinstance(component, Pin) and comp.name == component.name:
-                        comp.layout = component.layout
+            if isinstance(new_component, Pin):
+                for solved_component in solved_circuit_cells[cell]:
+                    if isinstance(solved_component, Pin) and new_component.name == solved_component.name:
+                        new_component.layout = solved_component.layout
 
         # Trace nets
-        for component in copy.deepcopy(solved_circuit_cells[cell]):
-            if isinstance(component, TraceNet):
-                component.named_cell = grouped_components
-                components_grouped_by_circuit_cell[grouped_components].append(component)
+        for solved_component in copy.deepcopy(solved_circuit_cells[cell]):
+            if isinstance(solved_component, TraceNet):
+                solved_component.named_cell = grouped_components
+                components_grouped_by_circuit_cell[grouped_components].append(solved_component)
 
         # Append everything for this cell to the list of updated components
-        for component in components_grouped_by_circuit_cell[grouped_components]:
-            self.updated_components.append(component)
+        for solved_component in components_grouped_by_circuit_cell[grouped_components]:
+            self.updated_components.append(solved_component)
 
     def __create_cells(self):
         components_grouped_by_circuit_cell = defaultdict(list)
@@ -105,7 +108,7 @@ class CellCreator:
             """With every iteration there is a set of components along with their associated circuit cell"""
 
             # Check if current circuit cell already has been solved
-            cell = re.search(r'[^_]+$', grouped_components).group(0)
+            cell = re.search(r'_(.*)', grouped_components).group(1)
             if cell in solved_circuit_cells.keys():
                 self.logger.info(f"Using previously found solution for cell '{cell}' "
                                  f"with respect to parent cell chain '{grouped_components}'")
@@ -130,8 +133,8 @@ class CellCreator:
                                                y2=used_area.y2 - used_area.y1)
             for component in components:
                 if isinstance(component, CircuitCell):
-                    # Placement of cell is yet to be done
-                    component.transform_matrix.set([1, 0, cell_nr*2000, 0, 1, 0])
+                    # Placement of cell is yet to be done !!!
+                    component.transform_matrix.set([1, 0, cell_nr*2800, 0, 1, 0])
                     component.bounding_box = origin_scaled_used_area
                 elif isinstance(component, (Transistor, Capacitor, Resistor)):
                     component.transform_matrix.c -= used_area.x1

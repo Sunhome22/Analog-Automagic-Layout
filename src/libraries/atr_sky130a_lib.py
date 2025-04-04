@@ -117,13 +117,13 @@ def __local_bulk_to_rail_connection_for_sky130a_lib(self, component, rail: str, 
             generate_bulk_to_rail_segments(self=self, rail=rail, component=component, y_params=y_params['rail_bot'],
                                            group_endpoint="RAIL_BOT",group_name=group_name)
 
-        if re.search(r'^rail_top.*', component.group_endpoint):
+        elif re.search(r'^rail_top.*', component.group_endpoint):
             generate_bulk_to_rail_segments(self=self, rail=rail, component=component,
                                            y_params=y_params['rail_top'],
                                            group_endpoint=component.group_endpoint.upper(),
                                            group_name=group_name)
 
-        if re.search(r'^rail_bot.*', component.group_endpoint):
+        elif re.search(r'^rail_bot.*', component.group_endpoint):
             generate_bulk_to_rail_segments(self=self, rail=rail, component=component,
                                            y_params=y_params['rail_bot'],
                                            group_endpoint=component.group_endpoint.upper(),
@@ -139,7 +139,8 @@ def generate_bulk_to_rail_segments(self, rail: str, component: Transistor, y_par
     bulk_width = abs(bulk_x2 - bulk_x1)
 
     for structural_component in self.structural_components:
-        if re.search(rf".*{rail}.*", structural_component.name, re.IGNORECASE):
+        if re.search(rf"\b{rail}\b", structural_component.name, re.IGNORECASE):
+            print(rail, structural_component.name)
             segment = RectArea(x1=structural_component.layout.area.x1,
                                y1=y_params[0] + component.transform_matrix.f - (bulk_width // 2) + y_params[1],
                                x2=structural_component.layout.area.x2,
@@ -155,9 +156,9 @@ def generate_bulk_to_rail_segments(self, rail: str, component: Transistor, y_par
                                  x2=structural_component.layout.area.x2,
                                  y2=y_params[0] + component.transform_matrix.f + (bulk_width // 2) + y_params[1])
 
-            trace.vias.append(RectAreaLayer(layer='m3-m4', area=via_left))
-            trace.vias.append(RectAreaLayer(layer='m3-m4', area=via_right))
-            trace.segments.append(RectAreaLayer(layer='m4', area=segment))
+            trace.vias.append(RectAreaLayer(layer='locali-m1', area=via_left))
+            trace.vias.append(RectAreaLayer(layer='locali-m1', area=via_right))
+            trace.segments.append(RectAreaLayer(layer='locali', area=segment))
 
     self.components.append(trace)
 
