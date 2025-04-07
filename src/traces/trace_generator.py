@@ -61,6 +61,7 @@ class TraceGenerator:
         self.SCALE_FACTOR = self.config["generate_grid"]["SCALE_FACTOR"]
         self.GRID_LEEWAY_X = self.config["generate_grid"]["GRID_LEEWAY_X"]
         self.GRID_LEEWAY_Y = self.config["generate_grid"]["GRID_LEEWAY_Y"]
+
         # Make lists of different component types
         for component in self.components:
             if isinstance(component, Transistor):
@@ -75,6 +76,9 @@ class TraceGenerator:
             # There should only be one CircuitCell in components for each cell iteration of trace_generator
             if isinstance(component, CircuitCell):
                 self.circuit_cell = component
+
+        # Sort structural components alphabetically
+        self.structural_components.sort(key=lambda comp: comp.name)
 
          # Variables for trace generate
         self.scale_offset_x = 0

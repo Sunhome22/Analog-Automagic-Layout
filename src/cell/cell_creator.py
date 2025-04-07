@@ -104,6 +104,7 @@ class CellCreator:
                         == f"{circuit_cell.name}_{circuit_cell.cell}"):
                     components_grouped_by_circuit_cell[grouped_components].append(circuit_cell)
 
+        # Main cell creation loop
         for cell_nr, grouped_components in enumerate(components_grouped_by_circuit_cell):
             """With every iteration there is a set of components along with their associated circuit cell"""
 
@@ -164,8 +165,11 @@ class CellCreator:
             for component in components:
                 self.updated_components.append(component)
                 solved_circuit_cells[cell].append(component)
-
             components.clear()
+    def __add_top_cell_rails(self):
 
+        for component in self.updated_components:
+            if isinstance(component, Pin):
+                print(Pin.name)
     def get(self):
         return self.updated_components
