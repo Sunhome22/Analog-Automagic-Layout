@@ -330,6 +330,8 @@ class MagicLayoutCreator:
             f"box {component.bounding_box.x1} {component.bounding_box.y1} {component.bounding_box.x2}"
             f" {component.bounding_box.y2}"
         ])
+        self.logger.info(f"{component.instance} '{component.named_cell}' of parent cell '{component.parent_cell}' "
+                         f"placed with {component.transform_matrix}")
 
         self.total_circuit_cells_added += 1
 
@@ -395,6 +397,8 @@ class MagicLayoutCreator:
                          f"Connection Points: {self.total_connection_points_added} | "
                          f"Trace nets: {self.total_trace_nets_added} | Vias: {self.total_vias_added} | "
                          f"Circuit cells: {self.total_circuit_cells_added}")
+        self.logger.info(f"============================================================================================"
+                         f"============================================")
 
     def __generate_magic_files(self):
         parent_cell_chains = []
@@ -404,10 +408,8 @@ class MagicLayoutCreator:
             if isinstance(component, CircuitCell):
                 parent_cell_chains.append(f"{component.parent_cell_chain}")
 
-        all_parent_cell_chains = parent_cell_chains + [self.project_top_cell_name]
-        print(all_parent_cell_chains)
         # Iterate over found cells and generate .mag files for each one
-        for parent_cell_chain in all_parent_cell_chains:
+        for parent_cell_chain in parent_cell_chains:
             cell = None
             cell_components = []
 

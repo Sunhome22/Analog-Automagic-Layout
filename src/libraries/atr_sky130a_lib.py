@@ -140,7 +140,7 @@ def generate_bulk_to_rail_segments(self, rail: str, component: Transistor, y_par
 
     for structural_component in self.structural_components:
         if re.search(rf"\b{rail}\b", structural_component.name, re.IGNORECASE):
-            print(rail, structural_component.name)
+
             segment = RectArea(x1=structural_component.layout.area.x1,
                                y1=y_params[0] + component.transform_matrix.f - (bulk_width // 2) + y_params[1],
                                x2=structural_component.layout.area.x2,

@@ -77,7 +77,7 @@ class TraceGenerator:
             if isinstance(component, CircuitCell):
                 self.circuit_cell = component
 
-        # Sort structural components alphabetically
+        # Sort structural components alphabetically since ordering is originally arbitrary
         self.structural_components.sort(key=lambda comp: comp.name)
 
          # Variables for trace generate
@@ -90,8 +90,8 @@ class TraceGenerator:
         self.__generate_traces()
 
         # ATR SKY130A LIB component handling
-        if any(lib for lib in self.component_libraries if re.search(r"ATR", lib.name)):
-            # Calling order is required
+        if any(lib for lib in self.component_libraries if re.search(r"ATR", lib.name) and self.functional_components):
+            # Function order is required
             atr.get_component_group_endpoints_for_atr_sky130a_lib(self=self)
             atr.generate_local_traces_for_atr_sky130a_lib(self=self)
 
@@ -150,26 +150,31 @@ class TraceGenerator:
         pin.layout = RectAreaLayer(layer="locali", area=top_segment)
 
     def __generate_rails(self):
-        # Automated adding of VDD/VSS ring nets around cell based on found pins
-        rail_number = 0
-        for component in self.structural_components:
-            if (re.search(r".*VDD.*", component.name, re.IGNORECASE) or
-                    re.search(r".*VSS.*", component.name, re.IGNORECASE)):
-                self.__generate_trace_box_around_cell(
-                    pin=component,
-                    offset_x=self.INIT_RAIL_RING_OFFSET_X + self.RAIL_RING_OFFSET * rail_number,
-                    offset_y=self.INIT_RAIL_RING_OFFSET_Y + self.RAIL_RING_OFFSET * rail_number,
-                    width=self.RAIL_RING_WIDTH
-                )
-                rail_number += 1
 
-        # Update the cell's bounding box
-        for component in self.structural_components:
-            if isinstance(component, CircuitCell):
-                component.bounding_box.x1 -= (self.INIT_RAIL_RING_OFFSET_X + self.RAIL_RING_OFFSET * rail_number)
-                component.bounding_box.x2 += (self.INIT_RAIL_RING_OFFSET_X + self.RAIL_RING_OFFSET * rail_number)
-                component.bounding_box.y1 -= (self.INIT_RAIL_RING_OFFSET_Y + self.RAIL_RING_OFFSET * rail_number)
-                component.bounding_box.y2 += (self.INIT_RAIL_RING_OFFSET_Y + self.RAIL_RING_OFFSET * rail_number)
+        # Only create rails if there are functional components
+        if self.functional_components:
+
+            # Automated adding of VDD/VSS ring nets around cell based on found pins
+            rail_number = 0
+            for component in self.structural_components:
+                if (re.search(r".*VDD.*", component.name, re.IGNORECASE) or
+                        re.search(r".*VSS.*", component.name, re.IGNORECASE)):
+                    self.__generate_trace_box_around_cell(
+                        pin=component,
+                        offset_x=self.INIT_RAIL_RING_OFFSET_X + self.RAIL_RING_OFFSET * rail_number,
+                        offset_y=self.INIT_RAIL_RING_OFFSET_Y + self.RAIL_RING_OFFSET * rail_number,
+                        width=self.RAIL_RING_WIDTH
+                    )
+                    rail_number += 1
+
+            # Update the cell's bounding box
+            for component in self.structural_components:
+                print(rail_number)
+                if isinstance(component, CircuitCell):
+                    component.bounding_box.x1 -= (self.INIT_RAIL_RING_OFFSET_X + self.RAIL_RING_OFFSET * rail_number)
+                    component.bounding_box.x2 += (self.INIT_RAIL_RING_OFFSET_X + self.RAIL_RING_OFFSET * rail_number)
+                    component.bounding_box.y1 -= (self.INIT_RAIL_RING_OFFSET_Y + self.RAIL_RING_OFFSET * rail_number)
+                    component.bounding_box.y2 += (self.INIT_RAIL_RING_OFFSET_Y + self.RAIL_RING_OFFSET * rail_number)
 
 
     def __calculate_offset(self, goal_nodes, real_nodes,):
