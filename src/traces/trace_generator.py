@@ -169,7 +169,6 @@ class TraceGenerator:
 
             # Update the cell's bounding box
             for component in self.structural_components:
-                print(rail_number)
                 if isinstance(component, CircuitCell):
                     component.bounding_box.x1 -= (self.INIT_RAIL_RING_OFFSET_X + self.RAIL_RING_OFFSET * rail_number)
                     component.bounding_box.x2 += (self.INIT_RAIL_RING_OFFSET_X + self.RAIL_RING_OFFSET * rail_number)

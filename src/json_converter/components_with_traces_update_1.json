@@ -13,7 +13,7 @@
             "area": {
                 "x1": -250,
                 "y1": 750,
-                "x2": 1082,
+                "x2": 1914,
                 "y2": 850
             }
         }
@@ -32,65 +32,10 @@
             "area": {
                 "x1": -400,
                 "y1": 900,
-                "x2": 1232,
+                "x2": 2064,
                 "y2": 1000
             }
         }
-    },
-    {
-        "instance": "Pin",
-        "number_id": 6,
-        "cell": "JNW_BKLE",
-        "named_cell": "UTOP_JNW_BKLE",
-        "parent_cell": "TOP_CELL",
-        "parent_cell_chain": "UTOP_JNW_BKLE",
-        "type": "ipin",
-        "name": "V_p",
-        "layout": ""
-    },
-    {
-        "instance": "Pin",
-        "number_id": 7,
-        "cell": "JNW_BKLE",
-        "named_cell": "UTOP_JNW_BKLE",
-        "parent_cell": "TOP_CELL",
-        "parent_cell_chain": "UTOP_JNW_BKLE",
-        "type": "ipin",
-        "name": "V_n",
-        "layout": ""
-    },
-    {
-        "instance": "Pin",
-        "number_id": 8,
-        "cell": "JNW_BKLE",
-        "named_cell": "UTOP_JNW_BKLE",
-        "parent_cell": "TOP_CELL",
-        "parent_cell_chain": "UTOP_JNW_BKLE",
-        "type": "ipin",
-        "name": "VIN",
-        "layout": ""
-    },
-    {
-        "instance": "Pin",
-        "number_id": 9,
-        "cell": "JNW_BKLE",
-        "named_cell": "UTOP_JNW_BKLE",
-        "parent_cell": "TOP_CELL",
-        "parent_cell_chain": "UTOP_JNW_BKLE",
-        "type": "ipin",
-        "name": "VIP",
-        "layout": ""
-    },
-    {
-        "instance": "Pin",
-        "number_id": 10,
-        "cell": "JNW_BKLE",
-        "named_cell": "UTOP_JNW_BKLE",
-        "parent_cell": "TOP_CELL",
-        "parent_cell_chain": "UTOP_JNW_BKLE",
-        "type": "ipin",
-        "name": "I_BIAS",
-        "layout": ""
     },
     {
         "instance": "CircuitCell",
@@ -103,31 +48,26 @@
         "group": null,
         "schematic_connections": {
             "VDD": "VDD",
-            "VSS": "VSS",
-            "V_p": "V_p",
-            "V_n": "V_n",
-            "VIN": "VIN",
-            "VIP": "VIP",
-            "I_BIAS": "I_BIAS"
+            "VSS": "VSS"
         },
         "transform_matrix": {
-            "a": 1,
+            "a": 0,
             "b": 0,
             "c": 0,
             "d": 0,
-            "e": 1,
+            "e": 0,
             "f": 0
         },
         "bounding_box": {
             "x1": -450,
             "y1": -650,
-            "x2": 1282,
+            "x2": 2114,
             "y2": 1050
         }
     },
     {
         "instance": "Transistor",
-        "number_id": 11,
+        "number_id": 6,
         "name": "MN1",
         "type": "nmos",
         "cell": "JNW_BKLE",
@@ -136,10 +76,96 @@
         "parent_cell_chain": "UTOP_JNW_BKLE",
         "group": null,
         "schematic_connections": {
-            "D": "net3",
-            "G": "net4",
-            "S": "net5",
-            "B": "net6"
+            "D": "net1",
+            "G": "net3",
+            "S": "net2",
+            "B": "net3"
+        },
+        "layout_name": "JNWATR_NCH_12C1F2",
+        "layout_library": "JNW_ATR_SKY130A",
+        "layout_ports": [
+            {
+                "type": "G",
+                "layer": "m1",
+                "area": {
+                    "x1": 80,
+                    "y1": 180,
+                    "x2": 112,
+                    "y2": 220
+                }
+            },
+            {
+                "type": "S",
+                "layer": "m1",
+                "area": {
+                    "x1": 144,
+                    "y1": 300,
+                    "x2": 240,
+                    "y2": 340
+                }
+            },
+            {
+                "type": "B",
+                "layer": "locali",
+                "area": {
+                    "x1": -48,
+                    "y1": 180,
+                    "x2": 48,
+                    "y2": 220
+                }
+            },
+            {
+                "type": "D",
+                "layer": "m1",
+                "area": {
+                    "x1": 592,
+                    "y1": 20,
+                    "x2": 688,
+                    "y2": 60
+                }
+            }
+        ],
+        "transform_matrix": {
+            "a": 1,
+            "b": 0,
+            "c": 832,
+            "d": 0,
+            "e": 1,
+            "f": 0
+        },
+        "bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 832,
+            "y2": 400
+        },
+        "overlap_distance": {
+            "x": 92,
+            "y": 64
+        },
+        "group_endpoint": "rail_top",
+        "group_endpoint_bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 832,
+            "y2": 240
+        }
+    },
+    {
+        "instance": "Transistor",
+        "number_id": 7,
+        "name": "MN2",
+        "type": "nmos",
+        "cell": "JNW_BKLE",
+        "named_cell": "UTOP_JNW_BKLE",
+        "parent_cell": "TOP_CELL",
+        "parent_cell_chain": "UTOP_JNW_BKLE",
+        "group": null,
+        "schematic_connections": {
+            "D": "net1",
+            "G": "net3",
+            "S": "net2",
+            "B": "net3"
         },
         "layout_name": "JNWATR_NCH_12C1F2",
         "layout_library": "JNW_ATR_SKY130A",
@@ -203,7 +229,7 @@
             "x": 92,
             "y": 64
         },
-        "group_endpoint": "rail_top/bot",
+        "group_endpoint": "rail_bot",
         "group_endpoint_bounding_box": {
             "x1": 0,
             "y1": 0,
@@ -224,7 +250,7 @@
                 "area": {
                     "x1": -250,
                     "y1": 750,
-                    "x2": 1082,
+                    "x2": 1914,
                     "y2": 850
                 }
             },
@@ -233,7 +259,7 @@
                 "area": {
                     "x1": -250,
                     "y1": -450,
-                    "x2": 1082,
+                    "x2": 1914,
                     "y2": -350
                 }
             },
@@ -249,9 +275,9 @@
             {
                 "layer": "m1",
                 "area": {
-                    "x1": 982,
+                    "x1": 1814,
                     "y1": -350,
-                    "x2": 1082,
+                    "x2": 1914,
                     "y2": 750
                 }
             }
@@ -278,18 +304,18 @@
             {
                 "layer": "locali-m1",
                 "area": {
-                    "x1": 982,
+                    "x1": 1814,
                     "y1": 750,
-                    "x2": 1082,
+                    "x2": 1914,
                     "y2": 850
                 }
             },
             {
                 "layer": "locali-m1",
                 "area": {
-                    "x1": 982,
+                    "x1": 1814,
                     "y1": -450,
-                    "x2": 1082,
+                    "x2": 1914,
                     "y2": -350
                 }
             }
@@ -308,7 +334,7 @@
                 "area": {
                     "x1": -400,
                     "y1": 900,
-                    "x2": 1232,
+                    "x2": 2064,
                     "y2": 1000
                 }
             },
@@ -317,7 +343,7 @@
                 "area": {
                     "x1": -400,
                     "y1": -600,
-                    "x2": 1232,
+                    "x2": 2064,
                     "y2": -500
                 }
             },
@@ -333,9 +359,9 @@
             {
                 "layer": "m1",
                 "area": {
-                    "x1": 1132,
+                    "x1": 1964,
                     "y1": -500,
-                    "x2": 1232,
+                    "x2": 2064,
                     "y2": 900
                 }
             }
@@ -362,18 +388,18 @@
             {
                 "layer": "locali-m1",
                 "area": {
-                    "x1": 1132,
+                    "x1": 1964,
                     "y1": 900,
-                    "x2": 1232,
+                    "x2": 2064,
                     "y2": 1000
                 }
             },
             {
                 "layer": "locali-m1",
                 "area": {
-                    "x1": 1132,
+                    "x1": 1964,
                     "y1": -600,
-                    "x2": 1232,
+                    "x2": 2064,
                     "y2": -500
                 }
             }
@@ -381,7 +407,7 @@
     },
     {
         "instance": "Pin",
-        "number_id": 12,
+        "number_id": 8,
         "cell": "OTA_Manuel",
         "named_cell": "U1_OTA_Manuel",
         "parent_cell": "JNW_BKLE",
@@ -400,7 +426,7 @@
     },
     {
         "instance": "Pin",
-        "number_id": 13,
+        "number_id": 9,
         "cell": "OTA_Manuel",
         "named_cell": "U1_OTA_Manuel",
         "parent_cell": "JNW_BKLE",
@@ -419,7 +445,7 @@
     },
     {
         "instance": "Pin",
-        "number_id": 14,
+        "number_id": 10,
         "cell": "OTA_Manuel",
         "named_cell": "U1_OTA_Manuel",
         "parent_cell": "JNW_BKLE",
@@ -430,7 +456,7 @@
     },
     {
         "instance": "Pin",
-        "number_id": 15,
+        "number_id": 11,
         "cell": "OTA_Manuel",
         "named_cell": "U1_OTA_Manuel",
         "parent_cell": "JNW_BKLE",
@@ -441,7 +467,7 @@
     },
     {
         "instance": "Pin",
-        "number_id": 16,
+        "number_id": 12,
         "cell": "OTA_Manuel",
         "named_cell": "U1_OTA_Manuel",
         "parent_cell": "JNW_BKLE",
@@ -461,17 +487,17 @@
         "group": null,
         "schematic_connections": {
             "VDD": "VDD",
-            "I_out": "net1",
-            "V_n": "V_n",
-            "V_p": "V_p",
+            "I_out": "net4",
+            "V_n": "net5",
+            "V_p": "net6",
             "VSS": "VSS"
         },
         "transform_matrix": {
-            "a": 1,
+            "a": 0,
             "b": 0,
-            "c": 1732,
+            "c": 0,
             "d": 0,
-            "e": 1,
+            "e": 0,
             "f": 0
         },
         "bounding_box": {
@@ -483,7 +509,7 @@
     },
     {
         "instance": "Transistor",
-        "number_id": 17,
+        "number_id": 13,
         "name": "MP6",
         "type": "pmos",
         "cell": "OTA_Manuel",
@@ -569,7 +595,7 @@
     },
     {
         "instance": "Transistor",
-        "number_id": 18,
+        "number_id": 14,
         "name": "MP5",
         "type": "pmos",
         "cell": "OTA_Manuel",
@@ -655,7 +681,7 @@
     },
     {
         "instance": "Transistor",
-        "number_id": 19,
+        "number_id": 15,
         "name": "MP2",
         "type": "pmos",
         "cell": "OTA_Manuel",
@@ -741,7 +767,7 @@
     },
     {
         "instance": "Transistor",
-        "number_id": 20,
+        "number_id": 16,
         "name": "MN4",
         "type": "nmos",
         "cell": "OTA_Manuel",
@@ -827,7 +853,7 @@
     },
     {
         "instance": "Transistor",
-        "number_id": 21,
+        "number_id": 17,
         "name": "MN1",
         "type": "nmos",
         "cell": "OTA_Manuel",
@@ -913,7 +939,7 @@
     },
     {
         "instance": "Transistor",
-        "number_id": 22,
+        "number_id": 18,
         "name": "MP1",
         "type": "pmos",
         "cell": "OTA_Manuel",
@@ -999,7 +1025,7 @@
     },
     {
         "instance": "Transistor",
-        "number_id": 23,
+        "number_id": 19,
         "name": "MP3",
         "type": "pmos",
         "cell": "OTA_Manuel",
@@ -1085,7 +1111,7 @@
     },
     {
         "instance": "Transistor",
-        "number_id": 24,
+        "number_id": 20,
         "name": "MN2",
         "type": "nmos",
         "cell": "OTA_Manuel",
@@ -1171,7 +1197,7 @@
     },
     {
         "instance": "Transistor",
-        "number_id": 25,
+        "number_id": 21,
         "name": "MN3",
         "type": "nmos",
         "cell": "OTA_Manuel",
@@ -1257,7 +1283,7 @@
     },
     {
         "instance": "Transistor",
-        "number_id": 26,
+        "number_id": 22,
         "name": "MP4",
         "type": "pmos",
         "cell": "OTA_Manuel",
@@ -1343,7 +1369,7 @@
     },
     {
         "instance": "Resistor",
-        "number_id": 27,
+        "number_id": 23,
         "name": "R1",
         "type": null,
         "cell": "OTA_Manuel",
@@ -1407,7 +1433,7 @@
     },
     {
         "instance": "Resistor",
-        "number_id": 28,
+        "number_id": 24,
         "name": "R2",
         "type": null,
         "cell": "OTA_Manuel",
@@ -2113,7 +2139,7 @@
     },
     {
         "instance": "Pin",
-        "number_id": 29,
+        "number_id": 25,
         "cell": "COMP",
         "named_cell": "U2_COMP",
         "parent_cell": "JNW_BKLE",
@@ -2132,7 +2158,7 @@
     },
     {
         "instance": "Pin",
-        "number_id": 30,
+        "number_id": 26,
         "cell": "COMP",
         "named_cell": "U2_COMP",
         "parent_cell": "JNW_BKLE",
@@ -2151,7 +2177,7 @@
     },
     {
         "instance": "Pin",
-        "number_id": 31,
+        "number_id": 27,
         "cell": "COMP",
         "named_cell": "U2_COMP",
         "parent_cell": "JNW_BKLE",
@@ -2162,7 +2188,7 @@
     },
     {
         "instance": "Pin",
-        "number_id": 32,
+        "number_id": 28,
         "cell": "COMP",
         "named_cell": "U2_COMP",
         "parent_cell": "JNW_BKLE",
@@ -2173,7 +2199,7 @@
     },
     {
         "instance": "Pin",
-        "number_id": 33,
+        "number_id": 29,
         "cell": "COMP",
         "named_cell": "U2_COMP",
         "parent_cell": "JNW_BKLE",
@@ -2184,7 +2210,7 @@
     },
     {
         "instance": "Pin",
-        "number_id": 34,
+        "number_id": 30,
         "cell": "COMP",
         "named_cell": "U2_COMP",
         "parent_cell": "JNW_BKLE",
@@ -2204,10 +2230,10 @@
         "group": null,
         "schematic_connections": {
             "VDD": "VDD",
-            "VIN": "VIN",
-            "VIP": "VIP",
-            "VO": "net2",
-            "I_BIAS": "I_BIAS",
+            "VIN": "net7",
+            "VIP": "net8",
+            "VO": "net9",
+            "I_BIAS": "net10",
             "VSS": "VSS"
         },
         "transform_matrix": {
@@ -2227,7 +2253,7 @@
     },
     {
         "instance": "Transistor",
-        "number_id": 35,
+        "number_id": 31,
         "name": "MN1",
         "type": "nmos",
         "cell": "COMP",
@@ -2313,7 +2339,7 @@
     },
     {
         "instance": "Transistor",
-        "number_id": 36,
+        "number_id": 32,
         "name": "MN2",
         "type": "nmos",
         "cell": "COMP",
@@ -2399,7 +2425,7 @@
     },
     {
         "instance": "Transistor",
-        "number_id": 37,
+        "number_id": 33,
         "name": "MP5",
         "type": "pmos",
         "cell": "COMP",
@@ -2485,7 +2511,7 @@
     },
     {
         "instance": "Transistor",
-        "number_id": 38,
+        "number_id": 34,
         "name": "MP6",
         "type": "pmos",
         "cell": "COMP",
@@ -2571,7 +2597,7 @@
     },
     {
         "instance": "Transistor",
-        "number_id": 39,
+        "number_id": 35,
         "name": "MP1",
         "type": "pmos",
         "cell": "COMP",
@@ -2657,7 +2683,7 @@
     },
     {
         "instance": "Transistor",
-        "number_id": 40,
+        "number_id": 36,
         "name": "MP2",
         "type": "pmos",
         "cell": "COMP",
@@ -2743,7 +2769,7 @@
     },
     {
         "instance": "Transistor",
-        "number_id": 41,
+        "number_id": 37,
         "name": "MN4",
         "type": "nmos",
         "cell": "COMP",
@@ -2829,7 +2855,7 @@
     },
     {
         "instance": "Transistor",
-        "number_id": 42,
+        "number_id": 38,
         "name": "MN3",
         "type": "nmos",
         "cell": "COMP",
@@ -2915,7 +2941,7 @@
     },
     {
         "instance": "Transistor",
-        "number_id": 43,
+        "number_id": 39,
         "name": "MN5",
         "type": "nmos",
         "cell": "COMP",
@@ -3001,7 +3027,7 @@
     },
     {
         "instance": "Transistor",
-        "number_id": 44,
+        "number_id": 40,
         "name": "MN6",
         "type": "nmos",
         "cell": "COMP",
@@ -3087,7 +3113,7 @@
     },
     {
         "instance": "Transistor",
-        "number_id": 45,
+        "number_id": 41,
         "name": "MP3",
         "type": "pmos",
         "cell": "COMP",
@@ -3173,7 +3199,7 @@
     },
     {
         "instance": "Transistor",
-        "number_id": 46,
+        "number_id": 42,
         "name": "MP4",
         "type": "pmos",
         "cell": "COMP",
@@ -3863,7 +3889,7 @@
     },
     {
         "instance": "Pin",
-        "number_id": 47,
+        "number_id": 43,
         "cell": "COMP2",
         "named_cell": "U1_COMP2",
         "parent_cell": "COMP",
@@ -3882,7 +3908,7 @@
     },
     {
         "instance": "Pin",
-        "number_id": 48,
+        "number_id": 44,
         "cell": "COMP2",
         "named_cell": "U1_COMP2",
         "parent_cell": "COMP",
@@ -3901,7 +3927,7 @@
     },
     {
         "instance": "Pin",
-        "number_id": 49,
+        "number_id": 45,
         "cell": "COMP2",
         "named_cell": "U1_COMP2",
         "parent_cell": "COMP",
@@ -3912,7 +3938,7 @@
     },
     {
         "instance": "Pin",
-        "number_id": 50,
+        "number_id": 46,
         "cell": "COMP2",
         "named_cell": "U1_COMP2",
         "parent_cell": "COMP",
@@ -3923,7 +3949,7 @@
     },
     {
         "instance": "Pin",
-        "number_id": 51,
+        "number_id": 47,
         "cell": "COMP2",
         "named_cell": "U1_COMP2",
         "parent_cell": "COMP",
@@ -3934,7 +3960,7 @@
     },
     {
         "instance": "Pin",
-        "number_id": 52,
+        "number_id": 48,
         "cell": "COMP2",
         "named_cell": "U1_COMP2",
         "parent_cell": "COMP",
@@ -3977,7 +4003,7 @@
     },
     {
         "instance": "Transistor",
-        "number_id": 53,
+        "number_id": 49,
         "name": "MN1",
         "type": "nmos",
         "cell": "COMP2",
@@ -4063,7 +4089,7 @@
     },
     {
         "instance": "Transistor",
-        "number_id": 54,
+        "number_id": 50,
         "name": "MN2",
         "type": "nmos",
         "cell": "COMP2",
@@ -4149,7 +4175,7 @@
     },
     {
         "instance": "Transistor",
-        "number_id": 55,
+        "number_id": 51,
         "name": "MP5",
         "type": "pmos",
         "cell": "COMP2",
@@ -4235,7 +4261,7 @@
     },
     {
         "instance": "Transistor",
-        "number_id": 56,
+        "number_id": 52,
         "name": "MP6",
         "type": "pmos",
         "cell": "COMP2",
@@ -4321,7 +4347,7 @@
     },
     {
         "instance": "Transistor",
-        "number_id": 57,
+        "number_id": 53,
         "name": "MP1",
         "type": "pmos",
         "cell": "COMP2",
@@ -4407,7 +4433,7 @@
     },
     {
         "instance": "Transistor",
-        "number_id": 58,
+        "number_id": 54,
         "name": "MP2",
         "type": "pmos",
         "cell": "COMP2",
@@ -4493,7 +4519,7 @@
     },
     {
         "instance": "Transistor",
-        "number_id": 59,
+        "number_id": 55,
         "name": "MN4",
         "type": "nmos",
         "cell": "COMP2",
@@ -4579,7 +4605,7 @@
     },
     {
         "instance": "Transistor",
-        "number_id": 60,
+        "number_id": 56,
         "name": "MN3",
         "type": "nmos",
         "cell": "COMP2",
@@ -4665,7 +4691,7 @@
     },
     {
         "instance": "Transistor",
-        "number_id": 61,
+        "number_id": 57,
         "name": "MN5",
         "type": "nmos",
         "cell": "COMP2",
@@ -4751,7 +4777,7 @@
     },
     {
         "instance": "Transistor",
-        "number_id": 62,
+        "number_id": 58,
         "name": "MN6",
         "type": "nmos",
         "cell": "COMP2",
@@ -4837,7 +4863,7 @@
     },
     {
         "instance": "Transistor",
-        "number_id": 63,
+        "number_id": 59,
         "name": "MP3",
         "type": "pmos",
         "cell": "COMP2",
@@ -4923,7 +4949,7 @@
     },
     {
         "instance": "Transistor",
-        "number_id": 64,
+        "number_id": 60,
         "name": "MP4",
         "type": "pmos",
         "cell": "COMP2",

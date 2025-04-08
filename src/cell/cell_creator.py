@@ -143,14 +143,12 @@ class CellCreator:
             for component in components:
                 if isinstance(component, CircuitCell):
                     component.bounding_box = origin_scaled_used_area
-                    print(component.bounding_box.x1, component.bounding_box.x2)
                 elif isinstance(component, (Transistor, Capacitor, Resistor)):
                     component.transform_matrix.c -= used_area.x1
                     component.transform_matrix.f -= used_area.y1
 
             grid, port_scaled_coordinates, _, port_coordinates, routing_parameters = GridGeneration(
                 components=components).initialize_grid_generation()
-
 
             # paths = AstarInitiator(grid=grid,
             #                       connections=connections,
@@ -168,24 +166,29 @@ class CellCreator:
                                         used_area=origin_scaled_used_area
                                         ).get()
 
-            for component in components:
-                if isinstance(component, CircuitCell):
-                    if component.cell == "COMP" or component.cell == "COMP2":
-                        component.bounding_box = origin_scaled_used_area
-                        continue
-                    print(component.bounding_box.x2, component.bounding_box.x2)
-                    #difference to add = ((component.bounding_box.x2 - component.bounding_box.x1)
-                    # - (component.bounding_box.x2 - component.bounding_box.x1)) // 2
-                    component.transform_matrix.set([1, 0, self.last_origin_scaled_used_area_x2, 0, 1, 0])
-
-                    self.last_origin_scaled_used_area_x2 += abs(component.bounding_box.x2 - component.bounding_box.x1)
             # Update components
             for component in components:
                 self.updated_components.append(component)
                 solved_circuit_cells[cell].append(component)
             components.clear()
 
-    #def __place_ce
+        self.__set_cells_position()
+
+    def __set_cells_position(self):
+        print("yo")
+        #for component in self.updated_components:
+
+        # for component in components:
+        #     if isinstance(component, CircuitCell):
+        #         if component.cell == "COMP" or component.cell == "COMP2":
+        #             component.bounding_box = origin_scaled_used_area
+        #             continue
+        #         print(component.bounding_box.x2, component.bounding_box.x2)
+        #         # difference to add = ((component.bounding_box.x2 - component.bounding_box.x1)
+        #         # - (component.bounding_box.x2 - component.bounding_box.x1)) // 2
+        #         component.transform_matrix.set([1, 0, self.last_origin_scaled_used_area_x2, 0, 1, 0])
+        #
+        #         self.last_origin_scaled_used_area_x2 += abs(component.bounding_box.x2 - component.bounding_box.x1)
 
     def __add_top_cell_rails_around_cells(self):
 
