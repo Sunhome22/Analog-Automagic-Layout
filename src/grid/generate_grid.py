@@ -11,9 +11,11 @@
 # You should have received a copy of the GNU General Public License along with this program.
 # If not, see <https://www.gnu.org/licenses/>.
 # ==================================================================================================================== #
+import re
 from dataclasses import dataclass
 
-from circuit.circuit_components import Pin, CircuitCell, RectArea
+from circuit.circuit_components import Pin, CircuitCell, RectArea, Transistor
+from connections.connections import Connection
 from logger.logger import get_a_logger
 import math
 import numpy as np
@@ -28,12 +30,42 @@ class Coordinates:
     y: int = field(default_factory=int)
 
 @dataclass
-class RoutingSizingParameters:
+class PortSize:
+    width: int = field(default_factory=int)
+    height: int = field(default_factory=int)
+
+@dataclass
+class RoutingParameters:
     trace_width_scaled: int = field(default_factory=int)
-    port_width_scaled: int = field(default_factory=int)
-    port_height_scaled: int = field(default_factory=int)
-    gate_width_scaled: int = field(default_factory=int)
     minimum_segment_length: int = field(default_factory=int)
+@dataclass
+class BipolarTransistors:
+    E: PortSize = field(default_factory=PortSize)
+    C: PortSize = field(default_factory=PortSize)
+    B: PortSize = field(default_factory=PortSize)
+
+@dataclass
+class CMOS:
+    G: PortSize = field(default_factory=PortSize)
+    S: PortSize = field(default_factory=PortSize)
+    D: PortSize = field(default_factory=PortSize)
+@dataclass
+class Resistor:
+    B: PortSize = field(default_factory=PortSize)
+    P: PortSize = field(default_factory=PortSize)
+    N: PortSize = field(default_factory=PortSize)
+@dataclass
+class Capacitor:
+    A: PortSize = field(default_factory=PortSize)
+    B: PortSize = field(default_factory=PortSize)
+
+@dataclass
+class ComponentPorts:
+    cmos: CMOS = field(default_factory=CMOS)
+    bipolar: BipolarTransistors = field(default_factory=BipolarTransistors)
+    resistor: Resistor = field(default_factory=Resistor)
+    capacitor: Capacitor = field(default_factory=Capacitor)
+
 
 class GridGeneration:
     logger = get_a_logger(__name__)
@@ -55,9 +87,11 @@ class GridGeneration:
         self.components = components
 
         #PARAMETERS
-        self.routing_parameters = RoutingSizingParameters()
+        self.routing_parameters = RoutingParameters()
+        self.component_ports = ComponentPorts()
+
         self.port_area = {}
-        self.port_scaled_coord = {}
+        self.scaled_port_coordinates = {}
         self.port_coordinates = {}
         self.used_area = RectArea(x1=self.GRID_SIZE, y1=self.GRID_SIZE, x2=0, y2=0)
         self.grid = None
@@ -84,7 +118,7 @@ class GridGeneration:
             if not check_instance(obj):
                 for port in obj.layout_ports:
 
-                    if port.type == "B":
+                    if port.type == "B" and isinstance(obj, Transistor) and (obj.type == "nmos" or obj.type == "pmos"):
                         continue
 
                     x1 = (obj.transform_matrix.c + (port.area.x1 + port.area.x2)/2 - self.used_area.x1 + self.GRID_LEEWAY_X)/self.SCALE_FACTOR
@@ -92,10 +126,10 @@ class GridGeneration:
 
                     frac_x, int_x = math.modf(x1)
                     frac_y, int_y = math.modf(y1)
-                    self.port_area.setdefault(port.type, []).append((round(int_x), round(int_y)))
+                    self.port_area.setdefault(obj.type + port.type, []).append((round(int_x), round(int_y)))
 
-                    self.port_coordinates.setdefault(str(obj.number_id) + port.type, []).extend([int(obj.transform_matrix.c + (port.area.x1 + port.area.x2)/2), int(obj.transform_matrix.f + (port.area.y1 + port.area.y2)/2)])
-                    self.port_scaled_coord.setdefault(str(obj.number_id)+port.type, []).extend([int_x, frac_x, int_y, frac_y])
+                    self.port_coordinates.setdefault(str(obj.type) + port.type, []).append(Coordinates(x = int(obj.transform_matrix.c + (port.area.x1 + port.area.x2)/2), y= int(obj.transform_matrix.f + (port.area.y1 + port.area.y2)/2)))
+                    self.scaled_port_coordinates.setdefault(str(obj.number_id)+port.type, []).append(Coordinates(x=int(int_x), y = int(int_y)))
 
 
     def __calculate_non_overlap_parameters(self):
@@ -103,15 +137,63 @@ class GridGeneration:
         for obj in self.components:
             if not check_instance(obj):
                 for port in obj.layout_ports:
-                    if not port.type == "G":
-                        self.routing_parameters.port_width_scaled = math.ceil(((port.area.x2-port.area.x1)/2 +self.VIA_MINIMUM_DISTANCE+self.VIA_PADDING*2+self.TRACE_WIDTH/2)/self.SCALE_FACTOR) +1
+                    port_height = math.ceil(((port.area.y2 - port.area.y1) / 2 + self.VIA_MINIMUM_DISTANCE + self.VIA_PADDING * 2 + self.TRACE_WIDTH / 2) / self.SCALE_FACTOR) + 1
+                    port_width = math.ceil(((port.area.x2 - port.area.x1) / 2 + self.VIA_MINIMUM_DISTANCE + self.VIA_PADDING * 2 + self.TRACE_WIDTH / 2) / self.SCALE_FACTOR) + 1
+                    if isinstance(obj, Transistor):
 
-                    else:
-                        self.routing_parameters.gate_width_scaled = math.ceil(((port.area.x2-port.area.x1)/2 +self.VIA_MINIMUM_DISTANCE+self.VIA_PADDING*2+self.TRACE_WIDTH/2)/self.SCALE_FACTOR) +1
+                        if obj.type =="nmos" or obj.type == "pmos":
+                            if port.type == "G":
 
-                    self.routing_parameters.port_height_scaled = math.ceil(((port.area.y2-port.area.y1)/2 +self.VIA_MINIMUM_DISTANCE+self.VIA_PADDING*2+self.TRACE_WIDTH/2)/self.SCALE_FACTOR) +1
-                    if self.routing_parameters.port_width_scaled != 0 and self.routing_parameters.gate_width_scaled != 0:
-                        break
+                                self.component_ports.cmos.G.width = port_width
+                                self.component_ports.cmos.G.height = port_height
+                            elif port.type == "D":
+
+                                self.component_ports.cmos.D.width = port_width
+                                self.component_ports.cmos.D.height = port_height
+
+                            elif port.type == "S":
+
+                                self.component_ports.cmos.S.width = port_width
+                                self.component_ports.cmos.S.height = port_height
+                        else:
+
+                            if port.type == "B":
+                                self.component_ports.bipolar.B.width = port_width
+                                self.component_ports.bipolar.B.height = port_height
+                            elif port.type =="C":
+                                self.component_ports.bipolar.C.width = port_width
+                                self.component_ports.bipolar.C.height = port_height
+                            elif port.type == "E":
+                                self.component_ports.bipolar.E.width = port_width
+                                self.component_ports.bipolar.E.height = port_height
+                    elif isinstance(obj, Resistor):
+                        if port.type == "B":
+
+                            self.component_ports.resistor.B.width = port_width
+                            self.component_ports.resistor.B.height = port_height
+
+                        elif port.type == "P":
+
+                            self.component_ports.resistor.P.width = port_width
+                            self.component_ports.resistor.P.height = port_height
+
+                        elif port.type == "N":
+
+                            self.component_ports.resistor.N.width = port_width
+                            self.component_ports.resistor.N.height = port_height
+
+                    elif isinstance(obj, Capacitor):
+
+                        if port.type == "A":
+
+                            self.component_ports.capacitor.A.width = port_width
+                            self.component_ports.capacitor.A.height = port_height
+
+                        elif port.type == "B":
+
+                            self.component_ports.capacitor.B.width = port_width
+                            self.component_ports.capacitor.B.width = port_height
+
 
 
 
@@ -123,10 +205,29 @@ class GridGeneration:
 
         self.grid = [[0 for _ in range(int(scaled_grid_size_x[1]))] for _ in range(int(scaled_grid_size_y[1]))]
 
+        component_types= ["nmos","pmos","npn","pnp","mim","vpp","hpo","xhpo"]
 
         for port in self.port_area:
-            h = self.routing_parameters.port_height_scaled
-            w = self.routing_parameters.gate_width_scaled if port == "G" else self.routing_parameters.port_width_scaled
+            pattern = r'('+'|'.join(map(re.escape, component_types)) + r')'
+            component_type, port_type = re.split(pattern, port)
+
+            if component_type == component_types[0] or component_type == component_types[1]:
+                port_attribute = getattr(self.component_ports.cmos, port_type)
+            elif component_type == component_types[2] or component_type == component_types[3]:
+                port_attribute = getattr(self.component_ports.bipolar, port.type)
+            elif component_type == component_types[4] or component_type == component_types[5]:
+                port_attribute = getattr(self.component_ports.capacitor, port.type)
+            elif component_type == component_types[6] or component_type == component_types[6]:
+                port_attribute = getattr(self.component_ports.resistor, port_type)
+            else:
+                self.logger.error("No matching component type found")
+                port_attribute = getattr(self.component_ports.cmos, port_type)
+
+
+
+
+            h = port_attribute.height
+            w = port_attribute.width
 
             for x,y in self.port_area[port]:
                 for i in range(y-h, y+h+1):
@@ -141,7 +242,7 @@ class GridGeneration:
         self.__calculate_non_overlap_parameters()
         self.__generate_grid()
 
-        return self.grid, self.port_scaled_coord, self.used_area, self.port_coordinates, self.routing_parameters
+        return self.grid, self.scaled_port_coordinates, self.used_area, self.port_coordinates, self.routing_parameters, self.component_ports
 
 def check_instance(obj):
     return isinstance(obj, (Pin, CircuitCell))

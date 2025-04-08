@@ -14,21 +14,21 @@ import pstats
 class AstarInitiator:
     logger = get_a_logger(__name__)
     TRACE_ON_GRID = 0.9
-    def __init__(self, components, grid, connections, port_scaled_coordinates, port_coordinates, net_list,
-                 routing_parameters):
+    def __init__(self, components, grid, connections, scaled_port_coordinates, port_coordinates, net_list,
+                 routing_parameters, component_ports):
 
 
         self.config = self.__load_config()
         self.RUN_MULTIPLE_ASTAR = self.config["a_star_initiator"]["RUN_MULTIPLE_ASTAR"]
         self.CUSTOM_NET_ORDER = self.config["a_star_initiator"]["CUSTOM_NET_ORDER"]
         self.NET_ORDER = self.config["a_star_initiator"]["NET_ORDER"]
-
+        self.component_ports = component_ports
         self.routing_parameters = routing_parameters
         self.components = components
         self.grid_vertical = deepcopy(grid)
         self.grid_horizontal = deepcopy(grid)
         self.connections = connections
-        self.port_scaled_coordinates = port_scaled_coordinates
+        self.scaled_port_coordinates = scaled_port_coordinates
         self.port_coordinates = port_coordinates
         self.net_list = net_list
         self.goal_nodes = []
@@ -62,18 +62,18 @@ class AstarInitiator:
                     if not all(instance_condition["instance"]):
 
                         if placed_object.number_id == int(con.start_comp_id):
-                            start = (int(self.port_scaled_coordinates[con.start_comp_id + con.start_area[0]][0]),
-                                     int(self.port_scaled_coordinates[con.start_comp_id + con.start_area[0]][2]))
-                            real_start = (int(self.port_coordinates[con.start_comp_id + con.start_area[0]][0]),
-                                          int(self.port_coordinates[con.start_comp_id + con.start_area[0]][1]))
+                            start = (self.scaled_port_coordinates[con.start_comp_id + con.start_area[0]].x,
+                                     self.scaled_port_coordinates[con.start_comp_id + con.start_area[0]].y)
+                            real_start = (self.port_coordinates[con.start_comp_id + con.start_area[0]].x,
+                                          self.port_coordinates[con.start_comp_id + con.start_area[0]].y)
 
 
 
                         if con.end_comp_id != "" and placed_object.number_id == int(con.end_comp_id):
-                            end = (int(self.port_scaled_coordinates[con.end_comp_id + con.end_area[0]][0]),
-                                   int(self.port_scaled_coordinates[con.end_comp_id + con.end_area[0]][2]))
-                            real_end = (int(self.port_coordinates[con.end_comp_id + con.end_area[0]][0]),
-                                        int(self.port_coordinates[con.end_comp_id + con.end_area[0]][1]))
+                            end = (self.scaled_port_coordinates[con.end_comp_id + con.end_area[0]].x,
+                                   self.scaled_port_coordinates[con.end_comp_id + con.end_area[0]].y)
+                            real_end = (self.port_coordinates[con.end_comp_id + con.end_area[0]].x,
+                                        self.port_coordinates[con.end_comp_id + con.end_area[0]].y)
 
 
                     break_condition = {
@@ -84,7 +84,7 @@ class AstarInitiator:
 
                         if len(con.start_area) >= 2 or len(con.end_area) >= 2:
 
-                            start, real_start, end, real_end = check_start_end_port(con, self.port_scaled_coordinates,
+                            start, real_start, end, real_end = check_start_end_port(con, self.scaled_port_coordinates,
                                                                                     self.port_coordinates)
 
                         self.goal_nodes.extend([start, end])
@@ -106,8 +106,8 @@ class AstarInitiator:
         h = self.routing_parameters.port_height_scaled
         w = self.routing_parameters.port_width_scaled
         for node in self.goal_nodes:
-            for key in self.port_scaled_coordinates:
-                if (int(self.port_scaled_coordinates[key][0]), int(self.port_scaled_coordinates[key][2])) == node:
+            for key in self.scaled_port_coordinates:
+                if (int(self.scaled_port_coordinates[key][0]), int(self.scaled_port_coordinates[key][2])) == node:
                     w = self.routing_parameters.gate_width_scaled if key[1] == "G" else self.routing_parameters.port_width_scaled
 
                     break
@@ -241,26 +241,26 @@ class AstarInitiator:
 """Helper function deciding which of two connected ports should be routed from"""
 
 
-def check_start_end_port(con, port_scaled_coordinates: dict, port_coordinates: dict):
+def check_start_end_port(con, scaled_port_coordinates: dict, port_coordinates: dict):
     start_ports = con.start_area
     end_ports = con.end_area
     port_combinations = {}
 
     for x in start_ports:
         for y in end_ports:
-            point1 = [port_scaled_coordinates[con.start_comp_id + x][0],
-                      port_scaled_coordinates[con.start_comp_id + x][2]]
-            point2 = [port_scaled_coordinates[con.end_comp_id + y][0], port_scaled_coordinates[con.end_comp_id + y][2]]
+            point1 = [scaled_port_coordinates[con.start_comp_id + x][0],
+                      scaled_port_coordinates[con.start_comp_id + x][2]]
+            point2 = [scaled_port_coordinates[con.end_comp_id + y][0], scaled_port_coordinates[con.end_comp_id + y][2]]
             port_combinations[x + y] = sum(abs(a - b) for a, b in zip(point1, point2))
 
     designated_ports = min(port_combinations, key=port_combinations.get)
 
-    start = (int(port_scaled_coordinates[con.start_comp_id + designated_ports[0]][0]),
-             int(port_scaled_coordinates[con.start_comp_id + designated_ports[0]][2]))
+    start = (int(scaled_port_coordinates[con.start_comp_id + designated_ports[0]][0]),
+             int(scaled_port_coordinates[con.start_comp_id + designated_ports[0]][2]))
     real_start = (int(port_coordinates[con.start_comp_id + designated_ports[0]][0]),
                   int(port_coordinates[con.start_comp_id + designated_ports[0]][1]))
-    end = (int(port_scaled_coordinates[con.end_comp_id + designated_ports[1]][0]),
-           int(port_scaled_coordinates[con.end_comp_id + designated_ports[1]][2]))
+    end = (int(scaled_port_coordinates[con.end_comp_id + designated_ports[1]][0]),
+           int(scaled_port_coordinates[con.end_comp_id + designated_ports[1]][2]))
     real_end = (int(port_coordinates[con.end_comp_id + designated_ports[1]][0]),
                 int(port_coordinates[con.end_comp_id + designated_ports[1]][1]))
 

@@ -73,38 +73,39 @@ def main():
     logger = get_a_logger(__name__)
 
     # # # Extracts component information from SPICE file
-    # components = SPICEparser(project_properties=project_properties)
+    components = SPICEparser(project_properties=project_properties)
     # #
     # # # Update component attributes with information from it's associated Magic files
-    # components = MagicComponentsParser(project_properties=project_properties,
-    #                                     components=components.get()).get()
+    components = MagicComponentsParser(project_properties=project_properties,
+                                         components=components.get()).get()
     #
     #
     # # Algorithms
     # #components = load_from_json(file_name=f"{os.path.dirname(os.path.abspath(__file__))}/results/SpeedTest.json")
-    # connections, overlap_dict, net_list, debug_ov = ConnectionLists(input_components = components).get()
+    connections, overlap_dict, net_list= ConnectionLists(input_components = components).get()
     #
     #
-    # components = LinearOptimizationSolver(components, connections,  overlap_dict).solve_placement()
+    components = LinearOptimizationSolver(components, connections,  overlap_dict).solve_placement()
     #
     # save_to_json(objects=components, file_name=f"{os.path.dirname(os.path.abspath(__file__))}/results/"
     #                                            f"Components_Placement.json")
     #
-    # grid, port_scaled_coordinates, used_area, port_coordinates, routing_parameters= GridGeneration(components=components).initialize_grid_generation()
+    grid, scaled_port_coordinates, used_area, port_coordinates, routing_parameters, component_ports= GridGeneration(components=components).initialize_grid_generation()
     #
     # for obj in components:
     #     if isinstance(obj, CircuitCell):
     #         obj.transform_matrix.set([1, 0, 0, 0, 1, 0])
     #         obj.bounding_box = used_area
-    # path = AstarInitiator(grid = grid,
-    #                                 connections = connections,
-    #                                 components = components,
-    #                                 port_scaled_coordinates = port_scaled_coordinates,
-    #                                 port_coordinates = port_coordinates,
-    #                                 net_list = net_list,
-    #                                 routing_parameters = routing_parameters
-    #                                 ).get()
-    #
+    path = AstarInitiator(grid = grid,
+                                    connections = connections,
+                                    components = components,
+                                    scaled_port_coordinates = scaled_port_coordinates,
+                                    port_coordinates = port_coordinates,
+                                    net_list = net_list,
+                                    routing_parameters = routing_parameters,
+                                    component_ports = component_ports
+                                    ).get()
+
     #
     #
     #

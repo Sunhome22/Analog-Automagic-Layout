@@ -74,7 +74,6 @@ class ConnectionLists:
         }
 
         self.overlap_dict = {}
-        self.debug_dict = {}
         self.local_con_area = {}
         self.net_list = Nets(applicable_nets=[], pin_nets=[])
 
@@ -187,14 +186,13 @@ class ConnectionLists:
                     self.logger.info(f"Transistor type '{obj.type}' no overlap")
 
 
-        top, side, debug_top, debug_side = overlap_pairs(n_transistors)
-        new_top, new_side, new_debug_top, new_debug_side = overlap_pairs(p_transistors)
+        top, side = overlap_pairs(n_transistors)
+        new_top, new_side = overlap_pairs(p_transistors)
 
         self.overlap_dict["side"] = side + new_side
         self.overlap_dict["top"] = top + new_top
 
-        self.debug_dict["side"] = debug_side + new_debug_side
-        self.debug_dict["top"] = debug_top + new_debug_top
+
 
     def __get_net_list(self):
         self.logger.info("running get_net_list")
@@ -220,7 +218,7 @@ class ConnectionLists:
 
 
 
-        return  self.connections, self.overlap_dict, self.net_list, self.debug_dict
+        return  self.connections, self.overlap_dict, self.net_list
 
 
 
@@ -229,9 +227,9 @@ class ConnectionLists:
 
 def overlap_pairs(list1):
     top = []
-    top_debug = []
+
     side = []
-    side_debug = []
+
     duplicated_list = list1[:]
     for i in list1:
         for j in duplicated_list:
@@ -239,11 +237,11 @@ def overlap_pairs(list1):
 
                 if (i.bounding_box.x2 - i.bounding_box.x1) == (j.bounding_box.x2 - j.bounding_box.x1) and i.schematic_connections["B"] == j.schematic_connections["B"]:
                     top.append([i.number_id, j.number_id])
-                    top_debug.append([i.name, j.name])
+
 
                 if (i.bounding_box.y2 - i.bounding_box.y1) == (j.bounding_box.y2 - j.bounding_box.y1) and i.schematic_connections["B"] == j.schematic_connections["B"]:
                     side.append([i.number_id, j.number_id])
-                    side_debug.append([i.name, j.name])
+
         duplicated_list.remove(i)
-    return top, side, top_debug, side_debug
+    return top, side
 
