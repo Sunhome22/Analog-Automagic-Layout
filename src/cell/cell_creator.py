@@ -175,8 +175,11 @@ class CellCreator:
         self.__set_cells_position()
 
     def __set_cells_position(self):
-        print("yo")
-        #for component in self.updated_components:
+        # Need to take into account nr of rails on next placement
+        for component in self.updated_components:
+            if isinstance(component, CircuitCell):
+                component.transform_matrix.set([1, 0, self.last_origin_scaled_used_area_x2, 0, 1, 0])
+                self.last_origin_scaled_used_area_x2 += abs(component.bounding_box.x2 - component.bounding_box.x1)
 
         # for component in components:
         #     if isinstance(component, CircuitCell):

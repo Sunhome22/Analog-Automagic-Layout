@@ -200,28 +200,53 @@ def get_component_group_endpoints_for_atr_sky130a_lib(self):
     possible_y_min_components = []
 
     # Assignment of no rail endpoints
-    for components in grouped_components_x:
-        for component in self.transistor_components:
-            top_component = components[-1][0][0]
-            bot_component = components[0][0][0]
+    for component in self.transistor_components:
+        for components in grouped_components_x:
             y_group_index = components[0][2]
 
-            if component == top_component and len(components) > 1:
-                possible_y_max_components.append((component, component.transform_matrix.f, y_group_index))
-                component.group_endpoint = "no_rail_top"
+            # Special handling is need in the case there are just 2, 3 or 4 components
+            # Maybe there is some other way to solve this
+            if 2 <= len(self.transistor_components) <= 4:
+                idx = [c[0][0] for c in components].index(component)
 
-            elif component == bot_component and len(components) > 1:
-                component.group_endpoint = "no_rail_bot"
-                possible_y_min_components.append((component, component.transform_matrix.f, y_group_index))
+                is_top_bot = ((idx == 0 and (len(components) == 1 or len(self.transistor_components) == 3))
+                              or len(self.transistor_components) == 2)
 
-            elif component == components[0][0][0] and len(components) == 1:
-                component.group_endpoint = "no_rail_top/bot"
-                possible_y_max_components.append((component, component.transform_matrix.f, y_group_index))
-                possible_y_min_components.append((component, component.transform_matrix.f, y_group_index))
+                is_top = ((idx == len(components) - 1 and len(components) > 1)
+                          or (idx == 1 and len(self.transistor_components) == 4))
+
+                is_bot = (idx == 0 and len(components) > 1) or (idx == len(components) - 2)
+
+                if is_top_bot:
+                    component.group_endpoint = "no_rail_top/bot"
+                    possible_y_max_components.append((component, component.transform_matrix.f, y_group_index))
+                    possible_y_min_components.append((component, component.transform_matrix.f, y_group_index))
+                elif is_top:
+                    component.group_endpoint = "no_rail_top"
+                    possible_y_max_components.append((component, component.transform_matrix.f, y_group_index))
+                elif is_bot:
+                    component.group_endpoint = "no_rail_bot"
+                    possible_y_min_components.append((component, component.transform_matrix.f, y_group_index))
+
+            # Default handling
+            else:
+                if component == components[0][0][0] and len(components) == 1:
+                    component.group_endpoint = "no_rail_top/bot"
+                    possible_y_max_components.append((component, component.transform_matrix.f, y_group_index))
+                    possible_y_min_components.append((component, component.transform_matrix.f, y_group_index))
+
+                elif component == components[-1][0][0] and len(components) > 1:
+                    possible_y_max_components.append((component, component.transform_matrix.f, y_group_index))
+                    component.group_endpoint = "no_rail_top"
+
+                elif component == components[0][0][0] and len(components) > 1:
+                    component.group_endpoint = "no_rail_bot"
+                    possible_y_min_components.append((component, component.transform_matrix.f, y_group_index))
 
     # Assignment of rail endpoints
     for min_y_components in list(find_min_y_components(possible_y_min_components).values()):
         for min_y_component in min_y_components:
+
             for component in self.transistor_components:
                 if min_y_component == component:
                     if component.group_endpoint == "no_rail_top/bot":

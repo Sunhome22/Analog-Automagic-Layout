@@ -340,8 +340,8 @@ class SPICEparser:
             line_words = spice_line.split()
 
             pin_type = ''.join(re.findall(r'[a-zA-Z]+', line_words[0]))
-            pin = Pin(type=pin_type, cell=cell, named_cell=named_cell, parent_cell=parent_cell, parent_cell_chain=parent_cell_chain,
-                      name=line_words[1], number_id=len(self.components))
+            pin = Pin(type=pin_type, cell=cell, named_cell=named_cell, parent_cell=parent_cell,
+                      parent_cell_chain=parent_cell_chain, name=line_words[1], number_id=len(self.components))
             pin.instance = pin.__class__.__name__  # add instance type
             self.components.append(pin)
 
