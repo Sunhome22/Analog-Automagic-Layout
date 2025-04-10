@@ -45,7 +45,7 @@ class LinearOptimizationSolver:
         self.GRID_SIZE = self.config["generate_grid"]["GRID_SIZE"]
         # Setup of problem space and solver
         self.problem_space = pulp.LpProblem("ComponentPlacement", pulp.LpMinimize)
-        self.solver = pulp.SCIP_PY(msg=self.SOLVER_MSG, mip=False, warmStart=True,
+        self.solver = pulp.SCIP_PY(msg=self.SOLVER_MSG, mip=False, warmStart=False,
                                    options=[f"limits/gap={self.STOP_TOLERANCE}"])
 
         # Inputs
@@ -317,7 +317,7 @@ class LinearOptimizationSolver:
                                * self.BETA + (self.y_max - self.y_min) * self.THETA, "totalWireLength")
         # Warm start
         placement_solution_file = f"{self.current_file_directory}/previous_placement_solution.pkl"
-        self.__warm_start(file=placement_solution_file)
+        # self.__warm_start(file=placement_solution_file)
 
         # Solving
         start_solving_time = time.time()
