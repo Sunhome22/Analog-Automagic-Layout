@@ -52,7 +52,6 @@ class AstarAlgorithm:
         self.width = len(grid_vertical[0]) if self.height > 0 else 0
 
 
-
     def in_bounds(self, pos):
         x, y = pos
         return 0 <= x < self.width and 0 <= y < self.height
@@ -71,8 +70,8 @@ class AstarAlgorithm:
         return seg if seg < self.minimum_segment_length else self.minimum_segment_length
 
     def a_star(self):
-        ghost_length = 0
-        retrace_penalty = 0
+
+
         goal_indices = {goal: i for i, goal in enumerate(self.goal_nodes)}
         all_visited = (1 << len(self.goal_nodes)) - 1
 
@@ -132,7 +131,7 @@ class AstarAlgorithm:
                         # do not increase segment length.
                         if edge in edge_set or edge_rev in edge_set:
                             prospective_seg_len = seg_len
-                            ghost_length = seg_len + 1
+
                         else:
                             prospective_seg_len = seg_len + 1
                         prospective_last_was_reversal = False

@@ -26,23 +26,31 @@ class Nets:
     def __init__(self, applicable_nets: list, pin_nets:list):
         self.applicable_nets = applicable_nets
         self.pin_nets = pin_nets
+@dataclass
+class Overlap:
+    instance : str
+    component_ids : list
 
 @dataclass
 class Connection:
     start_comp_id: str
+    start_comp_type: str
     start_area: str
     start_comp_name: str
     end_comp_id: str
+    end_comp_type: str
     end_area: str
     end_comp_name: str
     cell: str
     net: str
-    def __init__(self, start_comp_id: int, start_area: str, start_comp_name: str, end_comp_id: int, end_area: str, end_comp_name: str, cell: str, net: str):
+    def __init__(self, start_comp_id: int|str, start_comp_type: str, start_area: str, start_comp_name: str, end_comp_id: int|str, end_comp_type: str, end_area: str, end_comp_name: str, cell: str, net: str):
 
         self.start_comp_id = str(start_comp_id)
+        self.start_comp_type = start_comp_type
         self.start_area = start_area
         self.start_comp_name = start_comp_name
         self.end_comp_id = str(end_comp_id)
+        self.end_comp_type = end_comp_type
         self.end_area = end_area
         self.end_comp_name = end_comp_name
         self.cell = cell
@@ -88,10 +96,10 @@ class ConnectionLists:
                 for key1 in ports:
 
                     if key != key1:
-                        entry = [Connection(obj.number_id, key, obj.name, obj.number_id, obj.name, obj.cell, key1,ports[key]),
-                                 Connection(obj.number_id, key1, obj.name, obj.number_id, key, obj.name, obj.cell, ports[key])]
+                        entry = [Connection(obj.number_id, obj.type, key, obj.name, obj.number_id, obj.name, obj.type, obj.cell, key1,ports[key]),
+                                 Connection(obj.number_id, obj.type, key1, obj.name, obj.number_id, key, obj.name, obj.type, obj.cell, ports[key])]
                         if ports[key] == ports[key1] and not any(isinstance(obj, Connection) and obj == target for target in entry for obj in self.connections["local_connections"]):
-                            self.connections["local_connections"].append(Connection(obj.number_id, key, obj.name, obj.number_id, key1, obj.name, obj.cell, ports[key]))
+                            self.connections["local_connections"].append(Connection(obj.number_id, obj.type, key, obj.name, obj.number_id, obj.type, key1, obj.name,  obj.cell, ports[key]))
 
 
 
@@ -135,13 +143,9 @@ class ConnectionLists:
 
                                 port_1_area = self.__get_local_connection_area(component_1.number_id, port_1)
                                 port_2_area = self.__get_local_connection_area(component_2.number_id, port_2)
-                                if component_1.number_id == 20 or component_1.number_id == "20":
-                                    self.logger.info(f"Component1 20,port: {port_1}, port area: {port_1_area}")
-                                if component_2.number_id == 20 or component_2.number_id == "20":
-                                    self.logger.info(f"Component2 20,port: {port_2}, port area: {port_2_area}")
 
-                                entry = [Connection(component_1.number_id, port_1_area, component_1.name, component_2.number_id, port_2_area, component_2.name, cell, net),
-                                         Connection(component_2.number_id, port_2_area, component_2.name, component_1.number_id, port_1_area, component_1.name, cell, net)]
+                                entry = [Connection(component_1.number_id, component_1.type, port_1_area, component_1.name, component_2.number_id, component_2.type, port_2_area, component_2.name, cell, net),
+                                         Connection(component_2.number_id, component_2.type, port_2_area, component_2.name, component_1.number_id, component_1.type, port_1_area, component_1.name, cell, net)]
 
                                 if not any(isinstance(obj, Connection) and obj == target for target in entry for obj in self.connections["component_connections"]):
 
@@ -165,7 +169,7 @@ class ConnectionLists:
                         in_connection_list = True
                         break
                 if not in_connection_list:
-                    self.connections["single_connections"].append(Connection(component.number_id, port, component.name,"" ,"" ,"" , component.cell, component.schematic_connections[port]))
+                    self.connections["single_connections"].append(Connection(component.number_id, component.type, port, component.name,"" ,"","" ,"" , component.cell, component.schematic_connections[port]))
                     in_connection_list = False
 
 
@@ -235,13 +239,15 @@ def overlap_pairs(list1):
         for j in duplicated_list:
             if i != j:
 
-                if (i.bounding_box.x2 - i.bounding_box.x1) == (j.bounding_box.x2 - j.bounding_box.x1) and i.schematic_connections["B"] == j.schematic_connections["B"]:
-                    top.append([i.number_id, j.number_id])
+                if i.type == j.type and (i.bounding_box.x2 - i.bounding_box.x1) == (j.bounding_box.x2 - j.bounding_box.x1) and i.schematic_connections["B"] == j.schematic_connections["B"]:
+                    top.append(Overlap(instance = i.instance, component_ids= [i.number_id, j.number_id]))
 
 
-                if (i.bounding_box.y2 - i.bounding_box.y1) == (j.bounding_box.y2 - j.bounding_box.y1) and i.schematic_connections["B"] == j.schematic_connections["B"]:
-                    side.append([i.number_id, j.number_id])
+                if i.type == j.type and (i.bounding_box.y2 - i.bounding_box.y1) == (j.bounding_box.y2 - j.bounding_box.y1) and i.schematic_connections["B"] == j.schematic_connections["B"]:
+                    side.append(Overlap(instance = i.instance, component_ids = [i.number_id, j.number_id]))
 
         duplicated_list.remove(i)
     return top, side
+
+
 

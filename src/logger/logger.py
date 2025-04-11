@@ -35,6 +35,7 @@ CYAN = "\033[38;2;0;204;204m"
 DARK_CYAN = "\033[38;2;0;153;153m"
 PINK = "\033[38;2;255;51;255m"
 PALETURQUOISE = "\033[38;2;175;238;238m"
+DARK_ORCHID = "\033[38;2;153;50;204m"
 # =================================================== Logging ==========================================================
 
 
@@ -54,7 +55,8 @@ def get_a_logger(name):
         "grid.generate_grid": PINK,
         "drc.drc_checker": DARK_CYAN,
         "lvs.lvs_checker": DARK_GREEN,
-        "traces.trace_generator": LIGHT_ORANGE
+        "traces.trace_generator": LIGHT_ORANGE,
+        "linear_optimization.initiator_lp" : DARK_ORCHID
     }
 
     file_spcific_color = color_table.get(name, WHITE)

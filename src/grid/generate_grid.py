@@ -29,10 +29,16 @@ class Coordinates:
     x: int = field(default_factory=int)
     y: int = field(default_factory=int)
 
+    def __init__(self, x,y):
+        self.x = x
+        self.y = y
+
 @dataclass
 class PortSize:
     width: int = field(default_factory=int)
     height: int = field(default_factory=int)
+
+
 
 @dataclass
 class RoutingParameters:
@@ -44,11 +50,16 @@ class BipolarTransistors:
     C: PortSize = field(default_factory=PortSize)
     B: PortSize = field(default_factory=PortSize)
 
+
 @dataclass
 class CMOS:
     G: PortSize = field(default_factory=PortSize)
     S: PortSize = field(default_factory=PortSize)
     D: PortSize = field(default_factory=PortSize)
+    VG: PortSize = field(default_factory=PortSize)
+    VS: PortSize = field(default_factory=PortSize)
+    VD: PortSize = field(default_factory=PortSize)
+
 @dataclass
 class Resistor:
     B: PortSize = field(default_factory=PortSize)
@@ -126,19 +137,22 @@ class GridGeneration:
 
                     frac_x, int_x = math.modf(x1)
                     frac_y, int_y = math.modf(y1)
-                    self.port_area.setdefault(obj.type + port.type, []).append((round(int_x), round(int_y)))
+                    self.port_area.setdefault(str(obj.number_id)+obj.type + port.type, Coordinates(x =round(int_x), y= round(int_y)))
 
-                    self.port_coordinates.setdefault(str(obj.type) + port.type, []).append(Coordinates(x = int(obj.transform_matrix.c + (port.area.x1 + port.area.x2)/2), y= int(obj.transform_matrix.f + (port.area.y1 + port.area.y2)/2)))
-                    self.scaled_port_coordinates.setdefault(str(obj.number_id)+port.type, []).append(Coordinates(x=int(int_x), y = int(int_y)))
+                    self.port_coordinates.setdefault(str(obj.number_id)+obj.type + port.type, Coordinates(x = int(obj.transform_matrix.c + (port.area.x1 + port.area.x2)/2), y= int(obj.transform_matrix.f + (port.area.y1 + port.area.y2)/2)))
+                    self.scaled_port_coordinates.setdefault(str(obj.number_id)+obj.type+port.type, Coordinates(x=int(int_x), y = int(int_y)))
 
 
     def __calculate_non_overlap_parameters(self):
         self.routing_parameters.trace_width_scaled = math.ceil((self.TRACE_WIDTH+self.VIA_MINIMUM_DISTANCE+self.VIA_PADDING*2)/self.SCALE_FACTOR) +1
+        self.routing_parameters.minimum_segment_length =  math.ceil((48 +self.VIA_MINIMUM_DISTANCE+self.VIA_PADDING*2+self.TRACE_WIDTH/2)/self.SCALE_FACTOR) +1
         for obj in self.components:
             if not check_instance(obj):
                 for port in obj.layout_ports:
                     port_height = math.ceil(((port.area.y2 - port.area.y1) / 2 + self.VIA_MINIMUM_DISTANCE + self.VIA_PADDING * 2 + self.TRACE_WIDTH / 2) / self.SCALE_FACTOR) + 1
                     port_width = math.ceil(((port.area.x2 - port.area.x1) / 2 + self.VIA_MINIMUM_DISTANCE + self.VIA_PADDING * 2 + self.TRACE_WIDTH / 2) / self.SCALE_FACTOR) + 1
+                    port_height_v = math.ceil(((port.area.y2 - port.area.y1) / 2 + self.VIA_PADDING  + self.TRACE_WIDTH / 2) / self.SCALE_FACTOR) + 1
+                    port_width_v = math.ceil(((port.area.x2 - port.area.x1) / 2 +  self.VIA_PADDING  + self.TRACE_WIDTH / 2) / self.SCALE_FACTOR) + 1
                     if isinstance(obj, Transistor):
 
                         if obj.type =="nmos" or obj.type == "pmos":
@@ -146,15 +160,21 @@ class GridGeneration:
 
                                 self.component_ports.cmos.G.width = port_width
                                 self.component_ports.cmos.G.height = port_height
+                                self.component_ports.cmos.VG.width = port_width_v
+                                self.component_ports.cmos.VG.height = port_height_v
                             elif port.type == "D":
 
                                 self.component_ports.cmos.D.width = port_width
                                 self.component_ports.cmos.D.height = port_height
+                                self.component_ports.cmos.VD.width = port_width_v
+                                self.component_ports.cmos.VD.height = port_height_v
 
                             elif port.type == "S":
 
                                 self.component_ports.cmos.S.width = port_width
                                 self.component_ports.cmos.S.height = port_height
+                                self.component_ports.cmos.VS.width = port_width_v
+                                self.component_ports.cmos.VS.height = port_height_v
                         else:
 
                             if port.type == "B":
@@ -208,11 +228,17 @@ class GridGeneration:
         component_types= ["nmos","pmos","npn","pnp","mim","vpp","hpo","xhpo"]
 
         for port in self.port_area:
-            pattern = r'('+'|'.join(map(re.escape, component_types)) + r')'
-            component_type, port_type = re.split(pattern, port)
+
+            object_id, component_type, port_type = get_obj_id_and_types(port)
 
             if component_type == component_types[0] or component_type == component_types[1]:
-                port_attribute = getattr(self.component_ports.cmos, port_type)
+
+                if check_ignorable_port(self.logger,components=self.components, object_id = object_id, port = port_type):
+                    port_attribute = getattr(self.component_ports.cmos, "V"+port_type)
+
+                else:
+                    port_attribute = getattr(self.component_ports.cmos, port_type)
+
             elif component_type == component_types[2] or component_type == component_types[3]:
                 port_attribute = getattr(self.component_ports.bipolar, port.type)
             elif component_type == component_types[4] or component_type == component_types[5]:
@@ -229,10 +255,10 @@ class GridGeneration:
             h = port_attribute.height
             w = port_attribute.width
 
-            for x,y in self.port_area[port]:
-                for i in range(y-h, y+h+1):
-                    for j in range(x-w, x+w+1):
-                        self.grid[i][j] = 1
+
+            for i in range(self.port_area[port].y-h, self.port_area[port].y+h+1):
+                for j in range(self.port_area[port].x-w, self.port_area[port].x+w+1):
+                    self.grid[i][j] = 1
 
 
         self.logger.info("Finished Grid Generation")
@@ -246,3 +272,21 @@ class GridGeneration:
 
 def check_instance(obj):
     return isinstance(obj, (Pin, CircuitCell))
+
+def get_obj_id_and_types(key):
+    pattern = r'^([1-9]\d{0,2})([A-Za-z]{1,10})([A-Z])$'
+    match = re.match(pattern, key)
+
+    if match:
+        #returns object id, object type and port type
+        return match.group(1), match.group(2), match.group(3)
+    else:
+        return None, None, None
+
+def check_ignorable_port(logger, components, object_id, port):
+    for obj in components:
+        if obj.number_id == int(object_id):
+
+            port_connection = obj.schematic_connections[port]
+
+            return re.search(".*VSS.*", port_connection, re.IGNORECASE) or re.search(".*VDD.*", port_connection, re.IGNORECASE)

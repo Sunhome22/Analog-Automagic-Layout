@@ -16,6 +16,7 @@
 from fontTools.misc.bezierTools import rectArea
 
 from circuit.circuit_spice_parser import SPICEparser
+from linear_optimization.initiator_lp import LPInitiator
 from magic.magic_layout_creator import MagicLayoutCreator
 from magic.magic_component_parser import MagicComponentsParser
 from json_tool.json_converter import save_to_json, load_from_json
@@ -83,10 +84,9 @@ def main():
     # # Algorithms
     # #components = load_from_json(file_name=f"{os.path.dirname(os.path.abspath(__file__))}/results/SpeedTest.json")
     connections, overlap_dict, net_list= ConnectionLists(input_components = components).get()
-    #
-    #
-    components = LinearOptimizationSolver(components, connections,  overlap_dict).solve_placement()
-    #
+
+    components =  LPInitiator(components, connections,  overlap_dict).initiate_linear_optimization()
+
     # save_to_json(objects=components, file_name=f"{os.path.dirname(os.path.abspath(__file__))}/results/"
     #                                            f"Components_Placement.json")
     #
@@ -109,13 +109,13 @@ def main():
     #
     #
     #
-    # components = TraceGenerator(project_properties= project_properties,
-    #                             components = components,
-    #                             paths = path,
-    #                             net_list=net_list,
-    #                             used_area= used_area
-    #                                     ).get()
-    #
+    components = TraceGenerator(project_properties= project_properties,
+                                components = components,
+                                paths = path,
+                                net_list=net_list,
+                                used_area= used_area
+                                        ).get()
+
     # #logger.info("Starting Drawing results")
     # #path true:
     # draw_result( components, path, used_area,  "new_test")
@@ -125,8 +125,7 @@ def main():
 
 
 
-    components = load_from_json(file_name=f"{os.path.dirname(os.path.abspath(__file__))}/results/"
-                                               f"Components_Placement.json")
+
 
     # Create layout
     MagicLayoutCreator(project_properties=project_properties, components=components)
