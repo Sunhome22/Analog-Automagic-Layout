@@ -48,6 +48,7 @@ class SPICEparser:
         self.last_cell_found = ''
         self.prev_parent_cell_name = ''
         self.parent_cell_chain = ''
+        self.prev_parent_cell = ''
 
         self.__parse()
 
@@ -388,7 +389,7 @@ class SPICEparser:
                                            cell=line_words[-1],
                                            named_cell=f"{line_words[0]}_{line_words[-1]}",
                                            parent_cell=current_cell,
-                                           parent_cell_chain=f"{line_words[0]}_{line_words[-1]}",
+                                           parent_cell_chain=f"",
                                            group=filtered_group,
                                            number_id=len(self.components),
                                            schematic_connections={port_definitions[i]: line_words[i + 1] for i in
@@ -407,7 +408,18 @@ class SPICEparser:
                 inside_cell = False
 
                 # Create a unique cell name for nested cells
+                #print(current_parent_cell)
+                #print(self.prev_parent_cell_name)
+
                 self.parent_cell_chain = f"{self.prev_parent_cell_name}{circuit_cell.name}_{circuit_cell.cell}"
+                print(self.parent_cell_chain)
+                # if current_parent_cell == self.prev_parent_cell:
+                #     print(current_parent_cell)
+                #     print(self.prev_parent_cell)
+                #     result = re.sub(r"--[^-]*--?$", "", self.prev_parent_cell)
+                #     #print(result)
+                #     self.parent_cell_chain = f"{result}--{circuit_cell.name}_{circuit_cell.cell}"
+                #     print(self.parent_cell_chain)
 
                 if current_parent_cell == self.project_top_cell_name:
                     self.parent_cell_chain = f"{circuit_cell.name}_{circuit_cell.cell}"
@@ -432,7 +444,9 @@ class SPICEparser:
                                              parent_cell_chain = self.parent_cell_chain,
                                              current_library=current_library)
 
+                circuit_cell.parent_cell_chain = self.parent_cell_chain
                 self.prev_parent_cell_name += f"{circuit_cell.name}_{circuit_cell.cell}--"
+                self.prev_parent_cell = circuit_cell.cell
                 self.__add_components_for_each_circuit_cell(current_parent_cell=circuit_cell.cell)
 
     def __parse(self):

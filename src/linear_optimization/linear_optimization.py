@@ -45,6 +45,7 @@ class LinearOptimizationSolver:
         self.GRID_SIZE = self.config["generate_grid"]["GRID_SIZE"]
         # Setup of problem space and solver
         self.problem_space = pulp.LpProblem("ComponentPlacement", pulp.LpMinimize)
+
         self.solver = pulp.SCIP_PY(msg=self.SOLVER_MSG, mip=False, warmStart=False,
                                    options=[f"limits/gap={self.STOP_TOLERANCE}"])
 

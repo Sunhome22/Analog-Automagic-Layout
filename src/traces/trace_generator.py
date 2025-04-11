@@ -107,6 +107,10 @@ class TraceGenerator:
 
         trace = TraceNet(name=pin.name, cell=self.circuit_cell.cell, named_cell=self.circuit_cell.parent_cell_chain)
         trace.instance = trace.__class__.__name__
+        trace.cell = self.circuit_cell.cell
+        trace.parent_cell = self.circuit_cell.parent_cell
+        trace.parent_cell_chain = self.circuit_cell.parent_cell_chain
+
 
         left_segment = RectArea(x1=self.circuit_cell.bounding_box.x1 - offset_x - width,
                                 y1=self.circuit_cell.bounding_box.y1 - offset_y,
@@ -167,15 +171,15 @@ class TraceGenerator:
                     )
                     rail_number += 1
 
-            # Update the cell's bounding box
+            # Update the cell's bounding box based on added rails
             for component in self.structural_components:
                 if isinstance(component, CircuitCell):
-                    component.bounding_box.x1 -= self.INIT_RAIL_RING_OFFSET_X + (self.RAIL_RING_OFFSET * rail_number) - (self.RAIL_RING_OFFSET - self.RAIL_RING_WIDTH)
-                    component.bounding_box.x2 += self.INIT_RAIL_RING_OFFSET_X + (self.RAIL_RING_OFFSET * rail_number) + (self.RAIL_RING_OFFSET - self.RAIL_RING_WIDTH)
-                    component.bounding_box.y1 -= self.INIT_RAIL_RING_OFFSET_Y + (self.RAIL_RING_OFFSET * rail_number) - (self.RAIL_RING_OFFSET - self.RAIL_RING_WIDTH)
-                    component.bounding_box.y2 += self.INIT_RAIL_RING_OFFSET_Y + (self.RAIL_RING_OFFSET * rail_number) + (self.RAIL_RING_OFFSET - self.RAIL_RING_WIDTH)
-
-
+                    component.bounding_box.x1 -= (self.INIT_RAIL_RING_OFFSET_X + (self.RAIL_RING_OFFSET * rail_number)
+                                                  - (self.RAIL_RING_OFFSET - self.RAIL_RING_WIDTH))
+                    component.bounding_box.x2 += (self.INIT_RAIL_RING_OFFSET_X + (self.RAIL_RING_OFFSET * rail_number))
+                    component.bounding_box.y1 -= (self.INIT_RAIL_RING_OFFSET_Y + (self.RAIL_RING_OFFSET * rail_number)
+                                                  - (self.RAIL_RING_OFFSET - self.RAIL_RING_WIDTH))
+                    component.bounding_box.y2 += (self.INIT_RAIL_RING_OFFSET_Y + (self.RAIL_RING_OFFSET * rail_number))
 
     def __calculate_offset(self, goal_nodes, real_nodes,):
         self.scale_offset_x, self.scale_offset_y = 0,0

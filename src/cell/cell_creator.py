@@ -45,8 +45,8 @@ class CellCreator:
         self.component_libraries = project_properties.component_libraries
         self.components = components
         self.updated_components = list()
-        self.last_origin_scaled_used_area_x2 = 0
-        self.last_origin_scaled_used_area_y2 = 0
+        self.origin_scaled_cell_offsets = list()
+        self.FUNCTIONAL_TYPES = (Transistor, Resistor, Capacitor)
 
         self.__create_cells()
         self.__add_top_cell_rails_around_cells()
@@ -106,23 +106,14 @@ class CellCreator:
             for grouped_components in components_grouped_by_circuit_cell:
                 if (re.search(r"^(?:.*--)?(.*)$", grouped_components).group(1)
                         == f"{circuit_cell.name}_{circuit_cell.cell}"):
+                    print(re.search(r"^(?:.*--)?(.*)$", grouped_components).group(1))
                     components_grouped_by_circuit_cell[grouped_components].append(circuit_cell)
 
-        # for grouped_components in enumerate(components_grouped_by_circuit_cell):
-        #     for component in components_grouped_by_circuit_cell[grouped_components]:
-        #         if not isinstance(component, (Transistor, Resistor, Capacitor, CircuitCell)):
-        #             continue
-
-        # Main cell creation loop
+        # Cell creation process
         for cell_nr, grouped_components in enumerate(components_grouped_by_circuit_cell):
-
-            # Deal with this later
-            if grouped_components == "UTOP_JNW_BKLE":
-                continue
-
             """With every iteration there is a set of components along with their associated circuit cell"""
 
-            # Check if current circuit cell already has been solved
+            # Step 1: Check if current circuit cell already has been solved
             cell = re.search(r'_(.*)', grouped_components).group(1)
             if cell in solved_circuit_cells.keys():
                 self.logger.info(f"Using previously found solution for cell '{cell}' "
@@ -136,26 +127,30 @@ class CellCreator:
                 )
                 continue
 
+            # Step 2: Perform placement of functional components
             connections, overlap_dict, net_list = ConnectionLists(
                 input_components=components_grouped_by_circuit_cell[grouped_components]).get()
 
-            components = LinearOptimizationSolver(components_grouped_by_circuit_cell[grouped_components],
-                                                  connections, overlap_dict).solve_placement()
+            components = components_grouped_by_circuit_cell[grouped_components]
+            if any(isinstance(c, self.FUNCTIONAL_TYPES) for c in components_grouped_by_circuit_cell[grouped_components]):
+                components = LinearOptimizationSolver(components_grouped_by_circuit_cell[grouped_components],
+                                                      connections, overlap_dict).solve_placement()
 
-            # Move all components to the origin
-            _, _, used_area, _, _ = GridGeneration(components=components).initialize_grid_generation()
-            origin_scaled_used_area = RectArea(x1=0, y1=0, x2=abs(used_area.x2 - used_area.x1),
-                                               y2=abs(used_area.y2 - used_area.y1))
+            # Step 3: Move all components to the origin
+            origin_scaled_used_area = RectArea()
+            used_area = RectArea()
+            if any(isinstance(c, self.FUNCTIONAL_TYPES) for c in components_grouped_by_circuit_cell[grouped_components]):
+                _, _, used_area, _, _ = GridGeneration(components=components).initialize_grid_generation()
+                origin_scaled_used_area = RectArea(x1=0, y1=0, x2=abs(used_area.x2 - used_area.x1),
+                                                   y2=abs(used_area.y2 - used_area.y1))
+            for component in components:
+                if isinstance(component, CircuitCell):
+                    component.bounding_box = origin_scaled_used_area
+                elif isinstance(component, self.FUNCTIONAL_TYPES):
+                    component.transform_matrix.c -= used_area.x1
+                    component.transform_matrix.f -= used_area.y1
 
-            functional_types = (Transistor, Resistor, Capacitor)
-            if any(isinstance(c, functional_types) for c in components):
-                for component in components:
-                    if isinstance(component, CircuitCell):
-                        component.bounding_box = origin_scaled_used_area
-                    elif isinstance(component, functional_types):
-                        component.transform_matrix.c -= used_area.x1
-                        component.transform_matrix.f -= used_area.y1
-
+            # Step 4: Find and generate trace paths
             grid, port_scaled_coordinates, _, port_coordinates, routing_parameters = GridGeneration(
                 components=components).initialize_grid_generation()
 
@@ -167,46 +162,41 @@ class CellCreator:
             #                       net_list=net_list,
             #                       routing_parameters=routing_parameters
             #                       ).get()
-
             components = TraceGenerator(project_properties=self.project_properties,
                                         components=components,
                                         paths=[],
                                         net_list=net_list,
                                         used_area=origin_scaled_used_area
                                         ).get()
+
+            # Step 5: Move all components to the origin again since trace generation changed the cell bounding box
             new_x1 = 0
             new_y1 = 0
-            functional_types = (Transistor, Resistor, Capacitor)
-            if any(isinstance(c, functional_types) for c in components):
-                for component in components:
-                    if isinstance(component, CircuitCell):
-                        new_x1 = abs(component.bounding_box.x1)
-                        new_y1 = abs(component.bounding_box.y1)
-                        component.bounding_box = RectArea(x1=0, x2=abs(component.bounding_box.x2 - component.bounding_box.x1),
-                                                          y1=0, y2=abs(component.bounding_box.y2 - component.bounding_box.y1))
+            for component in components:
+                if isinstance(component, CircuitCell):
+                    new_x1 = abs(component.bounding_box.x1)
+                    new_y1 = abs(component.bounding_box.y1)
+                    component.bounding_box = RectArea(x1=0, x2=abs(component.bounding_box.x2 - component.bounding_box.x1),
+                                                      y1=0, y2=abs(component.bounding_box.y2 - component.bounding_box.y1))
 
-            if any(isinstance(c, (Transistor, Resistor, Capacitor)) for c in components):
-                for component in components:
-                    if isinstance(component, functional_types):
-                        component.transform_matrix.c += new_x1
-                        component.transform_matrix.f += new_y1
+                if isinstance(component, self.FUNCTIONAL_TYPES):
+                    component.transform_matrix.c += new_x1
+                    component.transform_matrix.f += new_y1
 
-                    elif isinstance(component, TraceNet):
-                        for segment in component.segments:
-                            segment.area.x1 += new_x1
-                            segment.area.y1 += new_y1
-                            segment.area.x2 += new_x1
-                            segment.area.y2 += new_y1
+                elif isinstance(component, TraceNet):
+                    for segment in component.segments:
+                        segment.area.x1 += new_x1
+                        segment.area.y1 += new_y1
+                        segment.area.x2 += new_x1
+                        segment.area.y2 += new_y1
 
-                        for via in component.vias:
-                            via.area.x1 += new_x1
-                            via.area.y1 += new_y1
-                            via.area.x2 += new_x1
-                            via.area.y2 += new_y1
+                    for via in component.vias:
+                        via.area.x1 += new_x1
+                        via.area.y1 += new_y1
+                        via.area.x2 += new_x1
+                        via.area.y2 += new_y1
 
-
-
-            # Update components
+            # Step 6: Create an update list of components
             for component in components:
                 self.updated_components.append(component)
                 solved_circuit_cells[cell].append(component)
@@ -215,15 +205,27 @@ class CellCreator:
         self.__set_cells_position()
 
     def __set_cells_position(self):
-        # Need to take into account nr of rails on next placement
-        for component in self.updated_components:
-            if isinstance(component, CircuitCell):
-                print("BBOX", component.bounding_box)
-                component.transform_matrix.set([1, 0, self.last_origin_scaled_used_area_x2, 0, 1, 0])
-                print(component.bounding_box)
-                self.last_origin_scaled_used_area_x2 += (component.bounding_box.x2 - component.bounding_box.x1)
+        prev_parent_cell_chain_depth = 0
+        cell_nr = 0
+        offset_from_cells_not_in_depth = 0
 
-                print(self.last_origin_scaled_used_area_x2)
+        for component in self.updated_components:
+
+            if isinstance(component, CircuitCell):
+
+                cell_nr += 1
+                print(component.parent_cell_chain)
+                if len(re.findall(r"--", component.parent_cell_chain)) != prev_parent_cell_chain_depth:
+                    prev_parent_cell_chain_depth = len(re.findall(r"--", component.parent_cell_chain))
+                    print("yoo")
+                    offset_from_cells_not_in_depth = self.origin_scaled_cell_offsets[cell_nr - 3]
+                    print(self.origin_scaled_cell_offsets)
+
+                print("BBOX", component.bounding_box)
+                print(sum(self.origin_scaled_cell_offsets[:]))
+                component.transform_matrix.set([1, 0, sum(self.origin_scaled_cell_offsets[:]) - offset_from_cells_not_in_depth, 0, 1, 0])
+
+                self.origin_scaled_cell_offsets.append(component.bounding_box.x2 - component.bounding_box.x1)
 
         # for component in components:
         #     if isinstance(component, CircuitCell):

@@ -99,6 +99,10 @@ class MagicLayoutCreator:
     def __via_placer(self, start_layer: str, end_layer: str, area: RectArea, trace_net: TraceNet):
         """Adds via(s) and potentially necessary metal layers between a top layer and a bottom layer"""
 
+        if start_layer == end_layer:
+            self.logger.error(f"Can't place via between {start_layer} and {end_layer}")
+            return
+
         # Build the complete via map
         via_map = {}
         for key, value in self.VIA_MAP.items():
@@ -193,13 +197,13 @@ class MagicLayoutCreator:
 
                         # Hinder placement of connection points to bulks since they are always connected in the
                         # lowest metal
-                        if (port.type == "B" or segment.layer == self.METAL_LAYERS[0]
-                                or segment.layer == self.METAL_LAYERS[5]):
+                        if port.type == "B" or segment.layer == self.METAL_LAYERS[0]:
                             continue
 
                         # Check for overlap between the port and the segment and add vias accordingly
-                        if not (segment.area.x2 < port_pos.x1 or segment.area.x1 > port_pos.x2 or
-                                segment.area.y2 < port_pos.y1 or segment.area.y1 > port_pos.y2):
+                        if (not (segment.area.x2 < port_pos.x1 or segment.area.x1 > port_pos.x2 or
+                                segment.area.y2 < port_pos.y1 or segment.area.y1 > port_pos.y2)
+                                and segment.layer != port.layer):
 
                             self.__via_placer(start_layer=segment.layer, end_layer=port.layer, area=port_pos,
                                               trace_net=trace_net)
@@ -410,6 +414,7 @@ class MagicLayoutCreator:
 
         # Iterate over found cells and generate .mag files for each one
         for parent_cell_chain in parent_cell_chains:
+
             cell = None
             cell_components = []
 
@@ -421,17 +426,17 @@ class MagicLayoutCreator:
             self.total_circuit_cells_added = 0
 
             for component in self.components:
-                if isinstance(component, CircuitCell):
 
+                if isinstance(component, CircuitCell):
                     # Assign new cell name on change
                     if component.parent_cell_chain == parent_cell_chain:
                         cell = component.cell
 
-                if component.named_cell == "":
-                    self.logger.error(f"{component.name} is missing a named cell")
+                if component.parent_cell_chain == "":
+                    self.logger.error(f"{component.name} is missing a parent cell chain")
                     continue
 
-                if component.named_cell != parent_cell_chain:
+                if component.parent_cell_chain != parent_cell_chain:
                     continue
 
                 if cell is None:
@@ -439,6 +444,7 @@ class MagicLayoutCreator:
 
                 if not isinstance(component, CircuitCell):
                     cell_components.append(component)
+
 
             # Top cell handling
             if parent_cell_chain == self.project_top_cell_name:
