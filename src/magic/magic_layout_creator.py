@@ -313,7 +313,6 @@ class MagicLayoutCreator:
             atr.place_transistor_endpoints_for_atr_sky130a_lib(self=self, component=component)
 
     def __pin_component_creator(self, component):
-
         # Check that layout type is valid
         if isinstance(component.layout, RectAreaLayer):
             self.magic_file_lines.extend([
@@ -327,7 +326,7 @@ class MagicLayoutCreator:
     def __circuit_cell_component_creator(self, component):
 
         self.magic_file_lines.extend([
-            f"use {component.cell} {component.parent_cell_chain} ",
+            f"use {component.cell} {component.named_cell} ",
             f"transform {component.transform_matrix.a} {component.transform_matrix.b}"
             f" {component.transform_matrix.c} {component.transform_matrix.d}"
             f" {component.transform_matrix.e} {component.transform_matrix.f}",
@@ -405,16 +404,15 @@ class MagicLayoutCreator:
                          f"============================================")
 
     def __generate_magic_files(self):
-        parent_cell_chains = []
+        cell_chains = []
 
         # Retrieve all sub cells
         for component in self.components:
             if isinstance(component, CircuitCell):
-                parent_cell_chains.append(f"{component.parent_cell_chain}")
+                cell_chains.append(component.cell_chain)
 
         # Iterate over found cells and generate .mag files for each one
-        for parent_cell_chain in parent_cell_chains:
-
+        for cell_chain in cell_chains:
             cell = None
             cell_components = []
 
@@ -429,14 +427,14 @@ class MagicLayoutCreator:
 
                 if isinstance(component, CircuitCell):
                     # Assign new cell name on change
-                    if component.parent_cell_chain == parent_cell_chain:
+                    if component.cell_chain == cell_chain:
                         cell = component.cell
 
-                if component.parent_cell_chain == "":
-                    self.logger.error(f"{component.name} is missing a parent cell chain")
+                if component.cell_chain == "":
+                    self.logger.error(f"{component.name} is missing a cell chain")
                     continue
 
-                if component.parent_cell_chain != parent_cell_chain:
+                if component.cell_chain != cell_chain:
                     continue
 
                 if cell is None:
@@ -447,7 +445,7 @@ class MagicLayoutCreator:
 
 
             # Top cell handling
-            if parent_cell_chain == self.project_top_cell_name:
+            if cell_chain == "UTOP_" + self.project_top_cell_name:
                 cell = self.project_top_cell_name
 
             # Add circuit cells that has the current cell as parent

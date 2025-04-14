@@ -46,9 +46,9 @@ class SPICEparser:
         self.subcircuits = list()
         self.circuit_cells = list()
         self.last_cell_found = ''
-        self.prev_parent_cell_name = ''
-        self.parent_cell_chain = ''
-        self.prev_parent_cell = ''
+        self.visited_cells = list()
+        self.cell_chain_list = list()
+
 
         self.__parse()
 
@@ -210,7 +210,7 @@ class SPICEparser:
         return component_category, component_type
 
 
-    def __get_component(self, spice_line: str, cell: str, named_cell: str, parent_cell: str, parent_cell_chain: str,
+    def __get_component(self, spice_line: str, cell: str, named_cell: str, parent_cell: str, cell_chain: str,
                         current_library: str):
         component_category = None
         component_type = None
@@ -257,7 +257,7 @@ class SPICEparser:
                                         cell=cell,
                                         named_cell=named_cell,
                                         parent_cell = parent_cell,
-                                        parent_cell_chain = parent_cell_chain,
+                                        cell_chain = cell_chain,
                                         group=filtered_group,
                                         schematic_connections={port_definitions[i]: line_words[i + 1] for i in
                                                                range(min(len(port_definitions), len(line_words) - 1))},
@@ -280,7 +280,7 @@ class SPICEparser:
                                     cell=cell,
                                     named_cell=named_cell,
                                     parent_cell=parent_cell,
-                                    parent_cell_chain=parent_cell_chain,
+                                    cell_chain=cell_chain,
                                     group=filtered_group,
                                     schematic_connections={port_definitions[i]: line_words[i + 1] for i in
                                                            range(min(len(port_definitions), len(line_words) - 1))},
@@ -303,7 +303,7 @@ class SPICEparser:
                                       cell=cell,
                                       named_cell=named_cell,
                                       parent_cell=parent_cell,
-                                      parent_cell_chain=parent_cell_chain,
+                                      cell_chain=cell_chain,
                                       group=filtered_group,
                                       schematic_connections={port_definitions[i]: line_words[i + 1] for i in
                                                              range(min(len(port_definitions), len(line_words) - 1))},
@@ -326,7 +326,7 @@ class SPICEparser:
                                           cell=cell,
                                           named_cell=named_cell,
                                           parent_cell=parent_cell,
-                                          parent_cell_chain=parent_cell_chain,
+                                          cell_chain=cell_chain,
                                           group=filtered_group,
                                           schematic_connections={port_definitions[i]: line_words[i + 1] for i in
                                                                range(min(len(port_definitions), len(line_words) - 1))},
@@ -342,7 +342,7 @@ class SPICEparser:
 
             pin_type = ''.join(re.findall(r'[a-zA-Z]+', line_words[0]))
             pin = Pin(type=pin_type, cell=cell, named_cell=named_cell, parent_cell=parent_cell,
-                      parent_cell_chain=parent_cell_chain, name=line_words[1], number_id=len(self.components))
+                      cell_chain=cell_chain, name=line_words[1], number_id=len(self.components))
             pin.instance = pin.__class__.__name__  # add instance type
             self.components.append(pin)
 
@@ -389,7 +389,7 @@ class SPICEparser:
                                            cell=line_words[-1],
                                            named_cell=f"{line_words[0]}_{line_words[-1]}",
                                            parent_cell=current_cell,
-                                           parent_cell_chain=f"",
+                                           cell_chain=f"",
                                            group=filtered_group,
                                            number_id=len(self.components),
                                            schematic_connections={port_definitions[i]: line_words[i + 1] for i in
@@ -404,29 +404,37 @@ class SPICEparser:
         for circuit_cell in self.circuit_cells:
 
             if circuit_cell.parent_cell == current_parent_cell:
-
                 inside_cell = False
 
-                # Create a unique cell name for nested cells
-                #print(current_parent_cell)
-                #print(self.prev_parent_cell_name)
+                # Cell chain algorithm
+                self.visited_cells.append(circuit_cell.cell)
+                self.cell_chain_list.append(f"{circuit_cell.name}_{circuit_cell.cell}")
 
-                self.parent_cell_chain = f"{self.prev_parent_cell_name}{circuit_cell.name}_{circuit_cell.cell}"
-                print(self.parent_cell_chain)
-                # if current_parent_cell == self.prev_parent_cell:
-                #     print(current_parent_cell)
-                #     print(self.prev_parent_cell)
-                #     result = re.sub(r"--[^-]*--?$", "", self.prev_parent_cell)
-                #     #print(result)
-                #     self.parent_cell_chain = f"{result}--{circuit_cell.name}_{circuit_cell.cell}"
-                #     print(self.parent_cell_chain)
+                while True:
+                    found = False
+                    # Check for any match where last cell equals any earlier cell
+                    for n in range(2, len(self.visited_cells)):
 
-                if current_parent_cell == self.project_top_cell_name:
-                    self.parent_cell_chain = f"{circuit_cell.name}_{circuit_cell.cell}"
-                    self.prev_parent_cell_name = ''
+                        # Check if the current parent cells is the same as one n steps back
+                        if circuit_cell.parent_cell == self.visited_cells[-n]:
+                            # Remove everything between the match and the current cell
+                            for _ in range(n - 2):
+                                self.cell_chain_list.pop(-2)
+                                self.visited_cells.pop(-2)
 
+                        # Check if the most recent cell is the same as one n steps back
+                        if self.visited_cells[-1] == self.visited_cells[-n]:
+                            # Remove everything between the match and the current cell
+                            for _ in range(n - 1):
+                                self.cell_chain_list.pop(-2)
+                                self.visited_cells.pop(-2)
+                            found = True
+                            break  # Restart after each change
 
-                # Extracting components inside current cell
+                    if not found:
+                        break
+
+                # Extract components inside current cell
                 for line in self.spice_file_content:
                     line_words = line.split()
 
@@ -441,12 +449,10 @@ class SPICEparser:
                                              cell = circuit_cell.cell,
                                              named_cell=f"{circuit_cell.name}_{circuit_cell.cell}",
                                              parent_cell=circuit_cell.parent_cell,
-                                             parent_cell_chain = self.parent_cell_chain,
+                                             cell_chain = '--'.join(self.cell_chain_list),
                                              current_library=current_library)
 
-                circuit_cell.parent_cell_chain = self.parent_cell_chain
-                self.prev_parent_cell_name += f"{circuit_cell.name}_{circuit_cell.cell}--"
-                self.prev_parent_cell = circuit_cell.cell
+                circuit_cell.cell_chain = '--'.join(self.cell_chain_list)
                 self.__add_components_for_each_circuit_cell(current_parent_cell=circuit_cell.cell)
 
     def __parse(self):

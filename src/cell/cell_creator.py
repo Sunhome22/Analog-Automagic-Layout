@@ -100,7 +100,7 @@ class CellCreator:
             if isinstance(component, CircuitCell):
                 circuit_cells.append(component)
             else:
-                components_grouped_by_circuit_cell[component.parent_cell_chain].append(component)
+                components_grouped_by_circuit_cell[component.cell_chain].append(component)
 
         for circuit_cell in circuit_cells:
             for grouped_components in components_grouped_by_circuit_cell:
@@ -117,7 +117,7 @@ class CellCreator:
             cell = re.search(r'_(.*)', grouped_components).group(1)
             if cell in solved_circuit_cells.keys():
                 self.logger.info(f"Using previously found solution for cell '{cell}' "
-                                 f"with respect to parent cell chain '{grouped_components}'")
+                                 f"with respect to cell chain '{grouped_components}'")
                 self.__use_earlier_solution_for_cell(
                     cell_nr=cell_nr,
                     cell=cell,
@@ -205,53 +205,81 @@ class CellCreator:
         self.__set_cells_position()
 
     def __set_cells_position(self):
-        prev_parent_cell_chain_depth = 0
+        prev_cell_chain_depth = 0
+        offset_from_deepening_cells = 0
         cell_nr = 0
-        offset_from_cells_not_in_depth = 0
 
         for component in self.updated_components:
-
             if isinstance(component, CircuitCell):
-
-                cell_nr += 1
-                print(component.parent_cell_chain)
-                if len(re.findall(r"--", component.parent_cell_chain)) != prev_parent_cell_chain_depth:
-                    prev_parent_cell_chain_depth = len(re.findall(r"--", component.parent_cell_chain))
-                    print("yoo")
-                    offset_from_cells_not_in_depth = self.origin_scaled_cell_offsets[cell_nr - 3]
-                    print(self.origin_scaled_cell_offsets)
-
-                print("BBOX", component.bounding_box)
-                print(sum(self.origin_scaled_cell_offsets[:]))
-                component.transform_matrix.set([1, 0, sum(self.origin_scaled_cell_offsets[:]) - offset_from_cells_not_in_depth, 0, 1, 0])
-
                 self.origin_scaled_cell_offsets.append(component.bounding_box.x2 - component.bounding_box.x1)
-
-        # for component in components:
-        #     if isinstance(component, CircuitCell):
-        #         if component.cell == "COMP" or component.cell == "COMP2":
-        #             component.bounding_box = origin_scaled_used_area
-        #             continue
-        #         print(component.bounding_box.x2, component.bounding_box.x2)
-        #         # difference to add = ((component.bounding_box.x2 - component.bounding_box.x1)
-        #         # - (component.bounding_box.x2 - component.bounding_box.x1)) // 2
-        #         component.transform_matrix.set([1, 0, self.last_origin_scaled_used_area_x2, 0, 1, 0])
-        #
-        #         self.last_origin_scaled_used_area_x2 += abs(component.bounding_box.x2 - component.bounding_box.x1)
+                cell_nr += 1
+                if len(re.findall(r"--", component.cell_chain)) != prev_cell_chain_depth:
+                    prev_cell_chain_depth = len(re.findall(r"--", component.cell_chain))
+                    offset_from_deepening_cells = self.origin_scaled_cell_offsets[prev_cell_chain_depth - 1]
+                    component.transform_matrix.set([1, 0, offset_from_deepening_cells, 0, 1, 0])
+                else:
+                    component.transform_matrix.set([1, 0, offset_from_deepening_cells
+                                                    + self.origin_scaled_cell_offsets[cell_nr - 1], 0, 1, 0])
 
     def __add_top_cell_rails_around_cells(self):
+        top_cell_rails = list()
+        all_cell_rails = list()
+        top_cell_components = list()
+        top_cell = CircuitCell()
 
-        rails = []
         for component in self.updated_components:
-            if isinstance(component, Pin) and (re.search(r".*VDD.*", component.name, re.IGNORECASE) or
-                                               re.search(r".*VSS.*", component.name, re.IGNORECASE)):
-                rails.append(component)
+            if isinstance(component, Pin) and (re.search(r".*VDD.*", component.name, re.IGNORECASE)
+                    or re.search(r".*VSS.*", component.name, re.IGNORECASE)):
+                all_cell_rails.append(component)
+                # Check if this component is already in rails by name
+                if not any(rail.name == component.name for rail in top_cell_rails):
+                    top_cell_rails.append(component)
 
-        # for component in rails:
-        #     for comp in rails:
-        #         if component.name == comp.name and component.named_cell != comp.named_cell:
-        #             # print(component, comp)
+        # Bugs to fix here currently:
+        # Need some deep copy here to not overwrie previous pins!
+        # Need to fix extra offset in x after last cell is placed
+        # Need to make rings fit better using INIT_RAIL_RING_OFFSET on the circuit cell bounding box
 
+        top_cell_x2 = 0
+        for component in self.updated_components:
+            if isinstance(component, CircuitCell):
+                top_cell_x2 += (component.bounding_box.x2 - component.bounding_box.x1)
+        top_cell_y2 = max(component.layout.area.y2 for component in all_cell_rails)
+
+        # Create a top cell with bounding box covering all cells but with all other atributes of UTOP
+        for component in self.updated_components:
+            if isinstance(component, CircuitCell) and component.name == 'UTOP':
+                top_cell = CircuitCell(name="TOP_CELL",
+                                       number_id=0,
+                                       instance=component.instance,
+                                       cell=component.cell,
+                                       named_cell=component.named_cell,
+                                       parent_cell=component.parent_cell,
+                                       cell_chain=component.cell_chain,
+                                       bounding_box=RectArea(x1=0, y1=0, x2=top_cell_x2, y2=top_cell_y2))
+                for nr, rail in enumerate(top_cell_rails):
+                    rail.cell = component.cell
+                    rail.number_id = len(self.updated_components) + nr
+                    rail.named_cell = component.named_cell
+                    rail.parent_cell = component.parent_cell
+                    rail.cell_chain = component.cell_chain
+                    rail.layout = RectAreaLayer()
+                    top_cell_components.append(rail)
+
+                top_cell_components.append(top_cell)
+
+        components = TraceGenerator(project_properties=self.project_properties,
+                                    components=top_cell_components,
+                                    paths=[],
+                                    net_list=None,
+                                    used_area=top_cell.bounding_box
+                                    ).get()
+
+        # Don't include the temporary top cell since it is not real, but was just needed for trace generation
+        for component in components:
+            print(component)
+            if not isinstance(component, CircuitCell):
+                self.updated_components.append(component)
 
     def get(self):
         return self.updated_components

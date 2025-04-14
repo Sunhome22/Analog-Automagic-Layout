@@ -74,7 +74,7 @@ def __local_bulk_to_source_connection_for_atr_sky130a_lib(self, component):
     trace.instance = trace.__class__.__name__
     trace.cell = self.circuit_cell.cell
     trace.parent_cell = self.circuit_cell.parent_cell
-    trace.parent_cell_chain = self.circuit_cell.parent_cell_chain
+    trace.cell_chain = self.circuit_cell.cell_chain
 
     bulk_x1 = next((port.area.x1 for port in component.layout_ports if port.type == 'B'))
     source_y1 = next((port.area.y1 for port in component.layout_ports if port.type == 'S'))
@@ -93,7 +93,7 @@ def __local_gate_to_drain_connection_for_sky130a_lib(self, component: object):
     trace.instance = trace.__class__.__name__
     trace.cell = self.circuit_cell.cell
     trace.parent_cell = self.circuit_cell.parent_cell
-    trace.parent_cell_chain = self.circuit_cell.parent_cell_chain
+    trace.cell_chain = self.circuit_cell.cell_chain
 
     gate_x1 = next((port.area.x1 for port in component.layout_ports if port.type == 'G'))
     gate_y1 = next((port.area.y1 for port in component.layout_ports if port.type == 'G'))
@@ -141,7 +141,7 @@ def generate_bulk_to_rail_segments(self, rail: str, component: Transistor, y_par
     trace.instance = trace.__class__.__name__
     trace.cell = self.circuit_cell.cell
     trace.parent_cell = self.circuit_cell.parent_cell
-    trace.parent_cell_chain = self.circuit_cell.parent_cell_chain
+    trace.cell_chain = self.circuit_cell.cell_chain
 
     bulk_x1 = next((port.area.x1 for port in component.layout_ports if port.type == 'B'))
     bulk_x2 = next((port.area.x2 for port in component.layout_ports if port.type == 'B'))
