@@ -105,9 +105,8 @@ class TraceGenerator:
     def __generate_trace_box_around_cell(self, pin, offset_x: int, offset_y: int, width: int):
         """Width extends outwards from offset"""
 
-        trace = TraceNet(name=pin.name, cell=self.circuit_cell.cell, named_cell=self.circuit_cell.cell_chain)
+        trace = TraceNet(name=pin.name, cell=self.circuit_cell.cell, named_cell=self.circuit_cell.named_cell)
         trace.instance = trace.__class__.__name__
-        trace.cell = self.circuit_cell.cell
         trace.parent_cell = self.circuit_cell.parent_cell
         trace.cell_chain = self.circuit_cell.cell_chain
 
@@ -155,8 +154,8 @@ class TraceGenerator:
 
     def __generate_rails(self):
 
-        # Only create rails if there are functional components or when we are dealing with the top cell
-        if self.functional_components or self.circuit_cell.name == "TOP_CELL":
+        # Default rail generation (only creates rails if there are functional components)
+        if self.functional_components:
 
             # Automated adding of VDD/VSS ring nets around cell based on found pins
             rail_number = 0
@@ -172,7 +171,8 @@ class TraceGenerator:
                     rail_number += 1
 
             # Update the cell's bounding box based on added rails
-            for component in self.structural_components:
+            last_cell_offset = 0
+            for nr, component in enumerate(self.structural_components):
                 if isinstance(component, CircuitCell):
                     component.bounding_box.x1 -= (self.INIT_RAIL_RING_OFFSET_X + (self.RAIL_RING_OFFSET * rail_number)
                                                   - (self.RAIL_RING_OFFSET - self.RAIL_RING_WIDTH))
@@ -180,6 +180,26 @@ class TraceGenerator:
                     component.bounding_box.y1 -= (self.INIT_RAIL_RING_OFFSET_Y + (self.RAIL_RING_OFFSET * rail_number)
                                                   - (self.RAIL_RING_OFFSET - self.RAIL_RING_WIDTH))
                     component.bounding_box.y2 += (self.INIT_RAIL_RING_OFFSET_Y + (self.RAIL_RING_OFFSET * rail_number))
+
+        # Top cell rail generation
+        if self.circuit_cell.name == "TOP_CELL":
+
+            # Adjust cells bounding box to compensate for the last added cell x-offset
+            self.circuit_cell.bounding_box.x2 -= self.RAIL_RING_OFFSET - self.RAIL_RING_WIDTH
+
+            # Automated adding of VDD/VSS ring nets around cell based on found pins
+            rail_number = 0
+            for component in self.structural_components:
+                if (re.search(r".*VDD.*", component.name, re.IGNORECASE) or
+                        re.search(r".*VSS.*", component.name, re.IGNORECASE)):
+
+                    self.__generate_trace_box_around_cell(
+                        pin=component,
+                        offset_x=self.RAIL_RING_OFFSET - self.RAIL_RING_WIDTH + self.RAIL_RING_OFFSET * rail_number,
+                        offset_y=self.RAIL_RING_OFFSET - self.RAIL_RING_WIDTH + self.RAIL_RING_OFFSET * rail_number,
+                        width=self.RAIL_RING_WIDTH
+                    )
+                    rail_number += 1
 
     def __calculate_offset(self, goal_nodes, real_nodes,):
         self.scale_offset_x, self.scale_offset_y = 0,0

@@ -23,6 +23,7 @@ from itertools import groupby
 from dataclasses import dataclass, field
 from typing import List, Dict
 from collections import defaultdict
+import copy
 
 from astar.a_star_initiator import AstarInitiator
 from connections.connections import ConnectionLists
@@ -47,9 +48,11 @@ class CellCreator:
         self.updated_components = list()
         self.origin_scaled_cell_offsets = list()
         self.FUNCTIONAL_TYPES = (Transistor, Resistor, Capacitor)
+        self.top_cell = CircuitCell()
 
         self.__create_cells()
         self.__add_top_cell_rails_around_cells()
+        self.__add_top_cell_rail_to_rail_connections()
 
     def __use_earlier_solution_for_cell(self, cell_nr, cell, solved_circuit_cells,
                                         components_grouped_by_circuit_cell, grouped_components):
@@ -225,20 +228,15 @@ class CellCreator:
         top_cell_rails = list()
         all_cell_rails = list()
         top_cell_components = list()
-        top_cell = CircuitCell()
 
         for component in self.updated_components:
             if isinstance(component, Pin) and (re.search(r".*VDD.*", component.name, re.IGNORECASE)
                     or re.search(r".*VSS.*", component.name, re.IGNORECASE)):
-                all_cell_rails.append(component)
+                all_cell_rails.append(copy.deepcopy(component))
+
                 # Check if this component is already in rails by name
                 if not any(rail.name == component.name for rail in top_cell_rails):
-                    top_cell_rails.append(component)
-
-        # Bugs to fix here currently:
-        # Need some deep copy here to not overwrie previous pins!
-        # Need to fix extra offset in x after last cell is placed
-        # Need to make rings fit better using INIT_RAIL_RING_OFFSET on the circuit cell bounding box
+                    top_cell_rails.append(copy.deepcopy(component))
 
         top_cell_x2 = 0
         for component in self.updated_components:
@@ -246,17 +244,18 @@ class CellCreator:
                 top_cell_x2 += (component.bounding_box.x2 - component.bounding_box.x1)
         top_cell_y2 = max(component.layout.area.y2 for component in all_cell_rails)
 
-        # Create a top cell with bounding box covering all cells but with all other atributes of UTOP
+        # Create a top cell with bounding box covering all cells but with all other attributes of UTOP
         for component in self.updated_components:
             if isinstance(component, CircuitCell) and component.name == 'UTOP':
-                top_cell = CircuitCell(name="TOP_CELL",
-                                       number_id=0,
-                                       instance=component.instance,
-                                       cell=component.cell,
-                                       named_cell=component.named_cell,
-                                       parent_cell=component.parent_cell,
-                                       cell_chain=component.cell_chain,
-                                       bounding_box=RectArea(x1=0, y1=0, x2=top_cell_x2, y2=top_cell_y2))
+                self.top_cell = CircuitCell(name="TOP_CELL",
+                                           number_id=0,
+                                           instance=component.instance,
+                                           cell=component.cell,
+                                           named_cell=component.named_cell,
+                                           parent_cell=component.parent_cell,
+                                           cell_chain=component.cell_chain,
+                                           bounding_box=RectArea(x1=0, y1=0, x2=top_cell_x2, y2=top_cell_y2))
+
                 for nr, rail in enumerate(top_cell_rails):
                     rail.cell = component.cell
                     rail.number_id = len(self.updated_components) + nr
@@ -266,20 +265,57 @@ class CellCreator:
                     rail.layout = RectAreaLayer()
                     top_cell_components.append(rail)
 
-                top_cell_components.append(top_cell)
+                top_cell_components.append(self.top_cell)
 
         components = TraceGenerator(project_properties=self.project_properties,
                                     components=top_cell_components,
                                     paths=[],
                                     net_list=None,
-                                    used_area=top_cell.bounding_box
+                                    used_area=self.top_cell.bounding_box
                                     ).get()
 
-        # Don't include the temporary top cell since it is not real, but was just needed for trace generation
+
+
+        # Don't include the temporary top cell since it is not real, but was needed for top cell trace generation
         for component in components:
-            print(component)
             if not isinstance(component, CircuitCell):
                 self.updated_components.append(component)
+
+        rail_nr = 0
+        for top_cell_rail in top_cell_rails:
+            for rail in all_cell_rails:
+                for component in self.updated_components:
+                    if isinstance(component, CircuitCell) and component.cell_chain == rail.cell_chain:
+                        print(component.cell_chain, rail.cell_chain)
+                        print(component.transform_matrix)
+                        if top_cell_rail.name == rail.name:
+                            rail_nr += 1
+                            trace = TraceNet(name=f"{rail.name}_{rail_nr}", cell=component.cell, named_cell=component.named_cell)
+                            trace.instance = trace.__class__.__name__
+                            trace.parent_cell = component.parent_cell
+                            trace.cell_chain = component.cell_chain
+                            top_cell_rail_y1 = -(top_cell_rail.layout.area.y2 - self.top_cell.bounding_box.y2)
+
+                            segment1 = RectArea(x1=rail.layout.area.x1,
+                                               y1=top_cell_rail_y1,
+                                               x2=rail.layout.area.x1 + 50,
+                                               y2=top_cell_rail.layout.area.y2)
+
+                            segment2 = RectArea(x1=rail.layout.area.x2 - 50,
+                                               y1=top_cell_rail_y1,
+                                               x2=rail.layout.area.x2,
+                                               y2=top_cell_rail.layout.area.y2)
+                            #top_via = RectArea(x1=segment1.x1, y1=segment1.y2, x2=left_segment.x2, y2=top_segment.y2)
+
+                            trace.segments = [RectAreaLayer(layer="m1", area=segment1),
+                                              RectAreaLayer(layer="m1", area=segment2)]
+
+                            self.updated_components.append(trace)
+
+
+    def __add_top_cell_rail_to_rail_connections(self):
+        pass
+
 
     def get(self):
         return self.updated_components
