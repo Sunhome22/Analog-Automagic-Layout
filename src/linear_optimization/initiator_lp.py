@@ -32,8 +32,6 @@ class LPInitiator:
         self.overlap_components = overlap_components
         self.connections = connections["component_connections"]
         self.placed_cells = 0
-        for c in self.connections:
-            self.logger.info(c)
 
 
         self.transistors = []
@@ -80,6 +78,7 @@ class LPInitiator:
 
 
     def __get_used_area(self):
+        self.used_area = RectArea(x1=sys.maxsize, y1=sys.maxsize, x2=0, y2=0)
         for key in self.coordinates_x:
             for obj in self.components:
                 if obj.number_id == key:
@@ -89,6 +88,8 @@ class LPInitiator:
                     self.used_area.x2 = max(self.used_area.x2, round(pulp.value(self.coordinates_x[key]))+ obj.bounding_box.x2)
                     self.used_area.y2 = max(self.used_area.y2, round(pulp.value(self.coordinates_y[key])) + obj.bounding_box.y2)
         self.used_area_all.append(self.used_area)
+
+        self.logger.info(f"Used_area: {self.used_area}")
 
     def __extract_components(self):
 
@@ -135,40 +136,42 @@ class LPInitiator:
                 "Capacitors": [con.start_comp_type == component_types[4] or con.start_comp_type == component_types[5],
                                con.end_comp_type == component_types[4] or con.end_comp_type == component_types[5]],
                 "Resistors": [con.start_comp_type == component_types[6] or con.start_comp_type == component_types[7],
-                              con.end_comp_type == component_types[6] or con.end_comp_type == component_types[7]]
+                              con.end_comp_type == component_types[6] or con.end_comp_type == component_types[7]],
+                "United": [self.UNITED_RES_CAP,
+                            con.start_comp_type == component_types[4] or con.start_comp_type == component_types[5] or con.start_comp_type == component_types[6] or con.start_comp_type == component_types[7],
+                           con.end_comp_type == component_types[4] or con.end_comp_type == component_types[5] or con.end_comp_type == component_types[6] or con.end_comp_type == component_types[7] ]
             }
 
             if not self.__check_vdd_vss(con.net):
                 if all(connection_conditions["Transistors"]):
 
                     self.transistor_connections.append(con)
+                elif all(connection_conditions["United"]):
+                    self.resistor_connections.append(con)
                 elif all(connection_conditions["Resistors"]):
                     self.resistor_connections.append(con)
                 elif all(connection_conditions["Capacitors"]):
-                    if self.UNITED_RES_CAP:
-                        self.resistor_connections.append(con)
-                    else:
-                        self.capacitor_connections.append(con)
+                    self.capacitor_connections.append(con)
+
+    def __get_previous_placement_offset(self):
+        if self.placed_cells == 1:
+            if self.RELATIVE_PLACEMENT == "S":
+                return self.used_area_all[0].x2-self.used_area_all[0].x1, 0
+
+            else:
+                return 0, self.used_area_all[0].y2 - self.used_area_all[0].y1
+        elif self.placed_cells == 2:
+            if self.RELATIVE_PLACEMENT == "S":
+                return self.used_area_all[0].x2 - self.used_area_all[0].x1 + self.x_offset + self.used_area_all[1].x2 - self.used_area_all[1].x2, 0
+
+            else:
+                return 0, self.used_area_all[0].y2 - self.used_area_all[0].y1 + self.y_offset + self.used_area_all[1].y2 - self.used_area_all[1].y2
+        else:
+            return 0, 0
 
     def __update_component_info(self):
 
-        if self.placed_cells == 1:
-            if self.CUSTOM_RELATIVE_PLACEMENT_ORDER == "S":
-                previous_x = self.used_area_all[0].x2-self.used_area_all[0].x1
-                previous_y = 0
-            else:
-                previous_x = 0
-                previous_y = self.used_area_all[0].y2 - self.used_area_all[0].y1
-        elif self.placed_cells == 2:
-            if self.CUSTOM_RELATIVE_PLACEMENT_ORDER == "S":
-                previous_x = self.used_area_all[0].x2 - self.used_area_all[0].x1 + self.x_offset + self.used_area_all[1].x2 - self.used_area_all[1].x2
-                previous_y = 0
-            else:
-                previous_x = 0
-                previous_y = self.used_area_all[0].y2 - self.used_area_all[0].y1 + self.y_offset + self.used_area_all[1].y2 - self.used_area_all[1].y2
-        else:
-            previous_x = 0
-            previous_y = 0
+        previous_x, previous_y = self.__get_previous_placement_offset()
 
         for component in self.components:
             for placement_id in self.coordinates_x:
@@ -198,7 +201,15 @@ class LPInitiator:
                 self.__update_component_info()
 
             if self.resistors and letter == "R":
+                for c in self.resistors:
+                    self.logger.info(c)
+                for c in self.resistor_connections:
+                    self.logger.info(c)
+                for c in self.overlap_resistors:
+                    self.logger.info(self.overlap_resistors)
+
                 self.coordinates_x, self.coordinates_y = LinearOptimizationSolver(self.resistors, self.resistor_connections, self.overlap_resistors).solve_placement()
+
                 self.__get_used_area()
                 self.__update_component_info()
 

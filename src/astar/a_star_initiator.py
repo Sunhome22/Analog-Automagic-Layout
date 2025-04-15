@@ -239,6 +239,7 @@ class AstarInitiator:
             # Make goal nodes walkable
             self.__lock_or_unlock_port(lock=0)
 
+
             if len(self.goal_nodes) > 1:
                 p = self.__run_multiple_astar_multiple_times(net = net)
             elif len(self.goal_nodes) == 0:

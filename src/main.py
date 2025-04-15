@@ -79,13 +79,17 @@ def main():
     # # # Update component attributes with information from it's associated Magic files
     components = MagicComponentsParser(project_properties=project_properties,
                                          components=components.get()).get()
-    #
-    #
+
+
+
     # # Algorithms
     # #components = load_from_json(file_name=f"{os.path.dirname(os.path.abspath(__file__))}/results/SpeedTest.json")
     connections, overlap_dict, net_list= ConnectionLists(input_components = components).get()
 
     components =  LPInitiator(components, connections,  overlap_dict).initiate_linear_optimization()
+
+
+
 
     # save_to_json(objects=components, file_name=f"{os.path.dirname(os.path.abspath(__file__))}/results/"
     #                                            f"Components_Placement.json")
@@ -123,7 +127,8 @@ def main():
     #draw_result(grid_size, components, connections, used_area)
     #logger.info("Finished Drawing results")
 
-
+    save_to_json(objects=components, file_name=f"{os.path.dirname(os.path.abspath(__file__))}/results/"
+                                               f"Full_test_traces_4.json")
 
 
 

@@ -178,9 +178,13 @@ class ConnectionLists:
         n_transistors = []
         p_transistors = []
 
+        cap = []
 
 
         for obj in self.components:
+
+            if isinstance(obj, Capacitor):
+                cap.append(obj)
             if isinstance(obj, Transistor):
                 if obj.type == "pmos":
                     p_transistors.append(obj)
@@ -188,6 +192,7 @@ class ConnectionLists:
                     n_transistors.append(obj)
                 else:
                     self.logger.info(f"Transistor type '{obj.type}' no overlap")
+
 
 
         top, side = overlap_pairs(n_transistors)

@@ -55,10 +55,7 @@ class LinearOptimizationSolver:
         self.components = components
         self.overlap_components = overlap_components
         self.connections = component_connections
-        for key in self.overlap_components:
-            self.logger.info(key)
-            for c in self.overlap_components[key]:
-                self.logger.info(c)
+
 
 
         # Data structures
@@ -85,7 +82,8 @@ class LinearOptimizationSolver:
 
         # Constraints
         self.x_possible, self.y_possible = self.__extract_possible_positions()
-
+        self.logger.info(self.x_possible)
+        self.logger.info(self.y_possible)
 
         self.x = pulp.LpVariable.dicts(f"x_bin", [(i, xv) for i in self.component_ids for xv in self.x_possible],
                                        cat="Binary")
@@ -105,8 +103,6 @@ class LinearOptimizationSolver:
         # Debugging
         if self.MIRROR:
             self.mirrored_components = self.__check_mirrored_components()
-
-            self.logger.info("MIRRORED")
             self.logger.info(self.mirrored_components)
 
     def __load_config(self, path="pyproject.toml"):
@@ -188,17 +184,17 @@ class LinearOptimizationSolver:
         y_intervals.append(self.UNIT_HEIGHT)
 
         for component in self.functional_components:
-            if isinstance(component, Transistor):
-                h = component.bounding_box.y2 - component.bounding_box.y1
-                w = component.bounding_box.x2 - component.bounding_box.x1
-                if w not in x_intervals:
-                    x_intervals.append(w)
-                    if w+self.OFFSET_X not in x_intervals:
-                        x_intervals.append(w+self.OFFSET_X)
-                if h not in y_intervals:
-                    y_intervals.append(h)
-                    if h+self.OFFSET_Y not in y_intervals:
-                        y_intervals.append(h+self.OFFSET_Y)
+
+            h = component.bounding_box.y2 - component.bounding_box.y1
+            w = component.bounding_box.x2 - component.bounding_box.x1
+            if w not in x_intervals:
+                x_intervals.append(w)
+                if w+self.OFFSET_X not in x_intervals:
+                    x_intervals.append(w+self.OFFSET_X)
+            if h not in y_intervals:
+                y_intervals.append(h)
+                if h+self.OFFSET_Y not in y_intervals:
+                    y_intervals.append(h+self.OFFSET_Y)
 
         for index, value in enumerate(x_intervals):
             for x_pos in range(self.GRID_SIZE//2, self.GRID_SIZE - 1, value):
