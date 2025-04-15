@@ -69,12 +69,12 @@
         "cell_chain": "UTOP_JNW_BKLE--U1_COMP--U2_COMP2",
         "group": null,
         "schematic_connections": {
-            "VDD": "net5",
-            "VIN": "net6",
-            "VIP": "net7",
-            "VO": "net8",
-            "I_BIAS": "net9",
-            "VSS": "net10"
+            "VDD": "AVDD",
+            "VIN": "net5",
+            "VIP": "net6",
+            "VO": "net7",
+            "I_BIAS": "net8",
+            "VSS": "VSS"
         },
         "transform_matrix": {
             "a": 0,
@@ -101,12 +101,12 @@
         "cell_chain": "UTOP_JNW_BKLE--U1_COMP--U1_COMP2",
         "group": null,
         "schematic_connections": {
-            "VDD": "net11",
-            "VIN": "net12",
-            "VIP": "net13",
-            "VO": "net14",
-            "I_BIAS": "net15",
-            "VSS": "net16"
+            "VDD": "VDD",
+            "VIN": "net9",
+            "VIP": "net10",
+            "VO": "net11",
+            "I_BIAS": "net12",
+            "VSS": "VSS"
         },
         "transform_matrix": {
             "a": 0,

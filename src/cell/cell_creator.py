@@ -275,22 +275,21 @@ class CellCreator:
                                     ).get()
 
 
-
         # Don't include the temporary top cell since it is not real, but was needed for top cell trace generation
         for component in components:
             if not isinstance(component, CircuitCell):
                 self.updated_components.append(component)
 
-        rail_nr = 0
+        # Adding of VDD/VSS connection between circuit cells
+
+        # Step 1:
         for top_cell_rail in top_cell_rails:
             for rail in all_cell_rails:
                 for component in self.updated_components:
                     if isinstance(component, CircuitCell) and component.cell_chain == rail.cell_chain:
-                        print(component.cell_chain, rail.cell_chain)
-                        print(component.transform_matrix)
+
                         if top_cell_rail.name == rail.name:
-                            rail_nr += 1
-                            trace = TraceNet(name=f"{rail.name}_{rail_nr}", cell=component.cell, named_cell=component.named_cell)
+                            trace = TraceNet(name=f"{rail.name}_CONNETION", cell=component.cell, named_cell=component.named_cell)
                             trace.instance = trace.__class__.__name__
                             trace.parent_cell = component.parent_cell
                             trace.cell_chain = component.cell_chain
@@ -305,12 +304,45 @@ class CellCreator:
                                                y1=top_cell_rail_y1,
                                                x2=rail.layout.area.x2,
                                                y2=top_cell_rail.layout.area.y2)
+
+                            # segment3 = RectArea(x1=rail.layout.area.x1 - 50,
+                            #                     y1=top_cell_rail.layout.area.y1,
+                            #                     x2=rail.layout.area.x2 + 50,
+                            #                     y2=top_cell_rail.layout.area.y2)
                             #top_via = RectArea(x1=segment1.x1, y1=segment1.y2, x2=left_segment.x2, y2=top_segment.y2)
 
                             trace.segments = [RectAreaLayer(layer="m1", area=segment1),
                                               RectAreaLayer(layer="m1", area=segment2)]
 
                             self.updated_components.append(trace)
+
+        # Step 2:
+        components_grouped_by_circuit_cell = defaultdict(list)
+        circuit_cells = list()
+
+        for component in self.updated_components:
+            if isinstance(component, CircuitCell):
+                circuit_cells.append(component)
+            else:
+                components_grouped_by_circuit_cell[component.cell_chain].append(component)
+
+        for circuit_cell in circuit_cells:
+            for grouped_components in components_grouped_by_circuit_cell:
+                if (re.search(r"^(?:.*--)?(.*)$", grouped_components).group(1)
+                        == f"{circuit_cell.name}_{circuit_cell.cell}"):
+                    components_grouped_by_circuit_cell[grouped_components].append(circuit_cell)
+
+        for circuit_cell in circuit_cells:
+            for circuit_cell_1 in circuit_cells:
+                if circuit_cell.parent_cell == circuit_cell_1.cell:
+                    print(circuit_cell)
+
+        # for cell_nr, grouped_components in enumerate(components_grouped_by_circuit_cell):
+        #     for component in components_grouped_by_circuit_cell[grouped_components]:
+        #         if isinstance(component, CircuitCell):
+        #             for cell_nr_1, grouped_components_1 in enumerate(components_grouped_by_circuit_cell):
+        #                 for component_1 in components_grouped_by_circuit_cell[grouped_components_1]:
+        #                     if isinstance(component_1, CircuitCell):
 
 
     def __add_top_cell_rail_to_rail_connections(self):
