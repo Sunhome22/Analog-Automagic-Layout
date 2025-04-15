@@ -24,8 +24,8 @@ from logger.logger import get_a_logger
 
 class LinearOptimizationSolver:
     logger = get_a_logger(__name__)
+    def __init__(self, components, component_connections, overlap_components):
 
-    def __init__(self, components, connections, overlap_components):
 
         self.current_file_directory = os.path.dirname(os.path.abspath(__file__))
 
@@ -39,20 +39,22 @@ class LinearOptimizationSolver:
         self.OFFSET_X = self.config["linear_optimization"]["OFFSET_X"]
         self.OFFSET_Y = self.config["linear_optimization"]["OFFSET_Y"]
         self.MIRROR = self.config["linear_optimization"]["MIRROR"]
-        self.RUN = self.config["linear_optimization"]["RUN"]
+        #self.RUN = self.config["linear_optimization"]["RUN"]
+        self.RUN = True
         self.STOP_TOLERANCE = self.config["linear_optimization"]["STOP_TOLERANCE"]
         self.SOLVER_MSG = self.config["linear_optimization"]["SOLVER_MSG"]
         self.GRID_SIZE = self.config["generate_grid"]["GRID_SIZE"]
+        self.VERTICAL_SYMMETRY = self.config["linear_optimization"]["VERTICAL_SYMMETRY"]
+        self.HORIZONTAL_SYMMETRY = self.config["linear_optimization"]["HORIZONTAL_SYMMETRY"]
         # Setup of problem space and solver
         self.problem_space = pulp.LpProblem("ComponentPlacement", pulp.LpMinimize)
-
         self.solver = pulp.SCIP_PY(msg=self.SOLVER_MSG, mip=False, warmStart=False,
                                    options=[f"limits/gap={self.STOP_TOLERANCE}"])
 
         # Inputs
         self.components = components
         self.overlap_components = overlap_components
-        self.connections = connections["component_connections"]
+        self.connections = component_connections
 
 
 
@@ -68,6 +70,7 @@ class LinearOptimizationSolver:
         self.d_x = {}
         self.d_y = {}
 
+
         # Make lists of functional components and structural components
         for component in self.components:
             if not isinstance(component, (Pin, CircuitCell, TraceNet)):
@@ -79,8 +82,7 @@ class LinearOptimizationSolver:
 
         # Constraints
         self.x_possible, self.y_possible = self.__extract_possible_positions()
-        self.logger.info(f"X_possible {self.x_possible}")
-        self.logger.info(f"Y_possible {self.y_possible}")
+
         self.x = pulp.LpVariable.dicts(f"x_bin", [(i, xv) for i in self.component_ids for xv in self.x_possible],
                                        cat="Binary")
         self.y = pulp.LpVariable.dicts(f"y_bin", [(i, yv) for i in self.component_ids for yv in self.y_possible],
@@ -110,11 +112,12 @@ class LinearOptimizationSolver:
     def __check_mirrored_components(self) -> list:
         mirrored_objects = []
         components2 = self.functional_components[:]  # shallow copy
-
+        side_check = False
+        top_check = False
         for component in self.functional_components:
             group = []
             for component2 in components2:
-                if component.group == component2.group and component != component2 and component.group is not None:
+                if component.group == component2.group and component != component2 and component.group is not None and component.type == component2.type and component.bounding_box == component2.bounding_box:
                     group.append([component, component2])
 
             if len(group) == 1 and ([group[0][1], group[0][0]]) not in mirrored_objects:
@@ -127,11 +130,23 @@ class LinearOptimizationSolver:
             group = []
             if not self.__element_in_sublist(component, mirrored_objects):
                 for component2 in components2:
-                    if ([component.number_id,component2.number_id] in self.overlap_components["top"] and
-                            [component.number_id,component2.number_id] in self.overlap_components["side"]):
+
+                    for pair in self.overlap_components["top"]:
+                        if [component.number_id,component2.number_id] == pair.component_ids:
+                            top_check = True
+                            break
+
+                    for pair in self.overlap_components["side"]:
+                        if [component.number_id,component2.number_id] == pair.component_ids:
+                            side_check = True
+                            break
+
+                    if top_check and side_check:
+
                         group.append([component, component2])
                         break
-
+                top_check = False
+                side_check = False
                 if len(group) == 1:
                     if (([group[0][0], group[0][1]]) not in mirrored_objects
                             and ([group[0][1], group[0][0]]) not in mirrored_objects):
@@ -139,11 +154,18 @@ class LinearOptimizationSolver:
         return mirrored_objects
 
     def __constrain_mirror(self):
-        for component in self.mirrored_components:
-            self.problem_space += (self.coordinates_x[component[0].number_id] + self.width[component[0].number_id]
-                                   == self.GRID_SIZE - self.coordinates_x[component[1].number_id])
-            self.problem_space += (self.coordinates_y[component[0].number_id]
-                                   == self.coordinates_y[component[1].number_id])
+        if self.VERTICAL_SYMMETRY:
+            for component in self.mirrored_components:
+                self.problem_space += (self.coordinates_x[component[0].number_id] + self.width[component[0].number_id]
+                                       == self.GRID_SIZE - self.coordinates_x[component[1].number_id])
+                self.problem_space += (self.coordinates_y[component[0].number_id]
+                                       == self.coordinates_y[component[1].number_id])
+        if self.HORIZONTAL_SYMMETRY:
+            for component in self.mirrored_components:
+                self.problem_space += (self.coordinates_x[component[0].number_id] ==  self.coordinates_x[component[1].number_id])
+                self.problem_space += (self.coordinates_y[component[0].number_id] + self.height[component[0].number_id]
+                                       == self.GRID_SIZE-self.coordinates_y[component[1].number_id])
+
 
     @staticmethod
     def __element_in_sublist(element: object, big_list: list) -> bool:
@@ -159,13 +181,17 @@ class LinearOptimizationSolver:
         y_intervals.append(self.UNIT_HEIGHT)
 
         for component in self.functional_components:
-            if isinstance(component, Transistor):
-                h = component.bounding_box.y2 - component.bounding_box.y1
-                w = component.bounding_box.x2 - component.bounding_box.x1
-                if w not in x_intervals:
-                    x_intervals.append(w)
-                if h not in y_intervals:
-                    y_intervals.append(h)
+
+            h = component.bounding_box.y2 - component.bounding_box.y1
+            w = component.bounding_box.x2 - component.bounding_box.x1
+            if w not in x_intervals:
+                x_intervals.append(w)
+                if w+self.OFFSET_X not in x_intervals:
+                    x_intervals.append(w+self.OFFSET_X)
+            if h not in y_intervals:
+                y_intervals.append(h)
+                if h+self.OFFSET_Y not in y_intervals:
+                    y_intervals.append(h+self.OFFSET_Y)
 
         for index, value in enumerate(x_intervals):
             for x_pos in range(self.GRID_SIZE//2, self.GRID_SIZE - 1, value):
@@ -215,6 +241,7 @@ class LinearOptimizationSolver:
         for conn in self.connections:
 
             if not conn.end_comp_id == '' and conn.start_comp_id != conn.end_comp_id:
+
                 start_port_parameters, end_port_parameters = self.__get_port_parameters(conn)
 
                 self.d_x[(conn.start_comp_id, conn.end_comp_id)] = pulp.LpVariable(
@@ -243,7 +270,6 @@ class LinearOptimizationSolver:
 
     def __constraint_overlap(self):
         component_list = self.component_ids[:]
-
         for c1 in self.component_ids:
             self.problem_space += pulp.lpSum([self.x[c1, xv] for xv in self.x_possible]) == 1
             self.problem_space += pulp.lpSum([self.y[c1, yv] for yv in self.y_possible]) == 1
@@ -269,7 +295,7 @@ class LinearOptimizationSolver:
                     z4 = pulp.LpVariable(f"z4_{c1}_{c2}", cat='Binary')
 
                     self.problem_space += z1 + z2 + z3 + z4 == 1, f"NonOverlap_{c1}_{c2}"
-                    if [c1,c2] in self.overlap_components["top"] and [c1, c2] in self.overlap_components["side"]:
+                    if any(obj_pair.component_ids == [c1,c2] for obj_pair in self.overlap_components["top"]) and any(obj_pair.component_ids == [c1,c2] for obj_pair in self.overlap_components["side"]):
                         self.problem_space += (self.coordinates_x[c1] + self.width[c1] <= self.coordinates_x[c2]
                                                + self.GRID_SIZE * (1 - z1), f"LeftOf_{c1}_{c2}")
                         self.problem_space += (self.coordinates_x[c2] + self.width[c2] <= self.coordinates_x[c1]
@@ -279,7 +305,7 @@ class LinearOptimizationSolver:
                         self.problem_space += (self.coordinates_y[c2] + self.height[c2] <= self.coordinates_y[c1]
                                                + self.GRID_SIZE * (1 - z4), f"Above_{c1}_{c2}")
 
-                    elif [c1,c2] in self.overlap_components["side"]:
+                    elif any(obj_pair.component_ids == [c1,c2] for obj_pair in self.overlap_components["side"]):
                         self.problem_space += (self.coordinates_x[c1] + self.width[c1] <= self.coordinates_x[c2]
                                                + self.GRID_SIZE * (1 - z1), f"LeftOf_{c1}_{c2}")
                         self.problem_space += (self.coordinates_x[c2] + self.width[c2] <= self.coordinates_x[c1]
@@ -289,7 +315,7 @@ class LinearOptimizationSolver:
                         self.problem_space += (self.coordinates_y[c2] + self.height[c2] + self.OFFSET_Y
                                                <= self.coordinates_y[c1] + self.GRID_SIZE * (1 - z4), f"Above_{c1}_{c2}")
 
-                    elif [c1,c2] in self.overlap_components["top"]:
+                    elif any(obj_pair.component_ids == [c1,c2] for obj_pair in self.overlap_components["top"]):
                         self.problem_space += (self.coordinates_x[c1] + self.width[c1] + self.OFFSET_X
                                                <= self.coordinates_x[c2] + self.GRID_SIZE * (1 - z1), f"LeftOf_{c1}_{c2}")
                         self.problem_space += (self.coordinates_x[c2] + self.width[c2] + self.OFFSET_X
@@ -312,13 +338,17 @@ class LinearOptimizationSolver:
             component_list.remove(c1)
 
     def __solve_linear_optimization_problem(self):
+        with open("constraints.txt", "w") as f:
+            f.write("Constraints in the model:\n")
+            for name, constraint in self.problem_space.constraints.items():
+                f.write(f"{name}: {constraint}\n")
         self.problem_space += (pulp.lpSum([self.d_x[(c1.start_comp_id, c1.end_comp_id)] +
                                            self.d_y[(c1.start_comp_id, c1.end_comp_id)] for c1 in self.connections])
                                * self.ALPHA + (self.x_max - self.x_min)
                                * self.BETA + (self.y_max - self.y_min) * self.THETA, "totalWireLength")
         # Warm start
         placement_solution_file = f"{self.current_file_directory}/previous_placement_solution.pkl"
-        # self.__warm_start(file=placement_solution_file)
+        #self.__warm_start(file=placement_solution_file)
 
         # Solving
         start_solving_time = time.time()
@@ -363,7 +393,7 @@ class LinearOptimizationSolver:
             component.transform_matrix.set([1, 0, int(round(pulp.value(self.coordinates_x[component.number_id]))), 0, 1,
                                             int(round(pulp.value(self.coordinates_y[component.number_id])))])
 
-    def solve_placement(self) -> list[object]:
+    def solve_placement(self):
         self.logger.info("Starting Linear Optimization")
 
         self.__constraint_overlap()
@@ -380,10 +410,7 @@ class LinearOptimizationSolver:
         self.logger.info("Finished Linear Optimization")
 
         # Add updated functional components back into list of all components
-        return self.structural_components + self.functional_components
-
-
-
+        return self.coordinates_x, self.coordinates_y
 
 
 

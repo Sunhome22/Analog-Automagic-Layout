@@ -18,6 +18,22 @@ dependencies = {file = ["requirements.txt"]}
 
 # ===================================================== Configs ========================================================
 
+#Initiator of Linear optimization config options
+# -> Sub Cell Offset X - Offset between groupings of resistors, capacitors and transistors
+# -> United Res Cap - Allows placement of resistors and capacitors in the same cell
+# -> RELATIVE PLACEMENT - Of components in the same cell, either "S" - side by side or "A" - Above
+# -> USTOM RELATIVE PLACEMENT ORDER - Decides order of placement. The first placement will be leftmost or below
+# ->
+# ->
+
+[initiator_lp]
+SUB_CELL_OFFSET = 700
+UNITED_RES_CAP = true
+RELATIVE_PLACEMENT = "A"
+ENABLE_CUSTOM_ORDER = true
+CUSTOM_RELATIVE_PLACEMENT_ORDER = ["R", "T", "C"]
+
+
 # Linear optimization config options
 # -> Alpha - Constant for weighing the importance of total Manhattan distance between components in the objective function
 # -> Beta - Constant for weighing the importance of perimeter along the x-axis in the objective function
@@ -43,6 +59,9 @@ RUN = true
 
 STOP_TOLERANCE = 0.05
 SOLVER_MSG = true
+
+VERTICAL_SYMMETRY = true
+HORIZONTAL_SYMMETRY = false
 
 # Magic layout creator config options
 # -> Technology - defines which PDK technology we are targeting
@@ -88,7 +107,7 @@ GRID_LEEWAY_Y = 500
 
 [a_star_initiator]
 RUN_MULTIPLE_ASTAR = false
-CUSTOM_NET_ORDER = false
+CUSTOM_NET_ORDER = true
 NET_ORDER = ["I_BIAS","net4", "VIN", "net2", "VO", "net1",  "net3", "VIP"]
 
 

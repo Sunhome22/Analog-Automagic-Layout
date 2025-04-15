@@ -253,7 +253,8 @@ class TraceGenerator:
     def __write_traces(self, net):
         trace = TraceNet()
         trace.instance = trace.__class__.__name__
-        trace.named_cell = self.circuit_cell.cell_chain
+        trace.named_cell = self.circuit_cell.named_cell
+        trace.cell_chain = self.circuit_cell.cell_chain
         trace.cell = self.circuit_cell.cell
         trace.name = net
 

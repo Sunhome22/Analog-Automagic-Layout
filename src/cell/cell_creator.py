@@ -28,6 +28,7 @@ import copy
 from astar.a_star_initiator import AstarInitiator
 from connections.connections import ConnectionLists
 from grid.generate_grid import GridGeneration
+from linear_optimization.initiator_lp import LPInitiator
 from linear_optimization.linear_optimization import LinearOptimizationSolver
 from logger.logger import get_a_logger
 from circuit.circuit_components import (RectArea, RectAreaLayer, Transistor, Capacitor, Resistor, Pin, CircuitCell,
@@ -115,7 +116,8 @@ class CellCreator:
         # Cell creation process
         for cell_nr, grouped_components in enumerate(components_grouped_by_circuit_cell):
             """With every iteration there is a set of components along with their associated circuit cell"""
-
+            if grouped_components == 'UTOP_JNW_BKLE':
+                continue
             # Step 1: Check if current circuit cell already has been solved
             cell = re.search(r'_(.*)', grouped_components).group(1)
             if cell in solved_circuit_cells.keys():
@@ -133,19 +135,21 @@ class CellCreator:
             # Step 2: Perform placement of functional components
             connections, overlap_dict, net_list = ConnectionLists(
                 input_components=components_grouped_by_circuit_cell[grouped_components]).get()
-
+            print(grouped_components)
             components = components_grouped_by_circuit_cell[grouped_components]
             if any(isinstance(c, self.FUNCTIONAL_TYPES) for c in components_grouped_by_circuit_cell[grouped_components]):
-                components = LinearOptimizationSolver(components_grouped_by_circuit_cell[grouped_components],
-                                                      connections, overlap_dict).solve_placement()
+
+                components = LPInitiator(components, connections, overlap_dict).initiate_linear_optimization()
+
 
             # Step 3: Move all components to the origin
             origin_scaled_used_area = RectArea()
             used_area = RectArea()
             if any(isinstance(c, self.FUNCTIONAL_TYPES) for c in components_grouped_by_circuit_cell[grouped_components]):
-                _, _, used_area, _, _ = GridGeneration(components=components).initialize_grid_generation()
+                _, _, used_area,_, _, _ = GridGeneration(components=components).initialize_grid_generation()
                 origin_scaled_used_area = RectArea(x1=0, y1=0, x2=abs(used_area.x2 - used_area.x1),
                                                    y2=abs(used_area.y2 - used_area.y1))
+
             for component in components:
                 if isinstance(component, CircuitCell):
                     component.bounding_box = origin_scaled_used_area
@@ -154,50 +158,60 @@ class CellCreator:
                     component.transform_matrix.f -= used_area.y1
 
             # Step 4: Find and generate trace paths
-            grid, port_scaled_coordinates, _, port_coordinates, routing_parameters = GridGeneration(
-                components=components).initialize_grid_generation()
+            grid, scaled_port_coordinates, used_area, port_coordinates, routing_parameters, component_ports \
+                = GridGeneration(components=components).initialize_grid_generation()
 
-            # paths = AstarInitiator(grid=grid,
-            #                       connections=connections,
-            #                       components=components,
-            #                       port_scaled_coordinates=port_scaled_coordinates,
-            #                       port_coordinates=port_coordinates,
-            #                       net_list=net_list,
-            #                       routing_parameters=routing_parameters
-            #                       ).get()
+            paths = AstarInitiator(grid=grid,
+                                  connections=connections,
+                                  components=components,
+                                  scaled_port_coordinates = scaled_port_coordinates,
+                                  port_coordinates=port_coordinates,
+                                  net_list=net_list,
+                                  routing_parameters=routing_parameters,
+                                  component_ports = component_ports
+                                  ).get()
             components = TraceGenerator(project_properties=self.project_properties,
                                         components=components,
-                                        paths=[],
+                                        paths=paths,
                                         net_list=net_list,
                                         used_area=origin_scaled_used_area
                                         ).get()
-
             # Step 5: Move all components to the origin again since trace generation changed the cell bounding box
             new_x1 = 0
             new_y1 = 0
             for component in components:
                 if isinstance(component, CircuitCell):
+                    print("1")
                     new_x1 = abs(component.bounding_box.x1)
                     new_y1 = abs(component.bounding_box.y1)
                     component.bounding_box = RectArea(x1=0, x2=abs(component.bounding_box.x2 - component.bounding_box.x1),
                                                       y1=0, y2=abs(component.bounding_box.y2 - component.bounding_box.y1))
 
                 if isinstance(component, self.FUNCTIONAL_TYPES):
-                    component.transform_matrix.c += new_x1
-                    component.transform_matrix.f += new_y1
+                    print("2")
+                    component.transform_matrix.c += 300
+                    component.transform_matrix.f += 500
 
                 elif isinstance(component, TraceNet):
                     for segment in component.segments:
-                        segment.area.x1 += new_x1
-                        segment.area.y1 += new_y1
-                        segment.area.x2 += new_x1
-                        segment.area.y2 += new_y1
+                        segment.area.x1 += 300
+                        segment.area.y1 += 500
+                        segment.area.x2 += 300
+                        segment.area.y2 += 500
 
                     for via in component.vias:
-                        via.area.x1 += new_x1
-                        via.area.y1 += new_y1
-                        via.area.x2 += new_x1
-                        via.area.y2 += new_y1
+                        via.area.x1 += 300
+                        via.area.y1 += 500
+                        via.area.x2 += 300
+                        via.area.y2 += 500
+
+                elif isinstance(component, Pin) and not (re.search(r".*VDD.*", component.name, re.IGNORECASE) or
+                        re.search(r".*VSS.*", component.name, re.IGNORECASE)):
+                    for layout in component.layout:
+                        layout.area.x1 += 300
+                        layout.area.y1 += 500
+                        layout.area.x2 += 300
+                        layout.area.y2 += 500
 
             # Step 6: Create an update list of components
             for component in components:
@@ -225,6 +239,8 @@ class CellCreator:
                                                     + self.origin_scaled_cell_offsets[cell_nr - 1], 0, 1, 0])
 
     def __add_top_cell_rails_around_cells(self):
+
+        # This IS BROKEN
         top_cell_rails = list()
         all_cell_rails = list()
         top_cell_components = list()
@@ -232,17 +248,19 @@ class CellCreator:
         for component in self.updated_components:
             if isinstance(component, Pin) and (re.search(r".*VDD.*", component.name, re.IGNORECASE)
                     or re.search(r".*VSS.*", component.name, re.IGNORECASE)):
-                all_cell_rails.append(copy.deepcopy(component))
+                all_cell_rails.append(component)
 
-                # Check if this component is already in rails by name
+                # Check if this component is already in rails
                 if not any(rail.name == component.name for rail in top_cell_rails):
-                    top_cell_rails.append(copy.deepcopy(component))
+                    top_cell_rails.append(component)
 
         top_cell_x2 = 0
         for component in self.updated_components:
             if isinstance(component, CircuitCell):
                 top_cell_x2 += (component.bounding_box.x2 - component.bounding_box.x1)
-        top_cell_y2 = max(component.layout.area.y2 for component in all_cell_rails)
+        #
+        #top_cell_rails_exists = all(c.layout for c in all_cell_rails)
+        top_cell_y2 = max(component.layout.area.y2 for component in all_cell_rails if component.layout)
 
         # Create a top cell with bounding box covering all cells but with all other attributes of UTOP
         for component in self.updated_components:
@@ -255,7 +273,7 @@ class CellCreator:
                                            parent_cell=component.parent_cell,
                                            cell_chain=component.cell_chain,
                                            bounding_box=RectArea(x1=0, y1=0, x2=top_cell_x2, y2=top_cell_y2))
-
+                #if not top_cell_rails_exists:
                 for nr, rail in enumerate(top_cell_rails):
                     rail.cell = component.cell
                     rail.number_id = len(self.updated_components) + nr
@@ -265,7 +283,8 @@ class CellCreator:
                     rail.layout = RectAreaLayer()
                     top_cell_components.append(rail)
 
-                top_cell_components.append(self.top_cell)
+            top_cell_components.append(self.top_cell)
+
 
         components = TraceGenerator(project_properties=self.project_properties,
                                     components=top_cell_components,
@@ -273,10 +292,8 @@ class CellCreator:
                                     net_list=None,
                                     used_area=self.top_cell.bounding_box
                                     ).get()
-
-
-        # Don't include the temporary top cell since it is not real, but was needed for top cell trace generation
         for component in components:
+            # Don't include the temporary top cell since it is not real, but was needed for top cell trace generation
             if not isinstance(component, CircuitCell):
                 self.updated_components.append(component)
 
@@ -293,6 +310,8 @@ class CellCreator:
                             trace.instance = trace.__class__.__name__
                             trace.parent_cell = component.parent_cell
                             trace.cell_chain = component.cell_chain
+                            print(self.top_cell.bounding_box.y2)
+                            print(top_cell_rail.layout.area.y2)
                             top_cell_rail_y1 = -(top_cell_rail.layout.area.y2 - self.top_cell.bounding_box.y2)
 
                             segment1 = RectArea(x1=rail.layout.area.x1,
