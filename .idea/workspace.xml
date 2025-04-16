@@ -7,9 +7,6 @@
     <list default="true" id="f7791a66-c797-4448-a536-1f4db186a974" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/cell/cell_creator.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/cell/cell_creator.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/json_converter/components_temp_before_cell_creator.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/json_converter/components_temp_before_cell_creator.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/json_converter/components_with_traces_update_1.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/json_converter/components_with_traces_update_1.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/linear_optimization/previous_placement_solution.pkl" beforeDir="false" afterPath="$PROJECT_DIR$/src/linear_optimization/previous_placement_solution.pkl" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

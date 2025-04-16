@@ -177,41 +177,42 @@ class CellCreator:
                                         used_area=origin_scaled_used_area
                                         ).get()
             # Step 5: Move all components to the origin again since trace generation changed the cell bounding box
-            new_x1 = 0
-            new_y1 = 0
+            rails_offset_x = 0
+            rails_offset_y = 0
             for component in components:
                 if isinstance(component, CircuitCell):
                     print("1")
-                    new_x1 = abs(component.bounding_box.x1)
-                    new_y1 = abs(component.bounding_box.y1)
+                    rails_offset_x = abs(component.bounding_box.x1)
+                    rails_offset_y = abs(component.bounding_box.y1)
                     component.bounding_box = RectArea(x1=0, x2=abs(component.bounding_box.x2 - component.bounding_box.x1),
                                                       y1=0, y2=abs(component.bounding_box.y2 - component.bounding_box.y1))
 
+            for component in components:
                 if isinstance(component, self.FUNCTIONAL_TYPES):
                     print("2")
-                    component.transform_matrix.c += 300
-                    component.transform_matrix.f += 500
+                    component.transform_matrix.c += rails_offset_x
+                    component.transform_matrix.f += rails_offset_y
 
                 elif isinstance(component, TraceNet):
                     for segment in component.segments:
-                        segment.area.x1 += 300
-                        segment.area.y1 += 500
-                        segment.area.x2 += 300
-                        segment.area.y2 += 500
+                        segment.area.x1 += rails_offset_x
+                        segment.area.y1 += rails_offset_y
+                        segment.area.x2 += rails_offset_x
+                        segment.area.y2 += rails_offset_y
 
-                    for via in component.vias:
-                        via.area.x1 += 300
-                        via.area.y1 += 500
-                        via.area.x2 += 300
-                        via.area.y2 += 500
+                    for via in component.vias: 
+                        via.area.x1 += rails_offset_x
+                        via.area.y1 += rails_offset_y
+                        via.area.x2 += rails_offset_x
+                        via.area.y2 += rails_offset_y
 
                 elif isinstance(component, Pin) and not (re.search(r".*VDD.*", component.name, re.IGNORECASE) or
                         re.search(r".*VSS.*", component.name, re.IGNORECASE)):
                     for layout in component.layout:
-                        layout.area.x1 += 300
-                        layout.area.y1 += 500
-                        layout.area.x2 += 300
-                        layout.area.y2 += 500
+                        layout.area.x1 += rails_offset_x
+                        layout.area.y1 += rails_offset_y
+                        layout.area.x2 += rails_offset_x
+                        layout.area.y2 += rails_offset_y
 
             # Step 6: Create an update list of components
             for component in components:
