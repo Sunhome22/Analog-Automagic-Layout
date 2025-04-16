@@ -107,7 +107,7 @@ GRID_LEEWAY_Y = 500
 
 [a_star_initiator]
 RUN_MULTIPLE_ASTAR = false
-CUSTOM_NET_ORDER = true
+CUSTOM_NET_ORDER = false
 NET_ORDER = ["I_BIAS","net4", "VIN", "net2", "VO", "net1",  "net3", "VIP"]
 
 

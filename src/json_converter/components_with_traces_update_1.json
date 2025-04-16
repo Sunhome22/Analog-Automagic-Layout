@@ -1,7 +1,57 @@
 [
     {
         "instance": "Pin",
+        "number_id": 3,
+        "cell": "JNW_BKLE",
+        "named_cell": "UTOP_JNW_BKLE",
+        "parent_cell": "TOP_CELL",
+        "cell_chain": "UTOP_JNW_BKLE",
+        "type": "ipin",
+        "name": "VDD",
+        "layout": ""
+    },
+    {
+        "instance": "Pin",
         "number_id": 4,
+        "cell": "JNW_BKLE",
+        "named_cell": "UTOP_JNW_BKLE",
+        "parent_cell": "TOP_CELL",
+        "cell_chain": "UTOP_JNW_BKLE",
+        "type": "ipin",
+        "name": "VSS",
+        "layout": ""
+    },
+    {
+        "instance": "CircuitCell",
+        "number_id": 0,
+        "name": "UTOP",
+        "cell": "JNW_BKLE",
+        "named_cell": "UTOP_JNW_BKLE",
+        "parent_cell": "TOP_CELL",
+        "cell_chain": "UTOP_JNW_BKLE",
+        "group": null,
+        "schematic_connections": {
+            "VDD": "VDD",
+            "VSS": "VSS"
+        },
+        "transform_matrix": {
+            "a": 1,
+            "b": 0,
+            "c": 0,
+            "d": 0,
+            "e": 1,
+            "f": 0
+        },
+        "bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 0,
+            "y2": 0
+        }
+    },
+    {
+        "instance": "Pin",
+        "number_id": 5,
         "cell": "COMP",
         "named_cell": "U1_COMP",
         "parent_cell": "JNW_BKLE",
@@ -13,27 +63,8 @@
             "area": {
                 "x1": 0,
                 "y1": 4150,
-                "x2": 2264,
+                "x2": 4056,
                 "y2": 4200
-            }
-        }
-    },
-    {
-        "instance": "Pin",
-        "number_id": 5,
-        "cell": "COMP",
-        "named_cell": "U1_COMP",
-        "parent_cell": "JNW_BKLE",
-        "cell_chain": "UTOP_JNW_BKLE--U1_COMP",
-        "type": "ipin",
-        "name": "VDD",
-        "layout": {
-            "layer": "locali",
-            "area": {
-                "x1": 100,
-                "y1": 4050,
-                "x2": 2164,
-                "y2": 4100
             }
         }
     },
@@ -45,14 +76,14 @@
         "parent_cell": "JNW_BKLE",
         "cell_chain": "UTOP_JNW_BKLE--U1_COMP",
         "type": "ipin",
-        "name": "VIP",
+        "name": "VDD",
         "layout": {
-            "layer": "m1",
+            "layer": "locali",
             "area": {
-                "x1": 912,
-                "y1": 2180,
-                "x2": 944,
-                "y2": 2220
+                "x1": 100,
+                "y1": 4050,
+                "x2": 3956,
+                "y2": 4100
             }
         }
     },
@@ -64,16 +95,8 @@
         "parent_cell": "JNW_BKLE",
         "cell_chain": "UTOP_JNW_BKLE--U1_COMP",
         "type": "ipin",
-        "name": "VIN",
-        "layout": {
-            "layer": "m1",
-            "area": {
-                "x1": 336,
-                "y1": 2180,
-                "x2": 368,
-                "y2": 2220
-            }
-        }
+        "name": "VIP",
+        "layout": ""
     },
     {
         "instance": "Pin",
@@ -82,17 +105,9 @@
         "named_cell": "U1_COMP",
         "parent_cell": "JNW_BKLE",
         "cell_chain": "UTOP_JNW_BKLE--U1_COMP",
-        "type": "opin",
-        "name": "VO",
-        "layout": {
-            "layer": "m2",
-            "area": {
-                "x1": 775,
-                "y1": 1319,
-                "x2": 934,
-                "y2": 1349
-            }
-        }
+        "type": "ipin",
+        "name": "VIN",
+        "layout": ""
     },
     {
         "instance": "Pin",
@@ -101,21 +116,24 @@
         "named_cell": "U1_COMP",
         "parent_cell": "JNW_BKLE",
         "cell_chain": "UTOP_JNW_BKLE--U1_COMP",
+        "type": "opin",
+        "name": "VO",
+        "layout": ""
+    },
+    {
+        "instance": "Pin",
+        "number_id": 10,
+        "cell": "COMP",
+        "named_cell": "U1_COMP",
+        "parent_cell": "JNW_BKLE",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP",
         "type": "ipin",
         "name": "I_BIAS",
-        "layout": {
-            "layer": "m2",
-            "area": {
-                "x1": 919,
-                "y1": 3479,
-                "x2": 1222,
-                "y2": 3509
-            }
-        }
+        "layout": ""
     },
     {
         "instance": "Transistor",
-        "number_id": 10,
+        "number_id": 11,
         "name": "MN1",
         "type": "nmos",
         "cell": "COMP",
@@ -176,10 +194,10 @@
         "transform_matrix": {
             "a": 1,
             "b": 0,
-            "c": 1132,
+            "c": 300,
             "d": 0,
             "e": 1,
-            "f": 2500
+            "f": 2100
         },
         "bounding_box": {
             "x1": 0,
@@ -191,7 +209,7 @@
             "x": 92,
             "y": 64
         },
-        "group_endpoint": "rail_bot",
+        "group_endpoint": "rail_top/no_rail_bot",
         "group_endpoint_bounding_box": {
             "x1": 0,
             "y1": 0,
@@ -201,7 +219,7 @@
     },
     {
         "instance": "Transistor",
-        "number_id": 11,
+        "number_id": 12,
         "name": "MN2",
         "type": "nmos",
         "cell": "COMP",
@@ -262,10 +280,10 @@
         "transform_matrix": {
             "a": 1,
             "b": 0,
-            "c": 556,
+            "c": 3180,
             "d": 0,
             "e": 1,
-            "f": 2500
+            "f": 2100
         },
         "bounding_box": {
             "x1": 0,
@@ -277,7 +295,7 @@
             "x": 92,
             "y": 64
         },
-        "group_endpoint": "rail_bot",
+        "group_endpoint": "rail_top/no_rail_bot",
         "group_endpoint_bounding_box": {
             "x1": 0,
             "y1": 0,
@@ -287,7 +305,7 @@
     },
     {
         "instance": "Transistor",
-        "number_id": 12,
+        "number_id": 13,
         "name": "MP5",
         "type": "pmos",
         "cell": "COMP",
@@ -348,10 +366,10 @@
         "transform_matrix": {
             "a": 1,
             "b": 0,
-            "c": 1132,
+            "c": 1196,
             "d": 0,
             "e": 1,
-            "f": 1300
+            "f": 1700
         },
         "bounding_box": {
             "x1": 0,
@@ -363,7 +381,7 @@
             "x": 92,
             "y": 64
         },
-        "group_endpoint": "rail_top",
+        "group_endpoint": "rail_bot/no_rail_top",
         "group_endpoint_bounding_box": {
             "x1": 0,
             "y1": 0,
@@ -373,7 +391,7 @@
     },
     {
         "instance": "Transistor",
-        "number_id": 13,
+        "number_id": 14,
         "name": "MP6",
         "type": "pmos",
         "cell": "COMP",
@@ -434,10 +452,10 @@
         "transform_matrix": {
             "a": 1,
             "b": 0,
-            "c": 300,
+            "c": 2028,
             "d": 0,
             "e": 1,
-            "f": 1300
+            "f": 1700
         },
         "bounding_box": {
             "x1": 0,
@@ -449,7 +467,7 @@
             "x": 92,
             "y": 64
         },
-        "group_endpoint": "rail_top",
+        "group_endpoint": "rail_bot/no_rail_top",
         "group_endpoint_bounding_box": {
             "x1": 0,
             "y1": 0,
@@ -459,7 +477,7 @@
     },
     {
         "instance": "Transistor",
-        "number_id": 14,
+        "number_id": 15,
         "name": "MP1",
         "type": "pmos",
         "cell": "COMP",
@@ -520,7 +538,7 @@
         "transform_matrix": {
             "a": 1,
             "b": 0,
-            "c": 300,
+            "c": 2028,
             "d": 0,
             "e": 1,
             "f": 500
@@ -545,7 +563,7 @@
     },
     {
         "instance": "Transistor",
-        "number_id": 15,
+        "number_id": 16,
         "name": "MP2",
         "type": "pmos",
         "cell": "COMP",
@@ -606,7 +624,7 @@
         "transform_matrix": {
             "a": 1,
             "b": 0,
-            "c": 1132,
+            "c": 1196,
             "d": 0,
             "e": 1,
             "f": 500
@@ -631,7 +649,7 @@
     },
     {
         "instance": "Transistor",
-        "number_id": 16,
+        "number_id": 17,
         "name": "MN4",
         "type": "nmos",
         "cell": "COMP",
@@ -692,7 +710,7 @@
         "transform_matrix": {
             "a": 1,
             "b": 0,
-            "c": 1132,
+            "c": 2028,
             "d": 0,
             "e": 1,
             "f": 3300
@@ -707,7 +725,7 @@
             "x": 92,
             "y": 64
         },
-        "group_endpoint": "rail_top",
+        "group_endpoint": "rail_top/no_rail_bot",
         "group_endpoint_bounding_box": {
             "x1": 0,
             "y1": 0,
@@ -717,7 +735,7 @@
     },
     {
         "instance": "Transistor",
-        "number_id": 17,
+        "number_id": 18,
         "name": "MN3",
         "type": "nmos",
         "cell": "COMP",
@@ -778,7 +796,7 @@
         "transform_matrix": {
             "a": 1,
             "b": 0,
-            "c": 556,
+            "c": 1452,
             "d": 0,
             "e": 1,
             "f": 3300
@@ -793,7 +811,7 @@
             "x": 92,
             "y": 64
         },
-        "group_endpoint": "rail_top",
+        "group_endpoint": "rail_top/no_rail_bot",
         "group_endpoint_bounding_box": {
             "x1": 0,
             "y1": 0,
@@ -803,7 +821,7 @@
     },
     {
         "instance": "Transistor",
-        "number_id": 18,
+        "number_id": 19,
         "name": "MN5",
         "type": "nmos",
         "cell": "COMP",
@@ -864,7 +882,7 @@
         "transform_matrix": {
             "a": 1,
             "b": 0,
-            "c": 1132,
+            "c": 3180,
             "d": 0,
             "e": 1,
             "f": 2900
@@ -879,7 +897,7 @@
             "x": 92,
             "y": 64
         },
-        "group_endpoint": "",
+        "group_endpoint": "rail_bot/no_rail_top",
         "group_endpoint_bounding_box": {
             "x1": 0,
             "y1": 0,
@@ -889,7 +907,7 @@
     },
     {
         "instance": "Transistor",
-        "number_id": 19,
+        "number_id": 20,
         "name": "MN6",
         "type": "nmos",
         "cell": "COMP",
@@ -950,7 +968,7 @@
         "transform_matrix": {
             "a": 1,
             "b": 0,
-            "c": 556,
+            "c": 300,
             "d": 0,
             "e": 1,
             "f": 2900
@@ -965,7 +983,7 @@
             "x": 92,
             "y": 64
         },
-        "group_endpoint": "",
+        "group_endpoint": "rail_bot/no_rail_top",
         "group_endpoint_bounding_box": {
             "x1": 0,
             "y1": 0,
@@ -975,7 +993,7 @@
     },
     {
         "instance": "Transistor",
-        "number_id": 20,
+        "number_id": 21,
         "name": "MP3",
         "type": "pmos",
         "cell": "COMP",
@@ -1036,7 +1054,7 @@
         "transform_matrix": {
             "a": 1,
             "b": 0,
-            "c": 1132,
+            "c": 1196,
             "d": 0,
             "e": 1,
             "f": 900
@@ -1051,7 +1069,7 @@
             "x": 92,
             "y": 64
         },
-        "group_endpoint": "",
+        "group_endpoint": "rail_top",
         "group_endpoint_bounding_box": {
             "x1": 0,
             "y1": 0,
@@ -1061,7 +1079,7 @@
     },
     {
         "instance": "Transistor",
-        "number_id": 21,
+        "number_id": 22,
         "name": "MP4",
         "type": "pmos",
         "cell": "COMP",
@@ -1122,7 +1140,7 @@
         "transform_matrix": {
             "a": 1,
             "b": 0,
-            "c": 300,
+            "c": 2028,
             "d": 0,
             "e": 1,
             "f": 900
@@ -1137,7 +1155,7 @@
             "x": 92,
             "y": 64
         },
-        "group_endpoint": "",
+        "group_endpoint": "rail_top",
         "group_endpoint_bounding_box": {
             "x1": 0,
             "y1": 0,
@@ -1165,7 +1183,7 @@
         "transform_matrix": {
             "a": 1,
             "b": 0,
-            "c": 2314,
+            "c": 0,
             "d": 0,
             "e": 1,
             "f": 0
@@ -1173,7 +1191,7 @@
         "bounding_box": {
             "x1": 0,
             "y1": 0,
-            "x2": 2314,
+            "x2": 4106,
             "y2": 4250
         }
     },
@@ -1190,7 +1208,7 @@
                 "area": {
                     "x1": 100,
                     "y1": 4050,
-                    "x2": 2164,
+                    "x2": 3956,
                     "y2": 4100
                 }
             },
@@ -1199,7 +1217,7 @@
                 "area": {
                     "x1": 100,
                     "y1": 100,
-                    "x2": 2164,
+                    "x2": 3956,
                     "y2": 150
                 }
             },
@@ -1215,9 +1233,9 @@
             {
                 "layer": "m1",
                 "area": {
-                    "x1": 2114,
+                    "x1": 3906,
                     "y1": 150,
-                    "x2": 2164,
+                    "x2": 3956,
                     "y2": 4050
                 }
             }
@@ -1244,18 +1262,18 @@
             {
                 "layer": "locali-m1",
                 "area": {
-                    "x1": 2114,
+                    "x1": 3906,
                     "y1": 4050,
-                    "x2": 2164,
+                    "x2": 3956,
                     "y2": 4100
                 }
             },
             {
                 "layer": "locali-m1",
                 "area": {
-                    "x1": 2114,
+                    "x1": 3906,
                     "y1": 100,
-                    "x2": 2164,
+                    "x2": 3956,
                     "y2": 150
                 }
             }
@@ -1274,7 +1292,7 @@
                 "area": {
                     "x1": 0,
                     "y1": 4150,
-                    "x2": 2264,
+                    "x2": 4056,
                     "y2": 4200
                 }
             },
@@ -1283,7 +1301,7 @@
                 "area": {
                     "x1": 0,
                     "y1": 0,
-                    "x2": 2264,
+                    "x2": 4056,
                     "y2": 50
                 }
             },
@@ -1299,9 +1317,9 @@
             {
                 "layer": "m1",
                 "area": {
-                    "x1": 2214,
+                    "x1": 4006,
                     "y1": 50,
-                    "x2": 2264,
+                    "x2": 4056,
                     "y2": 4150
                 }
             }
@@ -1328,441 +1346,22 @@
             {
                 "layer": "locali-m1",
                 "area": {
-                    "x1": 2214,
+                    "x1": 4006,
                     "y1": 4150,
-                    "x2": 2264,
+                    "x2": 4056,
                     "y2": 4200
                 }
             },
             {
                 "layer": "locali-m1",
                 "area": {
-                    "x1": 2214,
+                    "x1": 4006,
                     "y1": 0,
-                    "x2": 2264,
+                    "x2": 4056,
                     "y2": 50
                 }
             }
         ]
-    },
-    {
-        "instance": "TraceNet",
-        "name": "I_BIAS",
-        "cell": "COMP",
-        "named_cell": "U1_COMP",
-        "parent_cell": "",
-        "cell_chain": "UTOP_JNW_BKLE--U1_COMP",
-        "segments": [
-            {
-                "layer": "m2",
-                "area": {
-                    "x1": 919,
-                    "y1": 3479,
-                    "x2": 1222,
-                    "y2": 3509
-                }
-            },
-            {
-                "layer": "m3",
-                "area": {
-                    "x1": 919,
-                    "y1": 3334,
-                    "x2": 949,
-                    "y2": 3509
-                }
-            }
-        ],
-        "vias": []
-    },
-    {
-        "instance": "TraceNet",
-        "name": "net4",
-        "cell": "COMP",
-        "named_cell": "U1_COMP",
-        "parent_cell": "",
-        "cell_chain": "UTOP_JNW_BKLE--U1_COMP",
-        "segments": [
-            {
-                "layer": "m3",
-                "area": {
-                    "x1": 921,
-                    "y1": 536,
-                    "x2": 951,
-                    "y2": 839
-                }
-            },
-            {
-                "layer": "m2",
-                "area": {
-                    "x1": 921,
-                    "y1": 809,
-                    "x2": 1095,
-                    "y2": 839
-                }
-            },
-            {
-                "layer": "m3",
-                "area": {
-                    "x1": 1065,
-                    "y1": 809,
-                    "x2": 1095,
-                    "y2": 3111
-                }
-            },
-            {
-                "layer": "m2",
-                "area": {
-                    "x1": 1065,
-                    "y1": 3081,
-                    "x2": 1239,
-                    "y2": 3111
-                }
-            },
-            {
-                "layer": "m2",
-                "area": {
-                    "x1": 648,
-                    "y1": 3081,
-                    "x2": 1239,
-                    "y2": 3111
-                }
-            }
-        ],
-        "vias": []
-    },
-    {
-        "instance": "TraceNet",
-        "name": "VIN",
-        "cell": "COMP",
-        "named_cell": "U1_COMP",
-        "parent_cell": "",
-        "cell_chain": "UTOP_JNW_BKLE--U1_COMP",
-        "segments": [],
-        "vias": []
-    },
-    {
-        "instance": "TraceNet",
-        "name": "net2",
-        "cell": "COMP",
-        "named_cell": "U1_COMP",
-        "parent_cell": "",
-        "cell_chain": "UTOP_JNW_BKLE--U1_COMP",
-        "segments": [
-            {
-                "layer": "m3",
-                "area": {
-                    "x1": 922,
-                    "y1": 1482,
-                    "x2": 952,
-                    "y2": 2537
-                }
-            },
-            {
-                "layer": "m2",
-                "area": {
-                    "x1": 922,
-                    "y1": 1482,
-                    "x2": 1240,
-                    "y2": 1512
-                }
-            },
-            {
-                "layer": "m2",
-                "area": {
-                    "x1": 378,
-                    "y1": 1482,
-                    "x2": 1240,
-                    "y2": 1512
-                }
-            },
-            {
-                "layer": "m3",
-                "area": {
-                    "x1": 378,
-                    "y1": 1290,
-                    "x2": 408,
-                    "y2": 1512
-                }
-            },
-            {
-                "layer": "m2",
-                "area": {
-                    "x1": 378,
-                    "y1": 1290,
-                    "x2": 616,
-                    "y2": 1320
-                }
-            },
-            {
-                "layer": "m3",
-                "area": {
-                    "x1": 586,
-                    "y1": 922,
-                    "x2": 616,
-                    "y2": 1320
-                }
-            },
-            {
-                "layer": "m2",
-                "area": {
-                    "x1": 586,
-                    "y1": 922,
-                    "x2": 1240,
-                    "y2": 952
-                }
-            },
-            {
-                "layer": "m3",
-                "area": {
-                    "x1": 1210,
-                    "y1": 922,
-                    "x2": 1240,
-                    "y2": 1097
-                }
-            }
-        ],
-        "vias": []
-    },
-    {
-        "instance": "TraceNet",
-        "name": "VO",
-        "cell": "COMP",
-        "named_cell": "U1_COMP",
-        "parent_cell": "",
-        "cell_chain": "UTOP_JNW_BKLE--U1_COMP",
-        "segments": [
-            {
-                "layer": "m2",
-                "area": {
-                    "x1": 775,
-                    "y1": 1319,
-                    "x2": 934,
-                    "y2": 1349
-                }
-            },
-            {
-                "layer": "m3",
-                "area": {
-                    "x1": 775,
-                    "y1": 1319,
-                    "x2": 805,
-                    "y2": 2725
-                }
-            },
-            {
-                "layer": "m2",
-                "area": {
-                    "x1": 775,
-                    "y1": 2695,
-                    "x2": 949,
-                    "y2": 2725
-                }
-            },
-            {
-                "layer": "m3",
-                "area": {
-                    "x1": 919,
-                    "y1": 2695,
-                    "x2": 949,
-                    "y2": 2934
-                }
-            }
-        ],
-        "vias": []
-    },
-    {
-        "instance": "TraceNet",
-        "name": "net1",
-        "cell": "COMP",
-        "named_cell": "U1_COMP",
-        "parent_cell": "",
-        "cell_chain": "UTOP_JNW_BKLE--U1_COMP",
-        "segments": [
-            {
-                "layer": "m2",
-                "area": {
-                    "x1": 553,
-                    "y1": 2803,
-                    "x2": 1320,
-                    "y2": 2833
-                }
-            },
-            {
-                "layer": "m3",
-                "area": {
-                    "x1": 553,
-                    "y1": 2803,
-                    "x2": 583,
-                    "y2": 2961
-                }
-            },
-            {
-                "layer": "m2",
-                "area": {
-                    "x1": 553,
-                    "y1": 2931,
-                    "x2": 711,
-                    "y2": 2961
-                }
-            },
-            {
-                "layer": "m3",
-                "area": {
-                    "x1": 681,
-                    "y1": 2787,
-                    "x2": 711,
-                    "y2": 2961
-                }
-            },
-            {
-                "layer": "m2",
-                "area": {
-                    "x1": 681,
-                    "y1": 2787,
-                    "x2": 1191,
-                    "y2": 2817
-                }
-            },
-            {
-                "layer": "m3",
-                "area": {
-                    "x1": 1161,
-                    "y1": 2787,
-                    "x2": 1191,
-                    "y2": 2993
-                }
-            },
-            {
-                "layer": "m2",
-                "area": {
-                    "x1": 1161,
-                    "y1": 2963,
-                    "x2": 1383,
-                    "y2": 2993
-                }
-            },
-            {
-                "layer": "m3",
-                "area": {
-                    "x1": 1353,
-                    "y1": 2963,
-                    "x2": 1383,
-                    "y2": 3153
-                }
-            },
-            {
-                "layer": "m2",
-                "area": {
-                    "x1": 1353,
-                    "y1": 3123,
-                    "x2": 1527,
-                    "y2": 3153
-                }
-            },
-            {
-                "layer": "m3",
-                "area": {
-                    "x1": 1497,
-                    "y1": 3123,
-                    "x2": 1527,
-                    "y2": 3330
-                }
-            }
-        ],
-        "vias": []
-    },
-    {
-        "instance": "TraceNet",
-        "name": "net3",
-        "cell": "COMP",
-        "named_cell": "U1_COMP",
-        "parent_cell": "",
-        "cell_chain": "UTOP_JNW_BKLE--U1_COMP",
-        "segments": [
-            {
-                "layer": "m3",
-                "area": {
-                    "x1": 1499,
-                    "y1": 923,
-                    "x2": 1529,
-                    "y2": 2538
-                }
-            },
-            {
-                "layer": "m2",
-                "area": {
-                    "x1": 1499,
-                    "y1": 923,
-                    "x2": 1785,
-                    "y2": 953
-                }
-            },
-            {
-                "layer": "m3",
-                "area": {
-                    "x1": 1755,
-                    "y1": 523,
-                    "x2": 1785,
-                    "y2": 953
-                }
-            },
-            {
-                "layer": "m2",
-                "area": {
-                    "x1": 1211,
-                    "y1": 523,
-                    "x2": 1785,
-                    "y2": 553
-                }
-            },
-            {
-                "layer": "m3",
-                "area": {
-                    "x1": 1211,
-                    "y1": 523,
-                    "x2": 1241,
-                    "y2": 713
-                }
-            },
-            {
-                "layer": "m2",
-                "area": {
-                    "x1": 251,
-                    "y1": 683,
-                    "x2": 1241,
-                    "y2": 713
-                }
-            },
-            {
-                "layer": "m3",
-                "area": {
-                    "x1": 251,
-                    "y1": 683,
-                    "x2": 281,
-                    "y2": 1113
-                }
-            },
-            {
-                "layer": "m2",
-                "area": {
-                    "x1": 251,
-                    "y1": 1083,
-                    "x2": 394,
-                    "y2": 1113
-                }
-            }
-        ],
-        "vias": []
-    },
-    {
-        "instance": "TraceNet",
-        "name": "VIP",
-        "cell": "COMP",
-        "named_cell": "U1_COMP",
-        "parent_cell": "",
-        "cell_chain": "UTOP_JNW_BKLE--U1_COMP",
-        "segments": [],
-        "vias": []
     },
     {
         "instance": "TraceNet",
@@ -1775,10 +1374,10 @@
             {
                 "layer": "locali",
                 "area": {
-                    "x1": 1084,
-                    "y1": 1600,
-                    "x2": 1372,
-                    "y2": 1640
+                    "x1": 1148,
+                    "y1": 2000,
+                    "x2": 1436,
+                    "y2": 2040
                 }
             }
         ],
@@ -1795,10 +1394,10 @@
             {
                 "layer": "locali",
                 "area": {
-                    "x1": 1724,
-                    "y1": 1480,
-                    "x2": 1884,
-                    "y2": 1520
+                    "x1": 1788,
+                    "y1": 1880,
+                    "x2": 1948,
+                    "y2": 1920
                 }
             }
         ],
@@ -1815,10 +1414,10 @@
             {
                 "layer": "locali",
                 "area": {
-                    "x1": 252,
-                    "y1": 1600,
-                    "x2": 540,
-                    "y2": 1640
+                    "x1": 1980,
+                    "y1": 2000,
+                    "x2": 2268,
+                    "y2": 2040
                 }
             }
         ],
@@ -1835,9 +1434,9 @@
             {
                 "layer": "locali",
                 "area": {
-                    "x1": 252,
+                    "x1": 1980,
                     "y1": 800,
-                    "x2": 540,
+                    "x2": 2268,
                     "y2": 840
                 }
             }
@@ -1855,9 +1454,9 @@
             {
                 "layer": "locali",
                 "area": {
-                    "x1": 1084,
+                    "x1": 1148,
                     "y1": 800,
-                    "x2": 1372,
+                    "x2": 1436,
                     "y2": 840
                 }
             }
@@ -1875,9 +1474,9 @@
             {
                 "layer": "locali",
                 "area": {
-                    "x1": 1724,
+                    "x1": 1788,
                     "y1": 680,
-                    "x2": 1884,
+                    "x2": 1948,
                     "y2": 720
                 }
             }
@@ -1895,9 +1494,9 @@
             {
                 "layer": "locali",
                 "area": {
-                    "x1": 1084,
+                    "x1": 1980,
                     "y1": 3600,
-                    "x2": 1372,
+                    "x2": 2268,
                     "y2": 3640
                 }
             }
@@ -1915,9 +1514,9 @@
             {
                 "layer": "locali",
                 "area": {
-                    "x1": 508,
+                    "x1": 1404,
                     "y1": 3600,
-                    "x2": 796,
+                    "x2": 1692,
                     "y2": 3640
                 }
             }
@@ -1935,9 +1534,9 @@
             {
                 "layer": "locali",
                 "area": {
-                    "x1": 892,
+                    "x1": 1788,
                     "y1": 3480,
-                    "x2": 1052,
+                    "x2": 1948,
                     "y2": 3520
                 }
             }
@@ -1955,9 +1554,9 @@
             {
                 "layer": "locali",
                 "area": {
-                    "x1": 1084,
+                    "x1": 3132,
                     "y1": 3200,
-                    "x2": 1372,
+                    "x2": 3420,
                     "y2": 3240
                 }
             }
@@ -1975,9 +1574,9 @@
             {
                 "layer": "locali",
                 "area": {
-                    "x1": 1468,
+                    "x1": 3516,
                     "y1": 3080,
-                    "x2": 1628,
+                    "x2": 3676,
                     "y2": 3120
                 }
             }
@@ -1995,9 +1594,9 @@
             {
                 "layer": "locali",
                 "area": {
-                    "x1": 508,
+                    "x1": 252,
                     "y1": 3200,
-                    "x2": 796,
+                    "x2": 540,
                     "y2": 3240
                 }
             }
@@ -2015,9 +1614,9 @@
             {
                 "layer": "locali",
                 "area": {
-                    "x1": 1084,
+                    "x1": 1148,
                     "y1": 1200,
-                    "x2": 1372,
+                    "x2": 1436,
                     "y2": 1240
                 }
             }
@@ -2035,9 +1634,9 @@
             {
                 "layer": "locali",
                 "area": {
-                    "x1": 252,
+                    "x1": 1980,
                     "y1": 1200,
-                    "x2": 540,
+                    "x2": 2268,
                     "y2": 1240
                 }
             }
@@ -2046,7 +1645,7 @@
     },
     {
         "instance": "TraceNet",
-        "name": "MN1_MN2_B_VSS_RAIL_BOT",
+        "name": "MN1_MN2_B_VSS_RAIL_TOP/NO_RAIL_BOT",
         "cell": "COMP",
         "named_cell": "U1_COMP",
         "parent_cell": "JNW_BKLE",
@@ -2056,9 +1655,9 @@
                 "layer": "locali",
                 "area": {
                     "x1": 0,
-                    "y1": 2332,
-                    "x2": 2264,
-                    "y2": 2428
+                    "y1": 2572,
+                    "x2": 4056,
+                    "y2": 2668
                 }
             }
         ],
@@ -2067,25 +1666,25 @@
                 "layer": "locali-m1",
                 "area": {
                     "x1": 0,
-                    "y1": 2332,
+                    "y1": 2572,
                     "x2": 50,
-                    "y2": 2428
+                    "y2": 2668
                 }
             },
             {
                 "layer": "locali-m1",
                 "area": {
-                    "x1": 2214,
-                    "y1": 2332,
-                    "x2": 2264,
-                    "y2": 2428
+                    "x1": 4006,
+                    "y1": 2572,
+                    "x2": 4056,
+                    "y2": 2668
                 }
             }
         ]
     },
     {
         "instance": "TraceNet",
-        "name": "MP5_MP6_B_VDD_RAIL_TOP",
+        "name": "MP5_MP6_B_VDD_RAIL_BOT/NO_RAIL_TOP",
         "cell": "COMP",
         "named_cell": "U1_COMP",
         "parent_cell": "JNW_BKLE",
@@ -2095,9 +1694,9 @@
                 "layer": "locali",
                 "area": {
                     "x1": 100,
-                    "y1": 1772,
-                    "x2": 2164,
-                    "y2": 1868
+                    "y1": 1532,
+                    "x2": 3956,
+                    "y2": 1628
                 }
             }
         ],
@@ -2106,18 +1705,18 @@
                 "layer": "locali-m1",
                 "area": {
                     "x1": 100,
-                    "y1": 1772,
+                    "y1": 1532,
                     "x2": 150,
-                    "y2": 1868
+                    "y2": 1628
                 }
             },
             {
                 "layer": "locali-m1",
                 "area": {
-                    "x1": 2114,
-                    "y1": 1772,
-                    "x2": 2164,
-                    "y2": 1868
+                    "x1": 3906,
+                    "y1": 1532,
+                    "x2": 3956,
+                    "y2": 1628
                 }
             }
         ]
@@ -2135,7 +1734,7 @@
                 "area": {
                     "x1": 100,
                     "y1": 332,
-                    "x2": 2164,
+                    "x2": 3956,
                     "y2": 428
                 }
             }
@@ -2153,9 +1752,9 @@
             {
                 "layer": "locali-m1",
                 "area": {
-                    "x1": 2114,
+                    "x1": 3906,
                     "y1": 332,
-                    "x2": 2164,
+                    "x2": 3956,
                     "y2": 428
                 }
             }
@@ -2163,7 +1762,7 @@
     },
     {
         "instance": "TraceNet",
-        "name": "MN4_MN3_B_VSS_RAIL_TOP",
+        "name": "MN4_MN3_B_VSS_RAIL_TOP/NO_RAIL_BOT",
         "cell": "COMP",
         "named_cell": "U1_COMP",
         "parent_cell": "JNW_BKLE",
@@ -2174,7 +1773,7 @@
                 "area": {
                     "x1": 0,
                     "y1": 3772,
-                    "x2": 2264,
+                    "x2": 4056,
                     "y2": 3868
                 }
             }
@@ -2192,9 +1791,9 @@
             {
                 "layer": "locali-m1",
                 "area": {
-                    "x1": 2214,
+                    "x1": 4006,
                     "y1": 3772,
-                    "x2": 2264,
+                    "x2": 4056,
                     "y2": 3868
                 }
             }
@@ -2202,28 +1801,1514 @@
     },
     {
         "instance": "TraceNet",
-        "name": "VSS_CONNETION",
+        "name": "MN5_MN6_B_VSS_RAIL_BOT/NO_RAIL_TOP",
         "cell": "COMP",
         "named_cell": "U1_COMP",
         "parent_cell": "JNW_BKLE",
         "cell_chain": "UTOP_JNW_BKLE--U1_COMP",
         "segments": [
             {
-                "layer": "m1",
+                "layer": "locali",
                 "area": {
                     "x1": 0,
-                    "y1": -4200,
+                    "y1": 2732,
+                    "x2": 4056,
+                    "y2": 2828
+                }
+            }
+        ],
+        "vias": [
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 0,
+                    "y1": 2732,
                     "x2": 50,
-                    "y2": 4200
+                    "y2": 2828
+                }
+            },
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 4006,
+                    "y1": 2732,
+                    "x2": 4056,
+                    "y2": 2828
+                }
+            }
+        ]
+    },
+    {
+        "instance": "TraceNet",
+        "name": "MP3_MP4_B_VDD_RAIL_TOP",
+        "cell": "COMP",
+        "named_cell": "U1_COMP",
+        "parent_cell": "JNW_BKLE",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP",
+        "segments": [
+            {
+                "layer": "locali",
+                "area": {
+                    "x1": 100,
+                    "y1": 1372,
+                    "x2": 3956,
+                    "y2": 1468
+                }
+            }
+        ],
+        "vias": [
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 100,
+                    "y1": 1372,
+                    "x2": 150,
+                    "y2": 1468
+                }
+            },
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 3906,
+                    "y1": 1372,
+                    "x2": 3956,
+                    "y2": 1468
+                }
+            }
+        ]
+    },
+    {
+        "instance": "Pin",
+        "number_id": 23,
+        "cell": "COMP2",
+        "named_cell": "U2_COMP2",
+        "parent_cell": "COMP",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP--U2_COMP2",
+        "type": "ipin",
+        "name": "VSS",
+        "layout": {
+            "layer": "locali",
+            "area": {
+                "x1": 0,
+                "y1": 4750,
+                "x2": 3104,
+                "y2": 4800
+            }
+        }
+    },
+    {
+        "instance": "Pin",
+        "number_id": 24,
+        "cell": "COMP2",
+        "named_cell": "U2_COMP2",
+        "parent_cell": "COMP",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP--U2_COMP2",
+        "type": "ipin",
+        "name": "VDD",
+        "layout": {
+            "layer": "locali",
+            "area": {
+                "x1": 100,
+                "y1": 4650,
+                "x2": 3004,
+                "y2": 4700
+            }
+        }
+    },
+    {
+        "instance": "Pin",
+        "number_id": 25,
+        "cell": "COMP2",
+        "named_cell": "U2_COMP2",
+        "parent_cell": "COMP",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP--U2_COMP2",
+        "type": "ipin",
+        "name": "VIP",
+        "layout": ""
+    },
+    {
+        "instance": "Pin",
+        "number_id": 26,
+        "cell": "COMP2",
+        "named_cell": "U2_COMP2",
+        "parent_cell": "COMP",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP--U2_COMP2",
+        "type": "ipin",
+        "name": "VIN",
+        "layout": ""
+    },
+    {
+        "instance": "Pin",
+        "number_id": 27,
+        "cell": "COMP2",
+        "named_cell": "U2_COMP2",
+        "parent_cell": "COMP",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP--U2_COMP2",
+        "type": "opin",
+        "name": "VO",
+        "layout": ""
+    },
+    {
+        "instance": "Pin",
+        "number_id": 28,
+        "cell": "COMP2",
+        "named_cell": "U2_COMP2",
+        "parent_cell": "COMP",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP--U2_COMP2",
+        "type": "ipin",
+        "name": "I_BIAS",
+        "layout": ""
+    },
+    {
+        "instance": "Pin",
+        "number_id": 29,
+        "cell": "COMP2",
+        "named_cell": "U2_COMP2",
+        "parent_cell": "COMP",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP--U2_COMP2",
+        "type": "ipin",
+        "name": "AVDD",
+        "layout": {
+            "layer": "locali",
+            "area": {
+                "x1": 200,
+                "y1": 4550,
+                "x2": 2904,
+                "y2": 4600
+            }
+        }
+    },
+    {
+        "instance": "Transistor",
+        "number_id": 30,
+        "name": "MN1",
+        "type": "nmos",
+        "cell": "COMP2",
+        "named_cell": "U2_COMP2",
+        "parent_cell": "COMP",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP--U2_COMP2",
+        "group": "diff1",
+        "schematic_connections": {
+            "D": "net3",
+            "G": "VIP",
+            "S": "net1",
+            "B": "VSS"
+        },
+        "layout_name": "JNWATR_NCH_4C5F0",
+        "layout_library": "JNW_ATR_SKY130A",
+        "layout_ports": [
+            {
+                "type": "G",
+                "layer": "m1",
+                "area": {
+                    "x1": 80,
+                    "y1": 180,
+                    "x2": 112,
+                    "y2": 220
+                }
+            },
+            {
+                "type": "S",
+                "layer": "m1",
+                "area": {
+                    "x1": 144,
+                    "y1": 300,
+                    "x2": 240,
+                    "y2": 340
+                }
+            },
+            {
+                "type": "B",
+                "layer": "locali",
+                "area": {
+                    "x1": -48,
+                    "y1": 180,
+                    "x2": 48,
+                    "y2": 220
+                }
+            },
+            {
+                "type": "D",
+                "layer": "m1",
+                "area": {
+                    "x1": 336,
+                    "y1": 20,
+                    "x2": 432,
+                    "y2": 60
+                }
+            }
+        ],
+        "transform_matrix": {
+            "a": 1,
+            "b": 0,
+            "c": 400,
+            "d": 0,
+            "e": 1,
+            "f": 1400
+        },
+        "bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 576,
+            "y2": 400
+        },
+        "overlap_distance": {
+            "x": 92,
+            "y": 64
+        },
+        "group_endpoint": "rail_bot",
+        "group_endpoint_bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 576,
+            "y2": 240
+        }
+    },
+    {
+        "instance": "Transistor",
+        "number_id": 31,
+        "name": "MN2",
+        "type": "nmos",
+        "cell": "COMP2",
+        "named_cell": "U2_COMP2",
+        "parent_cell": "COMP",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP--U2_COMP2",
+        "group": "diff1",
+        "schematic_connections": {
+            "D": "net2",
+            "G": "VIN",
+            "S": "net1",
+            "B": "VSS"
+        },
+        "layout_name": "JNWATR_NCH_4C5F0",
+        "layout_library": "JNW_ATR_SKY130A",
+        "layout_ports": [
+            {
+                "type": "G",
+                "layer": "m1",
+                "area": {
+                    "x1": 80,
+                    "y1": 180,
+                    "x2": 112,
+                    "y2": 220
+                }
+            },
+            {
+                "type": "S",
+                "layer": "m1",
+                "area": {
+                    "x1": 144,
+                    "y1": 300,
+                    "x2": 240,
+                    "y2": 340
+                }
+            },
+            {
+                "type": "B",
+                "layer": "locali",
+                "area": {
+                    "x1": -48,
+                    "y1": 180,
+                    "x2": 48,
+                    "y2": 220
+                }
+            },
+            {
+                "type": "D",
+                "layer": "m1",
+                "area": {
+                    "x1": 336,
+                    "y1": 20,
+                    "x2": 432,
+                    "y2": 60
+                }
+            }
+        ],
+        "transform_matrix": {
+            "a": 1,
+            "b": 0,
+            "c": 2128,
+            "d": 0,
+            "e": 1,
+            "f": 1400
+        },
+        "bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 576,
+            "y2": 400
+        },
+        "overlap_distance": {
+            "x": 92,
+            "y": 64
+        },
+        "group_endpoint": "rail_bot",
+        "group_endpoint_bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 576,
+            "y2": 240
+        }
+    },
+    {
+        "instance": "Transistor",
+        "number_id": 32,
+        "name": "MP5",
+        "type": "pmos",
+        "cell": "COMP2",
+        "named_cell": "U2_COMP2",
+        "parent_cell": "COMP",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP--U2_COMP2",
+        "group": "load1",
+        "schematic_connections": {
+            "D": "net2",
+            "G": "net2",
+            "S": "VDD",
+            "B": "VDD"
+        },
+        "layout_name": "JNWATR_PCH_4C5F0",
+        "layout_library": "JNW_ATR_SKY130A",
+        "layout_ports": [
+            {
+                "type": "G",
+                "layer": "m1",
+                "area": {
+                    "x1": 80,
+                    "y1": 180,
+                    "x2": 112,
+                    "y2": 220
+                }
+            },
+            {
+                "type": "S",
+                "layer": "m1",
+                "area": {
+                    "x1": 144,
+                    "y1": 300,
+                    "x2": 240,
+                    "y2": 340
+                }
+            },
+            {
+                "type": "B",
+                "layer": "locali",
+                "area": {
+                    "x1": -48,
+                    "y1": 180,
+                    "x2": 48,
+                    "y2": 220
+                }
+            },
+            {
+                "type": "D",
+                "layer": "m1",
+                "area": {
+                    "x1": 336,
+                    "y1": 20,
+                    "x2": 432,
+                    "y2": 60
+                }
+            }
+        ],
+        "transform_matrix": {
+            "a": 1,
+            "b": 0,
+            "c": 400,
+            "d": 0,
+            "e": 1,
+            "f": 3800
+        },
+        "bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 576,
+            "y2": 400
+        },
+        "overlap_distance": {
+            "x": 92,
+            "y": 64
+        },
+        "group_endpoint": "rail_top",
+        "group_endpoint_bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 576,
+            "y2": 240
+        }
+    },
+    {
+        "instance": "Transistor",
+        "number_id": 33,
+        "name": "MP6",
+        "type": "pmos",
+        "cell": "COMP2",
+        "named_cell": "U2_COMP2",
+        "parent_cell": "COMP",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP--U2_COMP2",
+        "group": "load1",
+        "schematic_connections": {
+            "D": "VO",
+            "G": "net2",
+            "S": "VDD",
+            "B": "VDD"
+        },
+        "layout_name": "JNWATR_PCH_4C5F0",
+        "layout_library": "JNW_ATR_SKY130A",
+        "layout_ports": [
+            {
+                "type": "G",
+                "layer": "m1",
+                "area": {
+                    "x1": 80,
+                    "y1": 180,
+                    "x2": 112,
+                    "y2": 220
+                }
+            },
+            {
+                "type": "S",
+                "layer": "m1",
+                "area": {
+                    "x1": 144,
+                    "y1": 300,
+                    "x2": 240,
+                    "y2": 340
+                }
+            },
+            {
+                "type": "B",
+                "layer": "locali",
+                "area": {
+                    "x1": -48,
+                    "y1": 180,
+                    "x2": 48,
+                    "y2": 220
+                }
+            },
+            {
+                "type": "D",
+                "layer": "m1",
+                "area": {
+                    "x1": 336,
+                    "y1": 20,
+                    "x2": 432,
+                    "y2": 60
+                }
+            }
+        ],
+        "transform_matrix": {
+            "a": 1,
+            "b": 0,
+            "c": 2128,
+            "d": 0,
+            "e": 1,
+            "f": 3800
+        },
+        "bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 576,
+            "y2": 400
+        },
+        "overlap_distance": {
+            "x": 92,
+            "y": 64
+        },
+        "group_endpoint": "rail_top",
+        "group_endpoint_bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 576,
+            "y2": 240
+        }
+    },
+    {
+        "instance": "Transistor",
+        "number_id": 34,
+        "name": "MP1",
+        "type": "pmos",
+        "cell": "COMP2",
+        "named_cell": "U2_COMP2",
+        "parent_cell": "COMP",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP--U2_COMP2",
+        "group": "load1",
+        "schematic_connections": {
+            "D": "net4",
+            "G": "net3",
+            "S": "VDD",
+            "B": "VDD"
+        },
+        "layout_name": "JNWATR_PCH_4C5F0",
+        "layout_library": "JNW_ATR_SKY130A",
+        "layout_ports": [
+            {
+                "type": "G",
+                "layer": "m1",
+                "area": {
+                    "x1": 80,
+                    "y1": 180,
+                    "x2": 112,
+                    "y2": 220
+                }
+            },
+            {
+                "type": "S",
+                "layer": "m1",
+                "area": {
+                    "x1": 144,
+                    "y1": 300,
+                    "x2": 240,
+                    "y2": 340
+                }
+            },
+            {
+                "type": "B",
+                "layer": "locali",
+                "area": {
+                    "x1": -48,
+                    "y1": 180,
+                    "x2": 48,
+                    "y2": 220
+                }
+            },
+            {
+                "type": "D",
+                "layer": "m1",
+                "area": {
+                    "x1": 336,
+                    "y1": 20,
+                    "x2": 432,
+                    "y2": 60
+                }
+            }
+        ],
+        "transform_matrix": {
+            "a": 1,
+            "b": 0,
+            "c": 400,
+            "d": 0,
+            "e": 1,
+            "f": 3000
+        },
+        "bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 576,
+            "y2": 400
+        },
+        "overlap_distance": {
+            "x": 92,
+            "y": 64
+        },
+        "group_endpoint": "rail_bot",
+        "group_endpoint_bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 576,
+            "y2": 240
+        }
+    },
+    {
+        "instance": "Transistor",
+        "number_id": 35,
+        "name": "MP2",
+        "type": "pmos",
+        "cell": "COMP2",
+        "named_cell": "U2_COMP2",
+        "parent_cell": "COMP",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP--U2_COMP2",
+        "group": "load1",
+        "schematic_connections": {
+            "D": "net3",
+            "G": "net3",
+            "S": "VDD",
+            "B": "VDD"
+        },
+        "layout_name": "JNWATR_PCH_4C5F0",
+        "layout_library": "JNW_ATR_SKY130A",
+        "layout_ports": [
+            {
+                "type": "G",
+                "layer": "m1",
+                "area": {
+                    "x1": 80,
+                    "y1": 180,
+                    "x2": 112,
+                    "y2": 220
+                }
+            },
+            {
+                "type": "S",
+                "layer": "m1",
+                "area": {
+                    "x1": 144,
+                    "y1": 300,
+                    "x2": 240,
+                    "y2": 340
+                }
+            },
+            {
+                "type": "B",
+                "layer": "locali",
+                "area": {
+                    "x1": -48,
+                    "y1": 180,
+                    "x2": 48,
+                    "y2": 220
+                }
+            },
+            {
+                "type": "D",
+                "layer": "m1",
+                "area": {
+                    "x1": 336,
+                    "y1": 20,
+                    "x2": 432,
+                    "y2": 60
+                }
+            }
+        ],
+        "transform_matrix": {
+            "a": 1,
+            "b": 0,
+            "c": 2128,
+            "d": 0,
+            "e": 1,
+            "f": 3000
+        },
+        "bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 576,
+            "y2": 400
+        },
+        "overlap_distance": {
+            "x": 92,
+            "y": 64
+        },
+        "group_endpoint": "rail_bot",
+        "group_endpoint_bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 576,
+            "y2": 240
+        }
+    },
+    {
+        "instance": "Transistor",
+        "number_id": 36,
+        "name": "MN4",
+        "type": "nmos",
+        "cell": "COMP2",
+        "named_cell": "U2_COMP2",
+        "parent_cell": "COMP",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP--U2_COMP2",
+        "group": "mirror2",
+        "schematic_connections": {
+            "D": "net1",
+            "G": "I_BIAS",
+            "S": "VSS",
+            "B": "VSS"
+        },
+        "layout_name": "JNWATR_NCH_4C5F0",
+        "layout_library": "JNW_ATR_SKY130A",
+        "layout_ports": [
+            {
+                "type": "G",
+                "layer": "m1",
+                "area": {
+                    "x1": 80,
+                    "y1": 180,
+                    "x2": 112,
+                    "y2": 220
+                }
+            },
+            {
+                "type": "S",
+                "layer": "m1",
+                "area": {
+                    "x1": 144,
+                    "y1": 300,
+                    "x2": 240,
+                    "y2": 340
+                }
+            },
+            {
+                "type": "B",
+                "layer": "locali",
+                "area": {
+                    "x1": -48,
+                    "y1": 180,
+                    "x2": 48,
+                    "y2": 220
+                }
+            },
+            {
+                "type": "D",
+                "layer": "m1",
+                "area": {
+                    "x1": 336,
+                    "y1": 20,
+                    "x2": 432,
+                    "y2": 60
+                }
+            }
+        ],
+        "transform_matrix": {
+            "a": 1,
+            "b": 0,
+            "c": 400,
+            "d": 0,
+            "e": 1,
+            "f": 600
+        },
+        "bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 576,
+            "y2": 400
+        },
+        "overlap_distance": {
+            "x": 92,
+            "y": 64
+        },
+        "group_endpoint": "rail_top/bot",
+        "group_endpoint_bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 576,
+            "y2": 240
+        }
+    },
+    {
+        "instance": "Transistor",
+        "number_id": 37,
+        "name": "MN3",
+        "type": "nmos",
+        "cell": "COMP2",
+        "named_cell": "U2_COMP2",
+        "parent_cell": "COMP",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP--U2_COMP2",
+        "group": "mirror2",
+        "schematic_connections": {
+            "D": "I_BIAS",
+            "G": "I_BIAS",
+            "S": "VSS",
+            "B": "VSS"
+        },
+        "layout_name": "JNWATR_NCH_4C5F0",
+        "layout_library": "JNW_ATR_SKY130A",
+        "layout_ports": [
+            {
+                "type": "G",
+                "layer": "m1",
+                "area": {
+                    "x1": 80,
+                    "y1": 180,
+                    "x2": 112,
+                    "y2": 220
+                }
+            },
+            {
+                "type": "S",
+                "layer": "m1",
+                "area": {
+                    "x1": 144,
+                    "y1": 300,
+                    "x2": 240,
+                    "y2": 340
+                }
+            },
+            {
+                "type": "B",
+                "layer": "locali",
+                "area": {
+                    "x1": -48,
+                    "y1": 180,
+                    "x2": 48,
+                    "y2": 220
+                }
+            },
+            {
+                "type": "D",
+                "layer": "m1",
+                "area": {
+                    "x1": 336,
+                    "y1": 20,
+                    "x2": 432,
+                    "y2": 60
+                }
+            }
+        ],
+        "transform_matrix": {
+            "a": 1,
+            "b": 0,
+            "c": 2128,
+            "d": 0,
+            "e": 1,
+            "f": 600
+        },
+        "bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 576,
+            "y2": 400
+        },
+        "overlap_distance": {
+            "x": 92,
+            "y": 64
+        },
+        "group_endpoint": "rail_top/bot",
+        "group_endpoint_bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 576,
+            "y2": 240
+        }
+    },
+    {
+        "instance": "Transistor",
+        "number_id": 38,
+        "name": "MN5",
+        "type": "nmos",
+        "cell": "COMP2",
+        "named_cell": "U2_COMP2",
+        "parent_cell": "COMP",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP--U2_COMP2",
+        "group": "mirror1",
+        "schematic_connections": {
+            "D": "net4",
+            "G": "net4",
+            "S": "VSS",
+            "B": "VSS"
+        },
+        "layout_name": "JNWATR_NCH_4C5F0",
+        "layout_library": "JNW_ATR_SKY130A",
+        "layout_ports": [
+            {
+                "type": "G",
+                "layer": "m1",
+                "area": {
+                    "x1": 80,
+                    "y1": 180,
+                    "x2": 112,
+                    "y2": 220
+                }
+            },
+            {
+                "type": "S",
+                "layer": "m1",
+                "area": {
+                    "x1": 144,
+                    "y1": 300,
+                    "x2": 240,
+                    "y2": 340
+                }
+            },
+            {
+                "type": "B",
+                "layer": "locali",
+                "area": {
+                    "x1": -48,
+                    "y1": 180,
+                    "x2": 48,
+                    "y2": 220
+                }
+            },
+            {
+                "type": "D",
+                "layer": "m1",
+                "area": {
+                    "x1": 336,
+                    "y1": 20,
+                    "x2": 432,
+                    "y2": 60
+                }
+            }
+        ],
+        "transform_matrix": {
+            "a": 1,
+            "b": 0,
+            "c": 400,
+            "d": 0,
+            "e": 1,
+            "f": 1800
+        },
+        "bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 576,
+            "y2": 400
+        },
+        "overlap_distance": {
+            "x": 92,
+            "y": 64
+        },
+        "group_endpoint": "rail_top",
+        "group_endpoint_bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 576,
+            "y2": 240
+        }
+    },
+    {
+        "instance": "Transistor",
+        "number_id": 39,
+        "name": "MN6",
+        "type": "nmos",
+        "cell": "COMP2",
+        "named_cell": "U2_COMP2",
+        "parent_cell": "COMP",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP--U2_COMP2",
+        "group": "mirror1",
+        "schematic_connections": {
+            "D": "VO",
+            "G": "net4",
+            "S": "VSS",
+            "B": "VSS"
+        },
+        "layout_name": "JNWATR_NCH_4C5F0",
+        "layout_library": "JNW_ATR_SKY130A",
+        "layout_ports": [
+            {
+                "type": "G",
+                "layer": "m1",
+                "area": {
+                    "x1": 80,
+                    "y1": 180,
+                    "x2": 112,
+                    "y2": 220
+                }
+            },
+            {
+                "type": "S",
+                "layer": "m1",
+                "area": {
+                    "x1": 144,
+                    "y1": 300,
+                    "x2": 240,
+                    "y2": 340
+                }
+            },
+            {
+                "type": "B",
+                "layer": "locali",
+                "area": {
+                    "x1": -48,
+                    "y1": 180,
+                    "x2": 48,
+                    "y2": 220
+                }
+            },
+            {
+                "type": "D",
+                "layer": "m1",
+                "area": {
+                    "x1": 336,
+                    "y1": 20,
+                    "x2": 432,
+                    "y2": 60
+                }
+            }
+        ],
+        "transform_matrix": {
+            "a": 1,
+            "b": 0,
+            "c": 2128,
+            "d": 0,
+            "e": 1,
+            "f": 1800
+        },
+        "bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 576,
+            "y2": 400
+        },
+        "overlap_distance": {
+            "x": 92,
+            "y": 64
+        },
+        "group_endpoint": "rail_top",
+        "group_endpoint_bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 576,
+            "y2": 240
+        }
+    },
+    {
+        "instance": "Transistor",
+        "number_id": 40,
+        "name": "MP3",
+        "type": "pmos",
+        "cell": "COMP2",
+        "named_cell": "U2_COMP2",
+        "parent_cell": "COMP",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP--U2_COMP2",
+        "group": "load1",
+        "schematic_connections": {
+            "D": "net3",
+            "G": "net2",
+            "S": "VDD",
+            "B": "VDD"
+        },
+        "layout_name": "JNWATR_PCH_4C5F0",
+        "layout_library": "JNW_ATR_SKY130A",
+        "layout_ports": [
+            {
+                "type": "G",
+                "layer": "m1",
+                "area": {
+                    "x1": 80,
+                    "y1": 180,
+                    "x2": 112,
+                    "y2": 220
+                }
+            },
+            {
+                "type": "S",
+                "layer": "m1",
+                "area": {
+                    "x1": 144,
+                    "y1": 300,
+                    "x2": 240,
+                    "y2": 340
+                }
+            },
+            {
+                "type": "B",
+                "layer": "locali",
+                "area": {
+                    "x1": -48,
+                    "y1": 180,
+                    "x2": 48,
+                    "y2": 220
+                }
+            },
+            {
+                "type": "D",
+                "layer": "m1",
+                "area": {
+                    "x1": 336,
+                    "y1": 20,
+                    "x2": 432,
+                    "y2": 60
+                }
+            }
+        ],
+        "transform_matrix": {
+            "a": 1,
+            "b": 0,
+            "c": 400,
+            "d": 0,
+            "e": 1,
+            "f": 3400
+        },
+        "bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 576,
+            "y2": 400
+        },
+        "overlap_distance": {
+            "x": 92,
+            "y": 64
+        },
+        "group_endpoint": "",
+        "group_endpoint_bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 576,
+            "y2": 240
+        }
+    },
+    {
+        "instance": "Transistor",
+        "number_id": 41,
+        "name": "MP4",
+        "type": "pmos",
+        "cell": "COMP2",
+        "named_cell": "U2_COMP2",
+        "parent_cell": "COMP",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP--U2_COMP2",
+        "group": "load1",
+        "schematic_connections": {
+            "D": "net2",
+            "G": "net3",
+            "S": "VDD",
+            "B": "VDD"
+        },
+        "layout_name": "JNWATR_PCH_4C5F0",
+        "layout_library": "JNW_ATR_SKY130A",
+        "layout_ports": [
+            {
+                "type": "G",
+                "layer": "m1",
+                "area": {
+                    "x1": 80,
+                    "y1": 180,
+                    "x2": 112,
+                    "y2": 220
+                }
+            },
+            {
+                "type": "S",
+                "layer": "m1",
+                "area": {
+                    "x1": 144,
+                    "y1": 300,
+                    "x2": 240,
+                    "y2": 340
+                }
+            },
+            {
+                "type": "B",
+                "layer": "locali",
+                "area": {
+                    "x1": -48,
+                    "y1": 180,
+                    "x2": 48,
+                    "y2": 220
+                }
+            },
+            {
+                "type": "D",
+                "layer": "m1",
+                "area": {
+                    "x1": 336,
+                    "y1": 20,
+                    "x2": 432,
+                    "y2": 60
+                }
+            }
+        ],
+        "transform_matrix": {
+            "a": 1,
+            "b": 0,
+            "c": 2128,
+            "d": 0,
+            "e": 1,
+            "f": 3400
+        },
+        "bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 576,
+            "y2": 400
+        },
+        "overlap_distance": {
+            "x": 92,
+            "y": 64
+        },
+        "group_endpoint": "",
+        "group_endpoint_bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 576,
+            "y2": 240
+        }
+    },
+    {
+        "instance": "CircuitCell",
+        "number_id": 2,
+        "name": "U2",
+        "cell": "COMP2",
+        "named_cell": "U2_COMP2",
+        "parent_cell": "COMP",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP--U2_COMP2",
+        "group": null,
+        "schematic_connections": {
+            "VDD": "VDD",
+            "VIN": "VO",
+            "VIP": "VO",
+            "VO": "VIP",
+            "I_BIAS": "I_BIAS",
+            "VSS": "VSS"
+        },
+        "transform_matrix": {
+            "a": 1,
+            "b": 0,
+            "c": 4106,
+            "d": 0,
+            "e": 1,
+            "f": 0
+        },
+        "bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 3154,
+            "y2": 4850
+        }
+    },
+    {
+        "instance": "TraceNet",
+        "name": "AVDD",
+        "cell": "COMP2",
+        "named_cell": "U2_COMP2",
+        "parent_cell": "COMP",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP--U2_COMP2",
+        "segments": [
+            {
+                "layer": "locali",
+                "area": {
+                    "x1": 200,
+                    "y1": 4550,
+                    "x2": 2904,
+                    "y2": 4600
+                }
+            },
+            {
+                "layer": "locali",
+                "area": {
+                    "x1": 200,
+                    "y1": 200,
+                    "x2": 2904,
+                    "y2": 250
                 }
             },
             {
                 "layer": "m1",
                 "area": {
-                    "x1": 2214,
-                    "y1": -4200,
-                    "x2": 2264,
-                    "y2": 4200
+                    "x1": 200,
+                    "y1": 250,
+                    "x2": 250,
+                    "y2": 4550
+                }
+            },
+            {
+                "layer": "m1",
+                "area": {
+                    "x1": 2854,
+                    "y1": 250,
+                    "x2": 2904,
+                    "y2": 4550
+                }
+            }
+        ],
+        "vias": [
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 200,
+                    "y1": 4550,
+                    "x2": 250,
+                    "y2": 4600
+                }
+            },
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 200,
+                    "y1": 200,
+                    "x2": 250,
+                    "y2": 250
+                }
+            },
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 2854,
+                    "y1": 4550,
+                    "x2": 2904,
+                    "y2": 4600
+                }
+            },
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 2854,
+                    "y1": 200,
+                    "x2": 2904,
+                    "y2": 250
+                }
+            }
+        ]
+    },
+    {
+        "instance": "TraceNet",
+        "name": "VDD",
+        "cell": "COMP2",
+        "named_cell": "U2_COMP2",
+        "parent_cell": "COMP",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP--U2_COMP2",
+        "segments": [
+            {
+                "layer": "locali",
+                "area": {
+                    "x1": 100,
+                    "y1": 4650,
+                    "x2": 3004,
+                    "y2": 4700
+                }
+            },
+            {
+                "layer": "locali",
+                "area": {
+                    "x1": 100,
+                    "y1": 100,
+                    "x2": 3004,
+                    "y2": 150
+                }
+            },
+            {
+                "layer": "m1",
+                "area": {
+                    "x1": 100,
+                    "y1": 150,
+                    "x2": 150,
+                    "y2": 4650
+                }
+            },
+            {
+                "layer": "m1",
+                "area": {
+                    "x1": 2954,
+                    "y1": 150,
+                    "x2": 3004,
+                    "y2": 4650
+                }
+            }
+        ],
+        "vias": [
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 100,
+                    "y1": 4650,
+                    "x2": 150,
+                    "y2": 4700
+                }
+            },
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 100,
+                    "y1": 100,
+                    "x2": 150,
+                    "y2": 150
+                }
+            },
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 2954,
+                    "y1": 4650,
+                    "x2": 3004,
+                    "y2": 4700
+                }
+            },
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 2954,
+                    "y1": 100,
+                    "x2": 3004,
+                    "y2": 150
+                }
+            }
+        ]
+    },
+    {
+        "instance": "TraceNet",
+        "name": "VSS",
+        "cell": "COMP2",
+        "named_cell": "U2_COMP2",
+        "parent_cell": "COMP",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP--U2_COMP2",
+        "segments": [
+            {
+                "layer": "locali",
+                "area": {
+                    "x1": 0,
+                    "y1": 4750,
+                    "x2": 3104,
+                    "y2": 4800
+                }
+            },
+            {
+                "layer": "locali",
+                "area": {
+                    "x1": 0,
+                    "y1": 0,
+                    "x2": 3104,
+                    "y2": 50
+                }
+            },
+            {
+                "layer": "m1",
+                "area": {
+                    "x1": 0,
+                    "y1": 50,
+                    "x2": 50,
+                    "y2": 4750
+                }
+            },
+            {
+                "layer": "m1",
+                "area": {
+                    "x1": 3054,
+                    "y1": 50,
+                    "x2": 3104,
+                    "y2": 4750
+                }
+            }
+        ],
+        "vias": [
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 0,
+                    "y1": 4750,
+                    "x2": 50,
+                    "y2": 4800
+                }
+            },
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 0,
+                    "y1": 0,
+                    "x2": 50,
+                    "y2": 50
+                }
+            },
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 3054,
+                    "y1": 4750,
+                    "x2": 3104,
+                    "y2": 4800
+                }
+            },
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 3054,
+                    "y1": 0,
+                    "x2": 3104,
+                    "y2": 50
+                }
+            }
+        ]
+    },
+    {
+        "instance": "TraceNet",
+        "name": "MP5_B_S",
+        "cell": "COMP2",
+        "named_cell": "U2_COMP2",
+        "parent_cell": "COMP",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP--U2_COMP2",
+        "segments": [
+            {
+                "layer": "locali",
+                "area": {
+                    "x1": 352,
+                    "y1": 4100,
+                    "x2": 640,
+                    "y2": 4140
                 }
             }
         ],
@@ -2231,31 +3316,702 @@
     },
     {
         "instance": "TraceNet",
-        "name": "VDD_CONNETION",
-        "cell": "COMP",
-        "named_cell": "U1_COMP",
-        "parent_cell": "JNW_BKLE",
-        "cell_chain": "UTOP_JNW_BKLE--U1_COMP",
+        "name": "MP5_G_D",
+        "cell": "COMP2",
+        "named_cell": "U2_COMP2",
+        "parent_cell": "COMP",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP--U2_COMP2",
         "segments": [
             {
-                "layer": "m1",
+                "layer": "locali",
+                "area": {
+                    "x1": 736,
+                    "y1": 3980,
+                    "x2": 896,
+                    "y2": 4020
+                }
+            }
+        ],
+        "vias": []
+    },
+    {
+        "instance": "TraceNet",
+        "name": "MP6_B_S",
+        "cell": "COMP2",
+        "named_cell": "U2_COMP2",
+        "parent_cell": "COMP",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP--U2_COMP2",
+        "segments": [
+            {
+                "layer": "locali",
+                "area": {
+                    "x1": 2080,
+                    "y1": 4100,
+                    "x2": 2368,
+                    "y2": 4140
+                }
+            }
+        ],
+        "vias": []
+    },
+    {
+        "instance": "TraceNet",
+        "name": "MP1_B_S",
+        "cell": "COMP2",
+        "named_cell": "U2_COMP2",
+        "parent_cell": "COMP",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP--U2_COMP2",
+        "segments": [
+            {
+                "layer": "locali",
+                "area": {
+                    "x1": 352,
+                    "y1": 3300,
+                    "x2": 640,
+                    "y2": 3340
+                }
+            }
+        ],
+        "vias": []
+    },
+    {
+        "instance": "TraceNet",
+        "name": "MP2_B_S",
+        "cell": "COMP2",
+        "named_cell": "U2_COMP2",
+        "parent_cell": "COMP",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP--U2_COMP2",
+        "segments": [
+            {
+                "layer": "locali",
+                "area": {
+                    "x1": 2080,
+                    "y1": 3300,
+                    "x2": 2368,
+                    "y2": 3340
+                }
+            }
+        ],
+        "vias": []
+    },
+    {
+        "instance": "TraceNet",
+        "name": "MP2_G_D",
+        "cell": "COMP2",
+        "named_cell": "U2_COMP2",
+        "parent_cell": "COMP",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP--U2_COMP2",
+        "segments": [
+            {
+                "layer": "locali",
+                "area": {
+                    "x1": 2464,
+                    "y1": 3180,
+                    "x2": 2624,
+                    "y2": 3220
+                }
+            }
+        ],
+        "vias": []
+    },
+    {
+        "instance": "TraceNet",
+        "name": "MN4_B_S",
+        "cell": "COMP2",
+        "named_cell": "U2_COMP2",
+        "parent_cell": "COMP",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP--U2_COMP2",
+        "segments": [
+            {
+                "layer": "locali",
+                "area": {
+                    "x1": 352,
+                    "y1": 900,
+                    "x2": 640,
+                    "y2": 940
+                }
+            }
+        ],
+        "vias": []
+    },
+    {
+        "instance": "TraceNet",
+        "name": "MN3_B_S",
+        "cell": "COMP2",
+        "named_cell": "U2_COMP2",
+        "parent_cell": "COMP",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP--U2_COMP2",
+        "segments": [
+            {
+                "layer": "locali",
+                "area": {
+                    "x1": 2080,
+                    "y1": 900,
+                    "x2": 2368,
+                    "y2": 940
+                }
+            }
+        ],
+        "vias": []
+    },
+    {
+        "instance": "TraceNet",
+        "name": "MN3_G_D",
+        "cell": "COMP2",
+        "named_cell": "U2_COMP2",
+        "parent_cell": "COMP",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP--U2_COMP2",
+        "segments": [
+            {
+                "layer": "locali",
+                "area": {
+                    "x1": 2464,
+                    "y1": 780,
+                    "x2": 2624,
+                    "y2": 820
+                }
+            }
+        ],
+        "vias": []
+    },
+    {
+        "instance": "TraceNet",
+        "name": "MN5_B_S",
+        "cell": "COMP2",
+        "named_cell": "U2_COMP2",
+        "parent_cell": "COMP",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP--U2_COMP2",
+        "segments": [
+            {
+                "layer": "locali",
+                "area": {
+                    "x1": 352,
+                    "y1": 2100,
+                    "x2": 640,
+                    "y2": 2140
+                }
+            }
+        ],
+        "vias": []
+    },
+    {
+        "instance": "TraceNet",
+        "name": "MN5_G_D",
+        "cell": "COMP2",
+        "named_cell": "U2_COMP2",
+        "parent_cell": "COMP",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP--U2_COMP2",
+        "segments": [
+            {
+                "layer": "locali",
+                "area": {
+                    "x1": 736,
+                    "y1": 1980,
+                    "x2": 896,
+                    "y2": 2020
+                }
+            }
+        ],
+        "vias": []
+    },
+    {
+        "instance": "TraceNet",
+        "name": "MN6_B_S",
+        "cell": "COMP2",
+        "named_cell": "U2_COMP2",
+        "parent_cell": "COMP",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP--U2_COMP2",
+        "segments": [
+            {
+                "layer": "locali",
+                "area": {
+                    "x1": 2080,
+                    "y1": 2100,
+                    "x2": 2368,
+                    "y2": 2140
+                }
+            }
+        ],
+        "vias": []
+    },
+    {
+        "instance": "TraceNet",
+        "name": "MP3_B_S",
+        "cell": "COMP2",
+        "named_cell": "U2_COMP2",
+        "parent_cell": "COMP",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP--U2_COMP2",
+        "segments": [
+            {
+                "layer": "locali",
+                "area": {
+                    "x1": 352,
+                    "y1": 3700,
+                    "x2": 640,
+                    "y2": 3740
+                }
+            }
+        ],
+        "vias": []
+    },
+    {
+        "instance": "TraceNet",
+        "name": "MP4_B_S",
+        "cell": "COMP2",
+        "named_cell": "U2_COMP2",
+        "parent_cell": "COMP",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP--U2_COMP2",
+        "segments": [
+            {
+                "layer": "locali",
+                "area": {
+                    "x1": 2080,
+                    "y1": 3700,
+                    "x2": 2368,
+                    "y2": 3740
+                }
+            }
+        ],
+        "vias": []
+    },
+    {
+        "instance": "TraceNet",
+        "name": "MN1_MN2_B_VSS_RAIL_BOT",
+        "cell": "COMP2",
+        "named_cell": "U2_COMP2",
+        "parent_cell": "COMP",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP--U2_COMP2",
+        "segments": [
+            {
+                "layer": "locali",
+                "area": {
+                    "x1": 0,
+                    "y1": 1232,
+                    "x2": 3104,
+                    "y2": 1328
+                }
+            }
+        ],
+        "vias": [
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 0,
+                    "y1": 1232,
+                    "x2": 50,
+                    "y2": 1328
+                }
+            },
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 3054,
+                    "y1": 1232,
+                    "x2": 3104,
+                    "y2": 1328
+                }
+            }
+        ]
+    },
+    {
+        "instance": "TraceNet",
+        "name": "MP5_MP6_B_VDD_RAIL_TOP",
+        "cell": "COMP2",
+        "named_cell": "U2_COMP2",
+        "parent_cell": "COMP",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP--U2_COMP2",
+        "segments": [
+            {
+                "layer": "locali",
                 "area": {
                     "x1": 100,
-                    "y1": -4100,
+                    "y1": 4272,
+                    "x2": 3004,
+                    "y2": 4368
+                }
+            }
+        ],
+        "vias": [
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 100,
+                    "y1": 4272,
                     "x2": 150,
-                    "y2": 4100
+                    "y2": 4368
+                }
+            },
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 2954,
+                    "y1": 4272,
+                    "x2": 3004,
+                    "y2": 4368
+                }
+            }
+        ]
+    },
+    {
+        "instance": "TraceNet",
+        "name": "MP1_MP2_B_VDD_RAIL_BOT",
+        "cell": "COMP2",
+        "named_cell": "U2_COMP2",
+        "parent_cell": "COMP",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP--U2_COMP2",
+        "segments": [
+            {
+                "layer": "locali",
+                "area": {
+                    "x1": 100,
+                    "y1": 2832,
+                    "x2": 3004,
+                    "y2": 2928
+                }
+            }
+        ],
+        "vias": [
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 100,
+                    "y1": 2832,
+                    "x2": 150,
+                    "y2": 2928
+                }
+            },
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 2954,
+                    "y1": 2832,
+                    "x2": 3004,
+                    "y2": 2928
+                }
+            }
+        ]
+    },
+    {
+        "instance": "TraceNet",
+        "name": "MN4_MN3_B_VSS_RAIL_TOP",
+        "cell": "COMP2",
+        "named_cell": "U2_COMP2",
+        "parent_cell": "COMP",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP--U2_COMP2",
+        "segments": [
+            {
+                "layer": "locali",
+                "area": {
+                    "x1": 0,
+                    "y1": 1072,
+                    "x2": 3104,
+                    "y2": 1168
+                }
+            }
+        ],
+        "vias": [
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 0,
+                    "y1": 1072,
+                    "x2": 50,
+                    "y2": 1168
+                }
+            },
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 3054,
+                    "y1": 1072,
+                    "x2": 3104,
+                    "y2": 1168
+                }
+            }
+        ]
+    },
+    {
+        "instance": "TraceNet",
+        "name": "MN4_MN3_B_VSS_RAIL_BOT",
+        "cell": "COMP2",
+        "named_cell": "U2_COMP2",
+        "parent_cell": "COMP",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP--U2_COMP2",
+        "segments": [
+            {
+                "layer": "locali",
+                "area": {
+                    "x1": 0,
+                    "y1": 432,
+                    "x2": 3104,
+                    "y2": 528
+                }
+            }
+        ],
+        "vias": [
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 0,
+                    "y1": 432,
+                    "x2": 50,
+                    "y2": 528
+                }
+            },
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 3054,
+                    "y1": 432,
+                    "x2": 3104,
+                    "y2": 528
+                }
+            }
+        ]
+    },
+    {
+        "instance": "TraceNet",
+        "name": "MN5_MN6_B_VSS_RAIL_TOP",
+        "cell": "COMP2",
+        "named_cell": "U2_COMP2",
+        "parent_cell": "COMP",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP--U2_COMP2",
+        "segments": [
+            {
+                "layer": "locali",
+                "area": {
+                    "x1": 0,
+                    "y1": 2272,
+                    "x2": 3104,
+                    "y2": 2368
+                }
+            }
+        ],
+        "vias": [
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 0,
+                    "y1": 2272,
+                    "x2": 50,
+                    "y2": 2368
+                }
+            },
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 3054,
+                    "y1": 2272,
+                    "x2": 3104,
+                    "y2": 2368
+                }
+            }
+        ]
+    },
+    {
+        "instance": "Pin",
+        "number_id": 87,
+        "cell": "JNW_BKLE",
+        "named_cell": "UTOP_JNW_BKLE",
+        "parent_cell": "TOP_CELL",
+        "cell_chain": "UTOP_JNW_BKLE",
+        "type": "ipin",
+        "name": "VDD",
+        "layout": {
+            "layer": "locali",
+            "area": {
+                "x1": -100,
+                "y1": 4850,
+                "x2": 7310,
+                "y2": 4900
+            }
+        }
+    },
+    {
+        "instance": "Pin",
+        "number_id": 88,
+        "cell": "JNW_BKLE",
+        "named_cell": "UTOP_JNW_BKLE",
+        "parent_cell": "TOP_CELL",
+        "cell_chain": "UTOP_JNW_BKLE",
+        "type": "ipin",
+        "name": "VSS",
+        "layout": {
+            "layer": "locali",
+            "area": {
+                "x1": -200,
+                "y1": 4950,
+                "x2": 7410,
+                "y2": 5000
+            }
+        }
+    },
+    {
+        "instance": "TraceNet",
+        "name": "VDD",
+        "cell": "JNW_BKLE",
+        "named_cell": "UTOP_JNW_BKLE",
+        "parent_cell": "TOP_CELL",
+        "cell_chain": "UTOP_JNW_BKLE",
+        "segments": [
+            {
+                "layer": "locali",
+                "area": {
+                    "x1": -100,
+                    "y1": 4850,
+                    "x2": 7310,
+                    "y2": 4900
+                }
+            },
+            {
+                "layer": "locali",
+                "area": {
+                    "x1": -100,
+                    "y1": -100,
+                    "x2": 7310,
+                    "y2": -50
                 }
             },
             {
                 "layer": "m1",
                 "area": {
-                    "x1": 2114,
-                    "y1": -4100,
-                    "x2": 2164,
-                    "y2": 4100
+                    "x1": -100,
+                    "y1": -50,
+                    "x2": -50,
+                    "y2": 4850
+                }
+            },
+            {
+                "layer": "m1",
+                "area": {
+                    "x1": 7260,
+                    "y1": -50,
+                    "x2": 7310,
+                    "y2": 4850
                 }
             }
         ],
-        "vias": []
+        "vias": [
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": -100,
+                    "y1": 4850,
+                    "x2": -50,
+                    "y2": 4900
+                }
+            },
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": -100,
+                    "y1": -100,
+                    "x2": -50,
+                    "y2": -50
+                }
+            },
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 7260,
+                    "y1": 4850,
+                    "x2": 7310,
+                    "y2": 4900
+                }
+            },
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 7260,
+                    "y1": -100,
+                    "x2": 7310,
+                    "y2": -50
+                }
+            }
+        ]
+    },
+    {
+        "instance": "TraceNet",
+        "name": "VSS",
+        "cell": "JNW_BKLE",
+        "named_cell": "UTOP_JNW_BKLE",
+        "parent_cell": "TOP_CELL",
+        "cell_chain": "UTOP_JNW_BKLE",
+        "segments": [
+            {
+                "layer": "locali",
+                "area": {
+                    "x1": -200,
+                    "y1": 4950,
+                    "x2": 7410,
+                    "y2": 5000
+                }
+            },
+            {
+                "layer": "locali",
+                "area": {
+                    "x1": -200,
+                    "y1": -200,
+                    "x2": 7410,
+                    "y2": -150
+                }
+            },
+            {
+                "layer": "m1",
+                "area": {
+                    "x1": -200,
+                    "y1": -150,
+                    "x2": -150,
+                    "y2": 4950
+                }
+            },
+            {
+                "layer": "m1",
+                "area": {
+                    "x1": 7360,
+                    "y1": -150,
+                    "x2": 7410,
+                    "y2": 4950
+                }
+            }
+        ],
+        "vias": [
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": -200,
+                    "y1": 4950,
+                    "x2": -150,
+                    "y2": 5000
+                }
+            },
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": -200,
+                    "y1": -200,
+                    "x2": -150,
+                    "y2": -150
+                }
+            },
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 7360,
+                    "y1": 4950,
+                    "x2": 7410,
+                    "y2": 5000
+                }
+            },
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 7360,
+                    "y1": -200,
+                    "x2": 7410,
+                    "y2": -150
+                }
+            }
+        ]
     }
 ]
