@@ -161,8 +161,8 @@ class TraceGenerator:
 
 
 
-        self.scale_offset_x /= len(goal_nodes)
-        self.scale_offset_y /= len(goal_nodes)
+        self.scale_offset_x /= len(goal_nodes) if len(goal_nodes) > 0 else 1
+        self.scale_offset_y /= len(goal_nodes) if len(goal_nodes) > 0 else 1
 
         self.logger.info(f"Offset for net {self.debug_net}")
         self.logger.info(f"Offset x: {self.scale_offset_x}")
@@ -263,7 +263,7 @@ class TraceGenerator:
 
     def __write_labels(self, net):
         if net in self.net_list.pin_nets:
-            self.logger.info("start wrtie labels")
+            self.logger.info("start write labels")
             for obj in self.components:
                 if isinstance(obj, Pin) and obj.name == net:
 
@@ -288,6 +288,8 @@ class TraceGenerator:
     def __generate_traces(self):
         for net in self.paths:
             self.debug_net = net
+            self.logger.info(net)
+            self.logger.info(self.paths[net])
             self.__map_segments_to_rectangles(path_info=self.paths[net])
             self.__write_traces(net = net)
             self.__write_labels(net = net)

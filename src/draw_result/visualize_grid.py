@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
+import csv
 def visualize_grid(grid):
 
 
@@ -42,3 +43,18 @@ def heatmap_test(grid, name):
     ax.invert_yaxis()
     plt.title("120x60 Grid Visualization")
     plt.savefig('src/results/'+name+'.png')
+
+def save_matrix(matrix, filename):
+    with open(filename + '.csv', 'w', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerows(matrix)
+    return
+
+def load_matrix(filename):
+# Load the matrix from the file
+    loaded_matrix = []
+    with open(filename+'.csv', 'r') as file:
+        reader = csv.reader(file)
+        for row in reader:
+            loaded_matrix.append([int(element) for element in row])
+    return loaded_matrix

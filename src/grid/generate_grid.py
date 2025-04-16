@@ -108,6 +108,8 @@ class GridGeneration:
         self.used_area = RectArea(x1=self.GRID_SIZE, y1=self.GRID_SIZE, x2=0, y2=0)
         self.grid = None
 
+
+
     def __load_config(self, path="pyproject.toml"):
         try:
             with open(path, "rb") as f:
@@ -229,6 +231,7 @@ class GridGeneration:
         scaled_grid_size_x = list(math.modf((self.used_area.x2 - self.used_area.x1 + 2 * self.GRID_LEEWAY_X)/self.SCALE_FACTOR))
         self.grid = [[0 for _ in range(int(scaled_grid_size_x[1]))] for _ in range(int(scaled_grid_size_y[1]))]
 
+
         component_types= ["nmos","pmos","npn","pnp","mim","vpp","hpo","xhpo"]
 
         for port in self.port_area:
@@ -266,6 +269,9 @@ class GridGeneration:
                 for j in range(self.port_area[port].x-w, self.port_area[port].x+w+1):
 
                     self.grid[i][j] = 1
+
+
+
 
 
         self.logger.info("Finished Grid Generation")

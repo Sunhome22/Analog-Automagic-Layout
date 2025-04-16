@@ -1,5 +1,6 @@
 from astar.a_star import AstarAlgorithm
-from draw_result.visualize_grid import heatmap_test
+from astar.a_star_sparse import tsp_order_no_start
+from draw_result.visualize_grid import heatmap_test, save_matrix
 from traces.trace_generator import segment_path
 from circuit.circuit_components import CircuitCell, Pin
 from logger.logger import get_a_logger
@@ -36,6 +37,7 @@ class AstarInitiator:
         self.path = {}
         self.seg_list = {}
 
+        self.test_net = None
 
     def __load_config(self, path="pyproject.toml"):
         try:
@@ -144,8 +146,12 @@ class AstarInitiator:
                 for x in range(node[0] - w, node[0] + w + 1):
                     if not self.grid_vertical[y][x] == self.TRACE_ON_GRID:
                         self.grid_vertical[y][x] = lock
+
+
                     if not self.grid_horizontal[y][x] == self.TRACE_ON_GRID:
                         self.grid_horizontal[y][x] = lock
+
+
 
     def __update_grid(self, net):
 
@@ -181,6 +187,7 @@ class AstarInitiator:
         best_length = float('inf')
         best_start = None
         path = []
+        full_path = []
         if self.RUN_MULTIPLE_ASTAR:
             self.logger.info(f"Running A* multiple times for net: {net}")
             for start in self.goal_nodes:
@@ -197,19 +204,34 @@ class AstarInitiator:
             return best_path
         else:
             self.logger.info(f"Running A* one time for net: {net}")
-            for start in self.goal_nodes:
+            order = tsp_order_no_start(self.goal_nodes)
+            result = [self.goal_nodes[i] for i in order]
+            for i in range(len(result)-1):
 
-                path, _ = AstarAlgorithm(self.grid_vertical, self.grid_horizontal, start, self.goal_nodes,
-                             self.routing_parameters.minimum_segment_length).a_star()
+                path, _ = AstarAlgorithm(self.grid_vertical, self.grid_horizontal, result[i], [result[i+1]],
+                                         self.routing_parameters.minimum_segment_length).a_star()
 
-                if not path is None:
-                    break
+                if path is not None:
+                    full_path.extend(path)
                 else:
-                    self.logger.info(f"Viable path not found, rerunning with different start node")
+                    print("Error")
+            return full_path
+
             if not path:
                 self.logger.info(f"Finished running A* no path found for net: {net}")
             else:
                 self.logger.info(f"Finished running A* one time for net: {net}")
+
+            return path
+
+            # if not path is None:
+            #     break
+            # else:
+            #     self.logger.info(f"Viable path not found, rerunning with different start node")
+            # if not path:
+            #     self.logger.info(f"Finished running A* no path found for net: {net}")
+            # else:
+            #     self.logger.info(f"Finished running A* one time for net: {net}")
 
             return path
 
@@ -226,6 +248,7 @@ class AstarInitiator:
         local_net_order = self.NET_ORDER if self.CUSTOM_NET_ORDER else self.net_list.pin_nets + self.net_list.applicable_nets
 
         for net in local_net_order:
+            self.test_net = net
             # Skipping these nets, that are handled by other routing algorithm
             if self.__check_vdd_vss(net):
                 continue
@@ -238,6 +261,7 @@ class AstarInitiator:
 
             # Make goal nodes walkable
             self.__lock_or_unlock_port(lock=0)
+
 
 
             if len(self.goal_nodes) > 1:
