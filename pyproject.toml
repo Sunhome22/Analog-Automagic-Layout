@@ -75,12 +75,12 @@ METAL_LAYERS = ['locali', 'm1', 'm2', 'm3', 'm4', 'm5']
 VIA_MAP = {"locali-m1" = "viali", "m1-m2" = "via1", "m2-m3" = "via2", "m3-m4" = "via3", "m4-m5" = "via4"}
 VIA_PADDING = 7
 
-# Trace generator config options
+# Generate rail traces config options
 # -> Init rail ring offset x/y - offset from cells defined bounding box
 # -> rail ring offset - distance from the outside of one ring to the outside of the next
 # -> rail width - width of the rails
 
-[trace_generator]
+[generate_rail_traces]
 INIT_RAIL_RING_OFFSET_Y = 350
 INIT_RAIL_RING_OFFSET_X = 150
 RAIL_RING_OFFSET = 100
@@ -94,7 +94,7 @@ RAIL_RING_WIDTH = 50
 # -> Grid leeway x/y - extra space outside of component placement for additional routing space
 
 [generate_grid]
-GRID_SIZE = 4500
+GRID_SIZE = 15000
 SCALE_FACTOR = 16
 TRACE_WIDTH = 30
 VIA_MINIMUM_DISTANCE = 20

@@ -31,7 +31,7 @@ from circuit.circuit_components import (RectArea, RectAreaLayer, Transistor, Cap
 # ======================================================================================================================
 
 
-# ============================================= Trace generator functions ==============================================
+# ============================================= Trace generation functions =============================================
 def generate_local_traces_for_atr_sky130a_lib(self):
     for component in self.transistor_components:
         if component.schematic_connections['B'] == component.schematic_connections['S']:
@@ -39,7 +39,6 @@ def generate_local_traces_for_atr_sky130a_lib(self):
 
         if component.schematic_connections['G'] == component.schematic_connections['D']:
             __local_gate_to_drain_connection_for_sky130a_lib(self=self, component=component)
-
 
     # Make groups of components by y-coordinate
     y_grouped_component_names = defaultdict(list)
@@ -52,7 +51,7 @@ def generate_local_traces_for_atr_sky130a_lib(self):
     for component in self.transistor_components:
         if (re.search(r".*VDD.*", component.schematic_connections['B'], re.IGNORECASE) or
                 re.search(r".*VSS.*", component.schematic_connections['B'], re.IGNORECASE)):
-                components_with_bulk_to_rail_connection.append(component)
+            components_with_bulk_to_rail_connection.append(component)
 
     # Iterate over y-grouped components and check for match against bulk to rail components. On component hit against a
     # group discard all other components within group. This solution removes redundant rail traces for each component
@@ -81,14 +80,14 @@ def __local_bulk_to_source_connection_for_atr_sky130a_lib(self, component):
     source_x2 = next((port.area.x2 for port in component.layout_ports if port.type == 'S'))
     source_y2 = next((port.area.y2 for port in component.layout_ports if port.type == 'S'))
 
-    trace.segments=[RectAreaLayer(layer='locali', area=RectArea(x1=bulk_x1 + component.transform_matrix.c,
-                                                                y1=source_y1 + component.transform_matrix.f,
-                                                                x2=source_x2 + component.transform_matrix.c,
-                                                                y2=source_y2 + component.transform_matrix.f))]
+    trace.segments = [RectAreaLayer(layer='locali', area=RectArea(x1=bulk_x1 + component.transform_matrix.c,
+                                                                  y1=source_y1 + component.transform_matrix.f,
+                                                                  x2=source_x2 + component.transform_matrix.c,
+                                                                  y2=source_y2 + component.transform_matrix.f))]
     self.components.append(trace)
 
 
-def __local_gate_to_drain_connection_for_sky130a_lib(self, component: object):
+def __local_gate_to_drain_connection_for_sky130a_lib(self, component: Transistor):
     trace = TraceNet(name=f"{component.name}_G_D", named_cell=component.named_cell)
     trace.instance = trace.__class__.__name__
     trace.cell = self.circuit_cell.cell
@@ -121,7 +120,7 @@ def __local_bulk_to_rail_connection_for_sky130a_lib(self, component, rail: str, 
             generate_bulk_to_rail_segments(self=self, rail=rail, component=component, y_params=y_params['rail_top'],
                                            group_endpoint="RAIL_TOP", group_name=group_name)
             generate_bulk_to_rail_segments(self=self, rail=rail, component=component, y_params=y_params['rail_bot'],
-                                           group_endpoint="RAIL_BOT",group_name=group_name)
+                                           group_endpoint="RAIL_BOT", group_name=group_name)
 
         elif re.search(r'^rail_top.*', component.group_endpoint):
             generate_bulk_to_rail_segments(self=self, rail=rail, component=component,
@@ -134,6 +133,7 @@ def __local_bulk_to_rail_connection_for_sky130a_lib(self, component, rail: str, 
                                            y_params=y_params['rail_bot'],
                                            group_endpoint=component.group_endpoint.upper(),
                                            group_name=group_name)
+
 
 def generate_bulk_to_rail_segments(self, rail: str, component: Transistor, y_params: tuple,
                                    group_endpoint: str, group_name: str):
@@ -274,8 +274,6 @@ def get_component_group_endpoints_for_atr_sky130a_lib(self):
                             component.group_endpoint = "rail_top/no_rail_bot"
                         else:
                             component.group_endpoint = "rail_top"
-
-
     # Logging
     for component in self.components:
         if isinstance(component, Transistor):
@@ -342,10 +340,11 @@ def place_transistor_endpoints_for_atr_sky130a_lib(self, component: Transistor):
         if component.group_endpoint in {"rail_top", "no_rail_top", "rail_top/no_rail_bot", "rail_bot/no_rail_top",
                                         "rail_top/bot", "no_rail_top/bot"}:
             self.magic_file_lines.extend([
-                f"use {layout_name_top} {component.group}_{component.name}_TAPTOP {self.current_component_library_path}",
-                f"transform {component.transform_matrix.a} {component.transform_matrix.b}"
-                f" {component.transform_matrix.c} {component.transform_matrix.d}"
-                f" {component.transform_matrix.e} {component.transform_matrix.f + component.bounding_box.y2}",
+                f"use {layout_name_top} {component.group}_{component.name}_TAPTOP "
+                f"{self.current_component_library_path}",
+                f"transform {component.transform_matrix.a} {component.transform_matrix.b} "
+                f"{component.transform_matrix.c} {component.transform_matrix.d} {component.transform_matrix.e} "
+                f"{component.transform_matrix.f + component.bounding_box.y2}",
                 f"box {component.group_endpoint_bounding_box.x1} {component.group_endpoint_bounding_box.y1} "
                 f"{component.group_endpoint_bounding_box.x2} {component.group_endpoint_bounding_box.y2}"
             ])
@@ -353,10 +352,11 @@ def place_transistor_endpoints_for_atr_sky130a_lib(self, component: Transistor):
         if component.group_endpoint in {"rail_bot", "no_rail_bot", "rail_bot/no_rail_top", "rail_top/no_rail_bot",
                                         "rail_top/bot", "no_rail_top/bot"}:
             self.magic_file_lines.extend([
-                f"use {layout_name_bot} {component.group}_{component.name}_TAPBOT {self.current_component_library_path}",
+                f"use {layout_name_bot} {component.group}_{component.name}_TAPBOT "
+                f"{self.current_component_library_path}",
                 f"transform {component.transform_matrix.a} {component.transform_matrix.b}"
-                f" {component.transform_matrix.c} {component.transform_matrix.d}"
-                f" {component.transform_matrix.e} {component.transform_matrix.f - component.group_endpoint_bounding_box.y2}",
+                f" {component.transform_matrix.c} {component.transform_matrix.d} {component.transform_matrix.e} "
+                f"{component.transform_matrix.f - component.group_endpoint_bounding_box.y2}",
                 f"box {component.group_endpoint_bounding_box.x1} {component.group_endpoint_bounding_box.y1} "
                 f"{component.group_endpoint_bounding_box.x2} {component.group_endpoint_bounding_box.y2}"
             ])
@@ -365,11 +365,9 @@ def place_transistor_endpoints_for_atr_sky130a_lib(self, component: Transistor):
 
 
 def get_overlap_difference_for_atr_sky130a_lib(self, text_line: str, component: Transistor):
-
     if component.type == "nmos" or component.type == "pmos":
 
         if self.found_transistor_well:
-
             line_words = text_line.split()
 
             self.transistor_well_size = RectArea(x1=int(line_words[1]), y1=int(line_words[2]), x2=int(line_words[3]),
@@ -377,7 +375,6 @@ def get_overlap_difference_for_atr_sky130a_lib(self, text_line: str, component: 
             self.found_transistor_well = False
 
         elif re.search(r'<< nwell >>', text_line) or re.search(r'<< pwell >>', text_line):
-
             # Next line contains well size info
             self.found_transistor_well = True
 
@@ -417,11 +414,11 @@ def magic_component_parsing_for_atr_sky130a_lib(self, layout_file_path: str, com
         with open(layout_file_path, "r") as magic_file:
             for text_line in magic_file:
                 get_component_bounding_box_for_atr_sky130a_lib(text_line=text_line, component=component, self=self)
+            for text_line in magic_file:
                 if isinstance(component, Transistor):
                     get_overlap_difference_for_atr_sky130a_lib(text_line=text_line, component=component, self=self)
     except FileNotFoundError:
         self.logger.error(f"The file {layout_file_path} was not found.")
-
 
     if isinstance(component, Transistor):
         # It's safe to assumes that top and bottom taps have equal bounding boxes.
@@ -435,6 +432,3 @@ def magic_component_parsing_for_atr_sky130a_lib(self, layout_file_path: str, com
 
         except FileNotFoundError:
             self.logger.error(f"The file {layout_file_path} was not found.")
-
-
-

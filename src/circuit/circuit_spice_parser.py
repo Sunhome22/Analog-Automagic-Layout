@@ -15,7 +15,7 @@
 # ==================================================== Notes ===========================================================
 """
     Naming conversions for circuit components:
-    - RP/RX HPO/XHPO Resistors
+    - RH/RX HPO/XHPO Resistors
     - CM/CV MIM/VPP Capacitors
     - QN/QP	NPN/PNP Bipolar transistor
     - MN/MP NMOS/PMOS transistor
@@ -27,8 +27,6 @@ import os
 import subprocess
 import re
 import sys
-from ast import Index
-import copy
 from circuit.circuit_components import *
 from logger.logger import get_a_logger
 
@@ -37,6 +35,7 @@ from logger.logger import get_a_logger
 
 class SPICEparser:
     logger = get_a_logger(__name__)
+
     def __init__(self, project_properties):
         self.project_top_cell_name = project_properties.top_cell_name
         self.project_directory = project_properties.directory
@@ -49,7 +48,6 @@ class SPICEparser:
         self.visited_cells = list()
         self.cell_chain_list = list()
 
-
         self.__parse()
 
     def __generate_spice_file_for_schematic(self):
@@ -58,7 +56,7 @@ class SPICEparser:
         # Run SPICE generation command from work directory of project
         try:
             subprocess.run(['make xsch'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True,
-                                    check=True, shell=True, cwd=work_directory)
+                           check=True, shell=True, cwd=work_directory)
             self.logger.info("SPICE file generated from schematic")
 
         except subprocess.CalledProcessError as e:
@@ -67,7 +65,8 @@ class SPICEparser:
     def __read_spice_file(self):
 
         try:
-            spice_file_path = os.path.expanduser(f"{self.project_directory}/work/xsch/{self.project_top_cell_name}.spice")
+            spice_file_path = os.path.expanduser(f"{self.project_directory}/work/xsch/"
+                                                 f"{self.project_top_cell_name}.spice")
 
             # Copy each line of the file into a list
             with open(spice_file_path, "r") as spice_file:
@@ -207,13 +206,11 @@ class SPICEparser:
 
         # The second letter of the filtered name can define type
         component_type = component_category_to_type_table.get((component_category, filtered_name[1]), None)
-        return component_category, component_type
 
+        return component_category, component_type
 
     def __get_component(self, spice_line: str, cell: str, named_cell: str, parent_cell: str, cell_chain: str,
                         current_library: str):
-        component_category = None
-        component_type = None
 
         # Check SPICE line for circuit component identifier
         if re.match(r'^[^*.]', spice_line):
@@ -235,7 +232,7 @@ class SPICEparser:
                 component_category, component_type = self.__get_component_category_and_type(filtered_name=filtered_name)
             except IndexError as e:
                 self.logger.error(f"Incorrect naming of component on spice line: '{spice_line}'")
-                self.logger.error(f"Naming conversions for circuit components:")
+                self.logger.error(f"Naming conversions for circuit components: ")
                 self.logger.error(f"- xRH?/xRX? HPO/XHPO Resistors")
                 self.logger.error(f"- xCM?/xCV MIM/VPP Capacitors")
                 self.logger.error(f"- xQN?/xQP? NPN/PNP")
@@ -256,8 +253,8 @@ class SPICEparser:
                                         number_id=len(self.components),
                                         cell=cell,
                                         named_cell=named_cell,
-                                        parent_cell = parent_cell,
-                                        cell_chain = cell_chain,
+                                        parent_cell=parent_cell,
+                                        cell_chain=cell_chain,
                                         group=filtered_group,
                                         schematic_connections={port_definitions[i]: line_words[i + 1] for i in
                                                                range(min(len(port_definitions), len(line_words) - 1))},
@@ -321,17 +318,18 @@ class SPICEparser:
 
                 # Create digital block component and add extracted parameters
                 digital_block = DigitalBlock(name=filtered_name,
-                                          type="digital",
-                                          number_id=len(self.components),
-                                          cell=cell,
-                                          named_cell=named_cell,
-                                          parent_cell=parent_cell,
-                                          cell_chain=cell_chain,
-                                          group=filtered_group,
-                                          schematic_connections={port_definitions[i]: line_words[i + 1] for i in
-                                                               range(min(len(port_definitions), len(line_words) - 1))},
-                                          layout_name=line_words[-1],
-                                          layout_library=current_library)
+                                             type="digital",
+                                             number_id=len(self.components),
+                                             cell=cell,
+                                             named_cell=named_cell,
+                                             parent_cell=parent_cell,
+                                             cell_chain=cell_chain,
+                                             group=filtered_group,
+                                             schematic_connections={port_definitions[i]: line_words[i + 1] for i in
+                                                                    range(min(len(port_definitions),
+                                                                              len(line_words) - 1))},
+                                             layout_name=line_words[-1],
+                                             layout_library=current_library)
 
                 digital_block.instance = digital_block.__class__.__name__  # add instance type
                 self.components.append(digital_block)
@@ -347,8 +345,6 @@ class SPICEparser:
             self.components.append(pin)
 
     def __build_list_of_circuit_cells(self, spice_line, current_cell):
-        component_category = None
-
 
         # Check SPICE line for circuit component identifier
         if re.match(r'^[^*.]', spice_line):
@@ -370,8 +366,8 @@ class SPICEparser:
                 component_category, _ = self.__get_component_category_and_type(filtered_name=filtered_name)
             except IndexError as e:
                 self.logger.error(f"Incorrect naming of component on spice line: '{spice_line}'")
-                self.logger.error(f"Naming conversions for circuit components:")
-                self.logger.error(f"- xRP?/xRX? HPO/XHPO Resistors")
+                self.logger.error(f"Naming conversions for circuit components: ")
+                self.logger.error(f"- xRH?/xRX? HPO/XHPO Resistors")
                 self.logger.error(f"- xCM?/xCV? MIM/VPP Capacitors")
                 self.logger.error(f"- xQN?/xQP? NPN/PNP")
                 self.logger.error(f"- xMN?/xMP? NMOS/PMOS")
@@ -446,10 +442,10 @@ class SPICEparser:
                         current_library = self.__get_current_component_library(line)
 
                         self.__get_component(spice_line=line,
-                                             cell = circuit_cell.cell,
+                                             cell=circuit_cell.cell,
                                              named_cell=f"{circuit_cell.name}_{circuit_cell.cell}",
                                              parent_cell=circuit_cell.parent_cell,
-                                             cell_chain = '--'.join(self.cell_chain_list),
+                                             cell_chain='--'.join(self.cell_chain_list),
                                              current_library=current_library)
 
                 circuit_cell.cell_chain = '--'.join(self.cell_chain_list)
@@ -473,7 +469,7 @@ class SPICEparser:
                 if re.match(r'\*\*\.subckt', line) or re.match(r'.subckt', line):
                     if line.split()[1] == self.project_top_cell_name:
                         self.__build_list_of_circuit_cells(spice_line=f"xUTOP " + f" ".join(line.split()[2:])
-                                                                      + f" {line.split()[1]}", current_cell="TOP_CELL")
+                                                           + f" {line.split()[1]}", current_cell="TOP_CELL")
 
             self.__build_list_of_circuit_cells(spice_line=line, current_cell=current_cell)
 
@@ -490,12 +486,3 @@ class SPICEparser:
 
     def get(self) -> list:
         return self.components
-
-
-
-
-
-
-
-
-

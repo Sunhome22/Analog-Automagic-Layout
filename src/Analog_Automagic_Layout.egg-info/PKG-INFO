@@ -1,4 +1,4 @@
-Metadata-Version: 2.2
+Metadata-Version: 2.4
 Name: Analog-Automagic-Layout
 Version: 2.0.0
 Summary: Generates a Magic VLSI layout from an Xschem schematic
@@ -693,6 +693,7 @@ Requires-Dist: PuLP==2.9.0
 Requires-Dist: pyparsing==3.2.1
 Requires-Dist: python-dateutil==2.9.0.post0
 Requires-Dist: six==1.17.0
+Dynamic: license-file
 
 
 # Analog-Automagic-Layout

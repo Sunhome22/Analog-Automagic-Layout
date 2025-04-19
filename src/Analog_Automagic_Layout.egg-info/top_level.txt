@@ -1,12 +1,15 @@
 astar
+cell
 circuit
 connections
 draw_result
 drc
 grid
 json_converter
+libraries
 linear_optimization
 logger
+lvs
 magic
 main
 results

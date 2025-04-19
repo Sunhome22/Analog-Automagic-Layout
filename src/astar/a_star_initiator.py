@@ -1,6 +1,6 @@
 from astar.a_star import AstarAlgorithm
 from draw_result.visualize_grid import heatmap_test
-from traces.trace_generator import segment_path
+from traces.generate_astar_path_traces import segment_path
 from circuit.circuit_components import CircuitCell, Pin
 from logger.logger import get_a_logger
 import tomllib
@@ -35,7 +35,6 @@ class AstarInitiator:
         self.real_goal_nodes = []
         self.path = {}
         self.seg_list = {}
-
 
     def __load_config(self, path="pyproject.toml"):
         try:
@@ -185,7 +184,7 @@ class AstarInitiator:
             self.logger.info(f"Running A* multiple times for net: {net}")
             for start in self.goal_nodes:
                 self.logger.info(f"Starting A* with start node: {start}")
-                path, length =AstarAlgorithm(self.grid_vertical, self.grid_horizontal,start, self.goal_nodes,
+                path, length =AstarAlgorithm(self.grid_vertical, self.grid_horizontal, start, self.goal_nodes,
                                       self.routing_parameters.minimum_segment_length).a_star()
                 self.logger.info(f"Finished running A* with start node: {start}")
 
@@ -264,7 +263,7 @@ class AstarInitiator:
 
     def get(self):
         self.__initiate_astar()
-        return self.path
+        return self.path, self.grid_vertical, self.grid_horizontal
 
 
 """Helper function deciding which of two connected ports should be routed from"""

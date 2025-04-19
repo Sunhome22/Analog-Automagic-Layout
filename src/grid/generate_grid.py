@@ -14,7 +14,7 @@
 import re
 from dataclasses import dataclass
 
-from circuit.circuit_components import Pin, CircuitCell, RectArea, Transistor, Resistor, Capacitor
+from circuit.circuit_components import Pin, CircuitCell, RectArea, Transistor, Resistor, Capacitor, TraceNet
 from connections.connections import Connection
 from logger.logger import get_a_logger
 import math
@@ -23,6 +23,7 @@ import matplotlib.pyplot as plt
 from draw_result.visualize_grid import visualize_grid, heatmap_test
 from dataclasses import dataclass, field
 import tomllib
+
 
 @dataclass
 class Coordinates:
@@ -237,7 +238,7 @@ class GridGeneration:
 
             if component_type == component_types[0] or component_type == component_types[1]:
 
-                if check_ignorable_port(self.logger,components=self.components, object_id = object_id, port = port_type):
+                if check_ignorable_port(self.logger, components=self.components, object_id=object_id, port=port_type):
                     port_attribute = getattr(self.component_ports.cmos, "V"+port_type)
 
                 else:
@@ -277,7 +278,7 @@ class GridGeneration:
         return self.grid, self.scaled_port_coordinates, self.used_area, self.port_coordinates, self.routing_parameters, self.component_ports
 
 def check_instance(obj):
-    return isinstance(obj, (Pin, CircuitCell))
+    return isinstance(obj, (Pin, CircuitCell, TraceNet))
 
 def get_obj_id_and_types(key):
     pattern = r'^([1-9]\d{0,2})([A-Za-z]{1,10})([A-Z])$'
@@ -291,8 +292,9 @@ def get_obj_id_and_types(key):
 
 def check_ignorable_port(logger, components, object_id, port):
     for obj in components:
-        if obj.number_id == int(object_id):
+        if not check_instance(obj):
+            if obj.number_id == int(object_id):
 
-            port_connection = obj.schematic_connections[port]
+                port_connection = obj.schematic_connections[port]
 
-            return re.search(".*VSS.*", port_connection, re.IGNORECASE) or re.search(".*VDD.*", port_connection, re.IGNORECASE)
+                return re.search(".*VSS.*", port_connection, re.IGNORECASE) or re.search(".*VDD.*", port_connection, re.IGNORECASE)

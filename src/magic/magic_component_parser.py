@@ -15,11 +15,12 @@
 # ================================================== Libraries =========================================================
 import os
 import re
-from circuit.circuit_components import LayoutPort, RectArea, Pin, CircuitCell, TraceNet, Transistor, Capacitor, \
-    Resistor, DigitalBlock
+from circuit.circuit_components import LayoutPort, RectArea, Transistor, Capacitor, Resistor, DigitalBlock
 from logger.logger import get_a_logger
 from dataclasses import fields
 import libraries.atr_sky130a_lib as atr
+import libraries.tr_sky130a_lib as tr
+import libraries.aal_misc_sky130a_lib as aal
 
 # ============================================= Magic component parser =================================================
 
@@ -66,9 +67,17 @@ class MagicComponentsParser:
                     self.logger.error(f"The file {layout_file_path} was not found.")
 
                 # ATR SKY130A LIB component handling
-                if any(lib for lib in self.component_libraries if re.search(r"ATR", lib.name)):
+                if re.search(r'_ATR_', component.layout_library):
                     atr.magic_component_parsing_for_atr_sky130a_lib(self=self, layout_file_path=layout_file_path,
                                                                     component=component)
+                # TR SKY130A LIB component handling
+                if re.search(r'_TR_', component.layout_library):
+                    tr.magic_component_parsing_for_tr_sky130a_lib(self=self, layout_file_path=layout_file_path,
+                                                                  component=component)
+                # AAL MISC SKY130A LIB component handling
+                if re.search(r'AAL_MISC', component.layout_library):
+                    aal.magic_component_parsing_for_aal_misc_sky130a_lib(self=self, layout_file_path=layout_file_path,
+                                                                         component=component)
 
                 self.__check_component_is_valid(component=component)
 
@@ -76,7 +85,6 @@ class MagicComponentsParser:
         self.logger.info(f"Process complete! Functional components updated: {updated_components}")
 
         return self.components
-
 
     @staticmethod
     def __get_port_metal_layer(input_value):
@@ -93,11 +101,10 @@ class MagicComponentsParser:
         return metal_mapping.get(input_value, "Invalid metal")
 
     @staticmethod
-    def __get_component_port_info(text_line: str, component: object):
+    def __get_component_port_info(text_line: str, component: Transistor | Resistor | Capacitor):
 
         if re.search(r'flabel', text_line):
             text_line_words = text_line.split()
-
 
             layout_port = LayoutPort(type=text_line_words[-1], layer=text_line_words[1],
                                      area=RectArea(x1=int(text_line_words[3]), y1=int(text_line_words[4]),
@@ -106,7 +113,7 @@ class MagicComponentsParser:
             component.layout_ports.append(layout_port)
 
     @staticmethod
-    def __adjust_port_sizes_to_minimum(component: object):
+    def __adjust_port_sizes_to_minimum(component: Transistor | Resistor | Capacitor):
         """Adjust port sizes to the smallest one found. This is no longer in use"""
         port_areas = []
         port_with_minimum_area = None
@@ -131,13 +138,14 @@ class MagicComponentsParser:
             port.area.x2 = port.area.x1 + minimum_x_length
             port.area.y2 = port.area.y1 + minimum_y_length
 
-    def __check_component_is_valid(self, component: object):
+    def __check_component_is_valid(self, component: Transistor | Resistor | Capacitor):
 
         # Check if both bounding box info and layout port info is present
         if not all(getattr(component.bounding_box, field.name) == 0 for field
                    in fields(component.bounding_box)) and component.layout_ports:
             self.logger.info(f"Found layout ports and bounding box for '{component.name}' from named cell "
-                             f"'{component.named_cell}' in '{component.parent_cell}' with layout '{component.layout_name}'")
+                             f"'{component.named_cell}' in '{component.parent_cell}' with layout "
+                             f"'{component.layout_name}'")
 
         # Check if both bounding box info and layout port info is missing
         elif not component.layout_ports and all(getattr(component.bounding_box, field.name) == 0 for field
@@ -154,4 +162,3 @@ class MagicComponentsParser:
         else:
             self.logger.error(f"Found no bounding box for'{component.name}' from "
                               f"'{component.cell}' with layout '{component.layout_name}'")
-
