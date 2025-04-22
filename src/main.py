@@ -82,7 +82,8 @@ def main():
                                              components=components.get()).get()
 
 
-
+        save_to_json(components, f"{os.path.dirname(os.path.abspath(__file__))}/results/"
+                                          f"Partial_comp.json" )
         # # Algorithms
         # #components = load_from_json(file_name=f"{os.path.dirname(os.path.abspath(__file__))}/results/SpeedTest.json")
         connections, overlap_dict, net_list= ConnectionLists(input_components = components).get()
@@ -103,25 +104,25 @@ def main():
         #         obj.bounding_box = used_area
 
         logger.info(f"Minimum segment length: {routing_parameters.minimum_segment_length}")
-        path = AstarInitiator(grid = grid,
-                                        connections = connections,
-                                        components = components,
-                                        scaled_port_coordinates = scaled_port_coordinates,
-                                        port_coordinates = port_coordinates,
-                                        net_list = net_list,
-                                        routing_parameters = routing_parameters,
-                                        component_ports = component_ports
-                                        ).get()
+        # path = AstarInitiator(grid = grid,
+        #                                 connections = connections,
+        #                                 components = components,
+        #                                 scaled_port_coordinates = scaled_port_coordinates,
+        #                                 port_coordinates = port_coordinates,
+        #                                 net_list = net_list,
+        #                                 routing_parameters = routing_parameters,
+        #                                 component_ports = component_ports
+        #                                 ).get()
 
         #
         #
         #
-        components = TraceGenerator(project_properties= project_properties,
-                                    components = components,
-                                    paths = path,
-                                    net_list=net_list,
-                                    used_area= used_area
-                                            ).get()
+        # components = TraceGenerator(project_properties= project_properties,
+        #                             components = components,
+        #                             paths = path,
+        #                             net_list=net_list,
+        #                             used_area= used_area
+        #                                     ).get()
 
         # #logger.info("Starting Drawing results")
         # #path true:

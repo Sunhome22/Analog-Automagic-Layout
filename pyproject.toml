@@ -21,16 +21,18 @@ dependencies = {file = ["requirements.txt"]}
 # -> Sub Cell Offset X - Offset between groupings of resistors, capacitors and transistors
 # -> United Res Cap - Allows placement of resistors and capacitors in the same cell
 # -> RELATIVE PLACEMENT - Of components in the same cell, either "S" - side by side or "A" - Above
-# -> USTOM RELATIVE PLACEMENT ORDER - Decides order of placement. The first placement will be leftmost or below
-# ->
-# ->
+# -> CUSTOM RELATIVE PLACEMENT ORDER - Decides order of placement. The first placement will be leftmost or below
+# -> ENABLE CUSTOM TRANSISTOR ORDER - enables custom transistor order. The first element is placed below the other
+# -> CUSTOM TRANSISTOR ORDER - The defined custom order, can be changed. Utilize "C" for cmos and "B" for bipolar
 
 [initiator_lp]
 SUB_CELL_OFFSET = 700
 UNITED_RES_CAP = true
 RELATIVE_PLACEMENT = "A"
 ENABLE_CUSTOM_ORDER = true
-CUSTOM_RELATIVE_PLACEMENT_ORDER = ["R", "T", "C"]
+CUSTOM_RELATIVE_PLACEMENT_ORDER = ["T", "R", "C"]
+ENABLE_CUSTOM_TRANSISTOR_ORDER = true
+CUSTOM_TRANSISTOR_ORDER = ["C", "B"]
 
 # Linear optimization config options
 # -> Alpha - Constant for weighing the importance of total Manhattan distance between components in the objective function
@@ -47,8 +49,12 @@ CUSTOM_RELATIVE_PLACEMENT_ORDER = ["R", "T", "C"]
 [linear_optimization]
 UNIT_HEIGHT = 400
 UNIT_WIDTH = 576
-OFFSET_X = 184
-OFFSET_Y = 700
+TRANSISTOR_OFFSET_X = 184
+TRANSISTOR_OFFSET_Y = 700
+RESISTOR_OFFSET_X = 50
+RESISTOR_OFFSET_Y = 50
+CAPACITOR_OFFSET_X = 50
+CAPACITOR_OFFSET_Y = 50
 ALPHA = 0.001
 BETA = 100
 THETA = 5
@@ -59,8 +65,8 @@ VERTICAL_SYMMETRY = true
 HORIZONTAL_SYMMETRY = false
 
 
-STOP_TOLERANCE = 0.05
-SOLVER_MSG = false
+STOP_TOLERANCE = 0.005
+SOLVER_MSG = true
 
 
 # Magic layout creator config options
@@ -94,7 +100,7 @@ RAIL_RING_WIDTH = 100
 # -> Grid leeway x/y - extra space outside of component placement for additional routing space
 
 [generate_grid]
-GRID_SIZE = 6000
+GRID_SIZE = 6500
 SCALE_FACTOR =16
 TRACE_WIDTH = 30
 VIA_MINIMUM_DISTANCE = 20

@@ -35,11 +35,12 @@ from circuit.circuit_components import (RectArea, RectAreaLayer, Transistor, Cap
 # ============================================= Trace generator functions ==============================================
 def generate_local_traces_for_atr_sky130a_lib(self):
     for component in self.transistor_components:
-        if component.schematic_connections['B'] == component.schematic_connections['S']:
-            __local_bulk_to_source_connection_for_atr_sky130a_lib(self=self, component=component)
+        if component.type == "nmos" or component == "pmos":
+            if component.schematic_connections['B'] == component.schematic_connections['S']:
+                __local_bulk_to_source_connection_for_atr_sky130a_lib(self=self, component=component)
 
-        if component.schematic_connections['G'] == component.schematic_connections['D']:
-            __local_gate_to_drain_connection_for_sky130a_lib(self=self, component=component)
+            if component.schematic_connections['G'] == component.schematic_connections['D']:
+                __local_gate_to_drain_connection_for_sky130a_lib(self=self, component=component)
 
 
     # Make groups of components by y-coordinate

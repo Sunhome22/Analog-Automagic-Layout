@@ -13,6 +13,7 @@ import sys
 class LPInitiator:
     logger = get_a_logger(__name__)
     STANDARD_ORDER = ["T", "R", "C"]
+    STANDARD_TRANSISTOR_ORDER = ["C", "B"]
     def __init__(self, components, connections, overlap_components):
 
 
@@ -25,7 +26,8 @@ class LPInitiator:
         self.RELATIVE_PLACEMENT = self.config["initiator_lp"]["RELATIVE_PLACEMENT"]
         self.CUSTOM_RELATIVE_PLACEMENT_ORDER = self.config["initiator_lp"]["CUSTOM_RELATIVE_PLACEMENT_ORDER"]
         self.ENABLE_CUSTOM_ORDER = self.config["initiator_lp"]["ENABLE_CUSTOM_ORDER"]
-
+        self.ENABLE_CUSTOM_TRANSISTOR_ORDER  = self.config["initiator_lp"]["ENABLE_CUSTOM_TRANSISTOR_ORDER"]
+        self.CUSTOM_TRANSISTOR_ORDER = self.config["initiator_lp"]["CUSTOM_TRANSISTOR_ORDER"]
         # Inputs
 
         self.components = components
@@ -38,17 +40,8 @@ class LPInitiator:
         self.transistor_connections = []
         self.resistors = []
         self.resistor_connections = []
-        self.overlap_resistors = {
-            "top": [],
-            "side": []
-        }
-        self.overlap_capacitors = {
-            "top": [],
-            "side": []}
-        self.overlap_transistors = {
-            "top": [],
-            "side": []
-        }
+        self.bipolar_transistors = []
+        self.bipolar_transistor_connections = []
         self.capacitors = []
         self.capacitor_connections = []
 
@@ -56,6 +49,8 @@ class LPInitiator:
         self.used_area_all = []
         self.coordinates_x = []
         self.coordinates_y = []
+        self.temp_x = []
+        self.temp_y = []
 
         if self.RELATIVE_PLACEMENT == "S":
             self.x_offset = self.SUB_CELL_OFFSET
@@ -63,6 +58,11 @@ class LPInitiator:
         else:
             self.x_offset = 0
             self.y_offset = self.SUB_CELL_OFFSET
+
+
+
+
+
 
 
 
@@ -95,8 +95,10 @@ class LPInitiator:
 
 
         for obj in self.components:
-            if isinstance(obj, Transistor) and obj not in self.transistors:
+            if isinstance(obj, Transistor) and (obj.type == "nmos" or obj.type == "pmos") and obj not in self.transistors:
                 self.transistors.append(obj)
+            elif isinstance(obj, Transistor) and (obj.type == "pnp" or obj.type == "npn") and obj not in self.bipolar_transistors:
+                self.bipolar_transistors.append(obj)
 
             elif isinstance(obj, Resistor) and obj not in self.resistors:
                     self.resistors.append(obj)
@@ -107,32 +109,17 @@ class LPInitiator:
                 elif obj not in self.capacitors:
                     self.capacitors.append(obj)
 
-    def __extract_overlap_pairs(self):
 
-        for overlap_type in self.overlap_components:
-            for overlap_pair in self.overlap_components[overlap_type]:
-
-                if overlap_pair.instance == "Transistor":
-                    self.overlap_transistors[overlap_type].append(overlap_pair)
-                elif overlap_pair.instance == "Resistor":
-                    self.overlap_resistors[overlap_type].append(overlap_pair)
-
-                elif overlap_pair.instance == "Capacitor":
-                    if self.UNITED_RES_CAP:
-                        self.overlap_resistors[overlap_type].append(overlap_pair)
-                    else:
-                        self.overlap_capacitors[overlap_type].append(overlap_pair)
 
     def __extract_connection(self):
         component_types = ["nmos", "pmos", "npn", "pnp", "mim", "vpp", "hpo", "xhpo"]
         for con in self.connections:
 
             connection_conditions = {
-                "Transistors": [con.start_comp_type == component_types[0] or con.start_comp_type == component_types[
-                    1] or con.start_comp_type == component_types[2] or con.start_comp_type == component_types[3],
-                                con.end_comp_type == component_types[0] or con.end_comp_type == component_types[
-                                    1] or con.end_comp_type == component_types[2] or con.end_comp_type ==
-                                component_types[3]],
+                "Transistors": [con.start_comp_type == component_types[0] or con.start_comp_type == component_types[1],
+                                con.end_comp_type == component_types[0] or con.end_comp_type == component_types[1]],
+                "Bipolar_transistors": [con.start_comp_type == component_types[2] or con.start_comp_type == component_types[3],
+                                        con.end_comp_type == component_types[2] or con.end_comp_type == component_types[3]],
                 "Capacitors": [con.start_comp_type == component_types[4] or con.start_comp_type == component_types[5],
                                con.end_comp_type == component_types[4] or con.end_comp_type == component_types[5]],
                 "Resistors": [con.start_comp_type == component_types[6] or con.start_comp_type == component_types[7],
@@ -146,6 +133,8 @@ class LPInitiator:
                 if all(connection_conditions["Transistors"]):
 
                     self.transistor_connections.append(con)
+                elif all(connection_conditions["Bipolar_transistors"]):
+                    self.bipolar_transistors.append(con)
                 elif all(connection_conditions["United"]):
                     self.resistor_connections.append(con)
                 elif all(connection_conditions["Resistors"]):
@@ -190,33 +179,62 @@ class LPInitiator:
         else:
             order = self.STANDARD_ORDER
 
+        if self.ENABLE_CUSTOM_TRANSISTOR_ORDER:
+            transistor_order = self.CUSTOM_TRANSISTOR_ORDER
+        else:
+            transistor_order = self.STANDARD_TRANSISTOR_ORDER
+
 
         for letter in order:
             if self.transistors and letter == "T":
+                object_type = letter
+                for tran in transistor_order:
+                    if tran == "C":
+                        self.coordinates_x, self.coordinates_y = LinearOptimizationSolver(components=self.transistors,
+                                                                                          component_connections=self.transistor_connections,
+                                                                                          overlap_components=self.overlap_components["cmos"],
+                                                                                          object_type = object_type).solve_placement()
+                    elif tran == "B":
+                        self.coordinates_x, self.coordinates_y = LinearOptimizationSolver(components=self.bipolar_transistors,
+                                                                                          component_connections=self.bipolar_transistor_connections,
+                                                                                          overlap_components=self.overlap_components["bipolar"],
+                                                                                          object_type=object_type).solve_placement()
+
+                    self.__get_used_area()
+                    self.__update_component_info()
 
 
-                self.coordinates_x, self.coordinates_y = LinearOptimizationSolver(self.transistors, self.transistor_connections,  self.overlap_transistors).solve_placement()
+                    return self.components
+
+            elif self.resistors and letter == "R":
+                if self.UNITED_RES_CAP:
+                    object_type = "RC"
+                    merged = {"side": [], "top": []}
+
+
+
+                    for key in ["resistor", "capacitor"]:
+                        merged["side"].extend(self.overlap_components[key].get("side", []))
+                        merged["top"].extend(self.overlap_components[key].get("top", []))
+
+                else:
+                    object_type = letter
+                    merged = self.overlap_components["resistor"]
+
+                self.coordinates_x, self.coordinates_y = LinearOptimizationSolver(components=self.resistors,
+                                                                                  component_connections=self.resistor_connections,
+                                                                                  overlap_components=merged,
+                                                                                  object_type = object_type).solve_placement()
 
                 self.__get_used_area()
                 self.__update_component_info()
 
-            if self.resistors and letter == "R":
-                for c in self.resistors:
-                    self.logger.info(c)
-                for c in self.resistor_connections:
-                    self.logger.info(c)
-                for c in self.overlap_resistors:
-                    self.logger.info(self.overlap_resistors)
-
-                self.coordinates_x, self.coordinates_y = LinearOptimizationSolver(self.resistors, self.resistor_connections, self.overlap_resistors).solve_placement()
-
-                self.__get_used_area()
-                self.__update_component_info()
-
-            if self.capacitors and letter == "C" and not self.UNITED_RES_CAP:
-                self.coordinates_x, self.coordinates_y = LinearOptimizationSolver(self.capacitors,
-                                                                                  self.capacitor_connections,
-                                                                                  self.overlap_capacitors).solve_placement()
+            elif self.capacitors and letter == "C" and not self.UNITED_RES_CAP:
+                object_type = letter
+                self.coordinates_x, self.coordinates_y = LinearOptimizationSolver(components=self.capacitors,
+                                                                                  component_connections=self.capacitor_connections,
+                                                                                  overlap_components=self.overlap_components["capacitor"],
+                                                                                  object_type=object_type).solve_placement()
                 self.__get_used_area()
                 self.__update_component_info()
 
@@ -227,7 +245,6 @@ class LPInitiator:
     def initiate_linear_optimization(self):
         self.__extract_components()
         self.__extract_connection()
-        self.__extract_overlap_pairs()
         self.__call_linear_optimization()
 
         return self.components
