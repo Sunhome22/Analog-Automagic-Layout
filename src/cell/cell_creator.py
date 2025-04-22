@@ -52,7 +52,7 @@ class CellCreator:
 
         self.top_cell = CircuitCell
         self.updated_components = []
-        self.origin_scaled_cell_offsets = []
+        self.origin_scaled_cell_offsets = list()
         self.FUNCTIONAL_TYPES = (Transistor, Resistor, Capacitor)
 
         self.__create_cells()
@@ -233,21 +233,32 @@ class CellCreator:
     def __set_cells_positions(self):
         prev_cell_chain_depth = 0
         offset_from_deepening_cells = 0
+        offset_from_deepening_cells_sum = 0
+        offset_from_non_deepening_cells = 0
         cell_nr = 0
         # Add support for y change in placement and packing
-
+        depth_offset_map = {}
         for component in self.updated_components:
             if isinstance(component, CircuitCell):
-                self.origin_scaled_cell_offsets.append(component.bounding_box.x2 - component.bounding_box.x1)
 
-                cell_nr += 1
-                if len(re.findall(r"--", component.cell_chain)) != prev_cell_chain_depth:
-                    prev_cell_chain_depth = len(re.findall(r"--", component.cell_chain))
-                    offset_from_deepening_cells = self.origin_scaled_cell_offsets[prev_cell_chain_depth - 1]
-                    component.transform_matrix.set([1, 0, offset_from_deepening_cells, 0, 1, 0])
-                else:
-                    component.transform_matrix.set([1, 0, offset_from_deepening_cells
-                                                    + self.origin_scaled_cell_offsets[cell_nr - 1], 0, 1, 0])
+                current_chain_depth = len(re.findall(r"--", component.cell_chain))
+                current_width = component.bounding_box.x2 - component.bounding_box.x1
+
+                if current_chain_depth not in depth_offset_map:
+                    if current_chain_depth == 0:
+
+                        depth_offset_map[0] = 0
+                    else:
+                        # Deeper levels start where parent level is currently
+                        parent_depth = current_chain_depth - 1
+                        depth_offset_map[current_chain_depth] = depth_offset_map.get(parent_depth, 0)
+
+
+                current_offset = depth_offset_map[current_chain_depth]
+
+                component.transform_matrix.set([1, 0, current_offset, 0, 1, 0])
+                depth_offset_map[current_chain_depth] += current_width
+
 
     def __add_top_cell_rails_around_cells(self):
 
@@ -407,18 +418,19 @@ class CellCreator:
                         cell_to_cell_connections.append(cell_to_cell_connection)
 
         # Update vertical and horizontal grids to include both cells that are being routed between
-        for connection in cell_to_cell_connections:
-            p1 = (((connection[0].layout.area.x2 - connection[0].layout.area.x1) // 2
-                   + connection[0].layout.area.x1) // 16,
-                  ((connection[0].layout.area.y2 - connection[0].layout.area.y1) // 2
-                   + connection[0].layout.area.y1) // 16)
-
-            p2 = (((connection[1].layout.area.x2 - connection[1].layout.area.x1) // 2
-                   + connection[0].layout.area.x1) // 16,
-                  ((connection[1].layout.area.y2 - connection[1].layout.area.y1) // 2
-                   + connection[0].layout.area.y1) // 16)
-
-            print(p1, p2)
+        # unfinished stuff here
+        # for connection in cell_to_cell_connections:
+        #     p1 = (((connection[0].layout.area.x2 - connection[0].layout.area.x1) // 2
+        #            + connection[0].layout.area.x1) // 16,
+        #           ((connection[0].layout.area.y2 - connection[0].layout.area.y1) // 2
+        #            + connection[0].layout.area.y1) // 16)
+        #
+        #     p2 = (((connection[1].layout.area.x2 - connection[1].layout.area.x1) // 2
+        #            + connection[0].layout.area.x1) // 16,
+        #           ((connection[1].layout.area.y2 - connection[1].layout.area.y1) // 2
+        #            + connection[0].layout.area.y1) // 16)
+        #
+        #     print(p1, p2)
 
             # grid, scaled_port_coordinates, used_area, port_coordinates, routing_parameters, component_ports \
             #     = GridGeneration(components=self.updated_components).initialize_grid_generation()

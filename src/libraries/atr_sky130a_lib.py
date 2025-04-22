@@ -33,7 +33,7 @@ from circuit.circuit_components import (RectArea, RectAreaLayer, Transistor, Cap
 
 # ============================================= Trace generation functions =============================================
 def generate_local_traces_for_atr_sky130a_lib(self):
-    for component in self.transistor_components:
+    for component in self.atr_transistor_components:
         if component.schematic_connections['B'] == component.schematic_connections['S']:
             __local_bulk_to_source_connection_for_atr_sky130a_lib(self=self, component=component)
 
@@ -42,13 +42,13 @@ def generate_local_traces_for_atr_sky130a_lib(self):
 
     # Make groups of components by y-coordinate
     y_grouped_component_names = defaultdict(list)
-    for component in self.transistor_components:
+    for component in self.atr_transistor_components:
         y_grouped_component_names[component.transform_matrix.f].append(component.name)
     y_grouped_component_names = dict(y_grouped_component_names)
 
     # Get components connecting bulk to rail
     components_with_bulk_to_rail_connection = []
-    for component in self.transistor_components:
+    for component in self.atr_transistor_components:
         if (re.search(r".*VDD.*", component.schematic_connections['B'], re.IGNORECASE) or
                 re.search(r".*VSS.*", component.schematic_connections['B'], re.IGNORECASE)):
             components_with_bulk_to_rail_connection.append(component)
@@ -175,7 +175,7 @@ def generate_bulk_to_rail_segments(self, rail: str, component: Transistor, y_par
 def get_component_group_endpoints_for_atr_sky130a_lib(self):
     components_and_positions = []
 
-    for component in self.transistor_components:
+    for component in self.atr_transistor_components:
         components_and_positions.append((component, component.transform_matrix.c, component.transform_matrix.f))
 
     # Sorts components first by x and then by y (ascending order)
@@ -209,20 +209,20 @@ def get_component_group_endpoints_for_atr_sky130a_lib(self):
     possible_y_min_components = []
 
     # Assignment of no rail endpoints
-    for component in self.transistor_components:
+    for component in self.atr_transistor_components:
         for components in grouped_components_x:
             y_group_index = components[0][2]
 
             # Special handling is need in the case there are just 2, 3 or 4 components
             # Maybe there is some other way to solve this
-            if 2 <= len(self.transistor_components) <= 4:
+            if 2 <= len(self.atr_transistor_components) <= 4:
                 idx = [c[0][0] for c in components].index(component)
 
-                is_top_bot = ((idx == 0 and (len(components) == 1 or len(self.transistor_components) == 3))
-                              or len(self.transistor_components) == 2)
+                is_top_bot = ((idx == 0 and (len(components) == 1 or len(self.atr_transistor_components) == 3))
+                              or len(self.atr_transistor_components) == 2)
 
                 is_top = ((idx == len(components) - 1 and len(components) > 1)
-                          or (idx == 1 and len(self.transistor_components) == 4))
+                          or (idx == 1 and len(self.atr_transistor_components) == 4))
 
                 is_bot = (idx == 0 and len(components) > 1) or (idx == len(components) - 2)
 
@@ -256,7 +256,7 @@ def get_component_group_endpoints_for_atr_sky130a_lib(self):
     for min_y_components in list(find_min_y_components(possible_y_min_components).values()):
         for min_y_component in min_y_components:
 
-            for component in self.transistor_components:
+            for component in self.atr_transistor_components:
                 if min_y_component == component:
                     if component.group_endpoint == "no_rail_top/bot":
                         component.group_endpoint = "rail_bot/no_rail_top"
@@ -265,7 +265,7 @@ def get_component_group_endpoints_for_atr_sky130a_lib(self):
 
     for max_y_components in list(find_max_y_components(possible_y_max_components).values()):
         for max_y_component in max_y_components:
-            for component in self.transistor_components:
+            for component in self.atr_transistor_components:
                 if max_y_component == component:
                     if component.group_endpoint == "rail_bot/no_rail_top":
                         component.group_endpoint = "rail_top/bot"

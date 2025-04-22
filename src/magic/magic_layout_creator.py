@@ -345,7 +345,7 @@ class MagicLayoutCreator:
             "magscale 1 1",
             f"timestamp {int(time.time())}",
             "<< checkpaint >>",
-            "rect 0 0 0 0"  # Rectangle completely covering everything in the cell. TBD!
+            "rect 0 0 1000 1000"  # Rectangle completely covering everything in the cell. TBD!
         ])
 
     def __magic_file_creator(self, components, file_name):

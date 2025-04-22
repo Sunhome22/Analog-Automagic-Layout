@@ -34,6 +34,7 @@ class LibraryHandling:
         self.structural_components = []
         self.functional_components = []
         self.transistor_components = []
+        self.atr_transistor_components = []
         self.components = components
 
         # Load config
@@ -45,8 +46,8 @@ class LibraryHandling:
 
         # Make lists of different component types
         for component in self.components:
-            if isinstance(component, Transistor):
-                self.transistor_components.append(component)
+            if isinstance(component, Transistor) and re.search(r'_ATR_', component.layout_library):
+                self.atr_transistor_components.append(component)
 
             if isinstance(component, (Pin, CircuitCell)):
                 self.structural_components.append(component)
@@ -59,9 +60,8 @@ class LibraryHandling:
             if isinstance(component, CircuitCell):
                 self.circuit_cell = component
 
-        # Deal with ATR SKY130A components
-        if any(lib for lib in self.component_libraries if
-               re.search(r"ATR", lib.name) and self.functional_components):
+        # ATR SKY130A library component handling
+        if self.atr_transistor_components:
             atr.get_component_group_endpoints_for_atr_sky130a_lib(self=self)
             atr.generate_local_traces_for_atr_sky130a_lib(self=self)
 
