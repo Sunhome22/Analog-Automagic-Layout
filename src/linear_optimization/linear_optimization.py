@@ -24,7 +24,7 @@ from logger.logger import get_a_logger
 
 class LinearOptimizationSolver:
     logger = get_a_logger(__name__)
-    def __init__(self, components, component_connections, overlap_components, object_type):
+    def __init__(self, components, component_connections, overlap_components, object_type, overlap):
 
 
         self.current_file_directory = os.path.dirname(os.path.abspath(__file__))
@@ -60,6 +60,20 @@ class LinearOptimizationSolver:
         self.components = components
         self.overlap_components = overlap_components
         self.connections = component_connections
+        self.overlap = overlap
+        self.logger.info("COMPONENTS")
+        for c in self.components:
+            self.logger.info(c)
+
+        self.logger.info("OVERLAP COMPONENTS")
+        for c in self.overlap_components:
+            for p in self.overlap_components[c]:
+                self.logger.info(p)
+
+        self.logger.info("CONNECTIONS")
+        for c in self.connections:
+            self.logger.info(c)
+
 
 
 
@@ -74,6 +88,9 @@ class LinearOptimizationSolver:
         self.height = {}
         self.d_x = {}
         self.d_y = {}
+
+
+
 
         if object_type == "T":
             self.OFFSET_X = self.TRANSISTOR_OFFSET_X
@@ -94,15 +111,18 @@ class LinearOptimizationSolver:
 
 
         # Make lists of functional components and structural components
-        for component in self.components:
-            if not isinstance(component, (Pin, CircuitCell, TraceNet)):
-                self.component_ids.append(component.number_id)
-                self.component_names.append(component.name)
-                self.functional_components.append(component)
+        for comp in self.components:
+
+
+            if not isinstance(comp, (Pin, CircuitCell, TraceNet)):
+
+                self.component_ids.append(comp.number_id)
+                self.component_names.append(comp.name)
+                self.functional_components.append(comp)
 
 
             else:
-                self.structural_components.append(component)
+                self.structural_components.append(comp)
 
         # Constraints
         self.x_possible, self.y_possible = self.__extract_possible_positions()
@@ -127,22 +147,13 @@ class LinearOptimizationSolver:
         # Debugging
         if self.MIRROR:
             self.mirrored_components = self.__check_mirrored_components()
-            self.logger.info("MIRRORED COMPONENTS")
-            for pair in self.mirrored_components:
-                self.logger.info(f"obj 1 {pair[0]}")
-                self.logger.info(f"obj 2 {pair[1]}")
 
-        self.logger.info("Components")
-        for c in components:
-            self.logger.info(c)
-        self.logger.info("Connections")
-        for c in component_connections:
-            self.logger.info(c)
-        self.logger.info("Overlap_components")
-        for c in overlap_components:
-            for p in overlap_components[c]:
+            self.logger.info(f"MIRRORED COMP")
+            self.logger.info(f"obj1 {self.mirrored_components}")
 
-                self.logger.info(f"type: {c}, pair: {p}")
+
+
+
 
     def __load_config(self, path="pyproject.toml"):
         try:
@@ -334,7 +345,7 @@ class LinearOptimizationSolver:
                     z4 = pulp.LpVariable(f"z4_{c1}_{c2}", cat='Binary')
 
                     self.problem_space += z1 + z2 + z3 + z4 == 1, f"NonOverlap_{c1}_{c2}"
-                    if any(obj_pair.component_ids == [c1,c2] for obj_pair in self.overlap_components["top"]) and any(obj_pair.component_ids == [c1,c2] for obj_pair in self.overlap_components["side"]):
+                    if any(obj_pair.component_ids == [c1,c2] for obj_pair in self.overlap_components["top"]) and any(obj_pair.component_ids == [c1,c2] for obj_pair in self.overlap_components["side"]) and self.overlap:
                         self.problem_space += (self.coordinates_x[c1] + self.width[c1] <= self.coordinates_x[c2]
                                                + self.GRID_SIZE * (1 - z1), f"LeftOf_{c1}_{c2}")
                         self.problem_space += (self.coordinates_x[c2] + self.width[c2] <= self.coordinates_x[c1]
@@ -344,7 +355,7 @@ class LinearOptimizationSolver:
                         self.problem_space += (self.coordinates_y[c2] + self.height[c2] <= self.coordinates_y[c1]
                                                + self.GRID_SIZE * (1 - z4), f"Above_{c1}_{c2}")
 
-                    elif any(obj_pair.component_ids == [c1,c2] for obj_pair in self.overlap_components["side"]):
+                    elif any(obj_pair.component_ids == [c1,c2] for obj_pair in self.overlap_components["side"])and self.overlap:
                         self.problem_space += (self.coordinates_x[c1] + self.width[c1] <= self.coordinates_x[c2]
                                                + self.GRID_SIZE * (1 - z1), f"LeftOf_{c1}_{c2}")
                         self.problem_space += (self.coordinates_x[c2] + self.width[c2] <= self.coordinates_x[c1]
@@ -354,7 +365,7 @@ class LinearOptimizationSolver:
                         self.problem_space += (self.coordinates_y[c2] + self.height[c2] + self.OFFSET_Y
                                                <= self.coordinates_y[c1] + self.GRID_SIZE * (1 - z4), f"Above_{c1}_{c2}")
 
-                    elif any(obj_pair.component_ids == [c1,c2] for obj_pair in self.overlap_components["top"]):
+                    elif any(obj_pair.component_ids == [c1,c2] for obj_pair in self.overlap_components["top"])and self.overlap:
                         self.problem_space += (self.coordinates_x[c1] + self.width[c1] + self.OFFSET_X
                                                <= self.coordinates_x[c2] + self.GRID_SIZE * (1 - z1), f"LeftOf_{c1}_{c2}")
                         self.problem_space += (self.coordinates_x[c2] + self.width[c2] + self.OFFSET_X

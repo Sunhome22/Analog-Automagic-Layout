@@ -1336,7 +1336,7 @@
         "bounding_box": {
             "x1": 0,
             "y1": 0,
-            "x2": 1340,
+            "x2": 700,
             "y2": 1340
         },
         "overlap_distance": {

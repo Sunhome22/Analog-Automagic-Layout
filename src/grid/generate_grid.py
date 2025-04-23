@@ -12,6 +12,7 @@
 # If not, see <https://www.gnu.org/licenses/>.
 # ==================================================================================================================== #
 import re
+import sys
 from dataclasses import dataclass
 
 from circuit.circuit_components import Pin, CircuitCell, RectArea, Transistor, Resistor, Capacitor
@@ -86,7 +87,6 @@ class GridGeneration:
 
         #LOAD CONFIG
         self.config = self.__load_config()
-        self.GRID_SIZE = self.config["generate_grid"]["GRID_SIZE"]
         self.SCALE_FACTOR = self.config["generate_grid"]["SCALE_FACTOR"]
         self.TRACE_WIDTH = self.config["generate_grid"]["TRACE_WIDTH"]
         self.VIA_MINIMUM_DISTANCE = self.config["generate_grid"]["VIA_MINIMUM_DISTANCE"]
@@ -105,7 +105,7 @@ class GridGeneration:
         self.port_area = {}
         self.scaled_port_coordinates = {}
         self.port_coordinates = {}
-        self.used_area = RectArea(x1=self.GRID_SIZE, y1=self.GRID_SIZE, x2=0, y2=0)
+        self.used_area = RectArea(x1=sys.maxsize, y1=sys.maxsize, x2=0, y2=0)
         self.grid = None
 
 
@@ -264,11 +264,13 @@ class GridGeneration:
             w = port_attribute.width
 
 
+            self.logger.info(f"Grid_size x: {len(self.grid[0])}, y: {len(self.grid)}")
 
             for i in range(self.port_area[port].y-h, self.port_area[port].y+h+1):
                 for j in range(self.port_area[port].x-w, self.port_area[port].x+w+1):
-
-                    self.grid[i][j] = 1
+                    if i < scaled_grid_size_y[1] and j < scaled_grid_size_x[1]:
+                        self.logger.info(f"Trying to update  grid x: {j}, y:{i}")
+                        self.grid[i][j] = 1
 
 
 

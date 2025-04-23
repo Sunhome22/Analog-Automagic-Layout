@@ -1,3 +1,5 @@
+#from astar.a_star import AstarAlgorithm
+#from cython_test.example import AstarAlgorithm
 from astar.a_star import AstarAlgorithm
 from astar.a_star_sparse import tsp_order_no_start
 from draw_result.visualize_grid import heatmap_test, save_matrix
@@ -144,12 +146,13 @@ class AstarInitiator:
 
             for y in range(node[1] - h, node[1] + h + 1):
                 for x in range(node[0] - w, node[0] + w + 1):
-                    if not self.grid_vertical[y][x] == self.TRACE_ON_GRID:
-                        self.grid_vertical[y][x] = lock
+                    if y < len(self.grid_vertical) and x < len(self.grid_vertical[0]):
+                        if not self.grid_vertical[y][x] == self.TRACE_ON_GRID:
+                            self.grid_vertical[y][x] = lock
 
 
-                    if not self.grid_horizontal[y][x] == self.TRACE_ON_GRID:
-                        self.grid_horizontal[y][x] = lock
+                        if not self.grid_horizontal[y][x] == self.TRACE_ON_GRID:
+                            self.grid_horizontal[y][x] = lock
 
 
 
@@ -204,19 +207,15 @@ class AstarInitiator:
             return best_path
         else:
             self.logger.info(f"Running A* one time for net: {net}")
-            order = tsp_order_no_start(self.goal_nodes)
-            result = [self.goal_nodes[i] for i in order]
-            for i in range(len(result)-1):
+            for start in self.goal_nodes:
 
-                path, _ = AstarAlgorithm(self.grid_vertical, self.grid_horizontal, result[i], [result[i+1]],
+                path, _ = AstarAlgorithm(self.grid_vertical, self.grid_horizontal, start, self.goal_nodes,
                                          self.routing_parameters.minimum_segment_length).a_star()
 
-                if path is not None:
-                    full_path.extend(path)
+                if not path is None:
+                    break
                 else:
-                    print("Error")
-            return full_path
-
+                    self.logger.info(f"Viable path not found, rerunning with different start node")
             if not path:
                 self.logger.info(f"Finished running A* no path found for net: {net}")
             else:
@@ -233,7 +232,7 @@ class AstarInitiator:
             # else:
             #     self.logger.info(f"Finished running A* one time for net: {net}")
 
-            return path
+            #return path
 
 
 

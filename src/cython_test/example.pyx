@@ -1,28 +1,13 @@
-# ==================================================================================================================== #
-# Copyright (C) 2024 Bjørn K.T. Solheim, Leidulv Tønnesland
-# ==================================================================================================================== #
-# This program is free software: you can redistribute it and/or modify it under the terms of
-# the GNU General Public License as published by the Free Software Foundation, version 3.
-#
-# This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
-# without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-# See the GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License along with this program.
-# If not, see <https://www.gnu.org/licenses/>.
-# ==================================================================================================================== #
 from itertools import combinations
 
 
 from logger.logger import get_a_logger
 import heapq
 from draw_result.visualize_grid import heatmap_test
-from numba import njit
-import cProfile
-import pstats
+
+
 
 class PriorityQueue:
-    """Priority Queue for managing open set nodes."""
 
     def __init__(self):
         self.elements = []
@@ -76,7 +61,7 @@ class AstarAlgorithm:
         all_visited = (1 << len(self.goal_nodes)) - 1
 
 
-        # Allowed movements: up, down, left, right.
+
         directions = [(0, -1), (0, 1), (-1, 0), (1, 0)]
 
         open_set = PriorityQueue()
@@ -86,7 +71,7 @@ class AstarAlgorithm:
             init_mask |= (1 << goal_indices[self.start])
         g_start = 0
         f_start = g_start + _heuristic(self.start, init_mask, self.goal_nodes)
-        # Initial state: no previous direction (None), segment length 0.
+
         open_set.push((g_start, self.start, init_mask, [self.start], None, 0, init_after_goal, False), f_start)
 
         visited_states = set()
@@ -112,7 +97,7 @@ class AstarAlgorithm:
                 if not (self.in_bounds(neighbor) and self.is_walkable(neighbor, current)):
                     continue
 
-                # Initialize prospective state variables.
+
                 prospective_last_dir = None
                 prospective_seg_len = 0
                 prospective_last_was_reversal = False
@@ -123,12 +108,11 @@ class AstarAlgorithm:
                     prospective_seg_len = 1
                 else:
                     if d == last_dir:
-                        # Continuing in the same direction.
+
                         prospective_last_dir = last_dir
                         edge = (current, neighbor)
                         edge_rev = (neighbor, current)
-                        # If this edge is already in our path, we are retracing:
-                        # do not increase segment length.
+
                         if edge in edge_set or edge_rev in edge_set:
                             prospective_seg_len = seg_len
 
@@ -136,10 +120,7 @@ class AstarAlgorithm:
                             prospective_seg_len = seg_len + 1
                         prospective_last_was_reversal = False
                     elif d[0] == -last_dir[0] and d[1] == -last_dir[1]:
-                        # A reversal move is allowed only if:
-                        # 1. We're coming after a goal,
-                        # 2. The current segment has reached minimum length,
-                        # 3. The previous move was not already a reversal.
+
                         if not after_goal or seg_len < self.minimum_segment_length:
                             continue
 
@@ -166,7 +147,7 @@ class AstarAlgorithm:
                     prospective_seg_len = 0
                     prospective_last_dir = None
 
-                # Update the visited goals mask.
+
                 new_mask = mask
                 new_after_goal = after_goal
                 if neighbor in goal_indices:
@@ -174,7 +155,7 @@ class AstarAlgorithm:
                     new_after_goal = True
 
 
-                # Compute cost: if moving along a retraced edge, cost increment is 0.
+
                 edge = (current, neighbor)
                 edge_rev = (neighbor, current)
                 cost_increment = 0 if (edge in edge_set or edge_rev in edge_set) else 1
@@ -196,28 +177,15 @@ class AstarAlgorithm:
 
 
 
-#@njit
+
 def _manhattan(a, b):
     return abs(a[0] - b[0]) + abs(a[1] - b[1])
 
 
 def _heuristic(current, mask, goals):
-    # Get unvisited goals.
+
     unvisited = [goal for i, goal in enumerate(goals) if not (mask & (1 << i))]
     if not unvisited:
         return 0
 
     return min(_manhattan(current, goal) for goal in unvisited)
-
-
-
-
-
-
-
-
-
-
-
-
-

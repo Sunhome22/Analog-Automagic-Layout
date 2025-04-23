@@ -61,11 +61,11 @@
       <recent name="D:\bjs1\Analog-Automagic-Layout\layout_manipulator" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\leto\Analog-Automagic-Layout\src\cython_test" />
       <recent name="D:\leto\Analog-Automagic-Layout\Old_results_png" />
       <recent name="D:\leto\Analog-Automagic-Layout\src\results" />
       <recent name="D:\leto\Analog-Automagic-Layout\src" />
       <recent name="D:\bjs1\Analog-Automagic-Layout\misc" />
-      <recent name="D:\bjs1\Analog-Automagic-Layout\results" />
     </key>
   </component>
   <component name="RunManager" selected="Python.circuit_spice_parser">
@@ -159,11 +159,6 @@
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/src/astar/a_star.py</url>
-          <line>13</line>
-          <option name="timeStamp" value="1" />
-        </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/src/linear_optimization/linear_optimization.py</url>
           <line>17</line>

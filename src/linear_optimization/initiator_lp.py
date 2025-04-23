@@ -14,6 +14,7 @@ class LPInitiator:
     logger = get_a_logger(__name__)
     STANDARD_ORDER = ["T", "R", "C"]
     STANDARD_TRANSISTOR_ORDER = ["C", "B"]
+
     def __init__(self, components, connections, overlap_components):
 
 
@@ -28,13 +29,14 @@ class LPInitiator:
         self.ENABLE_CUSTOM_ORDER = self.config["initiator_lp"]["ENABLE_CUSTOM_ORDER"]
         self.ENABLE_CUSTOM_TRANSISTOR_ORDER  = self.config["initiator_lp"]["ENABLE_CUSTOM_TRANSISTOR_ORDER"]
         self.CUSTOM_TRANSISTOR_ORDER = self.config["initiator_lp"]["CUSTOM_TRANSISTOR_ORDER"]
+        self.CMOS_BIPOLAR_OFFSET = self.config["initiator_lp"]["CMOS_BIPOLAR_OFFSET"]
         # Inputs
 
         self.components = components
         self.overlap_components = overlap_components
         self.connections = connections["component_connections"]
         self.placed_cells = 0
-
+        self.component_handling = None
 
         self.transistors = []
         self.transistor_connections = []
@@ -49,8 +51,9 @@ class LPInitiator:
         self.used_area_all = []
         self.coordinates_x = []
         self.coordinates_y = []
-        self.temp_x = []
-        self.temp_y = []
+        self.temp_transistor_x = []
+        self.temp_transistor_y = []
+
 
         if self.RELATIVE_PLACEMENT == "S":
             self.x_offset = self.SUB_CELL_OFFSET
@@ -82,11 +85,18 @@ class LPInitiator:
         for key in self.coordinates_x:
             for obj in self.components:
                 if obj.number_id == key:
-
-                    self.used_area.x1 = min(self.used_area.x1, obj.transform_matrix.c)
-                    self.used_area.y1 = min(self.used_area.y1, obj.transform_matrix.f)
-                    self.used_area.x2 = max(self.used_area.x2, round(pulp.value(self.coordinates_x[key]))+ obj.bounding_box.x2)
-                    self.used_area.y2 = max(self.used_area.y2, round(pulp.value(self.coordinates_y[key])) + obj.bounding_box.y2)
+                    if self.component_handling == "T":
+                        self.used_area.x1 = min(self.used_area.x1, round(self.coordinates_x[key]))
+                        self.used_area.y1 = min(self.used_area.y1, round(self.coordinates_y[key]))
+                        self.used_area.x2 = max(self.used_area.x2,
+                                                round(pulp.value(self.coordinates_x[key])) + obj.bounding_box.x2)
+                        self.used_area.y2 = max(self.used_area.y2,
+                                                round(pulp.value(self.coordinates_y[key])) + obj.bounding_box.y2)
+                    else:
+                        self.used_area.x1 = min(self.used_area.x1, round(pulp.value(self.coordinates_x[key])))
+                        self.used_area.y1 = min(self.used_area.y1, round(pulp.value(self.coordinates_y[key])))
+                        self.used_area.x2 = max(self.used_area.x2, round(pulp.value(self.coordinates_x[key]))+ obj.bounding_box.x2)
+                        self.used_area.y2 = max(self.used_area.y2, round(pulp.value(self.coordinates_y[key])) + obj.bounding_box.y2)
         self.used_area_all.append(self.used_area)
 
         self.logger.info(f"Used_area: {self.used_area}")
@@ -134,7 +144,7 @@ class LPInitiator:
 
                     self.transistor_connections.append(con)
                 elif all(connection_conditions["Bipolar_transistors"]):
-                    self.bipolar_transistors.append(con)
+                    self.bipolar_transistor_connections.append(con)
                 elif all(connection_conditions["United"]):
                     self.resistor_connections.append(con)
                 elif all(connection_conditions["Resistors"]):
@@ -166,9 +176,73 @@ class LPInitiator:
             for placement_id in self.coordinates_x:
                 if placement_id == component.number_id:
 
-                    component.transform_matrix.set([1, 0, int(round(pulp.value(self.coordinates_x[component.number_id]))-self.used_area.x1 + self.placed_cells*self.x_offset + previous_x), 0, 1,
+                    if self.component_handling == "T":
+                        component.transform_matrix.set([1, 0, int(round(self.coordinates_x[
+                                                                                       component.number_id]) - self.used_area.x1 + self.placed_cells * self.x_offset + previous_x),
+                                                        0, 1,
+                                                        int(round(self.coordinates_y[
+                                                                                 component.number_id]) - self.used_area.y1 + self.placed_cells * self.y_offset + previous_y)])
+                    else:
+                        component.transform_matrix.set([1, 0, int(round(pulp.value(self.coordinates_x[component.number_id]))-self.used_area.x1 + self.placed_cells*self.x_offset + previous_x), 0, 1,
                                                     int(round(pulp.value(self.coordinates_y[component.number_id]))-self.used_area.y1 + self.placed_cells*self.y_offset + previous_y)])
         self.placed_cells += 1
+
+    def __get_minimum_x_y(self, x_coordinate_list, y_coordinate_list, minimum):
+
+        if minimum:
+            x = sys.maxsize
+            y = sys.maxsize
+            for key in x_coordinate_list:
+                x = min(x, round(pulp.value(x_coordinate_list[key])))
+                y = min(y, round(pulp.value(y_coordinate_list[key])))
+
+
+
+        else:
+            x = 0
+            y = 0
+            for key in x_coordinate_list:
+                for obj in self.components:
+                    if obj.number_id == key:
+
+                        x= max(x,round(x_coordinate_list[key]) + obj.bounding_box.x2)
+                        y= max(y,round(y_coordinate_list[key]) + obj.bounding_box.y2)
+        return x, y
+
+
+    def __transistor_placement_edit(self):
+        if self.ENABLE_CUSTOM_TRANSISTOR_ORDER:
+            transistor_order = self.CUSTOM_TRANSISTOR_ORDER
+        else:
+            transistor_order = self.STANDARD_TRANSISTOR_ORDER
+
+        x, y = self.__get_minimum_x_y(self.coordinates_x, self.coordinates_y, minimum = True)
+        x1, y1 = self.__get_minimum_x_y(self.temp_transistor_x, self.temp_transistor_y, minimum = True)
+        temp_x = {}
+        temp_y = {}
+        if transistor_order[0] == "C":
+            for key in self.coordinates_x:
+                temp_x[key] = pulp.value(self.coordinates_x[key])-x
+                temp_y[key] = pulp.value(self.coordinates_y[key])-y
+
+            x_max, y_max = self.__get_minimum_x_y(temp_x, temp_y, minimum=False)
+
+            for key in self.temp_transistor_x:
+                temp_x[key] = pulp.value(self.temp_transistor_x[key]) - x1
+                temp_y[key] = pulp.value(self.temp_transistor_y[key]) - y1 + y_max + self.CMOS_BIPOLAR_OFFSET
+        else:
+            for key in self.temp_transistor_x:
+                temp_x[key] = pulp.value(self.temp_transistor_x[key]) - x1
+                temp_y[key] = pulp.value(self.temp_transistor_y[key]) - y1
+            x_max, y_max = self.__get_minimum_x_y(temp_x, temp_y, minimum=False)
+            for key in self.coordinates_x:
+                temp_x[key] = pulp.value(self.coordinates_x[key]) - x
+                temp_y[key] = pulp.value(self.coordinates_y[key]) - y + y_max + self.CMOS_BIPOLAR_OFFSET
+
+        self.coordinates_x = temp_x
+        self.coordinates_y = temp_y
+
+
 
 
 
@@ -179,38 +253,41 @@ class LPInitiator:
         else:
             order = self.STANDARD_ORDER
 
-        if self.ENABLE_CUSTOM_TRANSISTOR_ORDER:
-            transistor_order = self.CUSTOM_TRANSISTOR_ORDER
-        else:
-            transistor_order = self.STANDARD_TRANSISTOR_ORDER
-
 
         for letter in order:
+            self.component_handling = letter
             if self.transistors and letter == "T":
                 object_type = letter
-                for tran in transistor_order:
-                    if tran == "C":
-                        self.coordinates_x, self.coordinates_y = LinearOptimizationSolver(components=self.transistors,
+
+                self.temp_transistor_x, self.temp_transistor_y = LinearOptimizationSolver(
+                    components=self.bipolar_transistors,
+                    component_connections=self.bipolar_transistor_connections,
+                    overlap_components=self.overlap_components["bipolar"],
+                    object_type=object_type,
+                    overlap = True).solve_placement()
+
+                self.coordinates_x, self.coordinates_y = LinearOptimizationSolver(components=self.transistors,
                                                                                           component_connections=self.transistor_connections,
                                                                                           overlap_components=self.overlap_components["cmos"],
-                                                                                          object_type = object_type).solve_placement()
-                    elif tran == "B":
-                        self.coordinates_x, self.coordinates_y = LinearOptimizationSolver(components=self.bipolar_transistors,
-                                                                                          component_connections=self.bipolar_transistor_connections,
-                                                                                          overlap_components=self.overlap_components["bipolar"],
-                                                                                          object_type=object_type).solve_placement()
-
-                    self.__get_used_area()
-                    self.__update_component_info()
+                                                                                          object_type = object_type,
+                                                                                            overlap = True).solve_placement()
 
 
-                    return self.components
+
+
+
+                self.__transistor_placement_edit()
+                self.__get_used_area()
+                self.__update_component_info()
+
+
+
 
             elif self.resistors and letter == "R":
                 if self.UNITED_RES_CAP:
                     object_type = "RC"
                     merged = {"side": [], "top": []}
-
+                    merged_connection_lists = self.resistor_connections + self.capacitor_connections
 
 
                     for key in ["resistor", "capacitor"]:
@@ -220,11 +297,14 @@ class LPInitiator:
                 else:
                     object_type = letter
                     merged = self.overlap_components["resistor"]
+                    merged_connection_lists = self.resistor_connections
+
 
                 self.coordinates_x, self.coordinates_y = LinearOptimizationSolver(components=self.resistors,
-                                                                                  component_connections=self.resistor_connections,
+                                                                                  component_connections=merged_connection_lists,
                                                                                   overlap_components=merged,
-                                                                                  object_type = object_type).solve_placement()
+                                                                                  object_type = object_type,
+                                                                                  overlap = False).solve_placement()
 
                 self.__get_used_area()
                 self.__update_component_info()
@@ -234,7 +314,8 @@ class LPInitiator:
                 self.coordinates_x, self.coordinates_y = LinearOptimizationSolver(components=self.capacitors,
                                                                                   component_connections=self.capacitor_connections,
                                                                                   overlap_components=self.overlap_components["capacitor"],
-                                                                                  object_type=object_type).solve_placement()
+                                                                                  object_type=object_type,
+                                                                                  overlap = False).solve_placement()
                 self.__get_used_area()
                 self.__update_component_info()
 
