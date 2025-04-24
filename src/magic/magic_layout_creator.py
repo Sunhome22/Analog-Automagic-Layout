@@ -15,7 +15,8 @@
 # ================================================== Libraries =========================================================
 import os
 import time
-from circuit.circuit_components import RectArea, Transistor, Capacitor, Resistor, Pin, CircuitCell, TraceNet, RectAreaLayer
+from circuit.circuit_components import (RectArea, Transistor, Capacitor, Resistor, Pin, CircuitCell, TraceNet,
+                                        RectAreaLayer)
 from magic.magic_drawer import get_pixel_boxes_from_text, get_black_white_pixel_boxes_from_image
 from logger.logger import get_a_logger
 from collections import deque
@@ -24,13 +25,12 @@ import re
 import libraries.atr_sky130a_lib as atr
 import copy
 
-
-
 # ============================================== Magic layout creator ==================================================
 
 
 class MagicLayoutCreator:
     logger = get_a_logger(__name__)
+
     def __init__(self, project_properties, components):
         self.project_properties = project_properties
         self.project_top_cell_name = project_properties.top_cell_name
@@ -113,7 +113,7 @@ class MagicLayoutCreator:
             via_map[key_tuple[::-1]] = value
 
         metal_layers = self.__get_inbetween_metal_layers(start_layer=start_layer, end_layer=end_layer,
-                                                       metal_layer_list=self.METAL_LAYERS)
+                                                         metal_layer_list=self.METAL_LAYERS)
         via_layers = self.__get_inbetween_via_layers(start_layer=start_layer, end_layer=end_layer, via_map=via_map)
 
         # Metal area is increased with an offset to compensate for the via if via is present
@@ -135,14 +135,11 @@ class MagicLayoutCreator:
             for via_layer in via_layers:
                 self.__place_box(layer=via_layer, area=area)
 
-
-
     def __add_trace_net_vias(self, trace_net: TraceNet) -> int:
         """Checks for overlap between segments of a trace net in different layers and adds vias.
            Vias only get added when layer changes occur."""
         previous_segment = None
         via_count = 0
-
 
         for segment in trace_net.segments:
             if previous_segment and previous_segment.layer != segment.layer:
@@ -202,7 +199,7 @@ class MagicLayoutCreator:
 
                         # Check for overlap between the port and the segment and add vias accordingly
                         if (not (segment.area.x2 < port_pos.x1 or segment.area.x1 > port_pos.x2 or
-                                segment.area.y2 < port_pos.y1 or segment.area.y1 > port_pos.y2)
+                                 segment.area.y2 < port_pos.y1 or segment.area.y1 > port_pos.y2)
                                 and segment.layer != port.layer):
 
                             self.__via_placer(start_layer=segment.layer, end_layer=port.layer, area=port_pos,
@@ -345,7 +342,7 @@ class MagicLayoutCreator:
             "magscale 1 1",
             f"timestamp {int(time.time())}",
             "<< checkpaint >>",
-            "rect 0 0 1000 1000"  # Rectangle completely covering everything in the cell. TBD!
+            "rect 0 0 1 1"  # Rectangle completely covering everything in the cell. TBD!
         ])
 
     def __magic_file_creator(self, components, file_name):
@@ -443,7 +440,6 @@ class MagicLayoutCreator:
                 if not isinstance(component, CircuitCell):
                     cell_components.append(component)
 
-
             # Top cell handling
             if cell_chain == "UTOP_" + self.project_top_cell_name:
                 cell = self.project_top_cell_name
@@ -453,13 +449,7 @@ class MagicLayoutCreator:
                 if isinstance(comp, CircuitCell) and comp.parent_cell == cell:
                     cell_components.append(comp)
 
-
             # Create file if component list is not empty
             self.__magic_file_creator(components=cell_components, file_name=cell)
 
-
         self.logger.info("Process complete!")
-
-
-
-

@@ -398,16 +398,14 @@ def get_component_bounding_box_for_atr_sky130a_lib(self, text_line: str, compone
 
     if re.search(r'string FIXED_BBOX', text_line):
         text_line_words = text_line.split()
-        component.bounding_box.set(map(int, text_line_words[2:6]))
+        component.bounding_box.set([int(val) // self.scale_factor for val in text_line_words[2:6]])
         self.found_bounding_box = True
 
-
-def get_component_endpoint_bounding_box_for_atr_sky130a_lib(text_line: str, component):
+def get_component_endpoint_bounding_box_for_atr_sky130a_lib(self, text_line: str, component):
 
     if re.search(r'string FIXED_BBOX', text_line):
         text_line_words = text_line.split()
-        component.group_endpoint_bounding_box.set(map(int, text_line_words[2:6]))
-
+        component.group_endpoint_bounding_box.set([int(val) // self.scale_factor for val in text_line_words[2:6]])
 
 def magic_component_parsing_for_atr_sky130a_lib(self, layout_file_path: str, component):
     try:
@@ -428,7 +426,7 @@ def magic_component_parsing_for_atr_sky130a_lib(self, layout_file_path: str, com
         try:
             with open(layout_file_path, "r") as magic_file:
                 for text_line in magic_file:
-                    get_component_endpoint_bounding_box_for_atr_sky130a_lib(text_line=text_line, component=component)
+                    get_component_endpoint_bounding_box_for_atr_sky130a_lib(self=self, text_line=text_line, component=component)
 
         except FileNotFoundError:
             self.logger.error(f"The file {layout_file_path} was not found.")

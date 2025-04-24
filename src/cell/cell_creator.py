@@ -57,12 +57,11 @@ class CellCreator:
 
         self.__create_cells()
         self.__set_cells_positions()
-        self.__add_top_cell_rails_around_cells()
-        self.__add_top_cell_rail_to_rail_connections()
+        # self.__add_top_cell_rails_around_cells()
+        # self.__add_top_cell_rail_to_rail_connections()
 
     def __use_earlier_solution_for_cell(self, cell, solved_circuit_cells,
                                         components_grouped_by_circuit_cell, grouped_components):
-        print(grouped_components)
         for new_component in components_grouped_by_circuit_cell[grouped_components]:
 
             # Circuit cell
@@ -122,6 +121,7 @@ class CellCreator:
 
             # Step 1: Check if current circuit cell already has been solved
             cell = components_grouped_by_circuit_cell[grouped_components][0].cell
+
             if cell in solved_circuit_cells.keys():
                 self.logger.info(f"Using previously found solution for cell '{cell}' "
                                  f"with respect to cell chain '{grouped_components}'")
@@ -138,13 +138,15 @@ class CellCreator:
                 input_components=components_grouped_by_circuit_cell[grouped_components]).get()
 
             components = components_grouped_by_circuit_cell[grouped_components]
-            if any(isinstance(c, self.FUNCTIONAL_TYPES) for c in components_grouped_by_circuit_cell[grouped_components]):
+            if any(isinstance(c, self.FUNCTIONAL_TYPES) for c
+                   in components_grouped_by_circuit_cell[grouped_components]):
                 components = LPInitiator(components, connections, overlap_dict).initiate_linear_optimization()
 
             # Step 3: Move all components to the origin
             origin_scaled_used_area = RectArea()
             used_area = RectArea()
-            if any(isinstance(c, self.FUNCTIONAL_TYPES) for c in components_grouped_by_circuit_cell[grouped_components]):
+            if any(isinstance(c, self.FUNCTIONAL_TYPES) for c
+                   in components_grouped_by_circuit_cell[grouped_components]):
                 _, _, used_area, _, _, _ = GridGeneration(components=components).initialize_grid_generation()
                 origin_scaled_used_area = RectArea(x1=0, y1=0, x2=abs(used_area.x2 - used_area.x1),
                                                    y2=abs(used_area.y2 - used_area.y1))
@@ -246,19 +248,17 @@ class CellCreator:
 
                 if current_chain_depth not in depth_offset_map:
                     if current_chain_depth == 0:
-
                         depth_offset_map[0] = 0
                     else:
                         # Deeper levels start where parent level is currently
                         parent_depth = current_chain_depth - 1
                         depth_offset_map[current_chain_depth] = depth_offset_map.get(parent_depth, 0)
 
-
                 current_offset = depth_offset_map[current_chain_depth]
+                print(current_offset, component.cell_chain)
 
                 component.transform_matrix.set([1, 0, current_offset, 0, 1, 0])
                 depth_offset_map[current_chain_depth] += current_width
-
 
     def __add_top_cell_rails_around_cells(self):
 
@@ -275,7 +275,7 @@ class CellCreator:
                     top_cell_rails.append(copy.deepcopy(component))
 
                 # Check if this component is already in rails
-                #if not any(rail.name == component.name for rail in top_cell_rails):
+                # if not any(rail.name == component.name for rail in top_cell_rails):
                 #    top_cell_rails.append(copy.deepcopy(component))
 
         top_cell_x2 = 0
@@ -283,7 +283,7 @@ class CellCreator:
             if isinstance(component, CircuitCell):
                 top_cell_x2 += (component.bounding_box.x2 - component.bounding_box.x1)
 
-        #top_cell_rails_exists = all(c.layout for c in all_cell_rails)
+        # top_cell_rails_exists = all(c.layout for c in all_cell_rails)
         top_cell_y2 = max(component.layout.area.y2 for component in all_cell_rails if component.layout)
 
         # Create a top cell with bounding box covering all cells but with all other attributes of UTOP
@@ -297,7 +297,7 @@ class CellCreator:
                                             parent_cell=component.parent_cell,
                                             cell_chain=component.cell_chain,
                                             bounding_box=RectArea(x1=0, y1=0, x2=top_cell_x2, y2=top_cell_y2))
-                #if not top_cell_rails_exists:
+                # if not top_cell_rails_exists:
                 for nr, rail in enumerate(top_cell_rails):
                     rail.cell = component.cell
                     rail.number_id = len(self.updated_components) + nr
@@ -324,7 +324,8 @@ class CellCreator:
         #             if isinstance(component, CircuitCell) and component.cell_chain == rail.cell_chain:
         #
         #                 if top_cell_rail.name == rail.name:
-        #                     trace = TraceNet(name=f"{rail.name}_CONNETION", cell=component.cell, named_cell=component.named_cell)
+        #                     trace = TraceNet(name=f"{rail.name}_CONNECTION", cell=component.cell,
+        #                     named_cell=component.named_cell)
         #                     trace.instance = trace.__class__.__name__
         #                     trace.parent_cell = component.parent_cell
         #                     trace.cell_chain = component.cell_chain
@@ -373,7 +374,8 @@ class CellCreator:
         # For every set of grouped components append children cells and their pins
         for cell_nr, grouped_components in enumerate(components_grouped_by_circuit_cell):
             for component in components_grouped_by_circuit_cell[grouped_components]:
-                components_grouped_by_circuit_cell_with_children_cells_and_pins[grouped_components].append(copy.deepcopy(component))
+                (components_grouped_by_circuit_cell_with_children_cells_and_pins[grouped_components]
+                 .append(copy.deepcopy(component)))
                 if isinstance(component, CircuitCell):
 
                     for circuit_cell in circuit_cells:
@@ -384,7 +386,8 @@ class CellCreator:
                             for comp in self.updated_components:
                                 if isinstance(comp, Pin):
                                     if comp.cell_chain == circuit_cell.cell_chain:
-                                        (components_grouped_by_circuit_cell_with_children_cells_and_pins[grouped_components]
+                                        (components_grouped_by_circuit_cell_with_children_cells_and_pins
+                                         [grouped_components]
                                          .append(copy.deepcopy(comp)))
 
         cell_to_cell_connections = list()
@@ -451,19 +454,16 @@ class CellCreator:
             #         functional_components.append(component)
             #
 
-
-            #print(cell_to_cell_connections, path, length)
+            # print(cell_to_cell_connections, path, length)
 
         print("===================")
-        #print(grouped_components)
+        # print(grouped_components)
         # for cell_nr_1, grouped_components_1 in enumerate(components_grouped_by_circuit_cell):
         #     for component_1 in components_grouped_by_circuit_cell[grouped_components_1]:
         #         if isinstance(component_1, CircuitCell):
 
-
     def __add_top_cell_rail_to_rail_connections(self):
         pass
-
 
     def get(self):
         return self.updated_components

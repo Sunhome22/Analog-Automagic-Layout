@@ -38,6 +38,7 @@ class MagicComponentsParser:
         self.found_transistor_well = False
         self.found_bounding_box = False
         self.transistor_well_size = RectArea
+        self.scale_factor = 0
 
     def get(self):
         return self.__read_magic_files()
@@ -62,6 +63,7 @@ class MagicComponentsParser:
                 try:
                     with open(layout_file_path, "r") as magic_file:
                         for text_line in magic_file:
+                            self.__get_scale_factor(text_line=text_line)
                             self.__get_component_port_info(text_line=text_line, component=component)
                 except FileNotFoundError:
                     self.logger.error(f"The file {layout_file_path} was not found.")
@@ -88,27 +90,33 @@ class MagicComponentsParser:
 
     @staticmethod
     def __get_port_metal_layer(input_value):
-        if input_value in ['locali', 'metal1', 'metal2', 'metal3', 'metal4', 'metal5']:
+        if input_value in ['locali', 'm1', 'm2', 'm3', 'm4', 'm5']:
             return input_value
 
         metal_mapping = {
-            'm1': 'metal1',
-            'm2': 'metal2',
-            'm3': 'metal3',
-            'm4': 'metal4',
-            'm5.': 'metal5'
+            'metal1': 'm1',
+            'metal2': 'm2',
+            'metal3': 'm3',
+            'metal4': 'm4',
+            'metal5.': 'm5'
         }
         return metal_mapping.get(input_value, "Invalid metal")
 
-    @staticmethod
-    def __get_component_port_info(text_line: str, component: Transistor | Resistor | Capacitor):
+    def __get_scale_factor(self, text_line: str):
+        if re.search(r'magscale', text_line):
+            text_line_words = text_line.split()
+            self.scale_factor = int(text_line_words[2])
+
+    def __get_component_port_info(self, text_line: str, component: Transistor | Resistor | Capacitor):
 
         if re.search(r'flabel', text_line):
             text_line_words = text_line.split()
 
             layout_port = LayoutPort(type=text_line_words[-1], layer=text_line_words[1],
-                                     area=RectArea(x1=int(text_line_words[3]), y1=int(text_line_words[4]),
-                                                   x2=int(text_line_words[5]), y2=int(text_line_words[6])))
+                                     area=RectArea(x1=int(text_line_words[3]) // self.scale_factor,
+                                                   y1=int(text_line_words[4]) // self.scale_factor,
+                                                   x2=int(text_line_words[5]) // self.scale_factor,
+                                                   y2=int(text_line_words[6]) // self.scale_factor))
 
             component.layout_ports.append(layout_port)
 

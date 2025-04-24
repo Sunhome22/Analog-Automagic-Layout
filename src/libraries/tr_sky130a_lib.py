@@ -25,7 +25,7 @@ import re
 def get_component_bounding_box_for_tr_sky130a_lib(self, text_line: str, component):
     if re.search(r'string FIXED_BBOX', text_line):
         text_line_words = text_line.split()
-        component.bounding_box.set(map(int, text_line_words[2:6]))
+        component.bounding_box.set([int(val) // self.scale_factor for val in text_line_words[2:6]])
         self.found_bounding_box = True
 
 
