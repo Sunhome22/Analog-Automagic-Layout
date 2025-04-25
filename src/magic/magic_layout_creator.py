@@ -444,9 +444,10 @@ class MagicLayoutCreator:
             if cell_chain == "UTOP_" + self.project_top_cell_name:
                 cell = self.project_top_cell_name
 
-            # Add circuit cells that has the current cell as parent
+            # Add circuit cells that has the current cell as parent and do not have the same name
             for comp in self.components:
-                if isinstance(comp, CircuitCell) and comp.parent_cell == cell:
+                if (isinstance(comp, CircuitCell) and comp.parent_cell == cell and
+                        all(existing_comp.named_cell != comp.named_cell for existing_comp in cell_components)):
                     cell_components.append(comp)
 
             # Create file if component list is not empty

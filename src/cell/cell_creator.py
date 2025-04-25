@@ -62,6 +62,7 @@ class CellCreator:
 
     def __use_earlier_solution_for_cell(self, cell, solved_circuit_cells,
                                         components_grouped_by_circuit_cell, grouped_components):
+
         for new_component in components_grouped_by_circuit_cell[grouped_components]:
 
             # Circuit cell
@@ -110,10 +111,7 @@ class CellCreator:
 
         for circuit_cell in circuit_cells:
             for grouped_components in components_grouped_by_circuit_cell:
-                print(grouped_components)
-                if (re.search(r"^(?:.*--)?(.*)$", grouped_components).group(1)
-                        == f"{circuit_cell.name}_{circuit_cell.cell}"):
-                    print(f"{circuit_cell.name}_{circuit_cell.cell}")
+                if grouped_components == circuit_cell.cell_chain:
                     components_grouped_by_circuit_cell[grouped_components].append(circuit_cell)
 
         # Cell creation process
@@ -235,32 +233,54 @@ class CellCreator:
         return components
 
     def __set_cells_positions(self):
-        prev_cell_chain_depth = 0
-        offset_from_deepening_cells = 0
-        offset_from_deepening_cells_sum = 0
-        offset_from_non_deepening_cells = 0
+        x_offset_map = {-1: 0}
+        y_offset_map = {-1: 0}
+        prev_depth = -1
+        prev_width = 0
+        cells_per_row = 3
         cell_nr = 0
-        # Add support for y change in placement and packing
-        depth_offset_map = {}
+        row_height = 5000
+        y_change_x_offset = 0
         for component in self.updated_components:
             if isinstance(component, CircuitCell):
 
-                current_chain_depth = len(re.findall(r"--", component.cell_chain))
+                current_depth = len(re.findall(r"--", component.cell_chain))
                 current_width = component.bounding_box.x2 - component.bounding_box.x1
+                current_height = component.bounding_box.y2 - component.bounding_box.y1
 
-                if current_chain_depth not in depth_offset_map:
-                    if current_chain_depth == 0:
-                        depth_offset_map[0] = 0
-                    else:
-                        # Deeper levels start where parent level is currently
-                        parent_depth = current_chain_depth - 1
-                        depth_offset_map[current_chain_depth] = depth_offset_map.get(parent_depth, 0)
+                if current_depth > prev_depth:
+                    x_offset_map[current_depth] = prev_width
+                    y_offset_map[current_depth] = y_offset_map.get(prev_depth, 0)
 
-                current_offset = depth_offset_map[current_chain_depth]
-                print(current_offset, component.cell_chain)
+                elif current_depth < prev_depth:
+                    x_offset_map[current_depth] = max(
+                        x_offset_map.get(current_depth, 0) + prev_width,
+                        x_offset_map.get(prev_depth, 0 + prev_width)
+                    )
+                    y_offset_map[current_depth] = y_offset_map.get(prev_depth, 0)
 
-                component.transform_matrix.set([1, 0, current_offset, 0, 1, 0])
-                depth_offset_map[current_chain_depth] += current_width
+                if cell_nr > 0 and cell_nr % (cells_per_row + 1) == 0:
+                    print("")
+                    for d in x_offset_map:
+                        x_offset_map[d] = 0  # Reset X for new row
+                    for d in y_offset_map:
+                        y_offset_map[d] += row_height
+                    #y_change_x_offset += x_offset_map[current_depth]
+
+                # Place component
+                x_offset = x_offset_map[current_depth]
+                y_offset = y_offset_map[current_depth]
+                print(x_offset, x_offset - y_change_x_offset, y_offset, component.cell_chain)
+
+                component.transform_matrix.set([1, 0, x_offset, 0, 1, y_offset])
+
+
+
+                # Update trackers
+                x_offset_map[current_depth] += current_width
+                prev_depth = current_depth
+                prev_width = current_width
+                cell_nr += 1
 
     def __add_top_cell_rails_around_cells(self):
 
@@ -396,7 +416,7 @@ class CellCreator:
 
         for cell_nr, grouped_components in enumerate(components_grouped_by_circuit_cell_with_children_cells_and_pins):
 
-            print("===================")
+            #print("===================")
             for component in components_grouped_by_circuit_cell_with_children_cells_and_pins[grouped_components]:
 
                 if isinstance(component, CircuitCell):
@@ -411,7 +431,7 @@ class CellCreator:
                                         if outside_connection == comp.name and comp.layout:
                                             # Valid pins that are connected to something and have layout
                                             cell_to_cell_connection.append(comp)
-                                            print(f"others: {comp.name, comp.layout}")
+                                            #print(f"others: {comp.name, comp.layout}")
                                             for c in components_grouped_by_circuit_cell_with_children_cells_and_pins[
                                                 grouped_components]:
                                                 if isinstance(c, Pin):
@@ -419,7 +439,7 @@ class CellCreator:
                                                         if inside_connection == c.name and c.layout:
                                                             # Valid pins that are connected to something and have layout
                                                             cell_to_cell_connection.append(c)
-                                                            print(f"others: {c.name, c.layout}")
+                                                            #print(f"others: {c.name, c.layout}")
                         cell_to_cell_connections.append(cell_to_cell_connection)
 
         # Update vertical and horizontal grids to include both cells that are being routed between

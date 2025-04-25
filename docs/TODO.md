@@ -44,4 +44,9 @@
 - Spice parsing and magic layout parsing will happen once also. 
 - MagicLayoutCreator is going to be ran once on all components.
 - Trace generator will run multiple times for each cell. There shall only be one CircuitCell in it every time.
-- A lot of filtering is gonna be happening here. 
+- A lot of filtering is going be happening here. 
+- 
+- Spice parser first just looks at every cell defined and appends that to circuit_cells. Then within 
+- "__add_components_for_each_circuit_cell" a circuit cell get properly added for every unique cell (deals with
+- nested cells). In cell creator for each iteration we deal with components with the same cell chain. 
+- In Magic layout creator's "_generate_magic_files" magic files get created 
