@@ -57,6 +57,7 @@ def tsp_order_no_start(goals, penalty=1000):
     order.append(state[1])
     order.reverse()
     return order
+
 def tsp_order(start, goals):
     nodes = [start] + goals
     n = len(nodes)

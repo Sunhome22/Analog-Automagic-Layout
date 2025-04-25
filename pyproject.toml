@@ -27,10 +27,10 @@ dependencies = {file = ["requirements.txt"]}
 
 [initiator_lp]
 SUB_CELL_OFFSET = 700
-UNITED_RES_CAP = true
+UNITED_RES_CAP = false
 RELATIVE_PLACEMENT = "A"
 ENABLE_CUSTOM_ORDER = true
-CUSTOM_RELATIVE_PLACEMENT_ORDER = ["R", "T", "C"]
+CUSTOM_RELATIVE_PLACEMENT_ORDER = ["R", "C", "T"]
 ENABLE_CUSTOM_TRANSISTOR_ORDER = true
 CUSTOM_TRANSISTOR_ORDER = ["C", "B"]
 CMOS_BIPOLAR_OFFSET = 400
@@ -54,10 +54,10 @@ TRANSISTOR_OFFSET_X = 184
 TRANSISTOR_OFFSET_Y = 700
 RESISTOR_OFFSET_X = 100
 RESISTOR_OFFSET_Y = 100
-CAPACITOR_OFFSET_X = 100
-CAPACITOR_OFFSET_Y = 100
+CAPACITOR_OFFSET_X = 50
+CAPACITOR_OFFSET_Y = 50
 ALPHA = 0.001
-BETA = 100
+BETA = 1000
 THETA = 5
 TIME_LIMIT = 2
 MIRROR = true
@@ -65,8 +65,12 @@ RUN = true
 VERTICAL_SYMMETRY = true
 HORIZONTAL_SYMMETRY = false
 
+CUSTOM_STOP_TOLERANCE = false
+STOP_TOLERANCE_STANDARD = 0.005
+STOP_TOLERANCE_TRANSISTORS = 0.05
+STOP_TOLERANCE_RESISTORS = 0.005
+STOP_TOLERANCE_CAPACITORS = 0.005
 
-STOP_TOLERANCE = 0.05
 SOLVER_MSG = true
 
 
@@ -101,12 +105,13 @@ RAIL_RING_WIDTH = 100
 # -> Grid leeway x/y - extra space outside of component placement for additional routing space
 
 [generate_grid]
-GRID_SIZE = 7000
+GRID_SIZE = 10000
 SCALE_FACTOR =16
 TRACE_WIDTH = 30
 VIA_MINIMUM_DISTANCE = 20
 GRID_LEEWAY_X = 300
 GRID_LEEWAY_Y = 500
+
 # Astar initiator config options
 # -> Run multiple astar - allows a star to be executed with each goal node as initial position to find the shortest path
 # -> Custom net order - allows predefined order of nets in a star execution
@@ -114,8 +119,9 @@ GRID_LEEWAY_Y = 500
 
 [a_star_initiator]
 RUN_MULTIPLE_ASTAR = false
-CUSTOM_NET_ORDER = true
-NET_ORDER = ["I_BIAS","net4","VIN", "net2","VO",  "net1",  "net3", "VIP"]
+CUSTOM_NET_ORDER = false
+TSP_NODE_ORDER = true
+NET_ORDER = ["I_BIAS","net4","VIN", "net2","VO",  "net1",  "net3", "VIP", "net5", "net6"]
 
 
 [DRAW_RESULT]

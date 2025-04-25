@@ -24,9 +24,8 @@ from logger.logger import get_a_logger
 
 class LinearOptimizationSolver:
     logger = get_a_logger(__name__)
+
     def __init__(self, components, component_connections, overlap_components, object_type, overlap):
-
-
         self.current_file_directory = os.path.dirname(os.path.abspath(__file__))
 
         # Load config
@@ -37,47 +36,38 @@ class LinearOptimizationSolver:
         self.UNIT_HEIGHT = self.config["linear_optimization"]["UNIT_HEIGHT"]
         self.UNIT_WIDTH = self.config["linear_optimization"]["UNIT_WIDTH"]
         self.MIRROR = self.config["linear_optimization"]["MIRROR"]
+        # OFFSET
         self.TRANSISTOR_OFFSET_X = self.config["linear_optimization"]["TRANSISTOR_OFFSET_X"]
         self.TRANSISTOR_OFFSET_Y = self.config["linear_optimization"]["TRANSISTOR_OFFSET_Y"]
         self.RESISTOR_OFFSET_X = self.config["linear_optimization"]["RESISTOR_OFFSET_X"]
         self.RESISTOR_OFFSET_Y = self.config["linear_optimization"]["RESISTOR_OFFSET_Y"]
         self.CAPACITOR_OFFSET_X = self.config["linear_optimization"]["CAPACITOR_OFFSET_X"]
         self.CAPACITOR_OFFSET_Y = self.config["linear_optimization"]["CAPACITOR_OFFSET_Y"]
-
+        # STOP TOLERANCE
+        self.CUSTOM_STOP_TOLERANCE = self.config["linear_optimization"]["CUSTOM_STOP_TOLERANCE"]
+        self.STOP_TOLERANCE_STANDARD = self.config["linear_optimization"]["STOP_TOLERANCE_STANDARD"]
+        self.STOP_TOLERANCE_TRANSISTORS = self.config["linear_optimization"]["STOP_TOLERANCE_TRANSISTORS"]
+        self.STOP_TOLERANCE_RESISTORS = self.config["linear_optimization"]["STOP_TOLERANCE_RESISTORS"]
+        self.STOP_TOLERANCE_CAPACITORS = self.config["linear_optimization"]["STOP_TOLERANCE_CAPACITORS"]
         self.RUN = self.config["linear_optimization"]["RUN"]
 
-        self.STOP_TOLERANCE = self.config["linear_optimization"]["STOP_TOLERANCE"]
         self.SOLVER_MSG = self.config["linear_optimization"]["SOLVER_MSG"]
         self.GRID_SIZE = self.config["generate_grid"]["GRID_SIZE"]
         self.VERTICAL_SYMMETRY = self.config["linear_optimization"]["VERTICAL_SYMMETRY"]
         self.HORIZONTAL_SYMMETRY = self.config["linear_optimization"]["HORIZONTAL_SYMMETRY"]
-        # Setup of problem space and solver
-        self.problem_space = pulp.LpProblem("ComponentPlacement", pulp.LpMinimize)
-        self.solver = pulp.SCIP_PY(msg=self.SOLVER_MSG, mip=False, warmStart=False,
-                                   options=[f"limits/gap={self.STOP_TOLERANCE}"])
+
 
         # Inputs
         self.components = components
         self.overlap_components = overlap_components
         self.connections = component_connections
         self.overlap = overlap
-        self.logger.info("COMPONENTS")
-        for c in self.components:
-            self.logger.info(c)
-
-        self.logger.info("OVERLAP COMPONENTS")
-        for c in self.overlap_components:
-            for p in self.overlap_components[c]:
-                self.logger.info(p)
-
-        self.logger.info("CONNECTIONS")
-        for c in self.connections:
-            self.logger.info(c)
-
-
-
+        self.object_type = object_type
 
         # Data structures
+        self.stop_tolerance = 0.001
+        self.x_possible = []
+        self.y_possible = []
         self.functional_components = []
         self.structural_components = []
         self.component_ids = []
@@ -88,31 +78,13 @@ class LinearOptimizationSolver:
         self.height = {}
         self.d_x = {}
         self.d_y = {}
-
-
-
-
-        if object_type == "T":
-            self.OFFSET_X = self.TRANSISTOR_OFFSET_X
-            self.OFFSET_Y = self.TRANSISTOR_OFFSET_Y
-        elif object_type == "R":
-            self.OFFSET_X = self.RESISTOR_OFFSET_X
-            self.OFFSET_Y = self.RESISTOR_OFFSET_Y
-        elif object_type == "C":
-            self.OFFSET_X = self.CAPACITOR_OFFSET_X
-            self.OFFSET_Y = self.CAPACITOR_OFFSET_Y
-        elif object_type == "RC":
-            self.OFFSET_X = max(self.CAPACITOR_OFFSET_X, self.RESISTOR_OFFSET_X)
-            self.OFFSET_Y = max(self.CAPACITOR_OFFSET_Y, self.RESISTOR_OFFSET_Y)
-
-        else:
-            self.OFFSET_X = max(self.CAPACITOR_OFFSET_X, self.RESISTOR_OFFSET_X, self.TRANSISTOR_OFFSET_X)
-            self.OFFSET_Y = max(self.CAPACITOR_OFFSET_Y, self.RESISTOR_OFFSET_Y, self.TRANSISTOR_OFFSET_Y)
-
+        # Setup of problem space and solver
+        self.problem_space = pulp.LpProblem("ComponentPlacement", pulp.LpMinimize)
+        self.solver = pulp.SCIP_PY(msg=self.SOLVER_MSG, mip=False, warmStart=False,
+                                   options=[f"limits/gap={self.stop_tolerance}"])
 
         # Make lists of functional components and structural components
         for comp in self.components:
-
 
             if not isinstance(comp, (Pin, CircuitCell, TraceNet)):
 
@@ -120,15 +92,18 @@ class LinearOptimizationSolver:
                 self.component_names.append(comp.name)
                 self.functional_components.append(comp)
 
-
             else:
                 self.structural_components.append(comp)
 
-        # Constraints
-        self.x_possible, self.y_possible = self.__extract_possible_positions()
-        self.logger.info(self.x_possible)
-        self.logger.info(self.y_possible)
+        self.__get_stop_tolerance()
+        self.__get_offset()
 
+        # Setup of problem space and solver
+        self.problem_space = pulp.LpProblem("ComponentPlacement", pulp.LpMinimize)
+        self.solver = pulp.SCIP_PY(msg=self.SOLVER_MSG, mip=False, warmStart=False,
+                                   options=[f"limits/gap={self.stop_tolerance}"])
+        # Constraints
+        self.__extract_possible_positions()
         self.x = pulp.LpVariable.dicts(f"x_bin", [(i, xv) for i in self.component_ids for xv in self.x_possible],
                                        cat="Binary")
         self.y = pulp.LpVariable.dicts(f"y_bin", [(i, yv) for i in self.component_ids for yv in self.y_possible],
@@ -151,16 +126,44 @@ class LinearOptimizationSolver:
             self.logger.info(f"MIRRORED COMP")
             self.logger.info(f"obj1 {self.mirrored_components}")
 
-
-
-
-
     def __load_config(self, path="pyproject.toml"):
         try:
             with open(path, "rb") as f:
                 return tomllib.load(f)
         except (FileNotFoundError, tomllib.TOMLDecodeError) as e:
             self.logger.error(f"Error loading config: {e}")
+
+    def __get_offset(self):
+        if self.object_type == "T":
+            self.OFFSET_X = self.TRANSISTOR_OFFSET_X
+            self.OFFSET_Y = self.TRANSISTOR_OFFSET_Y
+        elif self.object_type == "R":
+            self.OFFSET_X = self.RESISTOR_OFFSET_X
+            self.OFFSET_Y = self.RESISTOR_OFFSET_Y
+        elif self.object_type == "C":
+            self.OFFSET_X = self.CAPACITOR_OFFSET_X
+            self.OFFSET_Y = self.CAPACITOR_OFFSET_Y
+        elif self.object_type == "RC":
+            self.OFFSET_X = max(self.CAPACITOR_OFFSET_X, self.RESISTOR_OFFSET_X)
+            self.OFFSET_Y = max(self.CAPACITOR_OFFSET_Y, self.RESISTOR_OFFSET_Y)
+
+        else:
+            self.OFFSET_X = max(self.CAPACITOR_OFFSET_X, self.RESISTOR_OFFSET_X, self.TRANSISTOR_OFFSET_X)
+            self.OFFSET_Y = max(self.CAPACITOR_OFFSET_Y, self.RESISTOR_OFFSET_Y, self.TRANSISTOR_OFFSET_Y)
+
+    def __get_stop_tolerance(self):
+        if self.CUSTOM_STOP_TOLERANCE:
+            if self.object_type == "T":
+                self.stop_tolerance = self.STOP_TOLERANCE_TRANSISTORS
+            elif self.object_type == "R":
+                self.stop_tolerance = self.STOP_TOLERANCE_RESISTORS
+            elif self.object_type == "C":
+                self.stop_tolerance = self.STOP_TOLERANCE_CAPACITORS
+            elif self.object_type == "RC":
+                self.stop_tolerance = max(self.STOP_TOLERANCE_RESISTORS, self.STOP_TOLERANCE_CAPACITORS)
+
+        else:
+            self.stop_tolerance = self.STOP_TOLERANCE_STANDARD
 
     def __check_mirrored_components(self) -> list:
         mirrored_objects = []
@@ -170,7 +173,8 @@ class LinearOptimizationSolver:
         for component in self.functional_components:
             group = []
             for component2 in components2:
-                if component.group == component2.group and component != component2 and component.group is not None and component.type == component2.type and component.bounding_box == component2.bounding_box:
+                if (component.group == component2.group and component != component2 and component.group is not None
+                        and component.type == component2.type and component.bounding_box == component2.bounding_box):
                     group.append([component, component2])
 
             if len(group) == 1 and ([group[0][1], group[0][0]]) not in mirrored_objects:
@@ -185,12 +189,12 @@ class LinearOptimizationSolver:
                 for component2 in components2:
 
                     for pair in self.overlap_components["top"]:
-                        if [component.number_id,component2.number_id] == pair.component_ids:
+                        if [component.number_id, component2.number_id] == pair.component_ids:
                             top_check = True
                             break
 
                     for pair in self.overlap_components["side"]:
-                        if [component.number_id,component2.number_id] == pair.component_ids:
+                        if [component.number_id, component2.number_id] == pair.component_ids:
                             side_check = True
                             break
 
@@ -224,12 +228,16 @@ class LinearOptimizationSolver:
     def __element_in_sublist(element: object, big_list: list) -> bool:
         return any(element in small_list for small_list in big_list)
 
-    def __extract_possible_positions(self) -> tuple:
+    def __extract_possible_positions(self):
         x = []
         y = []
-        x_intervals = [self.UNIT_WIDTH,self.OFFSET_X ]
-        y_intervals = [self.UNIT_HEIGHT, self.OFFSET_Y]
+        x_intervals = [self.UNIT_WIDTH]
+        y_intervals = [self.UNIT_HEIGHT]
 
+        if self.OFFSET_X != 0:
+            x_intervals.append(self.OFFSET_X)
+        if self.OFFSET_Y != 0:
+            x_intervals.append(self.OFFSET_Y)
         for component in self.functional_components:
 
             h = component.bounding_box.y2 - component.bounding_box.y1
@@ -261,7 +269,8 @@ class LinearOptimizationSolver:
         y = list(set(y))
         x.sort()
         y.sort()
-        return x, y
+        self.x_possible = x
+        self.y_possible = y
 
     def __get_port_parameters(self, component) -> tuple:
         # staring off utilizing the first point in connections area as point of contact

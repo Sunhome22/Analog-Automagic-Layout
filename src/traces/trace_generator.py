@@ -29,13 +29,16 @@ class TraceRectangle:
     area: RectArea
     lost_points:list
 
-    def __init__(self, area:RectArea, lost_points:list):
+    def __init__(self, area: RectArea, lost_points: list):
         self.area = area
         self.lost_points = lost_points
 # =============================================== Trace Generator ======================================================
 
+
 class TraceGenerator:
+
     logger = get_a_logger(__name__)
+
     def __init__(self, project_properties, components, paths, net_list, used_area):
         self.project_properties = project_properties
         self.project_top_cell_name = project_properties.top_cell_name
@@ -49,7 +52,6 @@ class TraceGenerator:
         self.paths = paths
         self.net_list = net_list
         self.used_area = used_area
-
 
         # Load config
         self.config = self.__load_config()
@@ -76,14 +78,13 @@ class TraceGenerator:
             if isinstance(component, CircuitCell):
                 self.circuit_cell = component
 
-         # Variables for trace generate
+        # Variables for trace generate
         self.scale_offset_x = 0
         self.scale_offset_y = 0
         self.mapped_rectangles = []
         self.adjustment = self.used_area.x1 - self.GRID_LEEWAY_X, self.used_area.y1 - self.GRID_LEEWAY_Y
 
-
-        #Debug
+        # Debug
         self.debug_net = None
 
         self.__generate_rails()
@@ -158,9 +159,6 @@ class TraceGenerator:
             self.scale_offset_x += real_nodes[index][0] - (goal_nodes[index][0]*self.SCALE_FACTOR + self.adjustment[0])
             self.scale_offset_y += real_nodes[index][1] - (goal_nodes[index][1]*self.SCALE_FACTOR + self.adjustment[1])
 
-
-
-
         self.scale_offset_x /= len(goal_nodes) if len(goal_nodes) > 0 else 1
         self.scale_offset_y /= len(goal_nodes) if len(goal_nodes) > 0 else 1
 
@@ -168,11 +166,8 @@ class TraceGenerator:
         self.logger.info(f"Offset x: {self.scale_offset_x}")
         self.logger.info(f"Offset y: {self.scale_offset_y}")
 
-
-
-
     def __calculate_real_coordinates(self, segment):
-        start_x,start_y = segment[0]
+        start_x, start_y = segment[0]
         end_x, end_y = segment[-1]
 
         return ((self.scale_offset_x + self.adjustment[0] + start_x * self.SCALE_FACTOR,
@@ -182,8 +177,8 @@ class TraceGenerator:
 
     def __map_segments_to_rectangles(self, path_info):
         rectangles = []
-        self.__calculate_offset(goal_nodes = path_info["goal_nodes"],
-                           real_nodes = path_info["real_goal_nodes"])
+        self.__calculate_offset(goal_nodes=path_info["goal_nodes"],
+                                real_nodes=path_info["real_goal_nodes"])
 
         for segment in path_info["segments"]:
             start, end = self.__calculate_real_coordinates(segment)
@@ -193,7 +188,6 @@ class TraceGenerator:
 
     def __trace_stretch(self, switch_start : bool, index : int) -> tuple[int,int]:
         length = len(self.mapped_rectangles)
-
 
         match (index, length, switch_start):
 
@@ -210,8 +204,8 @@ class TraceGenerator:
             case _:
                 return -self.TRACE_WIDTH // 2, self.TRACE_WIDTH // 2
 
-
     def __write_traces(self, net):
+
         trace = TraceNet()
         trace.instance = trace.__class__.__name__
         trace.cell = "COMP"
@@ -227,11 +221,11 @@ class TraceGenerator:
                 else:
                     switch_start = False
 
-                stretch_start, stretch_end = self.__trace_stretch(switch_start = switch_start, index = index)
+                stretch_start, stretch_end = self.__trace_stretch(switch_start=switch_start, index=index)
 
                 trace.segments.append(RectAreaLayer(
-                    layer = "m3",
-                    area = RectArea(
+                    layer="m3",
+                    area=RectArea(
                         x1=int(rectangle.area.x1) - self.TRACE_WIDTH // 2,  # Adding width to trace
                         y1=int(rectangle.area.y1 + stretch_start),
                         x2=int(rectangle.area.x2) + self.TRACE_WIDTH // 2,
@@ -291,19 +285,21 @@ class TraceGenerator:
             self.logger.info(net)
             self.logger.info(self.paths[net])
             self.__map_segments_to_rectangles(path_info=self.paths[net])
-            self.__write_traces(net = net)
-            self.__write_labels(net = net)
+            self.__write_traces(net=net)
+            self.__write_labels(net=net)
 
     def get(self):
         return self.components
 
-
-
     """Helper functions"""
+
+
 def direction(p1, p2):
     dx = p2[0] - p1[0]
     dy = p2[1] - p1[1]
     return dx, dy
+
+
 def segment_path(path):
     if path is None or len(path) < 2:
         return []  # No segments for a path with less than 2 points

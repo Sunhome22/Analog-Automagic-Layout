@@ -79,56 +79,49 @@ def main():
         # # #
         # # # # Update component attributes with information from it's associated Magic files
         components = MagicComponentsParser(project_properties=project_properties,
-                                              components=components.get()).get()
+                                           components=components.get()).get()
 
 
 
         # # Algorithms
         # #components = load_from_json(file_name=f"{os.path.dirname(os.path.abspath(__file__))}/results/SpeedTest.json")
-        connections, overlap_dict, net_list= ConnectionLists(input_components = components).get()
+        connections, overlap_dict, net_list = ConnectionLists(input_components=components).get()
 
-        components =  LPInitiator(components, connections,  overlap_dict).initiate_linear_optimization()
-
-
+        components = LPInitiator(components, connections, overlap_dict).initiate_linear_optimization()
 
 
-        # save_to_json(objects=components, file_name=f"{os.path.dirname(os.path.abspath(__file__))}/results/"
-        #                                            f"Components_Placement.json")
-        #
-        grid, scaled_port_coordinates, used_area, port_coordinates, routing_parameters, component_ports= GridGeneration(components=components).initialize_grid_generation()
-        #
-        # for obj in components:
-        #     if isinstance(obj, CircuitCell):
-        #         obj.transform_matrix.set([1, 0, 0, 0, 1, 0])
-        #         obj.bounding_box = used_area
+
+
+        save_to_json(objects=components, file_name=f"{os.path.dirname(os.path.abspath(__file__))}/results/"
+                                                    f"Components_Placement.json")
+
+        grid, scaled_port_coordinates, used_area, port_coordinates, routing_parameters, component_ports = (
+            GridGeneration(components=components).initialize_grid_generation())
 
         logger.info(f"Minimum segment length: {routing_parameters.minimum_segment_length}")
-        path = AstarInitiator(grid = grid,
-                                        connections = connections,
-                                        components = components,
-                                        scaled_port_coordinates = scaled_port_coordinates,
-                                        port_coordinates = port_coordinates,
-                                        net_list = net_list,
-                                        routing_parameters = routing_parameters,
-                                        component_ports = component_ports
-                                        ).get()
+        path = AstarInitiator(grid=grid,
+                              connections=connections,
+                              components=components,
+                              scaled_port_coordinates=scaled_port_coordinates,
+                              port_coordinates=port_coordinates,
+                              net_list=net_list,
+                              routing_parameters=routing_parameters,
+                              component_ports=component_ports
+                              ).get()
 
-        #
-        #
-        #
-        components = TraceGenerator(project_properties= project_properties,
-                                    components = components,
-                                    paths = path,
+        components = TraceGenerator(project_properties=project_properties,
+                                    components=components,
+                                    paths=path,
                                     net_list=net_list,
-                                    used_area= used_area
-                                            ).get()
+                                    used_area=used_area
+                                    ).get()
 
         # #logger.info("Starting Drawing results")
         # #path true:
         # draw_result( components, path, used_area,  "new_test")
-        #path false:
-        #draw_result(grid_size, components, connections, used_area)
-        #logger.info("Finished Drawing results")
+        # path false:
+        # draw_result(grid_size, components, connections, used_area)
+        # logger.info("Finished Drawing results")
 
         save_to_json(objects=components, file_name=f"{os.path.dirname(os.path.abspath(__file__))}/results/"
                                                    f"Full_Run_test.json")
@@ -140,8 +133,6 @@ def main():
                                                    f"Full_test_traces_4.json")
         grid, scaled_port_coordinates, used_area, port_coordinates, routing_parameters, component_ports = GridGeneration(
             components=components).initialize_grid_generation()
-
-
         # Create layout
         MagicLayoutCreator(project_properties=project_properties, components=components)
 
