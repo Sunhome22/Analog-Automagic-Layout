@@ -386,22 +386,18 @@ class SPICEparser:
                                            cell=line_words[-1],
                                            named_cell=f"{line_words[0]}_{line_words[-1]}",
                                            parent_cell=current_cell_name,
-                                           cell_chain=f"",
+                                           cell_chain=f"", # not added yet
                                            group=filtered_group,
-                                           number_id=len(self.components),
+                                           number_id=0, # not added yet
                                            schematic_connections={port_definitions[i]: line_words[i + 1] for i in
                                                                   range(min(len(port_definitions), len(line_words) - 1)
                                                                         )})
                 circuit_cell.instance = circuit_cell.__class__.__name__  # add instance type
-
-                #new_circuit_cell = copy.deepcopy(circuit_cell)
-                #new_circuit_cell.number_id = len(self.components)
                 self.circuit_cells.append(circuit_cell)
-                self.components.append(circuit_cell)
 
     def __add_components_for_each_circuit_cell(self, current_parent_cell):
         """Recursive adding of components within each circuit cell"""
-        counter = 0
+
         for circuit_cell in self.circuit_cells:
 
             if circuit_cell.parent_cell == current_parent_cell:
@@ -435,6 +431,10 @@ class SPICEparser:
                     if not found:
                         break
 
+                circuit_cell.cell_chain = '--'.join(self.cell_chain_list)
+                circuit_cell.number_id = len(self.components)
+                self.components.append(copy.deepcopy(circuit_cell))
+
                 # Extract components inside current cell
                 for line in self.spice_file_content:
                     line_words = line.split()
@@ -451,12 +451,6 @@ class SPICEparser:
                                              parent_cell=circuit_cell.parent_cell,
                                              cell_chain='--'.join(self.cell_chain_list),
                                              current_library=current_library)
-
-                circuit_cell.cell_chain = '--'.join(self.cell_chain_list)
-
-                #new_circuit_cell = copy.deepcopy(circuit_cell)
-
-                #self.components.append(new_circuit_cell)
 
                 print(circuit_cell.cell_chain)
                 self.__add_components_for_each_circuit_cell(current_parent_cell=circuit_cell.cell)

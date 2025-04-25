@@ -28,8 +28,30 @@
         }
     },
     {
-        "instance": "CircuitCell",
+        "instance": "Pin",
         "number_id": 1,
+        "cell": "JNW_BKLE",
+        "named_cell": "UTOP_JNW_BKLE",
+        "parent_cell": "TOP_CELL",
+        "cell_chain": "UTOP_JNW_BKLE",
+        "type": "ipin",
+        "name": "VDD",
+        "layout": ""
+    },
+    {
+        "instance": "Pin",
+        "number_id": 2,
+        "cell": "JNW_BKLE",
+        "named_cell": "UTOP_JNW_BKLE",
+        "parent_cell": "TOP_CELL",
+        "cell_chain": "UTOP_JNW_BKLE",
+        "type": "ipin",
+        "name": "VSS",
+        "layout": ""
+    },
+    {
+        "instance": "CircuitCell",
+        "number_id": 3,
         "name": "U1",
         "cell": "COMP4",
         "named_cell": "U1_COMP4",
@@ -60,108 +82,23 @@
         }
     },
     {
-        "instance": "CircuitCell",
-        "number_id": 2,
-        "name": "U1",
-        "cell": "COMP2",
-        "named_cell": "U1_COMP2",
-        "parent_cell": "COMP4",
-        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U1_COMP2",
-        "group": null,
-        "schematic_connections": {
-            "VDD": "VDD",
-            "VIN": "VO",
-            "VIP": "VO",
-            "VO": "I_BIAS",
-            "I_BIAS": "net5",
-            "VSS": "VSS"
-        },
-        "transform_matrix": {
-            "a": 0,
-            "b": 0,
-            "c": 0,
-            "d": 0,
-            "e": 0,
-            "f": 0
-        },
-        "bounding_box": {
-            "x1": 0,
-            "y1": 0,
-            "x2": 0,
-            "y2": 0
-        }
-    },
-    {
-        "instance": "CircuitCell",
-        "number_id": 3,
-        "name": "U2",
-        "cell": "COMP2",
-        "named_cell": "U2_COMP2",
-        "parent_cell": "COMP4",
-        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U2_COMP2",
-        "group": null,
-        "schematic_connections": {
-            "VDD": "VDD",
-            "VIN": "net6",
-            "VIP": "net7",
-            "VO": "net8",
-            "I_BIAS": "net9",
-            "VSS": "VSS"
-        },
-        "transform_matrix": {
-            "a": 0,
-            "b": 0,
-            "c": 0,
-            "d": 0,
-            "e": 0,
-            "f": 0
-        },
-        "bounding_box": {
-            "x1": 0,
-            "y1": 0,
-            "x2": 0,
-            "y2": 0
-        }
-    },
-    {
-        "instance": "CircuitCell",
+        "instance": "Pin",
         "number_id": 4,
-        "name": "U2",
-        "cell": "COMP3",
-        "named_cell": "U2_COMP3",
-        "parent_cell": "COMP2",
-        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U2_COMP2--U2_COMP3",
-        "group": null,
-        "schematic_connections": {
-            "VDD": "net5",
-            "VIN": "net6",
-            "VIP": "net7",
-            "VO": "net8",
-            "I_BIAS": "net9",
-            "VSS": "net10"
-        },
-        "transform_matrix": {
-            "a": 0,
-            "b": 0,
-            "c": 0,
-            "d": 0,
-            "e": 0,
-            "f": 0
-        },
-        "bounding_box": {
-            "x1": 0,
-            "y1": 0,
-            "x2": 0,
-            "y2": 0
-        }
+        "cell": "COMP4",
+        "named_cell": "U1_COMP4",
+        "parent_cell": "JNW_BKLE",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4",
+        "type": "ipin",
+        "name": "VSS",
+        "layout": ""
     },
     {
         "instance": "Pin",
         "number_id": 5,
-        "cell": "JNW_BKLE",
-        "named_cell": "UTOP_JNW_BKLE",
-        "parent_cell": "TOP_CELL",
-        "cell_chain": "UTOP_JNW_BKLE",
+        "cell": "COMP4",
+        "named_cell": "U1_COMP4",
+        "parent_cell": "JNW_BKLE",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4",
         "type": "ipin",
         "name": "VDD",
         "layout": ""
@@ -169,39 +106,6 @@
     {
         "instance": "Pin",
         "number_id": 6,
-        "cell": "JNW_BKLE",
-        "named_cell": "UTOP_JNW_BKLE",
-        "parent_cell": "TOP_CELL",
-        "cell_chain": "UTOP_JNW_BKLE",
-        "type": "ipin",
-        "name": "VSS",
-        "layout": ""
-    },
-    {
-        "instance": "Pin",
-        "number_id": 7,
-        "cell": "COMP4",
-        "named_cell": "U1_COMP4",
-        "parent_cell": "JNW_BKLE",
-        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4",
-        "type": "ipin",
-        "name": "VSS",
-        "layout": ""
-    },
-    {
-        "instance": "Pin",
-        "number_id": 8,
-        "cell": "COMP4",
-        "named_cell": "U1_COMP4",
-        "parent_cell": "JNW_BKLE",
-        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4",
-        "type": "ipin",
-        "name": "VDD",
-        "layout": ""
-    },
-    {
-        "instance": "Pin",
-        "number_id": 9,
         "cell": "COMP4",
         "named_cell": "U1_COMP4",
         "parent_cell": "JNW_BKLE",
@@ -212,7 +116,7 @@
     },
     {
         "instance": "Pin",
-        "number_id": 10,
+        "number_id": 7,
         "cell": "COMP4",
         "named_cell": "U1_COMP4",
         "parent_cell": "JNW_BKLE",
@@ -223,7 +127,7 @@
     },
     {
         "instance": "Pin",
-        "number_id": 11,
+        "number_id": 8,
         "cell": "COMP4",
         "named_cell": "U1_COMP4",
         "parent_cell": "JNW_BKLE",
@@ -234,7 +138,7 @@
     },
     {
         "instance": "Pin",
-        "number_id": 12,
+        "number_id": 9,
         "cell": "COMP4",
         "named_cell": "U1_COMP4",
         "parent_cell": "JNW_BKLE",
@@ -245,7 +149,7 @@
     },
     {
         "instance": "Transistor",
-        "number_id": 13,
+        "number_id": 10,
         "name": "MN1",
         "type": "nmos",
         "cell": "COMP4",
@@ -331,7 +235,7 @@
     },
     {
         "instance": "Transistor",
-        "number_id": 14,
+        "number_id": 11,
         "name": "MN2",
         "type": "nmos",
         "cell": "COMP4",
@@ -417,7 +321,7 @@
     },
     {
         "instance": "Transistor",
-        "number_id": 15,
+        "number_id": 12,
         "name": "MP5",
         "type": "pmos",
         "cell": "COMP4",
@@ -428,6 +332,264 @@
         "schematic_connections": {
             "D": "net2",
             "G": "net2",
+            "S": "VDD",
+            "B": "VDD"
+        },
+        "layout_name": "JNWATR_PCH_12C5F0",
+        "layout_library": "JNW_ATR_SKY130A",
+        "layout_ports": [
+            {
+                "type": "G",
+                "layer": "m1",
+                "area": {
+                    "x1": 80,
+                    "y1": 180,
+                    "x2": 112,
+                    "y2": 220
+                }
+            },
+            {
+                "type": "S",
+                "layer": "m1",
+                "area": {
+                    "x1": 144,
+                    "y1": 300,
+                    "x2": 240,
+                    "y2": 340
+                }
+            },
+            {
+                "type": "B",
+                "layer": "locali",
+                "area": {
+                    "x1": -48,
+                    "y1": 180,
+                    "x2": 48,
+                    "y2": 220
+                }
+            },
+            {
+                "type": "D",
+                "layer": "m1",
+                "area": {
+                    "x1": 592,
+                    "y1": 20,
+                    "x2": 688,
+                    "y2": 60
+                }
+            }
+        ],
+        "transform_matrix": {
+            "a": 0,
+            "b": 0,
+            "c": 0,
+            "d": 0,
+            "e": 0,
+            "f": 0
+        },
+        "bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 832,
+            "y2": 400
+        },
+        "overlap_distance": {
+            "x": 0,
+            "y": 0
+        },
+        "group_endpoint": "",
+        "group_endpoint_bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 832,
+            "y2": 240
+        }
+    },
+    {
+        "instance": "Transistor",
+        "number_id": 13,
+        "name": "MP6",
+        "type": "pmos",
+        "cell": "COMP4",
+        "named_cell": "U1_COMP4",
+        "parent_cell": "JNW_BKLE",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4",
+        "group": "load1",
+        "schematic_connections": {
+            "D": "VO",
+            "G": "net2",
+            "S": "VDD",
+            "B": "VDD"
+        },
+        "layout_name": "JNWATR_PCH_12C5F0",
+        "layout_library": "JNW_ATR_SKY130A",
+        "layout_ports": [
+            {
+                "type": "G",
+                "layer": "m1",
+                "area": {
+                    "x1": 80,
+                    "y1": 180,
+                    "x2": 112,
+                    "y2": 220
+                }
+            },
+            {
+                "type": "S",
+                "layer": "m1",
+                "area": {
+                    "x1": 144,
+                    "y1": 300,
+                    "x2": 240,
+                    "y2": 340
+                }
+            },
+            {
+                "type": "B",
+                "layer": "locali",
+                "area": {
+                    "x1": -48,
+                    "y1": 180,
+                    "x2": 48,
+                    "y2": 220
+                }
+            },
+            {
+                "type": "D",
+                "layer": "m1",
+                "area": {
+                    "x1": 592,
+                    "y1": 20,
+                    "x2": 688,
+                    "y2": 60
+                }
+            }
+        ],
+        "transform_matrix": {
+            "a": 0,
+            "b": 0,
+            "c": 0,
+            "d": 0,
+            "e": 0,
+            "f": 0
+        },
+        "bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 832,
+            "y2": 400
+        },
+        "overlap_distance": {
+            "x": 0,
+            "y": 0
+        },
+        "group_endpoint": "",
+        "group_endpoint_bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 832,
+            "y2": 240
+        }
+    },
+    {
+        "instance": "Transistor",
+        "number_id": 14,
+        "name": "MP1",
+        "type": "pmos",
+        "cell": "COMP4",
+        "named_cell": "U1_COMP4",
+        "parent_cell": "JNW_BKLE",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4",
+        "group": "load1",
+        "schematic_connections": {
+            "D": "net4",
+            "G": "net3",
+            "S": "VDD",
+            "B": "VDD"
+        },
+        "layout_name": "JNWATR_PCH_12C5F0",
+        "layout_library": "JNW_ATR_SKY130A",
+        "layout_ports": [
+            {
+                "type": "G",
+                "layer": "m1",
+                "area": {
+                    "x1": 80,
+                    "y1": 180,
+                    "x2": 112,
+                    "y2": 220
+                }
+            },
+            {
+                "type": "S",
+                "layer": "m1",
+                "area": {
+                    "x1": 144,
+                    "y1": 300,
+                    "x2": 240,
+                    "y2": 340
+                }
+            },
+            {
+                "type": "B",
+                "layer": "locali",
+                "area": {
+                    "x1": -48,
+                    "y1": 180,
+                    "x2": 48,
+                    "y2": 220
+                }
+            },
+            {
+                "type": "D",
+                "layer": "m1",
+                "area": {
+                    "x1": 592,
+                    "y1": 20,
+                    "x2": 688,
+                    "y2": 60
+                }
+            }
+        ],
+        "transform_matrix": {
+            "a": 0,
+            "b": 0,
+            "c": 0,
+            "d": 0,
+            "e": 0,
+            "f": 0
+        },
+        "bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 832,
+            "y2": 400
+        },
+        "overlap_distance": {
+            "x": 0,
+            "y": 0
+        },
+        "group_endpoint": "",
+        "group_endpoint_bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 832,
+            "y2": 240
+        }
+    },
+    {
+        "instance": "Transistor",
+        "number_id": 15,
+        "name": "MP2",
+        "type": "pmos",
+        "cell": "COMP4",
+        "named_cell": "U1_COMP4",
+        "parent_cell": "JNW_BKLE",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4",
+        "group": "load1",
+        "schematic_connections": {
+            "D": "net3",
+            "G": "net3",
             "S": "VDD",
             "B": "VDD"
         },
@@ -504,264 +666,6 @@
     {
         "instance": "Transistor",
         "number_id": 16,
-        "name": "MP6",
-        "type": "pmos",
-        "cell": "COMP4",
-        "named_cell": "U1_COMP4",
-        "parent_cell": "JNW_BKLE",
-        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4",
-        "group": "load1",
-        "schematic_connections": {
-            "D": "VO",
-            "G": "net2",
-            "S": "VDD",
-            "B": "VDD"
-        },
-        "layout_name": "JNWATR_PCH_12C5F0",
-        "layout_library": "JNW_ATR_SKY130A",
-        "layout_ports": [
-            {
-                "type": "G",
-                "layer": "m1",
-                "area": {
-                    "x1": 80,
-                    "y1": 180,
-                    "x2": 112,
-                    "y2": 220
-                }
-            },
-            {
-                "type": "S",
-                "layer": "m1",
-                "area": {
-                    "x1": 144,
-                    "y1": 300,
-                    "x2": 240,
-                    "y2": 340
-                }
-            },
-            {
-                "type": "B",
-                "layer": "locali",
-                "area": {
-                    "x1": -48,
-                    "y1": 180,
-                    "x2": 48,
-                    "y2": 220
-                }
-            },
-            {
-                "type": "D",
-                "layer": "m1",
-                "area": {
-                    "x1": 592,
-                    "y1": 20,
-                    "x2": 688,
-                    "y2": 60
-                }
-            }
-        ],
-        "transform_matrix": {
-            "a": 0,
-            "b": 0,
-            "c": 0,
-            "d": 0,
-            "e": 0,
-            "f": 0
-        },
-        "bounding_box": {
-            "x1": 0,
-            "y1": 0,
-            "x2": 832,
-            "y2": 400
-        },
-        "overlap_distance": {
-            "x": 0,
-            "y": 0
-        },
-        "group_endpoint": "",
-        "group_endpoint_bounding_box": {
-            "x1": 0,
-            "y1": 0,
-            "x2": 832,
-            "y2": 240
-        }
-    },
-    {
-        "instance": "Transistor",
-        "number_id": 17,
-        "name": "MP1",
-        "type": "pmos",
-        "cell": "COMP4",
-        "named_cell": "U1_COMP4",
-        "parent_cell": "JNW_BKLE",
-        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4",
-        "group": "load1",
-        "schematic_connections": {
-            "D": "net4",
-            "G": "net3",
-            "S": "VDD",
-            "B": "VDD"
-        },
-        "layout_name": "JNWATR_PCH_12C5F0",
-        "layout_library": "JNW_ATR_SKY130A",
-        "layout_ports": [
-            {
-                "type": "G",
-                "layer": "m1",
-                "area": {
-                    "x1": 80,
-                    "y1": 180,
-                    "x2": 112,
-                    "y2": 220
-                }
-            },
-            {
-                "type": "S",
-                "layer": "m1",
-                "area": {
-                    "x1": 144,
-                    "y1": 300,
-                    "x2": 240,
-                    "y2": 340
-                }
-            },
-            {
-                "type": "B",
-                "layer": "locali",
-                "area": {
-                    "x1": -48,
-                    "y1": 180,
-                    "x2": 48,
-                    "y2": 220
-                }
-            },
-            {
-                "type": "D",
-                "layer": "m1",
-                "area": {
-                    "x1": 592,
-                    "y1": 20,
-                    "x2": 688,
-                    "y2": 60
-                }
-            }
-        ],
-        "transform_matrix": {
-            "a": 0,
-            "b": 0,
-            "c": 0,
-            "d": 0,
-            "e": 0,
-            "f": 0
-        },
-        "bounding_box": {
-            "x1": 0,
-            "y1": 0,
-            "x2": 832,
-            "y2": 400
-        },
-        "overlap_distance": {
-            "x": 0,
-            "y": 0
-        },
-        "group_endpoint": "",
-        "group_endpoint_bounding_box": {
-            "x1": 0,
-            "y1": 0,
-            "x2": 832,
-            "y2": 240
-        }
-    },
-    {
-        "instance": "Transistor",
-        "number_id": 18,
-        "name": "MP2",
-        "type": "pmos",
-        "cell": "COMP4",
-        "named_cell": "U1_COMP4",
-        "parent_cell": "JNW_BKLE",
-        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4",
-        "group": "load1",
-        "schematic_connections": {
-            "D": "net3",
-            "G": "net3",
-            "S": "VDD",
-            "B": "VDD"
-        },
-        "layout_name": "JNWATR_PCH_12C5F0",
-        "layout_library": "JNW_ATR_SKY130A",
-        "layout_ports": [
-            {
-                "type": "G",
-                "layer": "m1",
-                "area": {
-                    "x1": 80,
-                    "y1": 180,
-                    "x2": 112,
-                    "y2": 220
-                }
-            },
-            {
-                "type": "S",
-                "layer": "m1",
-                "area": {
-                    "x1": 144,
-                    "y1": 300,
-                    "x2": 240,
-                    "y2": 340
-                }
-            },
-            {
-                "type": "B",
-                "layer": "locali",
-                "area": {
-                    "x1": -48,
-                    "y1": 180,
-                    "x2": 48,
-                    "y2": 220
-                }
-            },
-            {
-                "type": "D",
-                "layer": "m1",
-                "area": {
-                    "x1": 592,
-                    "y1": 20,
-                    "x2": 688,
-                    "y2": 60
-                }
-            }
-        ],
-        "transform_matrix": {
-            "a": 0,
-            "b": 0,
-            "c": 0,
-            "d": 0,
-            "e": 0,
-            "f": 0
-        },
-        "bounding_box": {
-            "x1": 0,
-            "y1": 0,
-            "x2": 832,
-            "y2": 400
-        },
-        "overlap_distance": {
-            "x": 0,
-            "y": 0
-        },
-        "group_endpoint": "",
-        "group_endpoint_bounding_box": {
-            "x1": 0,
-            "y1": 0,
-            "x2": 832,
-            "y2": 240
-        }
-    },
-    {
-        "instance": "Transistor",
-        "number_id": 19,
         "name": "MN4",
         "type": "nmos",
         "cell": "COMP4",
@@ -772,6 +676,264 @@
         "schematic_connections": {
             "D": "net1",
             "G": "I_BIAS",
+            "S": "VSS",
+            "B": "VSS"
+        },
+        "layout_name": "JNWATR_NCH_4C5F0",
+        "layout_library": "JNW_ATR_SKY130A",
+        "layout_ports": [
+            {
+                "type": "G",
+                "layer": "m1",
+                "area": {
+                    "x1": 80,
+                    "y1": 180,
+                    "x2": 112,
+                    "y2": 220
+                }
+            },
+            {
+                "type": "S",
+                "layer": "m1",
+                "area": {
+                    "x1": 144,
+                    "y1": 300,
+                    "x2": 240,
+                    "y2": 340
+                }
+            },
+            {
+                "type": "B",
+                "layer": "locali",
+                "area": {
+                    "x1": -48,
+                    "y1": 180,
+                    "x2": 48,
+                    "y2": 220
+                }
+            },
+            {
+                "type": "D",
+                "layer": "m1",
+                "area": {
+                    "x1": 336,
+                    "y1": 20,
+                    "x2": 432,
+                    "y2": 60
+                }
+            }
+        ],
+        "transform_matrix": {
+            "a": 0,
+            "b": 0,
+            "c": 0,
+            "d": 0,
+            "e": 0,
+            "f": 0
+        },
+        "bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 576,
+            "y2": 400
+        },
+        "overlap_distance": {
+            "x": 0,
+            "y": 0
+        },
+        "group_endpoint": "",
+        "group_endpoint_bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 576,
+            "y2": 240
+        }
+    },
+    {
+        "instance": "Transistor",
+        "number_id": 17,
+        "name": "MN3",
+        "type": "nmos",
+        "cell": "COMP4",
+        "named_cell": "U1_COMP4",
+        "parent_cell": "JNW_BKLE",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4",
+        "group": "mirror2",
+        "schematic_connections": {
+            "D": "I_BIAS",
+            "G": "I_BIAS",
+            "S": "VSS",
+            "B": "VSS"
+        },
+        "layout_name": "JNWATR_NCH_4C5F0",
+        "layout_library": "JNW_ATR_SKY130A",
+        "layout_ports": [
+            {
+                "type": "G",
+                "layer": "m1",
+                "area": {
+                    "x1": 80,
+                    "y1": 180,
+                    "x2": 112,
+                    "y2": 220
+                }
+            },
+            {
+                "type": "S",
+                "layer": "m1",
+                "area": {
+                    "x1": 144,
+                    "y1": 300,
+                    "x2": 240,
+                    "y2": 340
+                }
+            },
+            {
+                "type": "B",
+                "layer": "locali",
+                "area": {
+                    "x1": -48,
+                    "y1": 180,
+                    "x2": 48,
+                    "y2": 220
+                }
+            },
+            {
+                "type": "D",
+                "layer": "m1",
+                "area": {
+                    "x1": 336,
+                    "y1": 20,
+                    "x2": 432,
+                    "y2": 60
+                }
+            }
+        ],
+        "transform_matrix": {
+            "a": 0,
+            "b": 0,
+            "c": 0,
+            "d": 0,
+            "e": 0,
+            "f": 0
+        },
+        "bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 576,
+            "y2": 400
+        },
+        "overlap_distance": {
+            "x": 0,
+            "y": 0
+        },
+        "group_endpoint": "",
+        "group_endpoint_bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 576,
+            "y2": 240
+        }
+    },
+    {
+        "instance": "Transistor",
+        "number_id": 18,
+        "name": "MN5",
+        "type": "nmos",
+        "cell": "COMP4",
+        "named_cell": "U1_COMP4",
+        "parent_cell": "JNW_BKLE",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4",
+        "group": "mirror1",
+        "schematic_connections": {
+            "D": "net4",
+            "G": "net4",
+            "S": "VSS",
+            "B": "VSS"
+        },
+        "layout_name": "JNWATR_NCH_4C5F0",
+        "layout_library": "JNW_ATR_SKY130A",
+        "layout_ports": [
+            {
+                "type": "G",
+                "layer": "m1",
+                "area": {
+                    "x1": 80,
+                    "y1": 180,
+                    "x2": 112,
+                    "y2": 220
+                }
+            },
+            {
+                "type": "S",
+                "layer": "m1",
+                "area": {
+                    "x1": 144,
+                    "y1": 300,
+                    "x2": 240,
+                    "y2": 340
+                }
+            },
+            {
+                "type": "B",
+                "layer": "locali",
+                "area": {
+                    "x1": -48,
+                    "y1": 180,
+                    "x2": 48,
+                    "y2": 220
+                }
+            },
+            {
+                "type": "D",
+                "layer": "m1",
+                "area": {
+                    "x1": 336,
+                    "y1": 20,
+                    "x2": 432,
+                    "y2": 60
+                }
+            }
+        ],
+        "transform_matrix": {
+            "a": 0,
+            "b": 0,
+            "c": 0,
+            "d": 0,
+            "e": 0,
+            "f": 0
+        },
+        "bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 576,
+            "y2": 400
+        },
+        "overlap_distance": {
+            "x": 0,
+            "y": 0
+        },
+        "group_endpoint": "",
+        "group_endpoint_bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 576,
+            "y2": 240
+        }
+    },
+    {
+        "instance": "Transistor",
+        "number_id": 19,
+        "name": "MN6",
+        "type": "nmos",
+        "cell": "COMP4",
+        "named_cell": "U1_COMP4",
+        "parent_cell": "JNW_BKLE",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4",
+        "group": "mirror1",
+        "schematic_connections": {
+            "D": "VO",
+            "G": "net4",
             "S": "VSS",
             "B": "VSS"
         },
@@ -848,264 +1010,6 @@
     {
         "instance": "Transistor",
         "number_id": 20,
-        "name": "MN3",
-        "type": "nmos",
-        "cell": "COMP4",
-        "named_cell": "U1_COMP4",
-        "parent_cell": "JNW_BKLE",
-        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4",
-        "group": "mirror2",
-        "schematic_connections": {
-            "D": "I_BIAS",
-            "G": "I_BIAS",
-            "S": "VSS",
-            "B": "VSS"
-        },
-        "layout_name": "JNWATR_NCH_4C5F0",
-        "layout_library": "JNW_ATR_SKY130A",
-        "layout_ports": [
-            {
-                "type": "G",
-                "layer": "m1",
-                "area": {
-                    "x1": 80,
-                    "y1": 180,
-                    "x2": 112,
-                    "y2": 220
-                }
-            },
-            {
-                "type": "S",
-                "layer": "m1",
-                "area": {
-                    "x1": 144,
-                    "y1": 300,
-                    "x2": 240,
-                    "y2": 340
-                }
-            },
-            {
-                "type": "B",
-                "layer": "locali",
-                "area": {
-                    "x1": -48,
-                    "y1": 180,
-                    "x2": 48,
-                    "y2": 220
-                }
-            },
-            {
-                "type": "D",
-                "layer": "m1",
-                "area": {
-                    "x1": 336,
-                    "y1": 20,
-                    "x2": 432,
-                    "y2": 60
-                }
-            }
-        ],
-        "transform_matrix": {
-            "a": 0,
-            "b": 0,
-            "c": 0,
-            "d": 0,
-            "e": 0,
-            "f": 0
-        },
-        "bounding_box": {
-            "x1": 0,
-            "y1": 0,
-            "x2": 576,
-            "y2": 400
-        },
-        "overlap_distance": {
-            "x": 0,
-            "y": 0
-        },
-        "group_endpoint": "",
-        "group_endpoint_bounding_box": {
-            "x1": 0,
-            "y1": 0,
-            "x2": 576,
-            "y2": 240
-        }
-    },
-    {
-        "instance": "Transistor",
-        "number_id": 21,
-        "name": "MN5",
-        "type": "nmos",
-        "cell": "COMP4",
-        "named_cell": "U1_COMP4",
-        "parent_cell": "JNW_BKLE",
-        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4",
-        "group": "mirror1",
-        "schematic_connections": {
-            "D": "net4",
-            "G": "net4",
-            "S": "VSS",
-            "B": "VSS"
-        },
-        "layout_name": "JNWATR_NCH_4C5F0",
-        "layout_library": "JNW_ATR_SKY130A",
-        "layout_ports": [
-            {
-                "type": "G",
-                "layer": "m1",
-                "area": {
-                    "x1": 80,
-                    "y1": 180,
-                    "x2": 112,
-                    "y2": 220
-                }
-            },
-            {
-                "type": "S",
-                "layer": "m1",
-                "area": {
-                    "x1": 144,
-                    "y1": 300,
-                    "x2": 240,
-                    "y2": 340
-                }
-            },
-            {
-                "type": "B",
-                "layer": "locali",
-                "area": {
-                    "x1": -48,
-                    "y1": 180,
-                    "x2": 48,
-                    "y2": 220
-                }
-            },
-            {
-                "type": "D",
-                "layer": "m1",
-                "area": {
-                    "x1": 336,
-                    "y1": 20,
-                    "x2": 432,
-                    "y2": 60
-                }
-            }
-        ],
-        "transform_matrix": {
-            "a": 0,
-            "b": 0,
-            "c": 0,
-            "d": 0,
-            "e": 0,
-            "f": 0
-        },
-        "bounding_box": {
-            "x1": 0,
-            "y1": 0,
-            "x2": 576,
-            "y2": 400
-        },
-        "overlap_distance": {
-            "x": 0,
-            "y": 0
-        },
-        "group_endpoint": "",
-        "group_endpoint_bounding_box": {
-            "x1": 0,
-            "y1": 0,
-            "x2": 576,
-            "y2": 240
-        }
-    },
-    {
-        "instance": "Transistor",
-        "number_id": 22,
-        "name": "MN6",
-        "type": "nmos",
-        "cell": "COMP4",
-        "named_cell": "U1_COMP4",
-        "parent_cell": "JNW_BKLE",
-        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4",
-        "group": "mirror1",
-        "schematic_connections": {
-            "D": "VO",
-            "G": "net4",
-            "S": "VSS",
-            "B": "VSS"
-        },
-        "layout_name": "JNWATR_NCH_4C5F0",
-        "layout_library": "JNW_ATR_SKY130A",
-        "layout_ports": [
-            {
-                "type": "G",
-                "layer": "m1",
-                "area": {
-                    "x1": 80,
-                    "y1": 180,
-                    "x2": 112,
-                    "y2": 220
-                }
-            },
-            {
-                "type": "S",
-                "layer": "m1",
-                "area": {
-                    "x1": 144,
-                    "y1": 300,
-                    "x2": 240,
-                    "y2": 340
-                }
-            },
-            {
-                "type": "B",
-                "layer": "locali",
-                "area": {
-                    "x1": -48,
-                    "y1": 180,
-                    "x2": 48,
-                    "y2": 220
-                }
-            },
-            {
-                "type": "D",
-                "layer": "m1",
-                "area": {
-                    "x1": 336,
-                    "y1": 20,
-                    "x2": 432,
-                    "y2": 60
-                }
-            }
-        ],
-        "transform_matrix": {
-            "a": 0,
-            "b": 0,
-            "c": 0,
-            "d": 0,
-            "e": 0,
-            "f": 0
-        },
-        "bounding_box": {
-            "x1": 0,
-            "y1": 0,
-            "x2": 576,
-            "y2": 400
-        },
-        "overlap_distance": {
-            "x": 0,
-            "y": 0
-        },
-        "group_endpoint": "",
-        "group_endpoint_bounding_box": {
-            "x1": 0,
-            "y1": 0,
-            "x2": 576,
-            "y2": 240
-        }
-    },
-    {
-        "instance": "Transistor",
-        "number_id": 23,
         "name": "MP3",
         "type": "pmos",
         "cell": "COMP4",
@@ -1191,7 +1095,7 @@
     },
     {
         "instance": "Transistor",
-        "number_id": 24,
+        "number_id": 21,
         "name": "MP4",
         "type": "pmos",
         "cell": "COMP4",
@@ -1276,80 +1180,112 @@
         }
     },
     {
-        "instance": "Pin",
-        "number_id": 25,
+        "instance": "CircuitCell",
+        "number_id": 22,
+        "name": "U3",
         "cell": "COMP2",
-        "named_cell": "U1_COMP2",
+        "named_cell": "U3_COMP2",
         "parent_cell": "COMP4",
-        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U1_COMP2",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U3_COMP2",
+        "group": null,
+        "schematic_connections": {
+            "VDD": "VDD",
+            "VIN": "VO",
+            "VIP": "VO",
+            "VO": "I_BIAS",
+            "I_BIAS": "net5",
+            "VSS": "VSS"
+        },
+        "transform_matrix": {
+            "a": 0,
+            "b": 0,
+            "c": 0,
+            "d": 0,
+            "e": 0,
+            "f": 0
+        },
+        "bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 0,
+            "y2": 0
+        }
+    },
+    {
+        "instance": "Pin",
+        "number_id": 23,
+        "cell": "COMP2",
+        "named_cell": "U3_COMP2",
+        "parent_cell": "COMP4",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U3_COMP2",
         "type": "ipin",
         "name": "VSS",
         "layout": ""
     },
     {
         "instance": "Pin",
-        "number_id": 26,
+        "number_id": 24,
         "cell": "COMP2",
-        "named_cell": "U1_COMP2",
+        "named_cell": "U3_COMP2",
         "parent_cell": "COMP4",
-        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U1_COMP2",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U3_COMP2",
         "type": "ipin",
         "name": "VDD",
         "layout": ""
     },
     {
         "instance": "Pin",
-        "number_id": 27,
+        "number_id": 25,
         "cell": "COMP2",
-        "named_cell": "U1_COMP2",
+        "named_cell": "U3_COMP2",
         "parent_cell": "COMP4",
-        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U1_COMP2",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U3_COMP2",
         "type": "ipin",
         "name": "VIP",
         "layout": ""
     },
     {
         "instance": "Pin",
-        "number_id": 28,
+        "number_id": 26,
         "cell": "COMP2",
-        "named_cell": "U1_COMP2",
+        "named_cell": "U3_COMP2",
         "parent_cell": "COMP4",
-        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U1_COMP2",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U3_COMP2",
         "type": "ipin",
         "name": "VIN",
         "layout": ""
     },
     {
         "instance": "Pin",
-        "number_id": 29,
+        "number_id": 27,
         "cell": "COMP2",
-        "named_cell": "U1_COMP2",
+        "named_cell": "U3_COMP2",
         "parent_cell": "COMP4",
-        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U1_COMP2",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U3_COMP2",
         "type": "opin",
         "name": "VO",
         "layout": ""
     },
     {
         "instance": "Pin",
-        "number_id": 30,
+        "number_id": 28,
         "cell": "COMP2",
-        "named_cell": "U1_COMP2",
+        "named_cell": "U3_COMP2",
         "parent_cell": "COMP4",
-        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U1_COMP2",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U3_COMP2",
         "type": "ipin",
         "name": "I_BIAS",
         "layout": ""
     },
     {
         "instance": "Transistor",
-        "number_id": 31,
+        "number_id": 29,
         "name": "MN1",
         "type": "nmos",
         "cell": "COMP2",
-        "named_cell": "U1_COMP2",
+        "named_cell": "U3_COMP2",
         "parent_cell": "COMP4",
-        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U1_COMP2",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U3_COMP2",
         "group": "diff1",
         "schematic_connections": {
             "D": "net3",
@@ -1429,13 +1365,13 @@
     },
     {
         "instance": "Transistor",
-        "number_id": 32,
+        "number_id": 30,
         "name": "MN2",
         "type": "nmos",
         "cell": "COMP2",
-        "named_cell": "U1_COMP2",
+        "named_cell": "U3_COMP2",
         "parent_cell": "COMP4",
-        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U1_COMP2",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U3_COMP2",
         "group": "diff1",
         "schematic_connections": {
             "D": "net2",
@@ -1515,13 +1451,13 @@
     },
     {
         "instance": "Transistor",
-        "number_id": 33,
+        "number_id": 31,
         "name": "MP5",
         "type": "pmos",
         "cell": "COMP2",
-        "named_cell": "U1_COMP2",
+        "named_cell": "U3_COMP2",
         "parent_cell": "COMP4",
-        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U1_COMP2",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U3_COMP2",
         "group": "load1",
         "schematic_connections": {
             "D": "net2",
@@ -1601,13 +1537,13 @@
     },
     {
         "instance": "Transistor",
-        "number_id": 34,
+        "number_id": 32,
         "name": "MP6",
         "type": "pmos",
         "cell": "COMP2",
-        "named_cell": "U1_COMP2",
+        "named_cell": "U3_COMP2",
         "parent_cell": "COMP4",
-        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U1_COMP2",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U3_COMP2",
         "group": "load1",
         "schematic_connections": {
             "D": "VO",
@@ -1687,13 +1623,13 @@
     },
     {
         "instance": "Transistor",
-        "number_id": 35,
+        "number_id": 33,
         "name": "MP1",
         "type": "pmos",
         "cell": "COMP2",
-        "named_cell": "U1_COMP2",
+        "named_cell": "U3_COMP2",
         "parent_cell": "COMP4",
-        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U1_COMP2",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U3_COMP2",
         "group": "load1",
         "schematic_connections": {
             "D": "net4",
@@ -1773,13 +1709,13 @@
     },
     {
         "instance": "Transistor",
-        "number_id": 36,
+        "number_id": 34,
         "name": "MP2",
         "type": "pmos",
         "cell": "COMP2",
-        "named_cell": "U1_COMP2",
+        "named_cell": "U3_COMP2",
         "parent_cell": "COMP4",
-        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U1_COMP2",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U3_COMP2",
         "group": "load1",
         "schematic_connections": {
             "D": "net3",
@@ -1859,13 +1795,13 @@
     },
     {
         "instance": "Transistor",
-        "number_id": 37,
+        "number_id": 35,
         "name": "MN4",
         "type": "nmos",
         "cell": "COMP2",
-        "named_cell": "U1_COMP2",
+        "named_cell": "U3_COMP2",
         "parent_cell": "COMP4",
-        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U1_COMP2",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U3_COMP2",
         "group": "mirror2",
         "schematic_connections": {
             "D": "net1",
@@ -1945,13 +1881,13 @@
     },
     {
         "instance": "Transistor",
-        "number_id": 38,
+        "number_id": 36,
         "name": "MN3",
         "type": "nmos",
         "cell": "COMP2",
-        "named_cell": "U1_COMP2",
+        "named_cell": "U3_COMP2",
         "parent_cell": "COMP4",
-        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U1_COMP2",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U3_COMP2",
         "group": "mirror2",
         "schematic_connections": {
             "D": "I_BIAS",
@@ -2031,13 +1967,13 @@
     },
     {
         "instance": "Transistor",
-        "number_id": 39,
+        "number_id": 37,
         "name": "MN5",
         "type": "nmos",
         "cell": "COMP2",
-        "named_cell": "U1_COMP2",
+        "named_cell": "U3_COMP2",
         "parent_cell": "COMP4",
-        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U1_COMP2",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U3_COMP2",
         "group": "mirror1",
         "schematic_connections": {
             "D": "net4",
@@ -2117,13 +2053,13 @@
     },
     {
         "instance": "Transistor",
-        "number_id": 40,
+        "number_id": 38,
         "name": "MN6",
         "type": "nmos",
         "cell": "COMP2",
-        "named_cell": "U1_COMP2",
+        "named_cell": "U3_COMP2",
         "parent_cell": "COMP4",
-        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U1_COMP2",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U3_COMP2",
         "group": "mirror1",
         "schematic_connections": {
             "D": "VO",
@@ -2203,13 +2139,13 @@
     },
     {
         "instance": "Transistor",
-        "number_id": 41,
+        "number_id": 39,
         "name": "MP3",
         "type": "pmos",
         "cell": "COMP2",
-        "named_cell": "U1_COMP2",
+        "named_cell": "U3_COMP2",
         "parent_cell": "COMP4",
-        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U1_COMP2",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U3_COMP2",
         "group": "load1",
         "schematic_connections": {
             "D": "net3",
@@ -2289,13 +2225,13 @@
     },
     {
         "instance": "Transistor",
-        "number_id": 42,
+        "number_id": 40,
         "name": "MP4",
         "type": "pmos",
         "cell": "COMP2",
-        "named_cell": "U1_COMP2",
+        "named_cell": "U3_COMP2",
         "parent_cell": "COMP4",
-        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U1_COMP2",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U3_COMP2",
         "group": "load1",
         "schematic_connections": {
             "D": "net2",
@@ -2374,80 +2310,112 @@
         }
     },
     {
-        "instance": "Pin",
-        "number_id": 43,
+        "instance": "CircuitCell",
+        "number_id": 41,
+        "name": "U1",
         "cell": "COMP3",
-        "named_cell": "U2_COMP3",
+        "named_cell": "U1_COMP3",
         "parent_cell": "COMP2",
-        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U1_COMP2--U2_COMP3",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U3_COMP2--U1_COMP3",
+        "group": null,
+        "schematic_connections": {
+            "VDD": "net5",
+            "VIN": "net6",
+            "VIP": "net7",
+            "VO": "net8",
+            "I_BIAS": "net9",
+            "VSS": "net10"
+        },
+        "transform_matrix": {
+            "a": 0,
+            "b": 0,
+            "c": 0,
+            "d": 0,
+            "e": 0,
+            "f": 0
+        },
+        "bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 0,
+            "y2": 0
+        }
+    },
+    {
+        "instance": "Pin",
+        "number_id": 42,
+        "cell": "COMP3",
+        "named_cell": "U1_COMP3",
+        "parent_cell": "COMP2",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U3_COMP2--U1_COMP3",
         "type": "ipin",
         "name": "VSS",
         "layout": ""
     },
     {
         "instance": "Pin",
-        "number_id": 44,
+        "number_id": 43,
         "cell": "COMP3",
-        "named_cell": "U2_COMP3",
+        "named_cell": "U1_COMP3",
         "parent_cell": "COMP2",
-        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U1_COMP2--U2_COMP3",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U3_COMP2--U1_COMP3",
         "type": "ipin",
         "name": "VDD",
         "layout": ""
     },
     {
         "instance": "Pin",
-        "number_id": 45,
+        "number_id": 44,
         "cell": "COMP3",
-        "named_cell": "U2_COMP3",
+        "named_cell": "U1_COMP3",
         "parent_cell": "COMP2",
-        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U1_COMP2--U2_COMP3",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U3_COMP2--U1_COMP3",
         "type": "ipin",
         "name": "VIP",
         "layout": ""
     },
     {
         "instance": "Pin",
-        "number_id": 46,
+        "number_id": 45,
         "cell": "COMP3",
-        "named_cell": "U2_COMP3",
+        "named_cell": "U1_COMP3",
         "parent_cell": "COMP2",
-        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U1_COMP2--U2_COMP3",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U3_COMP2--U1_COMP3",
         "type": "ipin",
         "name": "VIN",
         "layout": ""
     },
     {
         "instance": "Pin",
-        "number_id": 47,
+        "number_id": 46,
         "cell": "COMP3",
-        "named_cell": "U2_COMP3",
+        "named_cell": "U1_COMP3",
         "parent_cell": "COMP2",
-        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U1_COMP2--U2_COMP3",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U3_COMP2--U1_COMP3",
         "type": "opin",
         "name": "VO",
         "layout": ""
     },
     {
         "instance": "Pin",
-        "number_id": 48,
+        "number_id": 47,
         "cell": "COMP3",
-        "named_cell": "U2_COMP3",
+        "named_cell": "U1_COMP3",
         "parent_cell": "COMP2",
-        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U1_COMP2--U2_COMP3",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U3_COMP2--U1_COMP3",
         "type": "ipin",
         "name": "I_BIAS",
         "layout": ""
     },
     {
         "instance": "Transistor",
-        "number_id": 49,
+        "number_id": 48,
         "name": "MN1",
         "type": "nmos",
         "cell": "COMP3",
-        "named_cell": "U2_COMP3",
+        "named_cell": "U1_COMP3",
         "parent_cell": "COMP2",
-        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U1_COMP2--U2_COMP3",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U3_COMP2--U1_COMP3",
         "group": "diff1",
         "schematic_connections": {
             "D": "net3",
@@ -2527,13 +2495,13 @@
     },
     {
         "instance": "Transistor",
-        "number_id": 50,
+        "number_id": 49,
         "name": "MN2",
         "type": "nmos",
         "cell": "COMP3",
-        "named_cell": "U2_COMP3",
+        "named_cell": "U1_COMP3",
         "parent_cell": "COMP2",
-        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U1_COMP2--U2_COMP3",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U3_COMP2--U1_COMP3",
         "group": "diff1",
         "schematic_connections": {
             "D": "net2",
@@ -2613,16 +2581,102 @@
     },
     {
         "instance": "Transistor",
-        "number_id": 51,
+        "number_id": 50,
         "name": "MP5",
         "type": "pmos",
         "cell": "COMP3",
-        "named_cell": "U2_COMP3",
+        "named_cell": "U1_COMP3",
         "parent_cell": "COMP2",
-        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U1_COMP2--U2_COMP3",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U3_COMP2--U1_COMP3",
         "group": "load1",
         "schematic_connections": {
             "D": "net2",
+            "G": "net2",
+            "S": "VDD",
+            "B": "VDD"
+        },
+        "layout_name": "JNWATR_PCH_4C5F0",
+        "layout_library": "JNW_ATR_SKY130A",
+        "layout_ports": [
+            {
+                "type": "G",
+                "layer": "m1",
+                "area": {
+                    "x1": 80,
+                    "y1": 180,
+                    "x2": 112,
+                    "y2": 220
+                }
+            },
+            {
+                "type": "S",
+                "layer": "m1",
+                "area": {
+                    "x1": 144,
+                    "y1": 300,
+                    "x2": 240,
+                    "y2": 340
+                }
+            },
+            {
+                "type": "B",
+                "layer": "locali",
+                "area": {
+                    "x1": -48,
+                    "y1": 180,
+                    "x2": 48,
+                    "y2": 220
+                }
+            },
+            {
+                "type": "D",
+                "layer": "m1",
+                "area": {
+                    "x1": 336,
+                    "y1": 20,
+                    "x2": 432,
+                    "y2": 60
+                }
+            }
+        ],
+        "transform_matrix": {
+            "a": 0,
+            "b": 0,
+            "c": 0,
+            "d": 0,
+            "e": 0,
+            "f": 0
+        },
+        "bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 576,
+            "y2": 400
+        },
+        "overlap_distance": {
+            "x": 0,
+            "y": 0
+        },
+        "group_endpoint": "",
+        "group_endpoint_bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 576,
+            "y2": 240
+        }
+    },
+    {
+        "instance": "Transistor",
+        "number_id": 51,
+        "name": "MP6",
+        "type": "pmos",
+        "cell": "COMP3",
+        "named_cell": "U1_COMP3",
+        "parent_cell": "COMP2",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U3_COMP2--U1_COMP3",
+        "group": "load1",
+        "schematic_connections": {
+            "D": "VO",
             "G": "net2",
             "S": "VDD",
             "B": "VDD"
@@ -2700,98 +2754,12 @@
     {
         "instance": "Transistor",
         "number_id": 52,
-        "name": "MP6",
-        "type": "pmos",
-        "cell": "COMP3",
-        "named_cell": "U2_COMP3",
-        "parent_cell": "COMP2",
-        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U1_COMP2--U2_COMP3",
-        "group": "load1",
-        "schematic_connections": {
-            "D": "VO",
-            "G": "net2",
-            "S": "VDD",
-            "B": "VDD"
-        },
-        "layout_name": "JNWATR_PCH_4C5F0",
-        "layout_library": "JNW_ATR_SKY130A",
-        "layout_ports": [
-            {
-                "type": "G",
-                "layer": "m1",
-                "area": {
-                    "x1": 80,
-                    "y1": 180,
-                    "x2": 112,
-                    "y2": 220
-                }
-            },
-            {
-                "type": "S",
-                "layer": "m1",
-                "area": {
-                    "x1": 144,
-                    "y1": 300,
-                    "x2": 240,
-                    "y2": 340
-                }
-            },
-            {
-                "type": "B",
-                "layer": "locali",
-                "area": {
-                    "x1": -48,
-                    "y1": 180,
-                    "x2": 48,
-                    "y2": 220
-                }
-            },
-            {
-                "type": "D",
-                "layer": "m1",
-                "area": {
-                    "x1": 336,
-                    "y1": 20,
-                    "x2": 432,
-                    "y2": 60
-                }
-            }
-        ],
-        "transform_matrix": {
-            "a": 0,
-            "b": 0,
-            "c": 0,
-            "d": 0,
-            "e": 0,
-            "f": 0
-        },
-        "bounding_box": {
-            "x1": 0,
-            "y1": 0,
-            "x2": 576,
-            "y2": 400
-        },
-        "overlap_distance": {
-            "x": 0,
-            "y": 0
-        },
-        "group_endpoint": "",
-        "group_endpoint_bounding_box": {
-            "x1": 0,
-            "y1": 0,
-            "x2": 576,
-            "y2": 240
-        }
-    },
-    {
-        "instance": "Transistor",
-        "number_id": 53,
         "name": "MP1",
         "type": "pmos",
         "cell": "COMP3",
-        "named_cell": "U2_COMP3",
+        "named_cell": "U1_COMP3",
         "parent_cell": "COMP2",
-        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U1_COMP2--U2_COMP3",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U3_COMP2--U1_COMP3",
         "group": "load1",
         "schematic_connections": {
             "D": "net4",
@@ -2871,13 +2839,13 @@
     },
     {
         "instance": "Transistor",
-        "number_id": 54,
+        "number_id": 53,
         "name": "MP2",
         "type": "pmos",
         "cell": "COMP3",
-        "named_cell": "U2_COMP3",
+        "named_cell": "U1_COMP3",
         "parent_cell": "COMP2",
-        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U1_COMP2--U2_COMP3",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U3_COMP2--U1_COMP3",
         "group": "load1",
         "schematic_connections": {
             "D": "net3",
@@ -2957,13 +2925,13 @@
     },
     {
         "instance": "Transistor",
-        "number_id": 55,
+        "number_id": 54,
         "name": "MN4",
         "type": "nmos",
         "cell": "COMP3",
-        "named_cell": "U2_COMP3",
+        "named_cell": "U1_COMP3",
         "parent_cell": "COMP2",
-        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U1_COMP2--U2_COMP3",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U3_COMP2--U1_COMP3",
         "group": "mirror2",
         "schematic_connections": {
             "D": "net1",
@@ -3043,13 +3011,13 @@
     },
     {
         "instance": "Transistor",
-        "number_id": 56,
+        "number_id": 55,
         "name": "MN3",
         "type": "nmos",
         "cell": "COMP3",
-        "named_cell": "U2_COMP3",
+        "named_cell": "U1_COMP3",
         "parent_cell": "COMP2",
-        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U1_COMP2--U2_COMP3",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U3_COMP2--U1_COMP3",
         "group": "mirror2",
         "schematic_connections": {
             "D": "I_BIAS",
@@ -3129,13 +3097,13 @@
     },
     {
         "instance": "Transistor",
-        "number_id": 57,
+        "number_id": 56,
         "name": "MN5",
         "type": "nmos",
         "cell": "COMP3",
-        "named_cell": "U2_COMP3",
+        "named_cell": "U1_COMP3",
         "parent_cell": "COMP2",
-        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U1_COMP2--U2_COMP3",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U3_COMP2--U1_COMP3",
         "group": "mirror1",
         "schematic_connections": {
             "D": "net4",
@@ -3215,13 +3183,13 @@
     },
     {
         "instance": "Transistor",
-        "number_id": 58,
+        "number_id": 57,
         "name": "MN6",
         "type": "nmos",
         "cell": "COMP3",
-        "named_cell": "U2_COMP3",
+        "named_cell": "U1_COMP3",
         "parent_cell": "COMP2",
-        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U1_COMP2--U2_COMP3",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U3_COMP2--U1_COMP3",
         "group": "mirror1",
         "schematic_connections": {
             "D": "VO",
@@ -3301,13 +3269,13 @@
     },
     {
         "instance": "Transistor",
-        "number_id": 59,
+        "number_id": 58,
         "name": "MP3",
         "type": "pmos",
         "cell": "COMP3",
-        "named_cell": "U2_COMP3",
+        "named_cell": "U1_COMP3",
         "parent_cell": "COMP2",
-        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U1_COMP2--U2_COMP3",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U3_COMP2--U1_COMP3",
         "group": "load1",
         "schematic_connections": {
             "D": "net3",
@@ -3387,13 +3355,13 @@
     },
     {
         "instance": "Transistor",
-        "number_id": 60,
+        "number_id": 59,
         "name": "MP4",
         "type": "pmos",
         "cell": "COMP3",
-        "named_cell": "U2_COMP3",
+        "named_cell": "U1_COMP3",
         "parent_cell": "COMP2",
-        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U1_COMP2--U2_COMP3",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U3_COMP2--U1_COMP3",
         "group": "load1",
         "schematic_connections": {
             "D": "net2",
@@ -3469,6 +3437,38 @@
             "y1": 0,
             "x2": 576,
             "y2": 240
+        }
+    },
+    {
+        "instance": "CircuitCell",
+        "number_id": 60,
+        "name": "U2",
+        "cell": "COMP2",
+        "named_cell": "U2_COMP2",
+        "parent_cell": "COMP4",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U2_COMP2",
+        "group": null,
+        "schematic_connections": {
+            "VDD": "VDD",
+            "VIN": "net6",
+            "VIP": "net7",
+            "VO": "net8",
+            "I_BIAS": "net9",
+            "VSS": "VSS"
+        },
+        "transform_matrix": {
+            "a": 0,
+            "b": 0,
+            "c": 0,
+            "d": 0,
+            "e": 0,
+            "f": 0
+        },
+        "bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 0,
+            "y2": 0
         }
     },
     {
@@ -4570,80 +4570,112 @@
         }
     },
     {
-        "instance": "Pin",
+        "instance": "CircuitCell",
         "number_id": 79,
+        "name": "U1",
         "cell": "COMP3",
-        "named_cell": "U2_COMP3",
+        "named_cell": "U1_COMP3",
         "parent_cell": "COMP2",
-        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U2_COMP2--U2_COMP3",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U2_COMP2--U1_COMP3",
+        "group": null,
+        "schematic_connections": {
+            "VDD": "net5",
+            "VIN": "net6",
+            "VIP": "net7",
+            "VO": "net8",
+            "I_BIAS": "net9",
+            "VSS": "net10"
+        },
+        "transform_matrix": {
+            "a": 0,
+            "b": 0,
+            "c": 0,
+            "d": 0,
+            "e": 0,
+            "f": 0
+        },
+        "bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 0,
+            "y2": 0
+        }
+    },
+    {
+        "instance": "Pin",
+        "number_id": 80,
+        "cell": "COMP3",
+        "named_cell": "U1_COMP3",
+        "parent_cell": "COMP2",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U2_COMP2--U1_COMP3",
         "type": "ipin",
         "name": "VSS",
         "layout": ""
     },
     {
         "instance": "Pin",
-        "number_id": 80,
+        "number_id": 81,
         "cell": "COMP3",
-        "named_cell": "U2_COMP3",
+        "named_cell": "U1_COMP3",
         "parent_cell": "COMP2",
-        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U2_COMP2--U2_COMP3",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U2_COMP2--U1_COMP3",
         "type": "ipin",
         "name": "VDD",
         "layout": ""
     },
     {
         "instance": "Pin",
-        "number_id": 81,
+        "number_id": 82,
         "cell": "COMP3",
-        "named_cell": "U2_COMP3",
+        "named_cell": "U1_COMP3",
         "parent_cell": "COMP2",
-        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U2_COMP2--U2_COMP3",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U2_COMP2--U1_COMP3",
         "type": "ipin",
         "name": "VIP",
         "layout": ""
     },
     {
         "instance": "Pin",
-        "number_id": 82,
+        "number_id": 83,
         "cell": "COMP3",
-        "named_cell": "U2_COMP3",
+        "named_cell": "U1_COMP3",
         "parent_cell": "COMP2",
-        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U2_COMP2--U2_COMP3",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U2_COMP2--U1_COMP3",
         "type": "ipin",
         "name": "VIN",
         "layout": ""
     },
     {
         "instance": "Pin",
-        "number_id": 83,
+        "number_id": 84,
         "cell": "COMP3",
-        "named_cell": "U2_COMP3",
+        "named_cell": "U1_COMP3",
         "parent_cell": "COMP2",
-        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U2_COMP2--U2_COMP3",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U2_COMP2--U1_COMP3",
         "type": "opin",
         "name": "VO",
         "layout": ""
     },
     {
         "instance": "Pin",
-        "number_id": 84,
+        "number_id": 85,
         "cell": "COMP3",
-        "named_cell": "U2_COMP3",
+        "named_cell": "U1_COMP3",
         "parent_cell": "COMP2",
-        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U2_COMP2--U2_COMP3",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U2_COMP2--U1_COMP3",
         "type": "ipin",
         "name": "I_BIAS",
         "layout": ""
     },
     {
         "instance": "Transistor",
-        "number_id": 85,
+        "number_id": 86,
         "name": "MN1",
         "type": "nmos",
         "cell": "COMP3",
-        "named_cell": "U2_COMP3",
+        "named_cell": "U1_COMP3",
         "parent_cell": "COMP2",
-        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U2_COMP2--U2_COMP3",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U2_COMP2--U1_COMP3",
         "group": "diff1",
         "schematic_connections": {
             "D": "net3",
@@ -4723,13 +4755,13 @@
     },
     {
         "instance": "Transistor",
-        "number_id": 86,
+        "number_id": 87,
         "name": "MN2",
         "type": "nmos",
         "cell": "COMP3",
-        "named_cell": "U2_COMP3",
+        "named_cell": "U1_COMP3",
         "parent_cell": "COMP2",
-        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U2_COMP2--U2_COMP3",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U2_COMP2--U1_COMP3",
         "group": "diff1",
         "schematic_connections": {
             "D": "net2",
@@ -4809,13 +4841,13 @@
     },
     {
         "instance": "Transistor",
-        "number_id": 87,
+        "number_id": 88,
         "name": "MP5",
         "type": "pmos",
         "cell": "COMP3",
-        "named_cell": "U2_COMP3",
+        "named_cell": "U1_COMP3",
         "parent_cell": "COMP2",
-        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U2_COMP2--U2_COMP3",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U2_COMP2--U1_COMP3",
         "group": "load1",
         "schematic_connections": {
             "D": "net2",
@@ -4895,13 +4927,13 @@
     },
     {
         "instance": "Transistor",
-        "number_id": 88,
+        "number_id": 89,
         "name": "MP6",
         "type": "pmos",
         "cell": "COMP3",
-        "named_cell": "U2_COMP3",
+        "named_cell": "U1_COMP3",
         "parent_cell": "COMP2",
-        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U2_COMP2--U2_COMP3",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U2_COMP2--U1_COMP3",
         "group": "load1",
         "schematic_connections": {
             "D": "VO",
@@ -4981,13 +5013,13 @@
     },
     {
         "instance": "Transistor",
-        "number_id": 89,
+        "number_id": 90,
         "name": "MP1",
         "type": "pmos",
         "cell": "COMP3",
-        "named_cell": "U2_COMP3",
+        "named_cell": "U1_COMP3",
         "parent_cell": "COMP2",
-        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U2_COMP2--U2_COMP3",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U2_COMP2--U1_COMP3",
         "group": "load1",
         "schematic_connections": {
             "D": "net4",
@@ -5067,13 +5099,13 @@
     },
     {
         "instance": "Transistor",
-        "number_id": 90,
+        "number_id": 91,
         "name": "MP2",
         "type": "pmos",
         "cell": "COMP3",
-        "named_cell": "U2_COMP3",
+        "named_cell": "U1_COMP3",
         "parent_cell": "COMP2",
-        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U2_COMP2--U2_COMP3",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U2_COMP2--U1_COMP3",
         "group": "load1",
         "schematic_connections": {
             "D": "net3",
@@ -5153,13 +5185,13 @@
     },
     {
         "instance": "Transistor",
-        "number_id": 91,
+        "number_id": 92,
         "name": "MN4",
         "type": "nmos",
         "cell": "COMP3",
-        "named_cell": "U2_COMP3",
+        "named_cell": "U1_COMP3",
         "parent_cell": "COMP2",
-        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U2_COMP2--U2_COMP3",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U2_COMP2--U1_COMP3",
         "group": "mirror2",
         "schematic_connections": {
             "D": "net1",
@@ -5239,13 +5271,13 @@
     },
     {
         "instance": "Transistor",
-        "number_id": 92,
+        "number_id": 93,
         "name": "MN3",
         "type": "nmos",
         "cell": "COMP3",
-        "named_cell": "U2_COMP3",
+        "named_cell": "U1_COMP3",
         "parent_cell": "COMP2",
-        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U2_COMP2--U2_COMP3",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U2_COMP2--U1_COMP3",
         "group": "mirror2",
         "schematic_connections": {
             "D": "I_BIAS",
@@ -5325,13 +5357,13 @@
     },
     {
         "instance": "Transistor",
-        "number_id": 93,
+        "number_id": 94,
         "name": "MN5",
         "type": "nmos",
         "cell": "COMP3",
-        "named_cell": "U2_COMP3",
+        "named_cell": "U1_COMP3",
         "parent_cell": "COMP2",
-        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U2_COMP2--U2_COMP3",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U2_COMP2--U1_COMP3",
         "group": "mirror1",
         "schematic_connections": {
             "D": "net4",
@@ -5411,13 +5443,13 @@
     },
     {
         "instance": "Transistor",
-        "number_id": 94,
+        "number_id": 95,
         "name": "MN6",
         "type": "nmos",
         "cell": "COMP3",
-        "named_cell": "U2_COMP3",
+        "named_cell": "U1_COMP3",
         "parent_cell": "COMP2",
-        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U2_COMP2--U2_COMP3",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U2_COMP2--U1_COMP3",
         "group": "mirror1",
         "schematic_connections": {
             "D": "VO",
@@ -5497,13 +5529,13 @@
     },
     {
         "instance": "Transistor",
-        "number_id": 95,
+        "number_id": 96,
         "name": "MP3",
         "type": "pmos",
         "cell": "COMP3",
-        "named_cell": "U2_COMP3",
+        "named_cell": "U1_COMP3",
         "parent_cell": "COMP2",
-        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U2_COMP2--U2_COMP3",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U2_COMP2--U1_COMP3",
         "group": "load1",
         "schematic_connections": {
             "D": "net3",
@@ -5583,13 +5615,13 @@
     },
     {
         "instance": "Transistor",
-        "number_id": 96,
+        "number_id": 97,
         "name": "MP4",
         "type": "pmos",
         "cell": "COMP3",
-        "named_cell": "U2_COMP3",
+        "named_cell": "U1_COMP3",
         "parent_cell": "COMP2",
-        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U2_COMP2--U2_COMP3",
+        "cell_chain": "UTOP_JNW_BKLE--U1_COMP4--U2_COMP2--U1_COMP3",
         "group": "load1",
         "schematic_connections": {
             "D": "net2",

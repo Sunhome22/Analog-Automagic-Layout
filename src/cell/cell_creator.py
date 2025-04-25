@@ -57,8 +57,8 @@ class CellCreator:
 
         self.__create_cells()
         self.__set_cells_positions()
-        # self.__add_top_cell_rails_around_cells()
-        # self.__add_top_cell_rail_to_rail_connections()
+        self.__add_top_cell_rails_around_cells()
+        #self.__add_top_cell_rail_to_rail_connections()
 
     def __use_earlier_solution_for_cell(self, cell, solved_circuit_cells,
                                         components_grouped_by_circuit_cell, grouped_components):
@@ -110,9 +110,10 @@ class CellCreator:
 
         for circuit_cell in circuit_cells:
             for grouped_components in components_grouped_by_circuit_cell:
+                print(grouped_components)
                 if (re.search(r"^(?:.*--)?(.*)$", grouped_components).group(1)
                         == f"{circuit_cell.name}_{circuit_cell.cell}"):
-
+                    print(f"{circuit_cell.name}_{circuit_cell.cell}")
                     components_grouped_by_circuit_cell[grouped_components].append(circuit_cell)
 
         # Cell creation process
@@ -174,8 +175,8 @@ class CellCreator:
             #                    ).get())
 
             # Step 6: Trace generation
-            components = GenerateAstarPathTraces(components=components, paths=[], net_list=net_list,
-                                                 used_area=origin_scaled_used_area).get()
+            # components = GenerateAstarPathTraces(components=components, paths=[], net_list=net_list,
+            #                                      used_area=origin_scaled_used_area).get()
             components = GenerateRailTraces(project_properties=self.project_properties, components=components).get()
 
             # Step 7: Handle specifics for components of different libraries
@@ -184,6 +185,7 @@ class CellCreator:
             # Step 8: Move all components to the origin based on the updated cell bounding box from rail generation
             components = self.__move_all_components_to_origin_based_on_rail_offsets(components=components)
 
+            print("================================================================")
             # Step 9: Create an update list of components
             for component in components:
                 self.updated_components.append(component)
