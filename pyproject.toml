@@ -110,6 +110,10 @@ RUN_MULTIPLE_ASTAR = false
 CUSTOM_NET_ORDER = false
 NET_ORDER = ["I_BIAS","net4", "VIN", "net2", "VO", "net1",  "net3", "VIP"]
 
+# Cell creator config options
+# -> Cells per row in top cell - Defined how many cells should placed per row in the projects defined top cell
+[cell_creator]
+CELLS_PER_ROW_IN_TOP_CELL = 1
 
 [DRAW_RESULT]
 FILE_NAME = 'Temporary_check'

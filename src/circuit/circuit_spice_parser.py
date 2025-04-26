@@ -468,16 +468,16 @@ class SPICEparser:
             current_cell_name = self.__get_current_circuit_cell_name(line)
 
             # Append the highest hierarchical circuit cell to the list of circuit cells
-            # "TOP_CELL" is not a real cell and is taught of as one level above the highest defined cell
+            # "ROOT_CELL" is not a real cell and is taught of as one level above the highest defined cell
             if current_cell_name == self.project_top_cell_name:
                 if re.match(r'\*\*\.subckt', line) or re.match(r'.subckt', line):
                     if line.split()[1] == self.project_top_cell_name:
                         self.__build_list_of_circuit_cells(spice_line=f"xUTOP " + f" ".join(line.split()[2:])
-                                                           + f" {line.split()[1]}", current_cell_name="TOP_CELL")
+                                                           + f" {line.split()[1]}", current_cell_name="ROOT_CELL")
 
             self.__build_list_of_circuit_cells(spice_line=line, current_cell_name=current_cell_name)
 
-        self.__add_components_for_each_circuit_cell(current_parent_cell="TOP_CELL")
+        self.__add_components_for_each_circuit_cell(current_parent_cell="ROOT_CELL")
 
         # Summary of parsing
         for component in self.components:

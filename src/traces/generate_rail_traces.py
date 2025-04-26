@@ -139,8 +139,8 @@ class GenerateRailTraces:
                                                   - (self.RAIL_RING_OFFSET - self.RAIL_RING_WIDTH))
                     component.bounding_box.y2 += (self.INIT_RAIL_RING_OFFSET_Y + (self.RAIL_RING_OFFSET * rail_number))
 
-        # Top cell rail generation
-        if self.circuit_cell.name == "TOP_CELL":
+        # ROOT CELL rail generation
+        if self.circuit_cell.name == "ROOT_CELL":
 
             # Adjust cells bounding box to compensate for the last added cell x-offset
             self.circuit_cell.bounding_box.x2 -= self.RAIL_RING_OFFSET - self.RAIL_RING_WIDTH

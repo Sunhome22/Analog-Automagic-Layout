@@ -24,6 +24,7 @@ from dataclasses import dataclass, field
 from typing import List, Dict
 from collections import defaultdict
 import copy
+import tomllib
 
 from astar.a_star_initiator import AstarInitiator
 from connections.connections import ConnectionLists
@@ -50,15 +51,26 @@ class CellCreator:
         self.component_libraries = project_properties.component_libraries
         self.components = components
 
-        self.top_cell = CircuitCell
+        self.root_cell = CircuitCell
         self.updated_components = []
         self.origin_scaled_cell_offsets = list()
         self.FUNCTIONAL_TYPES = (Transistor, Resistor, Capacitor)
+
+        # Load config
+        self.config = self.__load_config()
+        self.CELLS_PER_ROW_IN_TOP_CELL = self.config["cell_creator"]["CELLS_PER_ROW_IN_TOP_CELL"]
 
         self.__create_cells()
         self.__set_cells_positions()
         self.__add_top_cell_rails_around_cells()
         #self.__add_top_cell_rail_to_rail_connections()
+
+    def __load_config(self, path="pyproject.toml"):
+        try:
+            with open(path, "rb") as f:
+                return tomllib.load(f)
+        except (FileNotFoundError, tomllib.TOMLDecodeError) as e:
+            self.logger.error(f"Error loading config: {e}")
 
     def __use_earlier_solution_for_cell(self, cell, solved_circuit_cells,
                                         components_grouped_by_circuit_cell, grouped_components):
@@ -123,7 +135,7 @@ class CellCreator:
 
             if cell in solved_circuit_cells.keys():
                 self.logger.info(f"Using previously found solution for cell '{cell}' "
-                                 f"with respect to cell chain '{grouped_components}'")
+                                 f"for cell chain '{grouped_components}'")
                 self.__use_earlier_solution_for_cell(
                     cell=cell,
                     solved_circuit_cells=solved_circuit_cells,
@@ -183,7 +195,6 @@ class CellCreator:
             # Step 8: Move all components to the origin based on the updated cell bounding box from rail generation
             components = self.__move_all_components_to_origin_based_on_rail_offsets(components=components)
 
-            print("================================================================")
             # Step 9: Create an update list of components
             for component in components:
                 self.updated_components.append(component)
@@ -237,16 +248,16 @@ class CellCreator:
         y_offset_map = {-1: 0}
         prev_depth = -1
         prev_width = 0
-        cells_per_row = 3
-        cell_nr = 0
-        row_height = 5000
-        y_change_x_offset = 0
+        heights = []
+
+        cell_nr_in_top_cell = 0
+
         for component in self.updated_components:
             if isinstance(component, CircuitCell):
 
                 current_depth = len(re.findall(r"--", component.cell_chain))
                 current_width = component.bounding_box.x2 - component.bounding_box.x1
-                current_height = component.bounding_box.y2 - component.bounding_box.y1
+                heights.append(component.bounding_box.y2 - component.bounding_box.y1)
 
                 if current_depth > prev_depth:
                     x_offset_map[current_depth] = prev_width
@@ -259,81 +270,84 @@ class CellCreator:
                     )
                     y_offset_map[current_depth] = y_offset_map.get(prev_depth, 0)
 
-                if cell_nr > 0 and cell_nr % (cells_per_row + 1) == 0:
-                    print("")
-                    for d in x_offset_map:
-                        x_offset_map[d] = 0  # Reset X for new row
-                    for d in y_offset_map:
-                        y_offset_map[d] += row_height
-                    #y_change_x_offset += x_offset_map[current_depth]
+                # Number of cells per row only applies to cells placed in the top cell
+                if (component.parent_cell == self.project_properties.top_cell_name
+                        or component.cell == self.project_properties.top_cell_name):
+
+                    if component.bounding_box != RectArea():
+                        if cell_nr_in_top_cell > 0 and cell_nr_in_top_cell % self.CELLS_PER_ROW_IN_TOP_CELL == 0:
+                            for d in x_offset_map:
+                                x_offset_map[d] = 0
+                            for d in y_offset_map:
+                                y_offset_map[d] += max(heights)
+                            heights.clear()
+                        cell_nr_in_top_cell += 1
 
                 # Place component
                 x_offset = x_offset_map[current_depth]
                 y_offset = y_offset_map[current_depth]
-                print(x_offset, x_offset - y_change_x_offset, y_offset, component.cell_chain)
-
                 component.transform_matrix.set([1, 0, x_offset, 0, 1, y_offset])
-
-
 
                 # Update trackers
                 x_offset_map[current_depth] += current_width
                 prev_depth = current_depth
                 prev_width = current_width
-                cell_nr += 1
 
     def __add_top_cell_rails_around_cells(self):
 
-        top_cell_rails = list()
+        root_cell_rails = list()
         all_cell_rails = list()
-        top_cell_components = list()
+        root_cell_components = list()
 
         for component in self.updated_components:
             if isinstance(component, Pin) and (re.search(r".*VDD.*", component.name, re.IGNORECASE)
                                                or re.search(r".*VSS.*", component.name, re.IGNORECASE)):
                 all_cell_rails.append(copy.deepcopy(component))
 
-                if component.parent_cell == "TOP_CELL":
-                    top_cell_rails.append(copy.deepcopy(component))
+                if component.parent_cell == "ROOT_CELL":
+                    root_cell_rails.append(copy.deepcopy(component))
 
                 # Check if this component is already in rails
                 # if not any(rail.name == component.name for rail in top_cell_rails):
                 #    top_cell_rails.append(copy.deepcopy(component))
 
-        top_cell_x2 = 0
+        root_cell_x2 = 0
+        cells_x2 = []
+        cells_y2 = []
         for component in self.updated_components:
             if isinstance(component, CircuitCell):
-                top_cell_x2 += (component.bounding_box.x2 - component.bounding_box.x1)
+                cells_x2.append(component.bounding_box.x2 + component.transform_matrix.c)
+                cells_y2.append(component.bounding_box.y2 + component.transform_matrix.f)
 
-        # top_cell_rails_exists = all(c.layout for c in all_cell_rails)
-        top_cell_y2 = max(component.layout.area.y2 for component in all_cell_rails if component.layout)
+        root_cell_x2 = max(cells_x2)
+        root_cell_y2 = max(cells_y2)
 
-        # Create a top cell with bounding box covering all cells but with all other attributes of UTOP
+        # Create a root cell with bounding box covering all cells but with all other attributes of UTOP
         for component in self.updated_components:
             if isinstance(component, CircuitCell) and component.name == 'UTOP':
-                self.top_cell = CircuitCell(name="TOP_CELL",
-                                            number_id=0,
-                                            instance=component.instance,
-                                            cell=component.cell,
-                                            named_cell=component.named_cell,
-                                            parent_cell=component.parent_cell,
-                                            cell_chain=component.cell_chain,
-                                            bounding_box=RectArea(x1=0, y1=0, x2=top_cell_x2, y2=top_cell_y2))
+                self.root_cell = CircuitCell(name="ROOT_CELL",
+                                             number_id=0,
+                                             instance=component.instance,
+                                             cell=component.cell,
+                                             named_cell=component.named_cell,
+                                             parent_cell=component.parent_cell,
+                                             cell_chain=component.cell_chain,
+                                             bounding_box=RectArea(x1=0, y1=0, x2=root_cell_x2, y2=root_cell_y2))
                 # if not top_cell_rails_exists:
-                for nr, rail in enumerate(top_cell_rails):
+                for nr, rail in enumerate(root_cell_rails):
                     rail.cell = component.cell
                     rail.number_id = len(self.updated_components) + nr
                     rail.named_cell = component.named_cell
                     rail.parent_cell = component.parent_cell
                     rail.cell_chain = component.cell_chain
                     rail.layout = RectAreaLayer()
-                    top_cell_components.append(rail)
+                    root_cell_components.append(rail)
 
-        top_cell_components.append(self.top_cell)
+        root_cell_components.append(self.root_cell)
 
-        components = GenerateRailTraces(self.project_properties, top_cell_components).get()
+        components = GenerateRailTraces(self.project_properties, root_cell_components).get()
         for component in components:
-            # Don't include the temporary top cell since it is not real, but was needed for top cell trace generation
+            # Don't include the root cell since it is not real, but was needed for top cell trace generation
             if not isinstance(component, CircuitCell):
                 self.updated_components.append(component)
 
