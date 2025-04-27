@@ -139,11 +139,12 @@ class GenerateRailTraces:
                                                   - (self.RAIL_RING_OFFSET - self.RAIL_RING_WIDTH))
                     component.bounding_box.y2 += (self.INIT_RAIL_RING_OFFSET_Y + (self.RAIL_RING_OFFSET * rail_number))
 
-        # ROOT CELL rail generation
+        # Root cell rail generation
         if self.circuit_cell.name == "ROOT_CELL":
 
             # Adjust cells bounding box to compensate for the last added cell x-offset
             self.circuit_cell.bounding_box.x2 -= self.RAIL_RING_OFFSET - self.RAIL_RING_WIDTH
+            self.circuit_cell.bounding_box.y2 -= self.RAIL_RING_OFFSET - self.RAIL_RING_WIDTH
 
             # Automated adding of VDD/VSS ring nets around cell based on found pins
             rail_number = 0
@@ -158,6 +159,9 @@ class GenerateRailTraces:
                         width=self.RAIL_RING_WIDTH
                     )
                     rail_number += 1
+
+            # There is no reason to update the bounding box since the root cell is not included in the
+            # list of all components
 
     def get(self):
         return self.components

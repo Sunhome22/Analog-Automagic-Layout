@@ -56,7 +56,7 @@ def generate_local_traces_for_atr_sky130a_lib(self):
     # Iterate over y-grouped components and check for match against bulk to rail components. On component hit against a
     # group discard all other components within group. This solution removes redundant rail traces for each component
     # with the same y-coordinates.
-    for f_value, group in y_grouped_component_names.items():
+    for _, group in y_grouped_component_names.items():
         found_comp = False
         for comp_name in group:
             for component in components_with_bulk_to_rail_connection:
@@ -401,11 +401,13 @@ def get_component_bounding_box_for_atr_sky130a_lib(self, text_line: str, compone
         component.bounding_box.set([int(val) // self.scale_factor for val in text_line_words[2:6]])
         self.found_bounding_box = True
 
+
 def get_component_endpoint_bounding_box_for_atr_sky130a_lib(self, text_line: str, component):
 
     if re.search(r'string FIXED_BBOX', text_line):
         text_line_words = text_line.split()
         component.group_endpoint_bounding_box.set([int(val) // self.scale_factor for val in text_line_words[2:6]])
+
 
 def magic_component_parsing_for_atr_sky130a_lib(self, layout_file_path: str, component):
     try:

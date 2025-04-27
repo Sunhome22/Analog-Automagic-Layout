@@ -62,7 +62,7 @@ class CellCreator:
 
         self.__create_cells()
         self.__set_cells_positions()
-        self.__add_top_cell_rails_around_cells()
+        self.__add_root_cell_rails()
         #self.__add_top_cell_rail_to_rail_connections()
 
     def __load_config(self, path="pyproject.toml"):
@@ -293,7 +293,10 @@ class CellCreator:
                 prev_depth = current_depth
                 prev_width = current_width
 
-    def __add_top_cell_rails_around_cells(self):
+    def __add_root_cell_rails(self):
+        """Adds rail rings around everything, based on the ports defined in the top cell. If there are functional
+        components placed directly in the top cell, those automatically get their own rings. In our made up cell
+        hierarcy the root cell is defined as the level above the top cell and shares the same ports"""
 
         root_cell_rails = list()
         all_cell_rails = list()
@@ -307,33 +310,27 @@ class CellCreator:
                 if component.parent_cell == "ROOT_CELL":
                     root_cell_rails.append(copy.deepcopy(component))
 
-                # Check if this component is already in rails
-                # if not any(rail.name == component.name for rail in top_cell_rails):
-                #    top_cell_rails.append(copy.deepcopy(component))
-
-        root_cell_x2 = 0
         cells_x2 = []
         cells_y2 = []
         for component in self.updated_components:
             if isinstance(component, CircuitCell):
                 cells_x2.append(component.bounding_box.x2 + component.transform_matrix.c)
                 cells_y2.append(component.bounding_box.y2 + component.transform_matrix.f)
-
         root_cell_x2 = max(cells_x2)
         root_cell_y2 = max(cells_y2)
 
-        # Create a root cell with bounding box covering all cells but with all other attributes of UTOP
+        # Creates a root cell with bounding box covering all cells but with all other attributes of the top cell
         for component in self.updated_components:
             if isinstance(component, CircuitCell) and component.name == 'UTOP':
-                self.root_cell = CircuitCell(name="ROOT_CELL",
-                                             number_id=0,
-                                             instance=component.instance,
-                                             cell=component.cell,
-                                             named_cell=component.named_cell,
-                                             parent_cell=component.parent_cell,
-                                             cell_chain=component.cell_chain,
-                                             bounding_box=RectArea(x1=0, y1=0, x2=root_cell_x2, y2=root_cell_y2))
-                # if not top_cell_rails_exists:
+                self.root_cell = (
+                    CircuitCell(name="ROOT_CELL",
+                                number_id=0,
+                                instance=component.instance,
+                                cell=component.cell,
+                                named_cell=component.named_cell,
+                                parent_cell=component.parent_cell,
+                                cell_chain=component.cell_chain,
+                                bounding_box=RectArea(x1=0, y1=0, x2=root_cell_x2, y2=root_cell_y2)))
                 for nr, rail in enumerate(root_cell_rails):
                     rail.cell = component.cell
                     rail.number_id = len(self.updated_components) + nr
@@ -347,7 +344,7 @@ class CellCreator:
 
         components = GenerateRailTraces(self.project_properties, root_cell_components).get()
         for component in components:
-            # Don't include the root cell since it is not real, but was needed for top cell trace generation
+            # Exclusion of the root cell
             if not isinstance(component, CircuitCell):
                 self.updated_components.append(component)
 
@@ -454,6 +451,7 @@ class CellCreator:
                                                             # Valid pins that are connected to something and have layout
                                                             cell_to_cell_connection.append(c)
                                                             #print(f"others: {c.name, c.layout}")
+
                         cell_to_cell_connections.append(cell_to_cell_connection)
 
         # Update vertical and horizontal grids to include both cells that are being routed between
@@ -492,7 +490,6 @@ class CellCreator:
 
             # print(cell_to_cell_connections, path, length)
 
-        print("===================")
         # print(grouped_components)
         # for cell_nr_1, grouped_components_1 in enumerate(components_grouped_by_circuit_cell):
         #     for component_1 in components_grouped_by_circuit_cell[grouped_components_1]:

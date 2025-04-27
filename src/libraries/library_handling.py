@@ -19,6 +19,7 @@ from logger.logger import get_a_logger
 import tomllib
 import re
 import libraries.atr_sky130a_lib as atr
+import libraries.tr_sky130a_lib as tr
 
 # ============================================ ATR SKY130A Handling ====================================================
 
@@ -35,6 +36,7 @@ class LibraryHandling:
         self.functional_components = []
         self.transistor_components = []
         self.atr_transistor_components = []
+        self.tr_components = []
         self.components = components
 
         # Load config
@@ -48,6 +50,9 @@ class LibraryHandling:
         for component in self.components:
             if isinstance(component, Transistor) and re.search(r'_ATR_', component.layout_library):
                 self.atr_transistor_components.append(component)
+
+            if isinstance(component, (Resistor, Capacitor)) and re.search(r'_TR_', component.layout_library):
+                self.tr_components.append(component)
 
             if isinstance(component, (Pin, CircuitCell)):
                 self.structural_components.append(component)
@@ -64,6 +69,10 @@ class LibraryHandling:
         if self.atr_transistor_components:
             atr.get_component_group_endpoints_for_atr_sky130a_lib(self=self)
             atr.generate_local_traces_for_atr_sky130a_lib(self=self)
+
+        # TR SKY130A library component handling
+        if self.tr_components:
+            tr.generate_local_traces_for_tr_sky130a_lib(self=self)
 
     def __load_config(self, path="pyproject.toml"):
         try:
