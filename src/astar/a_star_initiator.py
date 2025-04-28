@@ -1,16 +1,11 @@
-
-from cython_test.example import astar_start
-# import cython_test.example as ex
-from astar.a_star_sparse import tsp_order_no_start
+from astar.astar import astar_start
 from draw_result.visualize_grid import heatmap_test, save_matrix
-from traces.trace_generator import segment_path
+from traces.generate_astar_path_traces import segment_path
 from circuit.circuit_components import CircuitCell, Pin
 from logger.logger import get_a_logger
 import tomllib
 import re
 from copy import deepcopy
-import cProfile
-import pstats
 from grid.generate_grid import get_obj_id_and_types, check_ignorable_port
 
 
@@ -126,22 +121,22 @@ class AstarInitiator:
                     break
             component_types = ["nmos", "pmos", "npn", "pnp", "mim", "vpp", "hpo", "xhpo"]
 
-            if object_type == "nmos" or object_type == "pmos":
-                if check_ignorable_port(self.logger,components=self.components, object_id = object_id, port = port_type ):
+            if object_type == component_types[0] or object_type == component_types[1]:
+                if check_ignorable_port(components=self.components, object_id=object_id, port=port_type):
                     sizing = getattr(self.component_ports.cmos, "V"+port_type)
                 else:
                     sizing = getattr(self.component_ports.cmos, port_type)
                 h = sizing.height
                 w = sizing.width
-            elif object_type == "npn" or object_type == "pnp":
+            elif object_type == component_types[2] or object_type == component_types[3]:
                 sizing = getattr(self.component_ports.bipolar, port_type)
                 h = sizing.height
                 w = sizing.width
-            elif object_type == "mim" or object_type == "vpp":
+            elif object_type == component_types[4] or object_type == component_types[5]:
                 sizing = getattr(self.component_ports.capacitor, port_type)
                 h = sizing.height
                 w = sizing.width
-            elif object_type == "hpo" or object_type == "xhpo":
+            elif object_type == component_types[6] or object_type == component_types[7]:
                 sizing = getattr(self.component_ports.resistor, port_type)
                 h = sizing.height
                 w = sizing.width
@@ -178,8 +173,9 @@ class AstarInitiator:
                 for x, y in segment:
 
                     for i in range(-self.routing_parameters.trace_width_scaled,
-                                   self.routing_parameters.trace_width_scaled + 1):
-                        for p in range(-self.routing_parameters.trace_width_scaled-4, self.routing_parameters.trace_width_scaled +5):
+                                   self.routing_parameters.trace_width_scaled+1):
+                        for p in range(-self.routing_parameters.trace_width_scaled-4,
+                                       self.routing_parameters.trace_width_scaled+5):
                             if y + i < len(self.grid_horizontal)-1 and x + p < len(self.grid_horizontal[0])-1:
                                 self.grid_horizontal[y + i][x + p] = self.TRACE_ON_GRID
 
@@ -189,12 +185,11 @@ class AstarInitiator:
         best_length = float('inf')
         best_start = None
         path = []
-        full_path = []
         if self.RUN_MULTIPLE_ASTAR:
             self.logger.info(f"Running A* multiple times for net: {net}")
             for start in self.goal_nodes:
                 self.logger.info(f"Starting A* with start node: {start}")
-                path, length = astar_start(self.grid_vertical, self.grid_horizontal,start, self.goal_nodes,
+                path, length = astar_start(self.grid_vertical, self.grid_horizontal, start, self.goal_nodes,
                                            self.routing_parameters.minimum_segment_length, self.TSP_NODE_ORDER,
                                            self.routing_parameters.trace_width_scaled)
                 self.logger.info(f"Finished running A* with start node: {start}")
@@ -224,17 +219,6 @@ class AstarInitiator:
 
             return path
 
-            # if not path is None:
-            #     break
-            # else:
-            #     self.logger.info(f"Viable path not found, rerunning with different start node")
-            # if not path:
-            #     self.logger.info(f"Finished running A* no path found for net: {net}")
-            # else:
-            #     self.logger.info(f"Finished running A* one time for net: {net}")
-
-            #return path
-
     @staticmethod
     def __check_vdd_vss(net):
         return re.search(".*VSS.*", net, re.IGNORECASE) or re.search(".*VDD.*", net, re.IGNORECASE)
@@ -242,7 +226,8 @@ class AstarInitiator:
     def __initiate_astar(self):
         self.logger.info("Starting Initiate A*")
 
-        local_net_order = self.NET_ORDER if self.CUSTOM_NET_ORDER else self.net_list.pin_nets + self.net_list.applicable_nets
+        local_net_order = self.NET_ORDER if self.CUSTOM_NET_ORDER else (
+                self.net_list.pin_nets + self.net_list.applicable_nets)
         for net in local_net_order:
             self.test_net = net
             # Skipping these nets, that are handled by other routing algorithm
@@ -259,7 +244,7 @@ class AstarInitiator:
             self.__lock_or_unlock_port(lock=0)
 
             if len(self.goal_nodes) > 1:
-                p = self.__run_multiple_astar_multiple_times(net = net)
+                p = self.__run_multiple_astar_multiple_times(net=net)
             elif len(self.goal_nodes) == 0:
                 self.logger.error(f"No goal nodes found in net: {net}")
                 p = []
@@ -282,7 +267,7 @@ class AstarInitiator:
 
     def get(self):
         self.__initiate_astar()
-        return self.path
+        return self.path, self.grid_vertical, self.grid_horizontal
 
 
 """Helper function deciding which of two connected ports should be routed from"""

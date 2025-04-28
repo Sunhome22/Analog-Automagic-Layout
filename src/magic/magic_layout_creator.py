@@ -15,7 +15,8 @@
 # ================================================== Libraries =========================================================
 import os
 import time
-from circuit.circuit_components import RectArea, Transistor, Capacitor, Resistor, Pin, CircuitCell, TraceNet, RectAreaLayer
+from circuit.circuit_components import (RectArea, Transistor, Capacitor, Resistor, Pin, CircuitCell, TraceNet,
+                                        RectAreaLayer)
 from magic.magic_drawer import get_pixel_boxes_from_text, get_black_white_pixel_boxes_from_image
 from logger.logger import get_a_logger
 from collections import deque
@@ -24,13 +25,12 @@ import re
 import libraries.atr_sky130a_lib as atr
 import copy
 
-
-
 # ============================================== Magic layout creator ==================================================
 
 
 class MagicLayoutCreator:
     logger = get_a_logger(__name__)
+
     def __init__(self, project_properties, components):
         self.project_properties = project_properties
         self.project_top_cell_name = project_properties.top_cell_name
@@ -47,10 +47,10 @@ class MagicLayoutCreator:
         self.total_circuit_cells_added = 0
 
         self.config = self.__load_config()
-
-
-
+        self.TECHNOLOGY = self.config["magic_layout_creator"]["TECHNOLOGY"]
         self.VIA_PADDING = self.config["magic_layout_creator"]["VIA_PADDING"]
+        self.METAL_LAYERS = self.config["magic_layout_creator"]["METAL_LAYERS"]
+        self.VIA_MAP = self.config["magic_layout_creator"]["VIA_MAP"]
 
         self.__generate_magic_files()
 
@@ -61,17 +61,17 @@ class MagicLayoutCreator:
         except (FileNotFoundError, tomllib.TOMLDecodeError) as e:
             self.logger.error(f"Error loading config: {e}")
 
-    def place_black_white_picture(self, image_path: str):
+    def place_black_white_picture(self, image_path: str, layer1: str, layer2: str):
         """Not used"""
         black_pixels, white_pixels = get_black_white_pixel_boxes_from_image(image_path)
 
-        self.magic_file_lines.append(f"<< m1 >>")
+        self.magic_file_lines.append(f"<< {layer1} >>")
         for box in black_pixels:
             rect_area = RectArea()
             rect_area.set(box)
             self.magic_file_lines.append(f"rect {rect_area.x1} {rect_area.y1} {rect_area.x2} {rect_area.y2}")
 
-        self.magic_file_lines.append(f"<< m2 >>")
+        self.magic_file_lines.append(f"<< {layer2} >>")
         for box in white_pixels:
             rect_area = RectArea()
             rect_area.set(box)
@@ -99,46 +99,41 @@ class MagicLayoutCreator:
     def __via_placer(self, start_layer: str, end_layer: str, area: RectArea, trace_net: TraceNet):
         """Adds via(s) and potentially necessary metal layers between a top layer and a bottom layer"""
 
-        via_map = {
-            ('locali', 'm1'): 'viali',
-            ('m1', 'locali'): 'viali',
-            ('m1', 'm2'): 'via1',
-            ('m2', 'm1'): 'via1',
-            ('m2', 'm3'): 'via2',
-            ('m3', 'm2'): 'via2',
-            ('m3', 'm4'): 'via3',
-            ('m4', 'm3'): 'via3',
-        }
-        metal_layer_list = ['locali', 'm1', 'm2', 'm3', 'm4']
+        if start_layer == end_layer:
+            self.logger.error(f"Can't place via between {start_layer} and {end_layer}")
+            return
+
+        # Build the complete via map
+        via_map = {}
+        for key, value in self.VIA_MAP.items():
+            key_tuple = tuple(key.split("-"))
+
+            # Add both the original and swapped key-value pairs to the map since traversal can go both directions
+            via_map[key_tuple] = value
+            via_map[key_tuple[::-1]] = value
 
         metal_layers = self.__get_inbetween_metal_layers(start_layer=start_layer, end_layer=end_layer,
-                                                       metal_layer_list=metal_layer_list)
+                                                         metal_layer_list=self.METAL_LAYERS)
         via_layers = self.__get_inbetween_via_layers(start_layer=start_layer, end_layer=end_layer, via_map=via_map)
 
         # Metal area is increased with an offset to compensate for the via if via is present
-
         metal_area = RectArea(x1=area.x1, y1=area.y1, x2=area.x2, y2=area.y2)
 
         if via_layers is not None:
             metal_area = RectArea(x1=area.x1 - self.VIA_PADDING, y1=area.y1 - self.VIA_PADDING,
                                   x2=area.x2 + self.VIA_PADDING, y2=area.y2 + self.VIA_PADDING)
-        if len(metal_layers) > 1:
 
-            trace_net.vias.append(RectAreaLayer(layer=f"{metal_layers[0]}-{metal_layers[1]}", area=area))
+        trace_net.vias.append(RectAreaLayer(layer=f"{metal_layers[0]}-{metal_layers[1]}", area=area))
 
-            # Place all required metal(s)
-            if metal_layers is not None:
-                for metal_layer in metal_layers:
-                    self.__place_box(layer=metal_layer, area=metal_area)
+        # Place all required metal(s)
+        if metal_layers is not None:
+            for metal_layer in metal_layers:
+                self.__place_box(layer=metal_layer, area=metal_area)
 
-            # Place all required via(s)
-            if via_layers is not None:
-                for via_layer in via_layers:
-                    self.__place_box(layer=via_layer, area=area)
-        else:
-            self.logger.error(f"")
-
-
+        # Place all required via(s)
+        if via_layers is not None:
+            for via_layer in via_layers:
+                self.__place_box(layer=via_layer, area=area)
 
     def __add_trace_net_vias(self, trace_net: TraceNet) -> int:
         """Checks for overlap between segments of a trace net in different layers and adds vias.
@@ -147,7 +142,6 @@ class MagicLayoutCreator:
         via_count = 0
 
         for segment in trace_net.segments:
-
             if previous_segment and previous_segment.layer != segment.layer:
 
                 # Calculate overlap
@@ -180,12 +174,12 @@ class MagicLayoutCreator:
 
         return via_count
 
-    def __add_trace_net_connection_point(self, trace_net: TraceNet):
+    def __add_trace_net_connection_point(self, trace_net: TraceNet, components):
         """Creates a connection point based on which layer a trace segment wants to connect to a port.
         Multiple connections to a port will show as the connection point being added multiple times"""
 
         # Iterate over all components and filter out things that does not have ports
-        for component in self.components:
+        for component in components:
             if not isinstance(component, (Pin, CircuitCell, TraceNet)):
 
                 # Iterate over all ports for every segment of the current trace net
@@ -198,13 +192,15 @@ class MagicLayoutCreator:
                                             y1=port.area.y1 + component.transform_matrix.f,
                                             y2=port.area.y2 + component.transform_matrix.f)
 
-                        # Hinder placement of connection points to bulks since they are always connected in 'locali'
-                        if port.type == "B" or segment.layer == 'locali':
+                        # Hinder placement of connection points to bulks since they are always connected in the
+                        # lowest metal
+                        if port.type == "B" or segment.layer == self.METAL_LAYERS[0]:
                             continue
 
                         # Check for overlap between the port and the segment and add vias accordingly
-                        if not (segment.area.x2 < port_pos.x1 or segment.area.x1 > port_pos.x2 or
-                                segment.area.y2 < port_pos.y1 or segment.area.y1 > port_pos.y2):
+                        if (not (segment.area.x2 < port_pos.x1 or segment.area.x1 > port_pos.x2 or
+                                 segment.area.y2 < port_pos.y1 or segment.area.y1 > port_pos.y2)
+                                and segment.layer != port.layer):
 
                             self.__via_placer(start_layer=segment.layer, end_layer=port.layer, area=port_pos,
                                               trace_net=trace_net)
@@ -213,7 +209,7 @@ class MagicLayoutCreator:
 
                             self.logger.info(f"Connection placed on port '{port.type}' of '{component.name}' "
                                              f"between layer '{port.layer}' and '{segment.layer}' "
-                                             f"for trace net '{trace_net.name}' of '{trace_net.cell}'")
+                                             f"for trace net '{trace_net.name}' of '{trace_net.named_cell}'")
 
     def __get_inbetween_metal_layers(self, start_layer: str, end_layer: str, metal_layer_list: list):
         """Gets all metal layers, including start and end layer, and deals with if their positions are
@@ -223,7 +219,6 @@ class MagicLayoutCreator:
             # Get layers between the start and end (inclusive)
             result = metal_layer_list[min(metal_layer_list.index(start_layer), metal_layer_list.index(end_layer)):
                                       max(metal_layer_list.index(start_layer), metal_layer_list.index(end_layer)) + 1]
-
             return result
 
         except ValueError:
@@ -315,7 +310,6 @@ class MagicLayoutCreator:
             atr.place_transistor_endpoints_for_atr_sky130a_lib(self=self, component=component)
 
     def __pin_component_creator(self, component):
-
         # Check that layout type is valid
         if isinstance(component.layout, RectAreaLayer):
             self.magic_file_lines.extend([
@@ -329,24 +323,26 @@ class MagicLayoutCreator:
     def __circuit_cell_component_creator(self, component):
 
         self.magic_file_lines.extend([
-            f"use {component.name} {component.name} ",
+            f"use {component.cell} {component.named_cell} ",
             f"transform {component.transform_matrix.a} {component.transform_matrix.b}"
             f" {component.transform_matrix.c} {component.transform_matrix.d}"
             f" {component.transform_matrix.e} {component.transform_matrix.f}",
             f"box {component.bounding_box.x1} {component.bounding_box.y1} {component.bounding_box.x2}"
             f" {component.bounding_box.y2}"
         ])
+        self.logger.info(f"{component.instance} '{component.named_cell}' of parent cell '{component.parent_cell}' "
+                         f"placed with {component.transform_matrix}")
 
         self.total_circuit_cells_added += 1
 
     def __magic_file_top_template(self):
         self.magic_file_lines.extend([
             "magic",
-            "tech sky130A",
+            f"tech {self.TECHNOLOGY}",
             "magscale 1 1",
             f"timestamp {int(time.time())}",
             "<< checkpaint >>",
-            "rect 0 0 0 0"  # Rectangle completely covering everything in the cell. TBD!
+            "rect 0 0 1 1"  # Rectangle completely covering everything in the cell. TBD!
         ])
 
     def __magic_file_creator(self, components, file_name):
@@ -360,7 +356,7 @@ class MagicLayoutCreator:
         # Place connection points
         for component in components:
             if isinstance(component, TraceNet):
-                self.__add_trace_net_connection_point(trace_net=component)
+                self.__add_trace_net_connection_point(trace_net=component, components=components)
 
         # Place trace nets
         for component in components:
@@ -401,21 +397,22 @@ class MagicLayoutCreator:
                          f"Connection Points: {self.total_connection_points_added} | "
                          f"Trace nets: {self.total_trace_nets_added} | Vias: {self.total_vias_added} | "
                          f"Circuit cells: {self.total_circuit_cells_added}")
+        self.logger.info(f"============================================================================================"
+                         f"============================================")
 
     def __generate_magic_files(self):
-        sub_cells = []
+        cell_chains = []
 
         # Retrieve all sub cells
         for component in self.components:
             if isinstance(component, CircuitCell):
-                sub_cells.append(component.name)
-
-        cells = sub_cells + [self.project_top_cell_name]
+                cell_chains.append(component.cell_chain)
 
         # Iterate over found cells and generate .mag files for each one
-        for cell in cells:
-            cell_name = None
+        for cell_chain in cell_chains:
+            cell = None
             cell_components = []
+
             self.magic_file_lines = []
             self.total_functional_components_added = 0
             self.total_connection_points_added = 0
@@ -424,19 +421,36 @@ class MagicLayoutCreator:
             self.total_circuit_cells_added = 0
 
             for component in self.components:
-                if component.cell == "":
-                    self.logger.error(f"{component.name} is missing a cell name")
+
+                if isinstance(component, CircuitCell):
+                    # Assign new cell name on change
+                    if component.cell_chain == cell_chain:
+                        cell = component.cell
+
+                if component.cell_chain == "":
+                    self.logger.error(f"{component.name} is missing a cell chain")
                     continue
 
-                if component.cell != cell:
+                if component.cell_chain != cell_chain:
                     continue
 
-                if cell_name is None:
-                    cell_name = component.cell
+                if cell is None:
+                    cell = component.cell
 
-                cell_components.append(component)
+                if not isinstance(component, CircuitCell):
+                    cell_components.append(component)
+
+            # Top cell handling
+            if cell_chain == "UTOP_" + self.project_top_cell_name:
+                cell = self.project_top_cell_name
+
+            # Add circuit cells that has the current cell as parent and do not have the same name
+            for comp in self.components:
+                if (isinstance(comp, CircuitCell) and comp.parent_cell == cell and
+                        all(existing_comp.named_cell != comp.named_cell for existing_comp in cell_components)):
+                    cell_components.append(comp)
 
             # Create file if component list is not empty
-            self.__magic_file_creator(components=cell_components, file_name=cell_name)
+            self.__magic_file_creator(components=cell_components, file_name=cell)
 
         self.logger.info("Process complete!")

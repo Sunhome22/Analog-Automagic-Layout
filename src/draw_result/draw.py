@@ -28,25 +28,20 @@ def load_config(path="pyproject.toml"):
 
 
 config = load_config()
-GRID_SIZE = config["generate_grid"]["GRID_SIZE"]
+GRID_SIZE = 20000
 SCALE_FACTOR = config["generate_grid"]["SCALE_FACTOR"]
 GRID_LEEWAY_X = config["generate_grid"]["GRID_LEEWAY_X"]
 GRID_LEEWAY_Y = config["generate_grid"]["GRID_LEEWAY_Y"]
 
-
-
-
 def draw_result( objects, connections, used_area, draw_name):
 
-
-    connections2 =  [x for x in connections.values() if x is not None]
+    connections2 = [x for x in connections.values() if x is not None]
 
     # set up plot
     fix, ax = plt.subplots(figsize=(10, 10))
     ax.set_xlim(0, GRID_SIZE)
     ax.set_ylim(0, GRID_SIZE)
     path = True
-
 
 
     # draw grid

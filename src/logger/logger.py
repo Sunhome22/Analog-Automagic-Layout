@@ -34,8 +34,6 @@ PURPLE = "\033[38;2;153;51;255m"
 CYAN = "\033[38;2;0;204;204m"
 DARK_CYAN = "\033[38;2;0;153;153m"
 PINK = "\033[38;2;255;51;255m"
-PALETURQUOISE = "\033[38;2;175;238;238m"
-DARK_ORCHID = "\033[38;2;153;50;204m"
 # =================================================== Logging ==========================================================
 
 
@@ -51,15 +49,13 @@ def get_a_logger(name):
         "linear_optimization.linear_optimization": PURPLE,
         "connections.connections": CYAN,
         "astar.a_star": BLUE,
-        "astar.a_star_initiator": PALETURQUOISE,
         "grid.generate_grid": PINK,
         "drc.drc_checker": DARK_CYAN,
         "lvs.lvs_checker": DARK_GREEN,
-        "traces.trace_generator": LIGHT_ORANGE,
-        "linear_optimization.initiator_lp" : DARK_ORCHID
+        "traces.trace_generator": LIGHT_ORANGE
     }
 
-    file_spcific_color = color_table.get(name, WHITE)
+    file_specific_color = color_table.get(name, WHITE)
 
     # Create a logger and set default level
     logger = logging.getLogger(name)
@@ -68,8 +64,8 @@ def get_a_logger(name):
     console_handler = logging.StreamHandler()
     console_handler.setLevel(logging.DEBUG)
 
-    # Create a custom formatter with the dynmaic file color
-    formatter = CustomFormatter(file_color=file_spcific_color)
+    # Create a custom formatter with the dynamic file color
+    formatter = CustomFormatter(file_color=file_specific_color)
     console_handler.setFormatter(formatter)
     logger.addHandler(console_handler)
 

@@ -258,7 +258,7 @@ class GridGeneration:
 
             if component_type == component_types[0] or component_type == component_types[1]:
 
-                if check_ignorable_port(self.logger, components=self.components, object_id=object_id, port=port_type):
+                if check_ignorable_port(components=self.components, object_id=object_id, port=port_type):
                     port_attribute = getattr(self.component_ports.cmos, "V"+port_type)
 
                 else:
@@ -312,7 +312,7 @@ def get_obj_id_and_types(key):
         return None, None, None
 
 
-def check_ignorable_port(logger, components, object_id, port):
+def check_ignorable_port(components, object_id, port):
     for obj in components:
         if obj.number_id == int(object_id):
 

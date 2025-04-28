@@ -17,6 +17,7 @@ dynamic = ["dependencies"]
 dependencies = {file = ["requirements.txt"]}
 
 # ===================================================== Configs ========================================================
+
 #Initiator of Linear optimization config options
 # -> Sub Cell Offset X - Offset between groupings of resistors, capacitors and transistors
 # -> United Res Cap - Allows placement of resistors and capacitors in the same cell
@@ -35,8 +36,10 @@ ENABLE_CUSTOM_TRANSISTOR_ORDER = true
 CUSTOM_TRANSISTOR_ORDER = ["C", "B"]
 CMOS_BIPOLAR_OFFSET = 400
 
+
 # Linear optimization config options
-# -> Alpha - Constant for weighing the importance of total Manhattan distance between components in the objective function
+# -> Alpha - Constant for weighing the importance of total Manhattan distance between
+#                     components in the objective function
 # -> Beta - Constant for weighing the importance of perimeter along the x-axis in the objective function
 # -> Theta - Constant for weighing the importance of perimeter along the y-axis in the objective function
 # -> Unit_width, Unit_height - Unit width and height are intervals of allowable placements along the x- and y-axis
@@ -45,33 +48,66 @@ CMOS_BIPOLAR_OFFSET = 400
 # -> Run - Boolean used for debugging. Turns on or off the execution of linear optimization
 # -> Stop_tolerance - MIP gap threshold percentage for when to stop searching with respect to the relative difference
 #                     between primal and dual solutions
-# Tip: If all components are the same size set unit height and width to the size of the components
+# -> CUSTOM_PARAMETERS - Boolean choosing between parameters in standard or using specific parameters for
+#                     different components
 
 [linear_optimization]
+RUN = true
+TIME_LIMIT = 2
+SOLVER_MSG = true
+CUSTOM_PARAMETERS = true
+
+[linear_optimization.standard]
 UNIT_HEIGHT = 400
 UNIT_WIDTH = 576
-TRANSISTOR_OFFSET_X = 184
-TRANSISTOR_OFFSET_Y = 700
-RESISTOR_OFFSET_X = 100
-RESISTOR_OFFSET_Y = 100
-CAPACITOR_OFFSET_X = 50
-CAPACITOR_OFFSET_Y = 50
+OFFSET_X = 184
+OFFSET_Y = 700
 ALPHA = 0.001
-BETA = 1000
+BETA = 100
 THETA = 5
-TIME_LIMIT = 2
+GRID_SIZE = 6000
+
+[linear_optimization.transistor]
+UNIT_HEIGHT = 400
+UNIT_WIDTH = 576
 MIRROR = true
-RUN = true
+STOP_TOLERANCE = 0.005
+OFFSET_X = 184
+OFFSET_Y = 700
 VERTICAL_SYMMETRY = true
 HORIZONTAL_SYMMETRY = false
+ALPHA = 0.001
+BETA = 100
+THETA = 5
+GRID_SIZE = 6000
 
-CUSTOM_STOP_TOLERANCE = false
-STOP_TOLERANCE_STANDARD = 0.005
-STOP_TOLERANCE_TRANSISTORS = 0.05
-STOP_TOLERANCE_RESISTORS = 0.005
-STOP_TOLERANCE_CAPACITORS = 0.005
+[linear_optimization.resistor]
+UNIT_HEIGHT = 400
+UNIT_WIDTH = 576
+MIRROR = true
+STOP_TOLERANCE = 0.005
+OFFSET_X = 100
+OFFSET_Y = 100
+VERTICAL_SYMMETRY = true
+HORIZONTAL_SYMMETRY = false
+ALPHA = 0.001
+BETA = 100
+THETA = 5
+GRID_SIZE = 6000
 
-SOLVER_MSG = true
+[linear_optimization.capacitor]
+UNIT_HEIGHT = 400
+UNIT_WIDTH = 576
+MIRROR = true
+STOP_TOLERANCE = 0.005
+OFFSET_X = 100
+OFFSET_Y = 150
+VERTICAL_SYMMETRY = true
+HORIZONTAL_SYMMETRY = false
+ALPHA = 0.001
+BETA = 100
+THETA = 5
+GRID_SIZE = 6000
 
 
 # Magic layout creator config options
@@ -82,20 +118,20 @@ SOLVER_MSG = true
 
 [magic_layout_creator]
 TECHNOLOGY = 'sky130A'
-METAL_LAYERS = ['locali', 'm1', 'm2', 'm3', 'm4']
-VIA_MAP = {"locali-m1" = "viali", "m1-m2" = "via1", "m2-m3" = "via2", "m3-m4" = "via3"}
+METAL_LAYERS = ['locali', 'm1', 'm2', 'm3', 'm4', 'm5']
+VIA_MAP = {"locali-m1" = "viali", "m1-m2" = "via1", "m2-m3" = "via2", "m3-m4" = "via3", "m4-m5" = "via4"}
 VIA_PADDING = 7
 
-# Trace generator config options
+# Generate rail traces config options
 # -> Init rail ring offset x/y - offset from cells defined bounding box
 # -> rail ring offset - distance from the outside of one ring to the outside of the next
 # -> rail width - width of the rails
 
-[trace_generator]
+[generate_rail_traces]
 INIT_RAIL_RING_OFFSET_Y = 350
 INIT_RAIL_RING_OFFSET_X = 150
-RAIL_RING_OFFSET = 150
-RAIL_RING_WIDTH = 100
+RAIL_RING_OFFSET = 100
+RAIL_RING_WIDTH = 50
 
 # Generate grid config options
 # -> Grid size - area the components have to fit within
@@ -105,13 +141,12 @@ RAIL_RING_WIDTH = 100
 # -> Grid leeway x/y - extra space outside of component placement for additional routing space
 
 [generate_grid]
-GRID_SIZE = 10000
-SCALE_FACTOR =16
+
+SCALE_FACTOR = 16
 TRACE_WIDTH = 30
 VIA_MINIMUM_DISTANCE = 20
 GRID_LEEWAY_X = 300
 GRID_LEEWAY_Y = 500
-
 # Astar initiator config options
 # -> Run multiple astar - allows a star to be executed with each goal node as initial position to find the shortest path
 # -> Custom net order - allows predefined order of nets in a star execution
@@ -121,8 +156,18 @@ GRID_LEEWAY_Y = 500
 RUN_MULTIPLE_ASTAR = false
 CUSTOM_NET_ORDER = false
 TSP_NODE_ORDER = true
-NET_ORDER = ["I_BIAS","net4","VIN", "net2","VO",  "net1",  "net3", "VIP", "net5", "net6"]
+NET_ORDER = ["I_BIAS","net4", "VIN", "net2", "VO", "net1",  "net3", "VIP"]
 
+# Cell creator config options
+# -> Cells per row in top cell - Defined how many cells should placed per row in the projects defined top cell
+[cell_creator]
+CELLS_PER_ROW_IN_TOP_CELL = 1
 
 [DRAW_RESULT]
 FILE_NAME = 'Temporary_check'
+
+
+
+
+
+
