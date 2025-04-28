@@ -77,8 +77,8 @@ class GenerateAstarPathTraces:
             self.scale_offset_x += real_nodes[index][0] - (goal_nodes[index][0]*self.SCALE_FACTOR + self.adjustment[0])
             self.scale_offset_y += real_nodes[index][1] - (goal_nodes[index][1]*self.SCALE_FACTOR + self.adjustment[1])
 
-        self.scale_offset_x /= len(goal_nodes)
-        self.scale_offset_y /= len(goal_nodes)
+        self.scale_offset_x /= len(goal_nodes) if len(goal_nodes) > 0 else 1
+        self.scale_offset_y /= len(goal_nodes) if len(goal_nodes) > 0 else 1
 
     def __calculate_real_coordinates(self, segment):
         start_x, start_y = segment[0]

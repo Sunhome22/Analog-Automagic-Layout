@@ -36,7 +36,7 @@ from circuit.circuit_components import (RectArea, RectAreaLayer, Transistor, Cap
                                         TraceNet, RectAreaLayer, DigitalBlock)
 from traces.generate_astar_path_traces import GenerateAstarPathTraces
 from traces.generate_rail_traces import GenerateRailTraces
-from astar.a_star import AstarAlgorithm
+from astar.a_star import astar_start
 from libraries.library_handling import LibraryHandling
 
 
@@ -173,20 +173,20 @@ class CellCreator:
                 = GridGeneration(components=components).initialize_grid_generation()
 
             # Step 5: A star path routing between component ports
-            # paths, grid_vertical, grid_horizontal = (
-            #     AstarInitiator(grid=grid,
-            #                    connections=connections,
-            #                    components=components,
-            #                    scaled_port_coordinates=scaled_port_coordinates,
-            #                    port_coordinates=port_coordinates,
-            #                    net_list=net_list,
-            #                    routing_parameters=routing_parameters,
-            #                    component_ports=component_ports
-            #                    ).get())
+            paths, grid_vertical, grid_horizontal = (
+                AstarInitiator(grid=grid,
+                               connections=connections,
+                               components=components,
+                               scaled_port_coordinates=scaled_port_coordinates,
+                               port_coordinates=port_coordinates,
+                               net_list=net_list,
+                               routing_parameters=routing_parameters,
+                               component_ports=component_ports
+                               ).get())
 
             # Step 6: Trace generation
-            # components = GenerateAstarPathTraces(components=components, paths=[], net_list=net_list,
-            #                                      used_area=origin_scaled_used_area).get()
+            components = GenerateAstarPathTraces(components=components, paths=paths, net_list=net_list,
+                                                 used_area=origin_scaled_used_area).get()
             components = GenerateRailTraces(project_properties=self.project_properties, components=components).get()
 
             # Step 7: Handle specifics for components of different libraries
@@ -234,7 +234,8 @@ class CellCreator:
                     via.area.y2 += rails_offset_y
 
         for component in components:
-            if isinstance(component, Pin):
+            print(component)
+            if isinstance(component, Pin) and component.layout:
                 if component.name in zero_segment_trace_net_names:
                     component.layout.area.x1 += rails_offset_x
                     component.layout.area.y1 += rails_offset_y
@@ -472,7 +473,7 @@ class CellCreator:
             # grid, scaled_port_coordinates, used_area, port_coordinates, routing_parameters, component_ports \
             #     = GridGeneration(components=self.updated_components).initialize_grid_generation()
             #
-            # path, length = (AstarAlgorithm(copy.deepcopy(grid), copy.deepcopy(grid), p1, [p2],
+            # path, length = (astar_start(copy.deepcopy(grid), copy.deepcopy(grid), p1, [p2],
             #                                routing_parameters.minimum_segment_length).a_star())
             # print(path)
             # self.updated_components = TraceGenerator(project_properties=self.project_properties,

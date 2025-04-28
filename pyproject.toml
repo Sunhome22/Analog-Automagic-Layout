@@ -22,16 +22,19 @@ dependencies = {file = ["requirements.txt"]}
 # -> Sub Cell Offset X - Offset between groupings of resistors, capacitors and transistors
 # -> United Res Cap - Allows placement of resistors and capacitors in the same cell
 # -> RELATIVE PLACEMENT - Of components in the same cell, either "S" - side by side or "A" - Above
-# -> USTOM RELATIVE PLACEMENT ORDER - Decides order of placement. The first placement will be leftmost or below
-# ->
-# ->
+# -> CUSTOM RELATIVE PLACEMENT ORDER - Decides order of placement. The first placement will be leftmost or below
+# -> ENABLE CUSTOM TRANSISTOR ORDER - enables custom transistor order. The first element is placed below the other
+# -> CUSTOM TRANSISTOR ORDER - The defined custom order, can be changed. Utilize "C" for cmos and "B" for bipolar
 
 [initiator_lp]
 SUB_CELL_OFFSET = 700
-UNITED_RES_CAP = true
+UNITED_RES_CAP = false
 RELATIVE_PLACEMENT = "A"
 ENABLE_CUSTOM_ORDER = true
-CUSTOM_RELATIVE_PLACEMENT_ORDER = ["R", "T", "C"]
+CUSTOM_RELATIVE_PLACEMENT_ORDER = ["R", "C", "T"]
+ENABLE_CUSTOM_TRANSISTOR_ORDER = true
+CUSTOM_TRANSISTOR_ORDER = ["C", "B"]
+CMOS_BIPOLAR_OFFSET = 400
 
 
 # Linear optimization config options
@@ -48,20 +51,29 @@ CUSTOM_RELATIVE_PLACEMENT_ORDER = ["R", "T", "C"]
 [linear_optimization]
 UNIT_HEIGHT = 400
 UNIT_WIDTH = 576
-OFFSET_X = 184
-OFFSET_Y = 700
+TRANSISTOR_OFFSET_X = 184
+TRANSISTOR_OFFSET_Y = 700
+RESISTOR_OFFSET_X = 100
+RESISTOR_OFFSET_Y = 100
+CAPACITOR_OFFSET_X = 50
+CAPACITOR_OFFSET_Y = 50
 ALPHA = 0.001
 BETA = 100
 THETA = 5
 TIME_LIMIT = 2
 MIRROR = true
 RUN = true
-
-STOP_TOLERANCE = 0.05
-SOLVER_MSG = true
-
 VERTICAL_SYMMETRY = true
 HORIZONTAL_SYMMETRY = false
+
+CUSTOM_STOP_TOLERANCE = false
+STOP_TOLERANCE_STANDARD = 0.005
+STOP_TOLERANCE_TRANSISTORS = 0.05
+STOP_TOLERANCE_RESISTORS = 0.005
+STOP_TOLERANCE_CAPACITORS = 0.005
+
+SOLVER_MSG = true
+
 
 # Magic layout creator config options
 # -> Technology - defines which PDK technology we are targeting
@@ -108,6 +120,7 @@ GRID_LEEWAY_Y = 500
 [a_star_initiator]
 RUN_MULTIPLE_ASTAR = false
 CUSTOM_NET_ORDER = false
+TSP_NODE_ORDER = true
 NET_ORDER = ["I_BIAS","net4", "VIN", "net2", "VO", "net1",  "net3", "VIP"]
 
 # Cell creator config options
