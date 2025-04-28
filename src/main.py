@@ -31,7 +31,6 @@ from linear_optimization.linear_optimization import *
 from grid.generate_grid import *
 from connections.connections import *
 from traces import generate_astar_path_traces
-from traces.trace_generate import initiate_write_traces
 from drc.drc_checker import DRCchecking
 from lvs.lvs_checker import LVSchecking
 from collections import defaultdict
@@ -40,8 +39,6 @@ from traces.generate_astar_path_traces import *
 import os
 # ========================================== Set-up classes and constants ==============================================
 
-grid_size = 4500
-scale_factor = 8
 draw_name = 'Temporary_check'
 
 @dataclass

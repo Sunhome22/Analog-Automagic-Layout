@@ -20,6 +20,7 @@ import tomllib
 import re
 import libraries.atr_sky130a_lib as atr
 import libraries.tr_sky130a_lib as tr
+import libraries.aal_misc_sky130a_lib as aal
 
 # ============================================ ATR SKY130A Handling ====================================================
 
@@ -36,7 +37,8 @@ class LibraryHandling:
         self.functional_components = []
         self.transistor_components = []
         self.atr_transistor_components = []
-        self.tr_components = []
+        self.tr_resistor_components = []
+        self.aal_capacitor_components = []
         self.components = components
 
         # Load config
@@ -51,8 +53,11 @@ class LibraryHandling:
             if isinstance(component, Transistor) and re.search(r'_ATR_', component.layout_library):
                 self.atr_transistor_components.append(component)
 
-            if isinstance(component, (Resistor, Capacitor)) and re.search(r'_TR_', component.layout_library):
-                self.tr_components.append(component)
+            if isinstance(component, Resistor) and re.search(r'_TR_', component.layout_library):
+                self.tr_resistor_components.append(component)
+
+            if isinstance(component, Capacitor) and re.search(r'AAL_MISC', component.layout_library):
+                self.aal_capacitor_components.append(component)
 
             if isinstance(component, (Pin, CircuitCell)):
                 self.structural_components.append(component)
@@ -71,8 +76,12 @@ class LibraryHandling:
             atr.generate_local_traces_for_atr_sky130a_lib(self=self)
 
         # TR SKY130A library component handling
-        if self.tr_components:
-            tr.generate_local_traces_for_tr_sky130a_lib(self=self)
+        if self.tr_resistor_components:
+            tr.generate_local_traces_for_tr_sky130a_lib_resistors(self=self)
+
+        # AAL_MISC SKY130A library component handling
+        if self.tr_resistor_components:
+            aal.generate_local_traces_for_aal_misc_sky130a_lib(self=self)
 
     def __load_config(self, path="pyproject.toml"):
         try:

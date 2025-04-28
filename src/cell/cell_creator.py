@@ -234,7 +234,6 @@ class CellCreator:
                     via.area.y2 += rails_offset_y
 
         for component in components:
-            print(component)
             if isinstance(component, Pin) and component.layout:
                 if component.name in zero_segment_trace_net_names:
                     component.layout.area.x1 += rails_offset_x

@@ -24,38 +24,37 @@ from logger.logger import get_a_logger
 
 class LinearOptimizationSolver:
     logger = get_a_logger(__name__)
+    LOAD_NAME = "standard"
 
     def __init__(self, components, component_connections, overlap_components, object_type, overlap):
         self.current_file_directory = os.path.dirname(os.path.abspath(__file__))
 
         # Load config
         self.config = self.__load_config()
-        self.ALPHA = self.config["linear_optimization"]["ALPHA"]
-        self.BETA = self.config["linear_optimization"]["BETA"]
-        self.THETA = self.config["linear_optimization"]["THETA"]
-        self.UNIT_HEIGHT = self.config["linear_optimization"]["UNIT_HEIGHT"]
-        self.UNIT_WIDTH = self.config["linear_optimization"]["UNIT_WIDTH"]
-        self.MIRROR = self.config["linear_optimization"]["MIRROR"]
-        # OFFSET
-        self.TRANSISTOR_OFFSET_X = self.config["linear_optimization"]["TRANSISTOR_OFFSET_X"]
-        self.TRANSISTOR_OFFSET_Y = self.config["linear_optimization"]["TRANSISTOR_OFFSET_Y"]
-        self.RESISTOR_OFFSET_X = self.config["linear_optimization"]["RESISTOR_OFFSET_X"]
-        self.RESISTOR_OFFSET_Y = self.config["linear_optimization"]["RESISTOR_OFFSET_Y"]
-        self.CAPACITOR_OFFSET_X = self.config["linear_optimization"]["CAPACITOR_OFFSET_X"]
-        self.CAPACITOR_OFFSET_Y = self.config["linear_optimization"]["CAPACITOR_OFFSET_Y"]
-        # STOP TOLERANCE
-        self.CUSTOM_STOP_TOLERANCE = self.config["linear_optimization"]["CUSTOM_STOP_TOLERANCE"]
-        self.STOP_TOLERANCE_STANDARD = self.config["linear_optimization"]["STOP_TOLERANCE_STANDARD"]
-        self.STOP_TOLERANCE_TRANSISTORS = self.config["linear_optimization"]["STOP_TOLERANCE_TRANSISTORS"]
-        self.STOP_TOLERANCE_RESISTORS = self.config["linear_optimization"]["STOP_TOLERANCE_RESISTORS"]
-        self.STOP_TOLERANCE_CAPACITORS = self.config["linear_optimization"]["STOP_TOLERANCE_CAPACITORS"]
+        self.CUSTOM_PARAMETERS = self.config["linear_optimization"]["CUSTOM_PARAMETERS"]
         self.RUN = self.config["linear_optimization"]["RUN"]
-
         self.SOLVER_MSG = self.config["linear_optimization"]["SOLVER_MSG"]
-        self.GRID_SIZE = self.config["generate_grid"]["GRID_SIZE"]
-        self.VERTICAL_SYMMETRY = self.config["linear_optimization"]["VERTICAL_SYMMETRY"]
-        self.HORIZONTAL_SYMMETRY = self.config["linear_optimization"]["HORIZONTAL_SYMMETRY"]
 
+        if self.CUSTOM_PARAMETERS:
+            if object_type == "T":
+                self.LOAD_NAME = "transistor"
+            elif object_type == "R" or object_type == "RC":
+                self.LOAD_NAME = "resistor"
+            elif object_type == "C":
+                self.LOAD_NAME = "capacitor"
+
+        self.ALPHA = self.config["linear_optimization"][self.LOAD_NAME]["ALPHA"]
+        self.BETA = self.config["linear_optimization"][self.LOAD_NAME]["BETA"]
+        self.THETA = self.config["linear_optimization"][self.LOAD_NAME]["THETA"]
+        self.UNIT_HEIGHT = self.config["linear_optimization"][self.LOAD_NAME]["UNIT_HEIGHT"]
+        self.UNIT_WIDTH = self.config["linear_optimization"][self.LOAD_NAME]["UNIT_WIDTH"]
+        self.STOP_TOLERANCE = self.config["linear_optimization"][self.LOAD_NAME]["STOP_TOLERANCE"]
+        self.MIRROR = self.config["linear_optimization"][self.LOAD_NAME]["MIRROR"]
+        self.GRID_SIZE = self.config["linear_optimization"][self.LOAD_NAME]["GRID_SIZE"]
+        self.VERTICAL_SYMMETRY = self.config["linear_optimization"][self.LOAD_NAME]["VERTICAL_SYMMETRY"]
+        self.HORIZONTAL_SYMMETRY = self.config["linear_optimization"][self.LOAD_NAME]["HORIZONTAL_SYMMETRY"]
+        self.OFFSET_Y = self.config["linear_optimization"][self.LOAD_NAME]["OFFSET_Y"]
+        self.OFFSET_X = self.config["linear_optimization"][self.LOAD_NAME]["OFFSET_X"]
 
         # Inputs
         self.components = components
@@ -65,7 +64,6 @@ class LinearOptimizationSolver:
         self.object_type = object_type
 
         # Data structures
-        self.stop_tolerance = 0.001
         self.x_possible = []
         self.y_possible = []
         self.functional_components = []
@@ -81,7 +79,7 @@ class LinearOptimizationSolver:
         # Setup of problem space and solver
         self.problem_space = pulp.LpProblem("ComponentPlacement", pulp.LpMinimize)
         self.solver = pulp.SCIP_PY(msg=self.SOLVER_MSG, mip=False, warmStart=False,
-                                   options=[f"limits/gap={self.stop_tolerance}"])
+                                   options=[f"limits/gap={self.STOP_TOLERANCE}"])
 
         # Make lists of functional components and structural components
         for comp in self.components:
@@ -95,13 +93,6 @@ class LinearOptimizationSolver:
             else:
                 self.structural_components.append(comp)
 
-        self.__get_stop_tolerance()
-        self.__get_offset()
-
-        # Setup of problem space and solver
-        self.problem_space = pulp.LpProblem("ComponentPlacement", pulp.LpMinimize)
-        self.solver = pulp.SCIP_PY(msg=self.SOLVER_MSG, mip=False, warmStart=False,
-                                   options=[f"limits/gap={self.stop_tolerance}"])
         # Constraints
         self.__extract_possible_positions()
         self.x = pulp.LpVariable.dicts(f"x_bin", [(i, xv) for i in self.component_ids for xv in self.x_possible],
@@ -132,38 +123,6 @@ class LinearOptimizationSolver:
                 return tomllib.load(f)
         except (FileNotFoundError, tomllib.TOMLDecodeError) as e:
             self.logger.error(f"Error loading config: {e}")
-
-    def __get_offset(self):
-        if self.object_type == "T":
-            self.OFFSET_X = self.TRANSISTOR_OFFSET_X
-            self.OFFSET_Y = self.TRANSISTOR_OFFSET_Y
-        elif self.object_type == "R":
-            self.OFFSET_X = self.RESISTOR_OFFSET_X
-            self.OFFSET_Y = self.RESISTOR_OFFSET_Y
-        elif self.object_type == "C":
-            self.OFFSET_X = self.CAPACITOR_OFFSET_X
-            self.OFFSET_Y = self.CAPACITOR_OFFSET_Y
-        elif self.object_type == "RC":
-            self.OFFSET_X = max(self.CAPACITOR_OFFSET_X, self.RESISTOR_OFFSET_X)
-            self.OFFSET_Y = max(self.CAPACITOR_OFFSET_Y, self.RESISTOR_OFFSET_Y)
-
-        else:
-            self.OFFSET_X = max(self.CAPACITOR_OFFSET_X, self.RESISTOR_OFFSET_X, self.TRANSISTOR_OFFSET_X)
-            self.OFFSET_Y = max(self.CAPACITOR_OFFSET_Y, self.RESISTOR_OFFSET_Y, self.TRANSISTOR_OFFSET_Y)
-
-    def __get_stop_tolerance(self):
-        if self.CUSTOM_STOP_TOLERANCE:
-            if self.object_type == "T":
-                self.stop_tolerance = self.STOP_TOLERANCE_TRANSISTORS
-            elif self.object_type == "R":
-                self.stop_tolerance = self.STOP_TOLERANCE_RESISTORS
-            elif self.object_type == "C":
-                self.stop_tolerance = self.STOP_TOLERANCE_CAPACITORS
-            elif self.object_type == "RC":
-                self.stop_tolerance = max(self.STOP_TOLERANCE_RESISTORS, self.STOP_TOLERANCE_CAPACITORS)
-
-        else:
-            self.stop_tolerance = self.STOP_TOLERANCE_STANDARD
 
     def __check_mirrored_components(self) -> list:
         mirrored_objects = []
@@ -219,10 +178,10 @@ class LinearOptimizationSolver:
                                        == self.coordinates_y[component[1].number_id])
         if self.HORIZONTAL_SYMMETRY:
             for component in self.mirrored_components:
-                self.problem_space += (self.coordinates_x[component[0].number_id] ==  self.coordinates_x[component[1].number_id])
+                self.problem_space += (self.coordinates_x[component[0].number_id] ==
+                                       self.coordinates_x[component[1].number_id])
                 self.problem_space += (self.coordinates_y[component[0].number_id] + self.height[component[0].number_id]
                                        == self.GRID_SIZE-self.coordinates_y[component[1].number_id])
-
 
     @staticmethod
     def __element_in_sublist(element: object, big_list: list) -> bool:
@@ -354,7 +313,9 @@ class LinearOptimizationSolver:
                     z4 = pulp.LpVariable(f"z4_{c1}_{c2}", cat='Binary')
 
                     self.problem_space += z1 + z2 + z3 + z4 == 1, f"NonOverlap_{c1}_{c2}"
-                    if any(obj_pair.component_ids == [c1,c2] for obj_pair in self.overlap_components["top"]) and any(obj_pair.component_ids == [c1,c2] for obj_pair in self.overlap_components["side"]) and self.overlap:
+                    if (any(obj_pair.component_ids == [c1, c2] for obj_pair in self.overlap_components["top"])
+                            and any(obj_pair.component_ids == [c1, c2] for obj_pair in self.overlap_components["side"])
+                            and self.overlap):
                         self.problem_space += (self.coordinates_x[c1] + self.width[c1] <= self.coordinates_x[c2]
                                                + self.GRID_SIZE * (1 - z1), f"LeftOf_{c1}_{c2}")
                         self.problem_space += (self.coordinates_x[c2] + self.width[c2] <= self.coordinates_x[c1]
@@ -364,21 +325,27 @@ class LinearOptimizationSolver:
                         self.problem_space += (self.coordinates_y[c2] + self.height[c2] <= self.coordinates_y[c1]
                                                + self.GRID_SIZE * (1 - z4), f"Above_{c1}_{c2}")
 
-                    elif any(obj_pair.component_ids == [c1,c2] for obj_pair in self.overlap_components["side"])and self.overlap:
+                    elif (any(obj_pair.component_ids == [c1, c2] for obj_pair in self.overlap_components["side"])
+                          and self.overlap):
                         self.problem_space += (self.coordinates_x[c1] + self.width[c1] <= self.coordinates_x[c2]
                                                + self.GRID_SIZE * (1 - z1), f"LeftOf_{c1}_{c2}")
                         self.problem_space += (self.coordinates_x[c2] + self.width[c2] <= self.coordinates_x[c1]
                                                + self.GRID_SIZE * (1 - z2), f"RightOf_{c1}_{c2}")
                         self.problem_space += (self.coordinates_y[c1] + self.height[c1] + self.OFFSET_Y
-                                               <= self.coordinates_y[c2] + self.GRID_SIZE * (1 - z3), f"Below_{c1}_{c2}")
+                                               <= self.coordinates_y[c2] + self.GRID_SIZE * (1 - z3),
+                                               f"Below_{c1}_{c2}")
                         self.problem_space += (self.coordinates_y[c2] + self.height[c2] + self.OFFSET_Y
-                                               <= self.coordinates_y[c1] + self.GRID_SIZE * (1 - z4), f"Above_{c1}_{c2}")
+                                               <= self.coordinates_y[c1] + self.GRID_SIZE * (1 - z4),
+                                               f"Above_{c1}_{c2}")
 
-                    elif any(obj_pair.component_ids == [c1,c2] for obj_pair in self.overlap_components["top"])and self.overlap:
+                    elif (any(obj_pair.component_ids == [c1, c2] for obj_pair in self.overlap_components["top"])
+                          and self.overlap):
                         self.problem_space += (self.coordinates_x[c1] + self.width[c1] + self.OFFSET_X
-                                               <= self.coordinates_x[c2] + self.GRID_SIZE * (1 - z1), f"LeftOf_{c1}_{c2}")
+                                               <= self.coordinates_x[c2] + self.GRID_SIZE * (1 - z1),
+                                               f"LeftOf_{c1}_{c2}")
                         self.problem_space += (self.coordinates_x[c2] + self.width[c2] + self.OFFSET_X
-                                               <= self.coordinates_x[c1] + self.GRID_SIZE * (1 - z2), f"RightOf_{c1}_{c2}")
+                                               <= self.coordinates_x[c1] + self.GRID_SIZE * (1 - z2),
+                                               f"RightOf_{c1}_{c2}")
                         self.problem_space += (self.coordinates_y[c1] + self.height[c1] <= self.coordinates_y[c2]
                                                + self.GRID_SIZE * (1 - z3), f"Below_{c1}_{c2}")
                         self.problem_space += (self.coordinates_y[c2] + self.height[c2] <= self.coordinates_y[c1]
@@ -386,13 +353,17 @@ class LinearOptimizationSolver:
                     else:
 
                         self.problem_space += (self.coordinates_x[c1] + self.width[c1] + self.OFFSET_X
-                                               <= self.coordinates_x[c2] + self.GRID_SIZE * (1 - z1), f"LeftOf_{c1}_{c2}")
+                                               <= self.coordinates_x[c2] + self.GRID_SIZE * (1 - z1),
+                                               f"LeftOf_{c1}_{c2}")
                         self.problem_space += (self.coordinates_x[c2] + self.width[c2] + self.OFFSET_X
-                                               <= self.coordinates_x[c1] + self.GRID_SIZE * (1 - z2), f"RightOf_{c1}_{c2}")
-                        self.problem_space += (self.coordinates_y[c1] + self.height[c1]+ self.OFFSET_Y
-                                               <= self.coordinates_y[c2] + self.GRID_SIZE * (1 - z3), f"Below_{c1}_{c2}")
-                        self.problem_space += (self.coordinates_y[c2] + self.height[c2]+ self.OFFSET_Y
-                                               <= self.coordinates_y[c1] + self.GRID_SIZE * (1 - z4), f"Above_{c1}_{c2}")
+                                               <= self.coordinates_x[c1] + self.GRID_SIZE * (1 - z2),
+                                               f"RightOf_{c1}_{c2}")
+                        self.problem_space += (self.coordinates_y[c1] + self.height[c1] + self.OFFSET_Y
+                                               <= self.coordinates_y[c2] + self.GRID_SIZE * (1 - z3),
+                                               f"Below_{c1}_{c2}")
+                        self.problem_space += (self.coordinates_y[c2] + self.height[c2] + self.OFFSET_Y
+                                               <= self.coordinates_y[c1] + self.GRID_SIZE * (1 - z4),
+                                               f"Above_{c1}_{c2}")
 
             component_list.remove(c1)
 
@@ -407,7 +378,7 @@ class LinearOptimizationSolver:
                                * self.BETA + (self.y_max - self.y_min) * self.THETA, "totalWireLength")
         # Warm start
         placement_solution_file = f"{self.current_file_directory}/previous_placement_solution.pkl"
-        #self.__warm_start(file=placement_solution_file)
+        # self.__warm_start(file=placement_solution_file)
 
         # Solving
         start_solving_time = time.time()
@@ -470,13 +441,3 @@ class LinearOptimizationSolver:
 
         # Add updated functional components back into list of all components
         return self.coordinates_x, self.coordinates_y
-
-
-
-
-
-
-
-
-
-

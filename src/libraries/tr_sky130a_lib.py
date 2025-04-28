@@ -49,17 +49,24 @@ def magic_component_parsing_for_tr_sky130a_lib(self, layout_file_path: str, comp
         self.logger.error(f"The file {layout_file_path} was not found.")
 
 
-def generate_local_traces_for_tr_sky130a_lib(self):
+def generate_local_traces_for_tr_sky130a_lib_resistors(self):
+
+    for component in self.tr_resistor_components:
+        if component.schematic_connections['B'] == component.schematic_connections['N']:
+            __local_bulk_to_negative_connection(self=self, component=component)
+
+        if component.schematic_connections['B'] == component.schematic_connections['P']:
+            __local_bulk_to_positive_connection(self=self, component=component)
 
     # Make groups of components by y-coordinate
     y_grouped_component_names = defaultdict(list)
-    for component in self.tr_components:
+    for component in self.tr_resistor_components:
         y_grouped_component_names[component.transform_matrix.f].append(component.name)
     y_grouped_component_names = dict(y_grouped_component_names)
 
     # Get components connecting bulk to rail
     components_with_bulk_to_rail_connection = []
-    for component in self.tr_components:
+    for component in self.tr_resistor_components:
         if (re.search(r".*VDD.*", component.schematic_connections['B'], re.IGNORECASE) or
                 re.search(r".*VSS.*", component.schematic_connections['B'], re.IGNORECASE)):
             components_with_bulk_to_rail_connection.append(component)
@@ -74,12 +81,50 @@ def generate_local_traces_for_tr_sky130a_lib(self):
                 if component.name == comp_name and not found_comp:
                     found_comp = True
                     group_name = "_".join(map(str, group))
-                    __local_bulk_to_rail_connection_for_sky130a_lib(self=self, component=component,
-                                                                    rail=component.schematic_connections['B'],
-                                                                    group_name=group_name)
+                    __local_bulk_to_rail_connection(self=self, component=component,
+                                                    rail=component.schematic_connections['B'],
+                                                    group_name=group_name)
 
 
-def __local_bulk_to_rail_connection_for_sky130a_lib(self, component, rail: str, group_name: str):
+def __local_bulk_to_negative_connection(self, component):
+    trace = TraceNet(name=f"{component.name}_B_N", named_cell=component.named_cell)
+    trace.instance = trace.__class__.__name__
+    trace.cell = self.circuit_cell.cell
+    trace.parent_cell = self.circuit_cell.parent_cell
+    trace.cell_chain = self.circuit_cell.cell_chain
+
+    bulk_x1 = next((port.area.x1 for port in component.layout_ports if port.type == 'B'))
+    negative_y1 = next((port.area.y1 for port in component.layout_ports if port.type == 'N'))
+    negative_x2 = next((port.area.x2 for port in component.layout_ports if port.type == 'N'))
+    negative_y2 = next((port.area.y2 for port in component.layout_ports if port.type == 'N'))
+
+    trace.segments = [RectAreaLayer(layer='locali', area=RectArea(x1=bulk_x1 + component.transform_matrix.c,
+                                                                  y1=negative_y1 + component.transform_matrix.f,
+                                                                  x2=negative_x2 + component.transform_matrix.c,
+                                                                  y2=negative_y2 + component.transform_matrix.f))]
+    self.components.append(trace)
+
+
+def __local_bulk_to_positive_connection(self, component):
+    trace = TraceNet(name=f"{component.name}_B_P", named_cell=component.named_cell)
+    trace.instance = trace.__class__.__name__
+    trace.cell = self.circuit_cell.cell
+    trace.parent_cell = self.circuit_cell.parent_cell
+    trace.cell_chain = self.circuit_cell.cell_chain
+
+    bulk_x2 = next((port.area.x2 for port in component.layout_ports if port.type == 'B'))
+    positive_y1 = next((port.area.y1 for port in component.layout_ports if port.type == 'P'))
+    positive_x1 = next((port.area.x1 for port in component.layout_ports if port.type == 'P'))
+    positive_y2 = next((port.area.y2 for port in component.layout_ports if port.type == 'P'))
+
+    trace.segments = [RectAreaLayer(layer='locali', area=RectArea(x1=positive_x1 + component.transform_matrix.c,
+                                                                  y1=positive_y1 + component.transform_matrix.f,
+                                                                  x2=bulk_x2 + component.transform_matrix.c,
+                                                                  y2=positive_y2 + component.transform_matrix.f))]
+    self.components.append(trace)
+
+
+def __local_bulk_to_rail_connection(self, component, rail: str, group_name: str):
     y_params = {
         'rail_bot': (component.bounding_box.y1, 0, 1),
         'rail_top': (component.bounding_box.y2, 1, 0)
@@ -126,4 +171,3 @@ def generate_bulk_to_rail_segments(self, rail: str, component, y_params: tuple,
             trace.segments.append(RectAreaLayer(layer='locali', area=segment))
 
     self.components.append(trace)
-

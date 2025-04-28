@@ -96,7 +96,9 @@ class GenerateAstarPathTraces:
 
         for segment in path_info["segments"]:
             start, end = self.__calculate_real_coordinates(segment)
-            rectangles.append(TraceRectangle(area=RectArea(x1=start[0], y1=start[1], x2=end[0], y2=end[1]),
+            # temp rounding
+            rectangles.append(TraceRectangle(area=RectArea(x1=int(round(start[0])), y1=int(round(start[1])),
+                                                           x2=int(round(end[0])), y2=int(round(end[1]))),
                                              lost_points=[]))
 
         self.mapped_rectangles = rectangles

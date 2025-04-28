@@ -35,10 +35,10 @@ from circuit.circuit_components import (RectArea, RectAreaLayer, Transistor, Cap
 def generate_local_traces_for_atr_sky130a_lib(self):
     for component in self.atr_transistor_components:
         if component.schematic_connections['B'] == component.schematic_connections['S']:
-            __local_bulk_to_source_connection_for_atr_sky130a_lib(self=self, component=component)
+            __local_bulk_to_source_connection(self=self, component=component)
 
         if component.schematic_connections['G'] == component.schematic_connections['D']:
-            __local_gate_to_drain_connection_for_sky130a_lib(self=self, component=component)
+            __local_gate_to_drain_connection(self=self, component=component)
 
     # Make groups of components by y-coordinate
     y_grouped_component_names = defaultdict(list)
@@ -63,12 +63,12 @@ def generate_local_traces_for_atr_sky130a_lib(self):
                 if component.name == comp_name and not found_comp:
                     found_comp = True
                     group_name = "_".join(map(str, group))
-                    __local_bulk_to_rail_connection_for_sky130a_lib(self=self, component=component,
-                                                                    rail=component.schematic_connections['B'],
-                                                                    group_name=group_name)
+                    __local_bulk_to_rail_connection(self=self, component=component,
+                                                    rail=component.schematic_connections['B'],
+                                                    group_name=group_name)
 
 
-def __local_bulk_to_source_connection_for_atr_sky130a_lib(self, component):
+def __local_bulk_to_source_connection(self, component):
     trace = TraceNet(name=f"{component.name}_B_S", named_cell=component.named_cell)
     trace.instance = trace.__class__.__name__
     trace.cell = self.circuit_cell.cell
@@ -87,7 +87,7 @@ def __local_bulk_to_source_connection_for_atr_sky130a_lib(self, component):
     self.components.append(trace)
 
 
-def __local_gate_to_drain_connection_for_sky130a_lib(self, component: Transistor):
+def __local_gate_to_drain_connection(self, component: Transistor):
     trace = TraceNet(name=f"{component.name}_G_D", named_cell=component.named_cell)
     trace.instance = trace.__class__.__name__
     trace.cell = self.circuit_cell.cell
@@ -107,7 +107,7 @@ def __local_gate_to_drain_connection_for_sky130a_lib(self, component: Transistor
     self.components.append(trace)
 
 
-def __local_bulk_to_rail_connection_for_sky130a_lib(self, component, rail: str, group_name: str):
+def __local_bulk_to_rail_connection(self, component, rail: str, group_name: str):
     y_params = {
         'rail_top': (component.bounding_box.y2, component.group_endpoint_bounding_box.y2 // 2),
         'rail_bot': (component.bounding_box.y1, -component.group_endpoint_bounding_box.y2 // 2),

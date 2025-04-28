@@ -27,7 +27,7 @@ dependencies = {file = ["requirements.txt"]}
 # -> CUSTOM TRANSISTOR ORDER - The defined custom order, can be changed. Utilize "C" for cmos and "B" for bipolar
 
 [initiator_lp]
-SUB_CELL_OFFSET = 700
+SUB_CELL_OFFSET = 400
 UNITED_RES_CAP = false
 RELATIVE_PLACEMENT = "A"
 ENABLE_CUSTOM_ORDER = true
@@ -38,7 +38,8 @@ CMOS_BIPOLAR_OFFSET = 400
 
 
 # Linear optimization config options
-# -> Alpha - Constant for weighing the importance of total Manhattan distance between components in the objective function
+# -> Alpha - Constant for weighing the importance of total Manhattan distance between
+#                     components in the objective function
 # -> Beta - Constant for weighing the importance of perimeter along the x-axis in the objective function
 # -> Theta - Constant for weighing the importance of perimeter along the y-axis in the objective function
 # -> Unit_width, Unit_height - Unit width and height are intervals of allowable placements along the x- and y-axis
@@ -47,32 +48,66 @@ CMOS_BIPOLAR_OFFSET = 400
 # -> Run - Boolean used for debugging. Turns on or off the execution of linear optimization
 # -> Stop_tolerance - MIP gap threshold percentage for when to stop searching with respect to the relative difference
 #                     between primal and dual solutions
+# -> CUSTOM_PARAMETERS - Boolean choosing between parameters in standard or using specific parameters for
+#                     different components
 
 [linear_optimization]
+RUN = true
+TIME_LIMIT = 2
+SOLVER_MSG = true
+CUSTOM_PARAMETERS = true
+
+[linear_optimization.standard]
 UNIT_HEIGHT = 400
 UNIT_WIDTH = 576
-TRANSISTOR_OFFSET_X = 184
-TRANSISTOR_OFFSET_Y = 700
-RESISTOR_OFFSET_X = 100
-RESISTOR_OFFSET_Y = 100
-CAPACITOR_OFFSET_X = 50
-CAPACITOR_OFFSET_Y = 50
+OFFSET_X = 184
+OFFSET_Y = 700
 ALPHA = 0.001
 BETA = 100
 THETA = 5
-TIME_LIMIT = 2
+GRID_SIZE = 6000
+
+[linear_optimization.transistor]
+UNIT_HEIGHT = 400
+UNIT_WIDTH = 576
 MIRROR = true
-RUN = true
+STOP_TOLERANCE = 0.005
+OFFSET_X = 184
+OFFSET_Y = 500
 VERTICAL_SYMMETRY = true
 HORIZONTAL_SYMMETRY = false
+ALPHA = 0.001
+BETA = 100
+THETA = 5
+GRID_SIZE = 6000
 
-CUSTOM_STOP_TOLERANCE = false
-STOP_TOLERANCE_STANDARD = 0.005
-STOP_TOLERANCE_TRANSISTORS = 0.05
-STOP_TOLERANCE_RESISTORS = 0.005
-STOP_TOLERANCE_CAPACITORS = 0.005
+[linear_optimization.resistor]
+UNIT_HEIGHT = 50
+UNIT_WIDTH = 50
+MIRROR = true
+STOP_TOLERANCE = 0.005
+OFFSET_X = 100
+OFFSET_Y = 50
+VERTICAL_SYMMETRY = false
+HORIZONTAL_SYMMETRY = true
+ALPHA = 0.001
+BETA = 1000
+THETA = 5
+GRID_SIZE = 8000
 
-SOLVER_MSG = true
+[linear_optimization.capacitor]
+UNIT_HEIGHT = 10
+UNIT_WIDTH = 10
+MIRROR = true
+STOP_TOLERANCE = 0.005
+OFFSET_X = 100
+OFFSET_Y = 150
+VERTICAL_SYMMETRY = true
+HORIZONTAL_SYMMETRY = false
+ALPHA = 0.001
+BETA = 100
+THETA = 5
+GRID_SIZE = 6000
 
 
 # Magic layout creator config options
@@ -106,7 +141,7 @@ RAIL_RING_WIDTH = 50
 # -> Grid leeway x/y - extra space outside of component placement for additional routing space
 
 [generate_grid]
-GRID_SIZE = 6000
+
 SCALE_FACTOR = 16
 TRACE_WIDTH = 30
 VIA_MINIMUM_DISTANCE = 20
@@ -119,9 +154,9 @@ GRID_LEEWAY_Y = 500
 
 [a_star_initiator]
 RUN_MULTIPLE_ASTAR = false
-CUSTOM_NET_ORDER = false
+CUSTOM_NET_ORDER = true
 TSP_NODE_ORDER = true
-NET_ORDER = ["I_BIAS","net4", "VIN", "net2", "VO", "net1",  "net3", "VIP"]
+NET_ORDER = ["GATE", "INN",  "INP", "OUT", "IB_GATE", "AFTER_RESISTOR1", "AFTER_RESISTOR2", "OTA_SPLIT", "VDD", "VSS"]
 
 # Cell creator config options
 # -> Cells per row in top cell - Defined how many cells should placed per row in the projects defined top cell
@@ -130,8 +165,6 @@ CELLS_PER_ROW_IN_TOP_CELL = 1
 
 [DRAW_RESULT]
 FILE_NAME = 'Temporary_check'
-
-
 
 
 
