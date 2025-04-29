@@ -35,9 +35,9 @@ class MagicComponentsParser:
         self.components = components
 
         # Component specific (gets reset for every component)
-        self.found_transistor_well = False
+        self.found_transistor_well_line_label = False
         self.found_bounding_box = False
-        self.transistor_well_size = RectArea
+        self.transistor_well_size = RectArea()
         self.scale_factor = 0
 
     def get(self):

@@ -148,6 +148,8 @@ def generate_bulk_to_rail_segments(self, rail: str, component, y_params: tuple,
     bulk_y2 = next((port.area.y2 for port in component.layout_ports if port.type == 'B'))
     bulk_width = abs(bulk_y2 - bulk_y1)
 
+
+
     for structural_component in self.structural_components:
         if re.search(rf"\b{rail}\b", structural_component.name, re.IGNORECASE):
 

@@ -1,33 +1,5 @@
 [
     {
-        "instance": "CircuitCell",
-        "number_id": 0,
-        "name": "UTOP",
-        "cell": "JNW_BKLE",
-        "named_cell": "UTOP_JNW_BKLE",
-        "parent_cell": "ROOT_CELL",
-        "cell_chain": "UTOP_JNW_BKLE",
-        "group": null,
-        "schematic_connections": {
-            "VDD": "VDD",
-            "VSS": "VSS"
-        },
-        "transform_matrix": {
-            "a": 0,
-            "b": 0,
-            "c": 0,
-            "d": 0,
-            "e": 0,
-            "f": 0
-        },
-        "bounding_box": {
-            "x1": 0,
-            "y1": 0,
-            "x2": 0,
-            "y2": 0
-        }
-    },
-    {
         "instance": "Pin",
         "number_id": 1,
         "cell": "JNW_BKLE",
@@ -51,26 +23,23 @@
     },
     {
         "instance": "CircuitCell",
-        "number_id": 3,
-        "name": "U1",
-        "cell": "OTA",
-        "named_cell": "U1_OTA",
-        "parent_cell": "JNW_BKLE",
-        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
+        "number_id": 0,
+        "name": "UTOP",
+        "cell": "JNW_BKLE",
+        "named_cell": "UTOP_JNW_BKLE",
+        "parent_cell": "ROOT_CELL",
+        "cell_chain": "UTOP_JNW_BKLE",
         "group": null,
         "schematic_connections": {
             "VDD": "VDD",
-            "IN+": "net1",
-            "IN-": "net2",
-            "OUT": "net3",
             "VSS": "VSS"
         },
         "transform_matrix": {
-            "a": 0,
+            "a": 1,
             "b": 0,
             "c": 0,
             "d": 0,
-            "e": 0,
+            "e": 1,
             "f": 0
         },
         "bounding_box": {
@@ -111,7 +80,15 @@
         "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
         "type": "ipin",
         "name": "VDD",
-        "layout": ""
+        "layout": {
+            "layer": "locali",
+            "area": {
+                "x1": 100,
+                "y1": 6240,
+                "x2": 5268,
+                "y2": 6290
+            }
+        }
     },
     {
         "instance": "Pin",
@@ -122,7 +99,15 @@
         "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
         "type": "ipin",
         "name": "VSS",
-        "layout": ""
+        "layout": {
+            "layer": "locali",
+            "area": {
+                "x1": 0,
+                "y1": 6340,
+                "x2": 5368,
+                "y2": 6390
+            }
+        }
     },
     {
         "instance": "Pin",
@@ -196,12 +181,12 @@
             }
         ],
         "transform_matrix": {
-            "a": 0,
+            "a": 1,
             "b": 0,
-            "c": 0,
+            "c": 2936,
             "d": 0,
-            "e": 0,
-            "f": 0
+            "e": 1,
+            "f": 500
         },
         "bounding_box": {
             "x1": 0,
@@ -213,7 +198,7 @@
             "x": 92,
             "y": 64
         },
-        "group_endpoint": "",
+        "group_endpoint": "rail_bot",
         "group_endpoint_bounding_box": {
             "x1": 0,
             "y1": 0,
@@ -282,12 +267,12 @@
             }
         ],
         "transform_matrix": {
-            "a": 0,
+            "a": 1,
             "b": 0,
-            "c": 0,
+            "c": 3512,
             "d": 0,
-            "e": 0,
-            "f": 0
+            "e": 1,
+            "f": 500
         },
         "bounding_box": {
             "x1": 0,
@@ -299,7 +284,7 @@
             "x": 92,
             "y": 64
         },
-        "group_endpoint": "",
+        "group_endpoint": "rail_bot",
         "group_endpoint_bounding_box": {
             "x1": 0,
             "y1": 0,
@@ -368,12 +353,12 @@
             }
         ],
         "transform_matrix": {
-            "a": 0,
+            "a": 1,
             "b": 0,
-            "c": 0,
+            "c": 3512,
             "d": 0,
-            "e": 0,
-            "f": 0
+            "e": 1,
+            "f": 900
         },
         "bounding_box": {
             "x1": 0,
@@ -385,7 +370,7 @@
             "x": 92,
             "y": 64
         },
-        "group_endpoint": "",
+        "group_endpoint": "rail_top",
         "group_endpoint_bounding_box": {
             "x1": 0,
             "y1": 0,
@@ -454,12 +439,12 @@
             }
         ],
         "transform_matrix": {
-            "a": 0,
+            "a": 1,
             "b": 0,
-            "c": 0,
+            "c": 2936,
             "d": 0,
-            "e": 0,
-            "f": 0
+            "e": 1,
+            "f": 900
         },
         "bounding_box": {
             "x1": 0,
@@ -471,7 +456,7 @@
             "x": 92,
             "y": 64
         },
-        "group_endpoint": "",
+        "group_endpoint": "rail_top",
         "group_endpoint_bounding_box": {
             "x1": 0,
             "y1": 0,
@@ -540,12 +525,12 @@
             }
         ],
         "transform_matrix": {
-            "a": 0,
+            "a": 1,
             "b": 0,
-            "c": 0,
+            "c": 3512,
             "d": 0,
-            "e": 0,
-            "f": 0
+            "e": 1,
+            "f": 3700
         },
         "bounding_box": {
             "x1": 0,
@@ -626,12 +611,12 @@
             }
         ],
         "transform_matrix": {
-            "a": 0,
+            "a": 1,
             "b": 0,
-            "c": 0,
+            "c": 2936,
             "d": 0,
-            "e": 0,
-            "f": 0
+            "e": 1,
+            "f": 3700
         },
         "bounding_box": {
             "x1": 0,
@@ -712,12 +697,12 @@
             }
         ],
         "transform_matrix": {
-            "a": 0,
+            "a": 1,
             "b": 0,
-            "c": 0,
+            "c": 2936,
             "d": 0,
-            "e": 0,
-            "f": 0
+            "e": 1,
+            "f": 3300
         },
         "bounding_box": {
             "x1": 0,
@@ -729,7 +714,7 @@
             "x": 92,
             "y": 64
         },
-        "group_endpoint": "",
+        "group_endpoint": "rail_bot",
         "group_endpoint_bounding_box": {
             "x1": 0,
             "y1": 0,
@@ -798,12 +783,12 @@
             }
         ],
         "transform_matrix": {
-            "a": 0,
+            "a": 1,
             "b": 0,
-            "c": 0,
+            "c": 3512,
             "d": 0,
-            "e": 0,
-            "f": 0
+            "e": 1,
+            "f": 3300
         },
         "bounding_box": {
             "x1": 0,
@@ -815,7 +800,7 @@
             "x": 92,
             "y": 64
         },
-        "group_endpoint": "",
+        "group_endpoint": "rail_bot",
         "group_endpoint_bounding_box": {
             "x1": 0,
             "y1": 0,
@@ -884,12 +869,12 @@
             }
         ],
         "transform_matrix": {
-            "a": 0,
+            "a": 1,
             "b": 0,
-            "c": 0,
+            "c": 2936,
             "d": 0,
-            "e": 0,
-            "f": 0
+            "e": 1,
+            "f": 4100
         },
         "bounding_box": {
             "x1": 0,
@@ -901,7 +886,7 @@
             "x": 92,
             "y": 64
         },
-        "group_endpoint": "",
+        "group_endpoint": "rail_top",
         "group_endpoint_bounding_box": {
             "x1": 0,
             "y1": 0,
@@ -970,12 +955,12 @@
             }
         ],
         "transform_matrix": {
-            "a": 0,
+            "a": 1,
             "b": 0,
-            "c": 0,
+            "c": 3512,
             "d": 0,
-            "e": 0,
-            "f": 0
+            "e": 1,
+            "f": 4100
         },
         "bounding_box": {
             "x1": 0,
@@ -987,7 +972,7 @@
             "x": 92,
             "y": 64
         },
-        "group_endpoint": "",
+        "group_endpoint": "rail_top",
         "group_endpoint_bounding_box": {
             "x1": 0,
             "y1": 0,
@@ -1056,12 +1041,12 @@
             }
         ],
         "transform_matrix": {
-            "a": 0,
+            "a": 1,
             "b": 0,
-            "c": 0,
+            "c": 3512,
             "d": 0,
-            "e": 0,
-            "f": 0
+            "e": 1,
+            "f": 2100
         },
         "bounding_box": {
             "x1": 0,
@@ -1073,7 +1058,7 @@
             "x": 92,
             "y": 64
         },
-        "group_endpoint": "",
+        "group_endpoint": "rail_top/bot",
         "group_endpoint_bounding_box": {
             "x1": 0,
             "y1": 0,
@@ -1142,12 +1127,12 @@
             }
         ],
         "transform_matrix": {
-            "a": 0,
+            "a": 1,
             "b": 0,
-            "c": 0,
+            "c": 2936,
             "d": 0,
-            "e": 0,
-            "f": 0
+            "e": 1,
+            "f": 2100
         },
         "bounding_box": {
             "x1": 0,
@@ -1159,7 +1144,7 @@
             "x": 92,
             "y": 64
         },
-        "group_endpoint": "",
+        "group_endpoint": "rail_top/bot",
         "group_endpoint_bounding_box": {
             "x1": 0,
             "y1": 0,
@@ -1217,12 +1202,12 @@
             }
         ],
         "transform_matrix": {
-            "a": 0,
+            "a": 1,
             "b": 0,
-            "c": 0,
+            "c": 300,
             "d": 0,
-            "e": 0,
-            "f": 0
+            "e": 1,
+            "f": 500
         },
         "bounding_box": {
             "x1": 0,
@@ -1281,12 +1266,12 @@
             }
         ],
         "transform_matrix": {
-            "a": 0,
+            "a": 1,
             "b": 0,
-            "c": 0,
+            "c": 300,
             "d": 0,
-            "e": 0,
-            "f": 0
+            "e": 1,
+            "f": 2320
         },
         "bounding_box": {
             "x1": 0,
@@ -1345,12 +1330,12 @@
             }
         ],
         "transform_matrix": {
-            "a": 0,
+            "a": 1,
             "b": 0,
-            "c": 0,
+            "c": 300,
             "d": 0,
-            "e": 0,
-            "f": 0
+            "e": 1,
+            "f": 4170
         },
         "bounding_box": {
             "x1": 0,
@@ -1398,12 +1383,12 @@
             }
         ],
         "transform_matrix": {
-            "a": 0,
+            "a": 1,
             "b": 0,
-            "c": 0,
+            "c": 4488,
             "d": 0,
-            "e": 0,
-            "f": 0
+            "e": 1,
+            "f": 500
         },
         "bounding_box": {
             "x1": 0,
@@ -1411,5 +1396,1018 @@
             "x2": 580,
             "y2": 842
         }
+    },
+    {
+        "instance": "CircuitCell",
+        "number_id": 3,
+        "name": "U1",
+        "cell": "OTA",
+        "named_cell": "U1_OTA",
+        "parent_cell": "JNW_BKLE",
+        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
+        "group": null,
+        "schematic_connections": {
+            "VDD": "VDD",
+            "IN+": "net1",
+            "IN-": "net2",
+            "OUT": "net3",
+            "VSS": "VSS"
+        },
+        "transform_matrix": {
+            "a": 1,
+            "b": 0,
+            "c": 0,
+            "d": 0,
+            "e": 1,
+            "f": 0
+        },
+        "bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 5418,
+            "y2": 6440
+        }
+    },
+    {
+        "instance": "TraceNet",
+        "name": "VDD",
+        "cell": "OTA",
+        "named_cell": "U1_OTA",
+        "parent_cell": "JNW_BKLE",
+        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
+        "segments": [
+            {
+                "layer": "locali",
+                "area": {
+                    "x1": 100,
+                    "y1": 6240,
+                    "x2": 5268,
+                    "y2": 6290
+                }
+            },
+            {
+                "layer": "locali",
+                "area": {
+                    "x1": 100,
+                    "y1": 100,
+                    "x2": 5268,
+                    "y2": 150
+                }
+            },
+            {
+                "layer": "m1",
+                "area": {
+                    "x1": 100,
+                    "y1": 150,
+                    "x2": 150,
+                    "y2": 6240
+                }
+            },
+            {
+                "layer": "m1",
+                "area": {
+                    "x1": 5218,
+                    "y1": 150,
+                    "x2": 5268,
+                    "y2": 6240
+                }
+            }
+        ],
+        "vias": [
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 100,
+                    "y1": 6240,
+                    "x2": 150,
+                    "y2": 6290
+                }
+            },
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 100,
+                    "y1": 100,
+                    "x2": 150,
+                    "y2": 150
+                }
+            },
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 5218,
+                    "y1": 6240,
+                    "x2": 5268,
+                    "y2": 6290
+                }
+            },
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 5218,
+                    "y1": 100,
+                    "x2": 5268,
+                    "y2": 150
+                }
+            }
+        ]
+    },
+    {
+        "instance": "TraceNet",
+        "name": "VSS",
+        "cell": "OTA",
+        "named_cell": "U1_OTA",
+        "parent_cell": "JNW_BKLE",
+        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
+        "segments": [
+            {
+                "layer": "locali",
+                "area": {
+                    "x1": 0,
+                    "y1": 6340,
+                    "x2": 5368,
+                    "y2": 6390
+                }
+            },
+            {
+                "layer": "locali",
+                "area": {
+                    "x1": 0,
+                    "y1": 0,
+                    "x2": 5368,
+                    "y2": 50
+                }
+            },
+            {
+                "layer": "m1",
+                "area": {
+                    "x1": 0,
+                    "y1": 50,
+                    "x2": 50,
+                    "y2": 6340
+                }
+            },
+            {
+                "layer": "m1",
+                "area": {
+                    "x1": 5318,
+                    "y1": 50,
+                    "x2": 5368,
+                    "y2": 6340
+                }
+            }
+        ],
+        "vias": [
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 0,
+                    "y1": 6340,
+                    "x2": 50,
+                    "y2": 6390
+                }
+            },
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 0,
+                    "y1": 0,
+                    "x2": 50,
+                    "y2": 50
+                }
+            },
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 5318,
+                    "y1": 6340,
+                    "x2": 5368,
+                    "y2": 6390
+                }
+            },
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 5318,
+                    "y1": 0,
+                    "x2": 5368,
+                    "y2": 50
+                }
+            }
+        ]
+    },
+    {
+        "instance": "TraceNet",
+        "name": "MP2_B_S",
+        "cell": "OTA",
+        "named_cell": "U1_OTA",
+        "parent_cell": "JNW_BKLE",
+        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
+        "segments": [
+            {
+                "layer": "locali",
+                "area": {
+                    "x1": 2888,
+                    "y1": 4400,
+                    "x2": 3176,
+                    "y2": 4440
+                }
+            }
+        ],
+        "vias": []
+    },
+    {
+        "instance": "TraceNet",
+        "name": "MP1_B_S",
+        "cell": "OTA",
+        "named_cell": "U1_OTA",
+        "parent_cell": "JNW_BKLE",
+        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
+        "segments": [
+            {
+                "layer": "locali",
+                "area": {
+                    "x1": 3464,
+                    "y1": 4400,
+                    "x2": 3752,
+                    "y2": 4440
+                }
+            }
+        ],
+        "vias": []
+    },
+    {
+        "instance": "TraceNet",
+        "name": "MP1_G_D",
+        "cell": "OTA",
+        "named_cell": "U1_OTA",
+        "parent_cell": "JNW_BKLE",
+        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
+        "segments": [
+            {
+                "layer": "locali",
+                "area": {
+                    "x1": 3848,
+                    "y1": 4280,
+                    "x2": 4008,
+                    "y2": 4320
+                }
+            }
+        ],
+        "vias": []
+    },
+    {
+        "instance": "TraceNet",
+        "name": "MN1_B_S",
+        "cell": "OTA",
+        "named_cell": "U1_OTA",
+        "parent_cell": "JNW_BKLE",
+        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
+        "segments": [
+            {
+                "layer": "locali",
+                "area": {
+                    "x1": 3464,
+                    "y1": 2400,
+                    "x2": 3752,
+                    "y2": 2440
+                }
+            }
+        ],
+        "vias": []
+    },
+    {
+        "instance": "TraceNet",
+        "name": "MN1_G_D",
+        "cell": "OTA",
+        "named_cell": "U1_OTA",
+        "parent_cell": "JNW_BKLE",
+        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
+        "segments": [
+            {
+                "layer": "locali",
+                "area": {
+                    "x1": 3848,
+                    "y1": 2280,
+                    "x2": 4008,
+                    "y2": 2320
+                }
+            }
+        ],
+        "vias": []
+    },
+    {
+        "instance": "TraceNet",
+        "name": "MN2_B_S",
+        "cell": "OTA",
+        "named_cell": "U1_OTA",
+        "parent_cell": "JNW_BKLE",
+        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
+        "segments": [
+            {
+                "layer": "locali",
+                "area": {
+                    "x1": 2888,
+                    "y1": 2400,
+                    "x2": 3176,
+                    "y2": 2440
+                }
+            }
+        ],
+        "vias": []
+    },
+    {
+        "instance": "TraceNet",
+        "name": "MP3<3>_MP3<2>_B_VDD_RAIL_BOT",
+        "cell": "OTA",
+        "named_cell": "U1_OTA",
+        "parent_cell": "JNW_BKLE",
+        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
+        "segments": [
+            {
+                "layer": "locali",
+                "area": {
+                    "x1": 2736,
+                    "y1": 332,
+                    "x2": 3712,
+                    "y2": 428
+                }
+            }
+        ],
+        "vias": [
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 2736,
+                    "y1": 332,
+                    "x2": 2786,
+                    "y2": 428
+                }
+            },
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 3662,
+                    "y1": 332,
+                    "x2": 3712,
+                    "y2": 428
+                }
+            }
+        ]
+    },
+    {
+        "instance": "TraceNet",
+        "name": "MP3<1>_MP3<0>_B_VDD_RAIL_TOP",
+        "cell": "OTA",
+        "named_cell": "U1_OTA",
+        "parent_cell": "JNW_BKLE",
+        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
+        "segments": [
+            {
+                "layer": "locali",
+                "area": {
+                    "x1": 3312,
+                    "y1": 1372,
+                    "x2": 4288,
+                    "y2": 1468
+                }
+            }
+        ],
+        "vias": [
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 3312,
+                    "y1": 1372,
+                    "x2": 3362,
+                    "y2": 1468
+                }
+            },
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 4238,
+                    "y1": 1372,
+                    "x2": 4288,
+                    "y2": 1468
+                }
+            }
+        ]
+    },
+    {
+        "instance": "TraceNet",
+        "name": "MP4<1>_MP4<0>_B_VDD_RAIL_BOT",
+        "cell": "OTA",
+        "named_cell": "U1_OTA",
+        "parent_cell": "JNW_BKLE",
+        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
+        "segments": [
+            {
+                "layer": "locali",
+                "area": {
+                    "x1": 2736,
+                    "y1": 3132,
+                    "x2": 3712,
+                    "y2": 3228
+                }
+            }
+        ],
+        "vias": [
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 2736,
+                    "y1": 3132,
+                    "x2": 2786,
+                    "y2": 3228
+                }
+            },
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 3662,
+                    "y1": 3132,
+                    "x2": 3712,
+                    "y2": 3228
+                }
+            }
+        ]
+    },
+    {
+        "instance": "TraceNet",
+        "name": "MP2_MP1_B_VDD_RAIL_TOP",
+        "cell": "OTA",
+        "named_cell": "U1_OTA",
+        "parent_cell": "JNW_BKLE",
+        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
+        "segments": [
+            {
+                "layer": "locali",
+                "area": {
+                    "x1": 2736,
+                    "y1": 4572,
+                    "x2": 3712,
+                    "y2": 4668
+                }
+            }
+        ],
+        "vias": [
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 2736,
+                    "y1": 4572,
+                    "x2": 2786,
+                    "y2": 4668
+                }
+            },
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 3662,
+                    "y1": 4572,
+                    "x2": 3712,
+                    "y2": 4668
+                }
+            }
+        ]
+    },
+    {
+        "instance": "TraceNet",
+        "name": "MN1_MN2_B_VSS_RAIL_TOP",
+        "cell": "OTA",
+        "named_cell": "U1_OTA",
+        "parent_cell": "JNW_BKLE",
+        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
+        "segments": [
+            {
+                "layer": "locali",
+                "area": {
+                    "x1": 3312,
+                    "y1": 2572,
+                    "x2": 4288,
+                    "y2": 2668
+                }
+            }
+        ],
+        "vias": [
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 3312,
+                    "y1": 2572,
+                    "x2": 3362,
+                    "y2": 2668
+                }
+            },
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 4238,
+                    "y1": 2572,
+                    "x2": 4288,
+                    "y2": 2668
+                }
+            }
+        ]
+    },
+    {
+        "instance": "TraceNet",
+        "name": "MN1_MN2_B_VSS_RAIL_BOT",
+        "cell": "OTA",
+        "named_cell": "U1_OTA",
+        "parent_cell": "JNW_BKLE",
+        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
+        "segments": [
+            {
+                "layer": "locali",
+                "area": {
+                    "x1": 3312,
+                    "y1": 1932,
+                    "x2": 4288,
+                    "y2": 2028
+                }
+            }
+        ],
+        "vias": [
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 3312,
+                    "y1": 1932,
+                    "x2": 3362,
+                    "y2": 2028
+                }
+            },
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 4238,
+                    "y1": 1932,
+                    "x2": 4288,
+                    "y2": 2028
+                }
+            }
+        ]
+    },
+    {
+        "instance": "TraceNet",
+        "name": "RH3_B_N",
+        "cell": "OTA",
+        "named_cell": "U1_OTA",
+        "parent_cell": "JNW_BKLE",
+        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
+        "segments": [
+            {
+                "layer": "locali",
+                "area": {
+                    "x1": 308,
+                    "y1": 5630,
+                    "x2": 626,
+                    "y2": 5750
+                }
+            }
+        ],
+        "vias": []
+    },
+    {
+        "instance": "TraceNet",
+        "name": "RH1_B_VSS_RAIL_TOP",
+        "cell": "OTA",
+        "named_cell": "U1_OTA",
+        "parent_cell": "JNW_BKLE",
+        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
+        "segments": [
+            {
+                "layer": "locali",
+                "area": {
+                    "x1": 0,
+                    "y1": 2164,
+                    "x2": 5368,
+                    "y2": 2220
+                }
+            }
+        ],
+        "vias": [
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 0,
+                    "y1": 2164,
+                    "x2": 50,
+                    "y2": 2220
+                }
+            },
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 5318,
+                    "y1": 2164,
+                    "x2": 5368,
+                    "y2": 2220
+                }
+            }
+        ]
+    },
+    {
+        "instance": "TraceNet",
+        "name": "RH1_B_VSS_RAIL_BOT",
+        "cell": "OTA",
+        "named_cell": "U1_OTA",
+        "parent_cell": "JNW_BKLE",
+        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
+        "segments": [
+            {
+                "layer": "locali",
+                "area": {
+                    "x1": 0,
+                    "y1": 500,
+                    "x2": 5368,
+                    "y2": 556
+                }
+            }
+        ],
+        "vias": [
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 0,
+                    "y1": 500,
+                    "x2": 50,
+                    "y2": 556
+                }
+            },
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 5318,
+                    "y1": 500,
+                    "x2": 5368,
+                    "y2": 556
+                }
+            }
+        ]
+    },
+    {
+        "instance": "TraceNet",
+        "name": "RH2_B_VSS_RAIL_TOP",
+        "cell": "OTA",
+        "named_cell": "U1_OTA",
+        "parent_cell": "JNW_BKLE",
+        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
+        "segments": [
+            {
+                "layer": "locali",
+                "area": {
+                    "x1": 0,
+                    "y1": 3984,
+                    "x2": 5368,
+                    "y2": 4040
+                }
+            }
+        ],
+        "vias": [
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 0,
+                    "y1": 3984,
+                    "x2": 50,
+                    "y2": 4040
+                }
+            },
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 5318,
+                    "y1": 3984,
+                    "x2": 5368,
+                    "y2": 4040
+                }
+            }
+        ]
+    },
+    {
+        "instance": "TraceNet",
+        "name": "RH2_B_VSS_RAIL_BOT",
+        "cell": "OTA",
+        "named_cell": "U1_OTA",
+        "parent_cell": "JNW_BKLE",
+        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
+        "segments": [
+            {
+                "layer": "locali",
+                "area": {
+                    "x1": 0,
+                    "y1": 2320,
+                    "x2": 5368,
+                    "y2": 2376
+                }
+            }
+        ],
+        "vias": [
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 0,
+                    "y1": 2320,
+                    "x2": 50,
+                    "y2": 2376
+                }
+            },
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 5318,
+                    "y1": 2320,
+                    "x2": 5368,
+                    "y2": 2376
+                }
+            }
+        ]
+    },
+    {
+        "instance": "TraceNet",
+        "name": "RH3_B_VSS_RAIL_TOP",
+        "cell": "OTA",
+        "named_cell": "U1_OTA",
+        "parent_cell": "JNW_BKLE",
+        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
+        "segments": [
+            {
+                "layer": "locali",
+                "area": {
+                    "x1": 0,
+                    "y1": 5834,
+                    "x2": 5368,
+                    "y2": 5890
+                }
+            }
+        ],
+        "vias": [
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 0,
+                    "y1": 5834,
+                    "x2": 50,
+                    "y2": 5890
+                }
+            },
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 5318,
+                    "y1": 5834,
+                    "x2": 5368,
+                    "y2": 5890
+                }
+            }
+        ]
+    },
+    {
+        "instance": "TraceNet",
+        "name": "RH3_B_VSS_RAIL_BOT",
+        "cell": "OTA",
+        "named_cell": "U1_OTA",
+        "parent_cell": "JNW_BKLE",
+        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
+        "segments": [
+            {
+                "layer": "locali",
+                "area": {
+                    "x1": 0,
+                    "y1": 4170,
+                    "x2": 5368,
+                    "y2": 4226
+                }
+            }
+        ],
+        "vias": [
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 0,
+                    "y1": 4170,
+                    "x2": 50,
+                    "y2": 4226
+                }
+            },
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 5318,
+                    "y1": 4170,
+                    "x2": 5368,
+                    "y2": 4226
+                }
+            }
+        ]
+    },
+    {
+        "instance": "Pin",
+        "number_id": 46,
+        "cell": "JNW_BKLE",
+        "named_cell": "UTOP_JNW_BKLE",
+        "parent_cell": "ROOT_CELL",
+        "cell_chain": "UTOP_JNW_BKLE",
+        "type": "ipin",
+        "name": "VDD",
+        "layout": {
+            "layer": "locali",
+            "area": {
+                "x1": -100,
+                "y1": 6440,
+                "x2": 5468,
+                "y2": 6490
+            }
+        }
+    },
+    {
+        "instance": "Pin",
+        "number_id": 47,
+        "cell": "JNW_BKLE",
+        "named_cell": "UTOP_JNW_BKLE",
+        "parent_cell": "ROOT_CELL",
+        "cell_chain": "UTOP_JNW_BKLE",
+        "type": "ipin",
+        "name": "VSS",
+        "layout": {
+            "layer": "locali",
+            "area": {
+                "x1": -200,
+                "y1": 6540,
+                "x2": 5568,
+                "y2": 6590
+            }
+        }
+    },
+    {
+        "instance": "TraceNet",
+        "name": "VDD",
+        "cell": "JNW_BKLE",
+        "named_cell": "UTOP_JNW_BKLE",
+        "parent_cell": "ROOT_CELL",
+        "cell_chain": "UTOP_JNW_BKLE",
+        "segments": [
+            {
+                "layer": "locali",
+                "area": {
+                    "x1": -100,
+                    "y1": 6440,
+                    "x2": 5468,
+                    "y2": 6490
+                }
+            },
+            {
+                "layer": "locali",
+                "area": {
+                    "x1": -100,
+                    "y1": -100,
+                    "x2": 5468,
+                    "y2": -50
+                }
+            },
+            {
+                "layer": "m1",
+                "area": {
+                    "x1": -100,
+                    "y1": -50,
+                    "x2": -50,
+                    "y2": 6440
+                }
+            },
+            {
+                "layer": "m1",
+                "area": {
+                    "x1": 5418,
+                    "y1": -50,
+                    "x2": 5468,
+                    "y2": 6440
+                }
+            }
+        ],
+        "vias": [
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": -100,
+                    "y1": 6440,
+                    "x2": -50,
+                    "y2": 6490
+                }
+            },
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": -100,
+                    "y1": -100,
+                    "x2": -50,
+                    "y2": -50
+                }
+            },
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 5418,
+                    "y1": 6440,
+                    "x2": 5468,
+                    "y2": 6490
+                }
+            },
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 5418,
+                    "y1": -100,
+                    "x2": 5468,
+                    "y2": -50
+                }
+            }
+        ]
+    },
+    {
+        "instance": "TraceNet",
+        "name": "VSS",
+        "cell": "JNW_BKLE",
+        "named_cell": "UTOP_JNW_BKLE",
+        "parent_cell": "ROOT_CELL",
+        "cell_chain": "UTOP_JNW_BKLE",
+        "segments": [
+            {
+                "layer": "locali",
+                "area": {
+                    "x1": -200,
+                    "y1": 6540,
+                    "x2": 5568,
+                    "y2": 6590
+                }
+            },
+            {
+                "layer": "locali",
+                "area": {
+                    "x1": -200,
+                    "y1": -200,
+                    "x2": 5568,
+                    "y2": -150
+                }
+            },
+            {
+                "layer": "m1",
+                "area": {
+                    "x1": -200,
+                    "y1": -150,
+                    "x2": -150,
+                    "y2": 6540
+                }
+            },
+            {
+                "layer": "m1",
+                "area": {
+                    "x1": 5518,
+                    "y1": -150,
+                    "x2": 5568,
+                    "y2": 6540
+                }
+            }
+        ],
+        "vias": [
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": -200,
+                    "y1": 6540,
+                    "x2": -150,
+                    "y2": 6590
+                }
+            },
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": -200,
+                    "y1": -200,
+                    "x2": -150,
+                    "y2": -150
+                }
+            },
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 5518,
+                    "y1": 6540,
+                    "x2": 5568,
+                    "y2": 6590
+                }
+            },
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 5518,
+                    "y1": -200,
+                    "x2": 5568,
+                    "y2": -150
+                }
+            }
+        ]
     }
 ]

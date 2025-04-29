@@ -18,6 +18,7 @@ from circuit.circuit_components import RectArea, Transistor, Capacitor, Resistor
 from logger.logger import get_a_logger
 import tomllib
 import re
+import libraries.atr_sky130a_lib as atr
 
 # =============================================== Trace Generator ======================================================
 
@@ -113,6 +114,11 @@ class GenerateRailTraces:
 
     def __generate_rails(self):
 
+        # ATR SKY130A LIB component handling
+        # for component in self.components:
+        #     if re.search(r'_ATR_', component.layout_library):
+        #         atr.update_bounding_boxes_for_atr_sky130a_lib(self=self)
+
         # Default rail generation (only creates rails if there are functional components)
         if self.functional_components:
 
@@ -142,7 +148,7 @@ class GenerateRailTraces:
         # Root cell rail generation
         if self.circuit_cell.name == "ROOT_CELL":
 
-            # Adjust cells bounding box to compensate for the last added cell x-offset
+            # Adjust cells bounding box to compensate for the last added cell
             self.circuit_cell.bounding_box.x2 -= self.RAIL_RING_OFFSET - self.RAIL_RING_WIDTH
             self.circuit_cell.bounding_box.y2 -= self.RAIL_RING_OFFSET - self.RAIL_RING_WIDTH
 

@@ -48,6 +48,10 @@ class LibraryHandling:
         self.RAIL_RING_OFFSET = self.config["generate_rail_traces"]["RAIL_RING_OFFSET"]
         self.RAIL_RING_WIDTH = self.config["generate_rail_traces"]["RAIL_RING_WIDTH"]
 
+        self.CUSTOM_RELATIVE_PLACEMENT_ORDER = self.config["initiator_lp"]["CUSTOM_RELATIVE_PLACEMENT_ORDER"]
+        self.RELATIVE_PLACEMENT = self.config["initiator_lp"]["RELATIVE_PLACEMENT"]
+        self.CUSTOM_TRANSISTOR_ORDER = self.config["initiator_lp"]["CUSTOM_TRANSISTOR_ORDER"]
+
         # Make lists of different component types
         for component in self.components:
             if isinstance(component, Transistor) and re.search(r'_ATR_', component.layout_library):
@@ -80,7 +84,7 @@ class LibraryHandling:
             tr.generate_local_traces_for_tr_sky130a_lib_resistors(self=self)
 
         # AAL_MISC SKY130A library component handling
-        if self.tr_resistor_components:
+        if self.aal_capacitor_components:
             aal.generate_local_traces_for_aal_misc_sky130a_lib(self=self)
 
     def __load_config(self, path="pyproject.toml"):
