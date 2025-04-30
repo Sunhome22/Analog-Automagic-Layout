@@ -173,21 +173,21 @@ class CellCreator:
                 = GridGeneration(components=components).initialize_grid_generation()
 
             # Step 5: A star path routing between component ports
-            # paths, grid_vertical, grid_horizontal = (
-            #     AstarInitiator(grid=grid,
-            #                    connections=connections,
-            #                    components=components,
-            #                    scaled_port_coordinates=scaled_port_coordinates,
-            #                    port_coordinates=port_coordinates,
-            #                    net_list=net_list,
-            #                    routing_parameters=routing_parameters,
-            #                    component_ports=component_ports
-            #                    ).get())
+            paths, grid_vertical, grid_horizontal = (
+                AstarInitiator(grid=grid,
+                               connections=connections,
+                               components=components,
+                               scaled_port_coordinates=scaled_port_coordinates,
+                               port_coordinates=port_coordinates,
+                               net_list=net_list,
+                               routing_parameters=routing_parameters,
+                               component_ports=component_ports
+                               ).get())
 
             # Step 6: Handle specifics for components of different libraries
 
             # Step 7: Trace generation
-            components = GenerateAstarPathTraces(components=components, paths=[], net_list=net_list,
+            components = GenerateAstarPathTraces(components=components, paths=paths, net_list=net_list,
                                                  used_area=origin_scaled_used_area).get()
             components = GenerateRailTraces(project_properties=self.project_properties, components=components).get()
 

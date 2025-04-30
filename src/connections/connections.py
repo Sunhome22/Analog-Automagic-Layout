@@ -13,25 +13,23 @@
 # ==================================================================================================================== #
 
 from dataclasses import dataclass
-from circuit.circuit_components import Pin, Transistor, Resistor, Capacitor
+from circuit.circuit_components import Pin, CircuitCell, Transistor, Resistor, Capacitor
 from logger.logger import get_a_logger
+
 
 
 @dataclass
 class Nets:
-    applicable_nets: list
+    applicable_nets:list
     pin_nets: list
 
-    def __init__(self, applicable_nets: list, pin_nets: list):
+    def __init__(self, applicable_nets: list, pin_nets:list):
         self.applicable_nets = applicable_nets
         self.pin_nets = pin_nets
-
-
 @dataclass
 class Overlap:
-    instance: str
-    component_ids: list
-
+    instance : str
+    component_ids : list
 
 @dataclass
 class Connection:
@@ -45,8 +43,7 @@ class Connection:
     end_comp_name: str
     cell: str
     net: str
-    def __init__(self, start_comp_id: int | str, start_comp_type: str, start_area: str, start_comp_name: str,
-                 end_comp_id: int | str, end_comp_type: str, end_area: str, end_comp_name: str, cell: str, net: str):
+    def __init__(self, start_comp_id: int|str, start_comp_type: str, start_area: str, start_comp_name: str, end_comp_id: int|str, end_comp_type: str, end_area: str, end_comp_name: str, cell: str, net: str):
 
         self.start_comp_id = str(start_comp_id)
         self.start_comp_type = start_comp_type
@@ -147,9 +144,10 @@ class ConnectionLists:
                                 net = component_1.schematic_connections[port_1]
                                 cell = component_1.cell
 
-                                port_1_area = self.__get_local_connection_area(component_1.number_id, port_1)
-                                port_2_area = self.__get_local_connection_area(component_2.number_id, port_2)
-
+                               # port_1_area = self.__get_local_connection_area(component_1.number_id, port_1)
+                               # port_2_area = self.__get_local_connection_area(component_2.number_id, port_2)
+                                port_1_area = port_1
+                                port_2_area = port_2
                                 entry = [Connection(component_1.number_id, component_1.type, port_1_area,
                                                     component_1.name, component_2.number_id, component_2.type,
                                                     port_2_area, component_2.name, cell, net),
@@ -183,6 +181,7 @@ class ConnectionLists:
                                                                              "",
                                                                              component.cell,
                                                                              component.schematic_connections[port]))
+                    in_connection_list = False
 
     def __overlap_transistors(self):
         nmos = []
@@ -199,7 +198,7 @@ class ConnectionLists:
             elif isinstance(obj, Transistor):
                 if obj.type == "pmos":
                     pmos.append(obj)
-                elif obj.type == "nmos":
+                elif obj.type== "nmos":
                     nmos.append(obj)
                 elif obj.type == "npn":
                     npn.append(obj)
@@ -211,8 +210,8 @@ class ConnectionLists:
             if isinstance(obj, Resistor):
                 res.append(obj)
 
-        nmos_top, nmos_side = overlap_pairs(nmos, component_type="nmos")
-        pmos_top, pmos_side = overlap_pairs(pmos, component_type="pmos")
+        nmos_top, nmos_side = overlap_pairs(nmos, component_type= "nmos")
+        pmos_top, pmos_side = overlap_pairs(pmos, component_type = "pmos")
         res_top, res_side = overlap_pairs(res, component_type="res")
         npn_top, npn_side = overlap_pairs(npn, component_type="npn")
         pnp_top, pnp_side = overlap_pairs(pnp, component_type="pnp")
@@ -230,10 +229,10 @@ class ConnectionLists:
     def __get_net_list(self):
         self.logger.info("running get_net_list")
         for obj in self.pins:
-            self.net_list.pin_nets.append(obj.name)
+            if obj.name not in self.net_list.pin_nets:
+                self.net_list.pin_nets.append(obj.name)
 
         for obj in self.components:
-
             for port_net in obj.schematic_connections.values():
                 if port_net not in self.net_list.applicable_nets + self.net_list.pin_nets:
                     self.net_list.applicable_nets.append(port_net)
@@ -260,29 +259,20 @@ def overlap_pairs(list1, component_type):
     for i in list1:
         for j in duplicated_list:
             if i != j:
-                if (component_type == "nmos" or component_type == "pmos" or component_type == "npn"
-                        or component_type == "res"):
+                if component_type == "nmos" or component_type == "pmos" or component_type == "npn" or component_type == "res":
 
-                    if (i.type == j.type
-                            and (i.bounding_box.x2 - i.bounding_box.x1) == (j.bounding_box.x2 - j.bounding_box.x1)
-                            and i.schematic_connections["B"] == j.schematic_connections["B"]):
-                        top.append(Overlap(instance=i.instance, component_ids=[i.number_id, j.number_id]))
+                    if i.type == j.type and (i.bounding_box.x2 - i.bounding_box.x1) == (j.bounding_box.x2 - j.bounding_box.x1) and i.schematic_connections["B"] == j.schematic_connections["B"]:
+                        top.append(Overlap(instance = i.instance, component_ids= [i.number_id, j.number_id]))
 
-                    if (i.type == j.type
-                            and (i.bounding_box.y2 - i.bounding_box.y1) == (j.bounding_box.y2 - j.bounding_box.y1)
-                            and i.schematic_connections["B"] == j.schematic_connections["B"]):
-                        side.append(Overlap(instance=i.instance, component_ids=[i.number_id, j.number_id]))
+                    if i.type == j.type and (i.bounding_box.y2 - i.bounding_box.y1) == (j.bounding_box.y2 - j.bounding_box.y1) and i.schematic_connections["B"] == j.schematic_connections["B"]:
+                        side.append(Overlap(instance = i.instance, component_ids = [i.number_id, j.number_id]))
 
                 if component_type == "pnp":
-                    if (i.type == j.type
-                            and (i.bounding_box.x2 - i.bounding_box.x1) == (j.bounding_box.x2 - j.bounding_box.x1)
-                            and i.schematic_connections["C"] == j.schematic_connections["C"]):
-                        top.append(Overlap(instance=i.instance, component_ids=[i.number_id, j.number_id]))
+                    if i.type == j.type and (i.bounding_box.x2 - i.bounding_box.x1) == (j.bounding_box.x2 - j.bounding_box.x1) and i.schematic_connections["C"] == j.schematic_connections["C"]:
+                        top.append(Overlap(instance = i.instance, component_ids= [i.number_id, j.number_id]))
 
-                    if (i.type == j.type
-                            and (i.bounding_box.y2 - i.bounding_box.y1) == (j.bounding_box.y2 - j.bounding_box.y1)
-                            and i.schematic_connections["C"] == j.schematic_connections["C"]):
-                        side.append(Overlap(instance=i.instance, component_ids=[i.number_id, j.number_id]))
+                    if i.type == j.type and (i.bounding_box.y2 - i.bounding_box.y1) == (j.bounding_box.y2 - j.bounding_box.y1) and i.schematic_connections["C"] == j.schematic_connections["C"]:
+                        side.append(Overlap(instance = i.instance, component_ids = [i.number_id, j.number_id]))
                 if component_type == "cap":
                     if i.type == j.type and (i.bounding_box.x2 - i.bounding_box.x1) == (
                             j.bounding_box.x2 - j.bounding_box.x1) and i.schematic_connections["A"] == \
@@ -298,3 +288,5 @@ def overlap_pairs(list1, component_type):
 
         duplicated_list.remove(i)
     return top, side
+
+

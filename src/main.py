@@ -80,8 +80,8 @@ def main():
 
         # Updates component attributes with information from it's associated Magic files
         components = MagicComponentsParser(project_properties=project_properties, components=components).get()
-        save_to_json(components, file_name="src/json_converter/components_temp_before_cell_creator.json")
-
+        #save_to_json(components, file_name="src/json_converter/components_temp_before_cell_creator.json")
+        components = load_from_json(file_name="src/json_converter/components_temp_before_cell_creator.json")
         components = CellCreator(project_properties=project_properties, components=components).get()
         MagicLayoutCreator(project_properties=project_properties, components=components)
         save_to_json(components, file_name="src/json_converter/components_COMPLETED.json")

@@ -27,15 +27,16 @@ dependencies = {file = ["requirements.txt"]}
 # -> CUSTOM TRANSISTOR ORDER - The defined custom order, can be changed. Utilize "C" for cmos and "B" for bipolar
 
 [initiator_lp]
-SUB_CELL_OFFSET = 400
+SUB_CELL_OFFSET = 700
 UNITED_RES_CAP = false
-RELATIVE_COMPONENT_PLACEMENT = "S"
-ENABLE_CUSTOM_COMPONENT_ORDER = true
-CUSTOM_COMPONENT_ORDER = ["R", "T", "C"]
+RELATIVE_PLACEMENT = "A"
+RELATIVE_COMPONENT_PLACEMENT = "A"
+ENABLE_CUSTOM_ORDER = true
+CUSTOM_RELATIVE_PLACEMENT_ORDER = ["B","R", "C", "T"]
 ENABLE_CUSTOM_TRANSISTOR_ORDER = true
 CUSTOM_TRANSISTOR_ORDER = ["C", "B"]
 CMOS_BIPOLAR_OFFSET = 400
-
+CUSTOM_COMPONENT_ORDER = ["B","R", "C", "T"]
 
 # Linear optimization config options
 # -> Alpha - Constant for weighing the importance of total Manhattan distance between
@@ -61,45 +62,46 @@ CUSTOM_PARAMETERS = true
 UNIT_HEIGHT = 400
 UNIT_WIDTH = 576
 OFFSET_X = 184
-OFFSET_Y = 700
-ALPHA = 0.001
-BETA = 100
+OFFSET_Y = 600
+ALPHA = 0.01
+BETA = 1000
 THETA = 5
-GRID_SIZE = 6000
+STOP_TOLERANCE = 0.005
+GRID_SIZE = 8000
 
 [linear_optimization.transistor]
 UNIT_HEIGHT = 400
 UNIT_WIDTH = 576
 MIRROR = true
-STOP_TOLERANCE = 0.005
+STOP_TOLERANCE = 0.01
 OFFSET_X = 184
-OFFSET_Y = 500
+OFFSET_Y = 600
+VERTICAL_SYMMETRY = true
+HORIZONTAL_SYMMETRY = false
+ALPHA = 0.1
+BETA = 1000
+THETA = 5
+GRID_SIZE = 8000
+
+[linear_optimization.resistor]
+UNIT_HEIGHT = 10
+UNIT_WIDTH = 10
+MIRROR = true
+STOP_TOLERANCE = 0.01
+OFFSET_X = 50
+OFFSET_Y = 50
 VERTICAL_SYMMETRY = true
 HORIZONTAL_SYMMETRY = false
 ALPHA = 0.001
 BETA = 100
 THETA = 5
-GRID_SIZE = 12000
-
-[linear_optimization.resistor]
-UNIT_HEIGHT = 50
-UNIT_WIDTH = 50
-MIRROR = true
-STOP_TOLERANCE = 0.005
-OFFSET_X = 100
-OFFSET_Y = 50
-VERTICAL_SYMMETRY = false
-HORIZONTAL_SYMMETRY = true
-ALPHA = 0.001
-BETA = 1000
-THETA = 5
-GRID_SIZE = 8000
+GRID_SIZE = 10000
 
 [linear_optimization.capacitor]
-UNIT_HEIGHT = 10
-UNIT_WIDTH = 10
+UNIT_HEIGHT = 400
+UNIT_WIDTH = 576
 MIRROR = true
-STOP_TOLERANCE = 0.005
+STOP_TOLERANCE = 0.01
 OFFSET_X = 100
 OFFSET_Y = 150
 VERTICAL_SYMMETRY = true
@@ -108,6 +110,20 @@ ALPHA = 0.001
 BETA = 100
 THETA = 5
 GRID_SIZE = 6000
+
+[linear_optimization.bipolar_transistors]
+UNIT_HEIGHT = 400
+UNIT_WIDTH = 576
+MIRROR = true
+STOP_TOLERANCE = 0.01
+OFFSET_X = 184
+OFFSET_Y = 600
+VERTICAL_SYMMETRY = true
+HORIZONTAL_SYMMETRY = false
+ALPHA = 0.1
+BETA = 1000
+THETA = 5
+GRID_SIZE = 8000
 
 
 # Magic layout creator config options
@@ -145,8 +161,13 @@ RAIL_RING_WIDTH = 50
 SCALE_FACTOR = 16
 TRACE_WIDTH = 30
 VIA_MINIMUM_DISTANCE = 20
-GRID_LEEWAY_X = 300
+GRID_LEEWAY_X = 500
 GRID_LEEWAY_Y = 500
+
+[generate_grid.scaled_parameters]
+ADJUST_MIN_SEG_LENGTH = 0
+ADJUST_PORT_SCALED_SIZE = 0
+ADJUST_SEG_WIDTH = 0
 # Astar initiator config options
 # -> Run multiple astar - allows a star to be executed with each goal node as initial position to find the shortest path
 # -> Custom net order - allows predefined order of nets in a star execution
@@ -154,9 +175,11 @@ GRID_LEEWAY_Y = 500
 
 [a_star_initiator]
 RUN_MULTIPLE_ASTAR = false
+REMOVE_LOOPS  = true
 CUSTOM_NET_ORDER = false
 TSP_NODE_ORDER = true
-NET_ORDER = ["GATE", "INN",  "INP", "OUT", "IB_GATE", "AFTER_RESISTOR1", "AFTER_RESISTOR2", "OTA_SPLIT", "VDD", "VSS"]
+
+NET_ORDER = ["GATE","IN-", "IN+", "GATE", "OTA_SPLIT", "OUT", "IB_GATE" , "AFTER_RESISTOR1", "AFTER_RESISTOR2", "VDD", "VSS" ]
 
 # Cell creator config options
 # -> Cells per row in top cell - Defined how many cells should placed per row in the projects defined top cell

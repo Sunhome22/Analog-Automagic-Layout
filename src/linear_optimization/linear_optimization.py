@@ -42,6 +42,8 @@ class LinearOptimizationSolver:
                 self.LOAD_NAME = "resistor"
             elif object_type == "C":
                 self.LOAD_NAME = "capacitor"
+            elif object_type == "B":
+                self.LOAD_NAME = "bipolar_transistors"
 
         self.ALPHA = self.config["linear_optimization"][self.LOAD_NAME]["ALPHA"]
         self.BETA = self.config["linear_optimization"][self.LOAD_NAME]["BETA"]

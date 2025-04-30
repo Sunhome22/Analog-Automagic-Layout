@@ -14,31 +14,100 @@
 
 from matplotlib import pyplot as plt, patches
 from circuit.circuit_components import Pin, CircuitCell, TraceNet
-import os
+from logger.logger import get_a_logger
+import tomllib
 
-# Bjørn's simple drawer of component placements
-def draw_result(grid_size, objects, used_area, scale_factor, draw_name):
-    current_file_directory = os.path.dirname(os.path.abspath(__file__))
+logger = get_a_logger(__name__)
+
+def load_config(path="pyproject.toml"):
+    try:
+        with open(path, "rb") as f:
+            return tomllib.load(f)
+    except (FileNotFoundError, tomllib.TOMLDecodeError) as e:
+        logger.error(f"Error loading config: {e}")
+
+
+config = load_config()
+GRID_SIZE = 20000
+SCALE_FACTOR = config["generate_grid"]["SCALE_FACTOR"]
+GRID_LEEWAY_X = config["generate_grid"]["GRID_LEEWAY_X"]
+GRID_LEEWAY_Y = config["generate_grid"]["GRID_LEEWAY_Y"]
+
+def draw_result( objects, connections, used_area, draw_name):
+
+    connections2 = [x for x in connections.values() if x is not None]
+
     # set up plot
     fix, ax = plt.subplots(figsize=(10, 10))
-    ax.set_xlim(0, grid_size)
-    ax.set_ylim(0, grid_size)
+    ax.set_xlim(0, GRID_SIZE)
+    ax.set_ylim(0, GRID_SIZE)
+    path = True
+
 
     # draw grid
-    for i in range(grid_size + 1):
+
+    for i in range(GRID_SIZE + 1):
         ax.axhline(i, lw=0.5, color='gray', zorder=0)
         ax.axvline(i, lw=0.5, color='gray', zorder=0)
 
     for obj in objects:
         if not isinstance(obj, (Pin, CircuitCell, TraceNet)):
 
-            rect = patches.Rectangle((obj.transform_matrix.c, obj.transform_matrix.f),
-                                     obj.bounding_box.x2, obj.bounding_box.y2,
-                                     linewidth=1, edgecolor='blue', facecolor='red')
+            rect = patches.Rectangle((obj.transform_matrix.c, obj.transform_matrix.f), obj.bounding_box.x2, obj.bounding_box.y2, linewidth=1, edgecolor='blue', facecolor='red')
+
             ax.add_patch(rect)
-            ax.text(obj.transform_matrix.c + (obj.bounding_box.x2 / 2),
-                    obj.transform_matrix.f + (obj.bounding_box.y2 / 2), f"{obj.group}_{obj.name}",
-                    ha='center', va='center', fontsize=12, color='black')
+
+            ax.text(obj.transform_matrix.c + (obj.bounding_box.x2 / 2), obj.transform_matrix.f + (obj.bounding_box.y2 / 2), obj.group+"_"+obj.name,
+                ha='center', va='center', fontsize=12, color='black')
+
+    if not path:
+        for p in connections2:
+            start = p.starting_comp
+            end = p.end_comp
+            x_values = []
+            y_values = []
+
+            for obj in objects:
+                if not isinstance(obj, Pin) and not isinstance(obj, CircuitCell):
+                    if obj.number_id == start:
+
+                        x_values.append(obj.transform_matrix.c + (obj.bounding_box.x2/2))
+                        y_values.append(obj.transform_matrix.f + (obj.bounding_box.y2 / 2))
+                        break
+            for obj in objects:
+                if not isinstance(obj, Pin) and not isinstance(obj, CircuitCell):
+                    if obj.number_id == end:
+                        x_values.append(obj.transform_matrix.c + (obj.bounding_box.x2/2))
+                        y_values.append(obj.transform_matrix.f + (obj.bounding_box.y2 / 2))
+                        break
+            plt.plot(x_values, y_values)
+
+            plt.plot([GRID_SIZE//2, GRID_SIZE//2], [0, GRID_SIZE])
+    else:
+        scaled_points = []
+        none = 0
+        missing_paths = []
+        for net in connections:
+            for p in connections[net]['segments']:
+                if p is not None:
+                    scaled_points.append( [(used_area.x1-GRID_LEEWAY_X+ x*SCALE_FACTOR , used_area.y1-GRID_LEEWAY_Y + y*SCALE_FACTOR ) for x, y in p])
+                else:
+                    missing_paths.append(p)
+                    none += 1
+
+                if scaled_points[-1]:
+                    x_coordinates, y_coordinates = zip(*scaled_points[-1])
+                    plt.plot(x_coordinates, y_coordinates, linewidth=4, color='black')
+                    plt.plot(x_coordinates, y_coordinates, linewidth=2, linestyle='-')
+
+        # for con in scaled_points:
+        #
+        #     x_coordinates, y_coordinates = zip(*scaled_points[-1])
+        #     plt.plot(x_coordinates, y_coordinates, linewidth=4, color='black')
+        #     plt.plot(x_coordinates, y_coordinates, linewidth=2, linestyle='-')
+
+
+
 
     plt.title('OBJ placement')
-    plt.savefig(f"{current_file_directory}/test_placement.png")
+    plt.savefig('src/results/'+draw_name+'.png')

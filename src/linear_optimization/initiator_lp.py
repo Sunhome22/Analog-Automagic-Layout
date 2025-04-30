@@ -24,9 +24,9 @@ class LPInitiator:
         self.config = self.__load_config()
         self.SUB_CELL_OFFSET = self.config["initiator_lp"]["SUB_CELL_OFFSET"]
         self.UNITED_RES_CAP = self.config["initiator_lp"]["UNITED_RES_CAP"]
-        self.RELATIVE_COMPONENT_PLACEMENT = self.config["initiator_lp"]["RELATIVE_COMPONENT_PLACEMENT"]
-        self.CUSTOM_COMPONENT_ORDER = self.config["initiator_lp"]["CUSTOM_COMPONENT_ORDER"]
-        self.ENABLE_CUSTOM_COMPONENT_ORDER = self.config["initiator_lp"]["ENABLE_CUSTOM_COMPONENT_ORDER"]
+        self.RELATIVE_PLACEMENT = self.config["initiator_lp"]["RELATIVE_PLACEMENT"]
+        self.CUSTOM_RELATIVE_PLACEMENT_ORDER = self.config["initiator_lp"]["CUSTOM_RELATIVE_PLACEMENT_ORDER"]
+        self.ENABLE_CUSTOM_ORDER = self.config["initiator_lp"]["ENABLE_CUSTOM_ORDER"]
         self.ENABLE_CUSTOM_TRANSISTOR_ORDER  = self.config["initiator_lp"]["ENABLE_CUSTOM_TRANSISTOR_ORDER"]
         self.CUSTOM_TRANSISTOR_ORDER = self.config["initiator_lp"]["CUSTOM_TRANSISTOR_ORDER"]
         self.CMOS_BIPOLAR_OFFSET = self.config["initiator_lp"]["CMOS_BIPOLAR_OFFSET"]
@@ -54,7 +54,7 @@ class LPInitiator:
         self.temp_transistor_x = []
         self.temp_transistor_y = []
 
-        if self.RELATIVE_COMPONENT_PLACEMENT == "S":
+        if self.RELATIVE_PLACEMENT == "S":
             self.x_offset = self.SUB_CELL_OFFSET
             self.y_offset = 0
         else:
@@ -151,13 +151,13 @@ class LPInitiator:
 
     def __get_previous_placement_offset(self):
         if self.placed_cells == 1:
-            if self.RELATIVE_COMPONENT_PLACEMENT == "S":
+            if self.RELATIVE_PLACEMENT == "S":
                 return self.used_area_all[0].x2-self.used_area_all[0].x1, 0
 
             else:
                 return 0, self.used_area_all[0].y2 - self.used_area_all[0].y1
         elif self.placed_cells == 2:
-            if self.RELATIVE_COMPONENT_PLACEMENT == "S":
+            if self.RELATIVE_PLACEMENT == "S":
                 return (self.used_area_all[0].x2 - self.used_area_all[0].x1  + self.used_area_all[1].x2
                         - self.used_area_all[1].x1, 0)
 
@@ -249,41 +249,38 @@ class LPInitiator:
 
     def __call_linear_optimization(self):
 
-        if self.ENABLE_CUSTOM_COMPONENT_ORDER:
-            order = self.CUSTOM_COMPONENT_ORDER
+        if self.ENABLE_CUSTOM_ORDER:
+            order = self.CUSTOM_RELATIVE_PLACEMENT_ORDER
         else:
             order = self.STANDARD_ORDER
 
-        for letter in order:
-            self.component_handling = letter
-            if letter == "T":
-                object_type = letter
-                if self.bipolar_transistors:
+        for object_type in order:
+            self.component_handling = object_type
+            if object_type == "T" and self.transistors:
 
-                    self.temp_transistor_x, self.temp_transistor_y = LinearOptimizationSolver(
-                        components=self.bipolar_transistors,
-                        component_connections=self.bipolar_transistor_connections,
-                        overlap_components=self.overlap_components["bipolar"],
-                        object_type=object_type,
-                        overlap=True).solve_placement()
-
-                if self.transistors:
-
-                    self.coordinates_x, self.coordinates_y = (
-                        LinearOptimizationSolver(components=self.transistors,
-                                                 component_connections=self.transistor_connections,
-                                                 overlap_components=self.overlap_components["cmos"],
-                                                 object_type=object_type,
-                                                 overlap=True).solve_placement())
-
-                if self.coordinates_x and self.temp_transistor_x:
-                    self.component_handling = "CB"
-                    self.__transistor_placement_edit()
+                self.coordinates_x, self.coordinates_y = (
+                    LinearOptimizationSolver(components=self.transistors,
+                                             component_connections=self.transistor_connections,
+                                             overlap_components=self.overlap_components["cmos"],
+                                             object_type=object_type,
+                                             overlap=True).solve_placement())
 
                 self.__get_used_area()
                 self.__update_component_info()
 
-            elif self.resistors and letter == "R":
+            elif self.bipolar_transistors and object_type == "B":
+
+                self.coordinates_x, self.coordinates_y = LinearOptimizationSolver(
+                    components=self.bipolar_transistors,
+                    component_connections=self.bipolar_transistor_connections,
+                    overlap_components=self.overlap_components["bipolar"],
+                    object_type=object_type,
+                    overlap=True).solve_placement()
+
+                self.__get_used_area()
+                self.__update_component_info()
+
+            elif self.resistors and object_type == "R":
                 if self.UNITED_RES_CAP:
                     object_type = "RC"
                     merged = {"side": [], "top": []}
@@ -294,7 +291,7 @@ class LPInitiator:
                         merged["top"].extend(self.overlap_components[key].get("top", []))
 
                 else:
-                    object_type = letter
+
                     merged = self.overlap_components["resistor"]
                     merged_connection_lists = self.resistor_connections
 
@@ -308,7 +305,7 @@ class LPInitiator:
                 self.__get_used_area()
                 self.__update_component_info()
 
-            elif self.capacitors and letter == "C" and not self.UNITED_RES_CAP:
+            elif self.capacitors and object_type == "C" and not self.UNITED_RES_CAP:
                 object_type = letter
                 self.coordinates_x, self.coordinates_y = (
                     LinearOptimizationSolver(components=self.capacitors,
@@ -324,4 +321,3 @@ class LPInitiator:
         self.__extract_connection()
         self.__call_linear_optimization()
         return self.components
-
