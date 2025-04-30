@@ -28,7 +28,7 @@ import libraries.aal_misc_sky130a_lib as aal
 class LibraryHandling:
     logger = get_a_logger(__name__)
 
-    def __init__(self, project_properties, components):
+    def __init__(self, project_properties, components, functional_component_order):
         self.project_top_cell_name = project_properties.top_cell_name
         self.project_top_lib_name = project_properties.top_lib_name
         self.project_directory = project_properties.directory
@@ -40,6 +40,7 @@ class LibraryHandling:
         self.tr_resistor_components = []
         self.aal_capacitor_components = []
         self.components = components
+        self.functional_component_order = functional_component_order
 
         # Load config
         self.config = self.__load_config()
@@ -49,8 +50,6 @@ class LibraryHandling:
         self.RAIL_RING_WIDTH = self.config["generate_rail_traces"]["RAIL_RING_WIDTH"]
 
         self.RELATIVE_COMPONENT_PLACEMENT = self.config["initiator_lp"]["RELATIVE_COMPONENT_PLACEMENT"]
-        self.CUSTOM_COMPONENT_ORDER = self.config["initiator_lp"]["CUSTOM_COMPONENT_ORDER"]
-        self.CUSTOM_TRANSISTOR_ORDER = self.config["initiator_lp"]["CUSTOM_TRANSISTOR_ORDER"]
 
         # Make lists of different component types
         for component in self.components:

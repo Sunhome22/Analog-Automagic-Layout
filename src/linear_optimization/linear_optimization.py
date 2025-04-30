@@ -42,6 +42,8 @@ class LinearOptimizationSolver:
                 self.LOAD_NAME = "resistor"
             elif object_type == "C":
                 self.LOAD_NAME = "capacitor"
+            elif object_type == "B":
+                self.LOAD_NAME = "bipolar_transistors"
 
         self.ALPHA = self.config["linear_optimization"][self.LOAD_NAME]["ALPHA"]
         self.BETA = self.config["linear_optimization"][self.LOAD_NAME]["BETA"]
@@ -114,8 +116,8 @@ class LinearOptimizationSolver:
         if self.MIRROR:
             self.mirrored_components = self.__check_mirrored_components()
 
-            self.logger.info(f"MIRRORED COMP")
-            self.logger.info(f"obj1 {self.mirrored_components}")
+            self.logger.debug(f"MIRRORED COMP")
+            self.logger.debug(f"obj1 {self.mirrored_components}")
 
     def __load_config(self, path="pyproject.toml"):
         try:

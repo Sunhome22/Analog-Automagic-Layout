@@ -142,33 +142,34 @@ def astar_start(grid_vertical, grid_horizontal, start, goal_nodes, minimum_segme
     path = []
     cost = 0
     failed_nodes = []
+
     if tsp:
 
 
 
         if len(goal_nodes) <= 2:
-            path, cost = a_star(grid_vertical, grid_horizontal, goal_nodes[0], goal_nodes, minimum_segment_length+1)
+            path, cost = a_star(grid_vertical, grid_horizontal, goal_nodes[0], goal_nodes, minimum_segment_length)
         else:
             order = tsp_ordering(goal_nodes)
             for i in range(1, len(order)):
 
-                partial_path, partial_cost = a_star(grid_vertical, grid_horizontal, goal_nodes[order[i-1]], [goal_nodes[order[i]]], minimum_segment_length +1)
+                partial_path, partial_cost = a_star(grid_vertical, grid_horizontal, goal_nodes[order[i-1]], [goal_nodes[order[i]]], minimum_segment_length)
                 segments = segmentation(partial_path)
-                if not partial_path and i < len(order)-1:
 
-                    partial_path, partial_cost = a_star(grid_vertical, grid_horizontal, goal_nodes[order[i-1]], [goal_nodes[order[i+1]]], minimum_segment_length +1)
-                if not partial_path and i>1:
-                    partial_path, partial_cost = a_star(grid_vertical, grid_horizontal, goal_nodes[order[i-2]], [goal_nodes[order[i]]], minimum_segment_length +1)
+                if partial_path == None  and i>1:
+                    partial_path, partial_cost = a_star(grid_vertical, grid_horizontal, goal_nodes[order[i-2]], [goal_nodes[order[i]]], minimum_segment_length)
+
+                if partial_path == None and i < len(order)-1:
+
+                    partial_path, partial_cost = a_star(grid_vertical, grid_horizontal, goal_nodes[order[i-1]], [goal_nodes[order[i+1]]], minimum_segment_length)
 
                 if partial_path :
-                    grid_vertical, grid_horizontal = lock_trace(grid_vertical, grid_horizontal, segments, trace_width_scaled)
+                   # grid_vertical, grid_horizontal = lock_trace(grid_vertical, grid_horizontal, segments, trace_width_scaled)
                     path.extend(partial_path)
                     cost += partial_cost
                 else:
 
-                    failed_nodes.append((goal_nodes[order[i-1]], order[i-1]))
-                    failed_nodes.append((goal_nodes[order[i]], order[i]))
-
+                    return None, None
 
 
 
@@ -177,8 +178,8 @@ def astar_start(grid_vertical, grid_horizontal, start, goal_nodes, minimum_segme
 
 
         path, cost = a_star(grid_vertical, grid_horizontal, start, goal_nodes, minimum_segment_length)
-    print("failed nodes")
-    print(failed_nodes)
+
+
 
     return path, cost
 
@@ -238,9 +239,10 @@ cdef a_star(grid_vertical, grid_horizontal, start, goal_nodes, minimum_segment_l
                 # At the start: choose a direction and begin a new segment.
                 prospective_last_dir = d
                 prospective_seg_len = 1
+                penalty = 0
             else:
                 if d == last_dir:
-
+                    penalty = 0
                     prospective_last_dir = last_dir
                     edge = (current, neighbor)
                     edge_rev = (neighbor, current)
@@ -263,6 +265,7 @@ cdef a_star(grid_vertical, grid_horizontal, start, goal_nodes, minimum_segment_l
                     prospective_last_dir = d
                     prospective_seg_len = 1
                     prospective_last_was_reversal = True
+                    penalty  = 1
                 else:
 
                     if seg_len < minimum_segment_length:
@@ -271,6 +274,7 @@ cdef a_star(grid_vertical, grid_horizontal, start, goal_nodes, minimum_segment_l
                     prospective_last_dir = d
                     prospective_seg_len = 1
                     prospective_last_was_reversal = False
+                    penalty = 1
 
 
             if neighbor in goal_indices:
@@ -292,7 +296,7 @@ cdef a_star(grid_vertical, grid_horizontal, start, goal_nodes, minimum_segment_l
             edge_rev = (neighbor, current)
             cost_increment = 0 if (edge in edge_set or edge_rev in edge_set) else 1
 
-            new_g = g + cost_increment
+            new_g = g + cost_increment + penalty
             new_f = new_g + _heuristic(neighbor, new_mask, goal_nodes)
             open_set.push(
                 (new_g, neighbor, new_mask, path + [neighbor],
@@ -333,7 +337,7 @@ cdef lock_trace(grid_vertical, grid_horizontal, segments, trace_width_scaled):
 
             for x, y in segment:
                 for i in range(-trace_width_scaled, trace_width_scaled + 1):
-                    for p in range(-trace_width_scaled-4, trace_width_scaled+5):
+                    for p in range(-trace_width_scaled, trace_width_scaled+1):
                         if y+p < len(grid_vertical)-1 and x+i < len(grid_vertical[0])-1:
                             grid_vertical[y + p][x + i] = 0.9
 
@@ -344,7 +348,7 @@ cdef lock_trace(grid_vertical, grid_horizontal, segments, trace_width_scaled):
             for x, y in segment:
 
                 for i in range(-trace_width_scaled, trace_width_scaled + 1):
-                    for p in range(-trace_width_scaled-4, trace_width_scaled+5):
+                    for p in range(-trace_width_scaled, trace_width_scaled+1):
                         if y + i < len(grid_horizontal)-1 and x + p < len(grid_horizontal[0])-1:
                             grid_horizontal[y + i][x + p] = 0.9
 

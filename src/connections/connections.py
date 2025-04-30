@@ -273,16 +273,6 @@ def overlap_pairs(list1, component_type):
                             and i.schematic_connections["B"] == j.schematic_connections["B"]):
                         side.append(Overlap(instance=i.instance, component_ids=[i.number_id, j.number_id]))
 
-                if component_type == "pnp":
-                    if (i.type == j.type
-                            and (i.bounding_box.x2 - i.bounding_box.x1) == (j.bounding_box.x2 - j.bounding_box.x1)
-                            and i.schematic_connections["C"] == j.schematic_connections["C"]):
-                        top.append(Overlap(instance=i.instance, component_ids=[i.number_id, j.number_id]))
-
-                    if (i.type == j.type
-                            and (i.bounding_box.y2 - i.bounding_box.y1) == (j.bounding_box.y2 - j.bounding_box.y1)
-                            and i.schematic_connections["C"] == j.schematic_connections["C"]):
-                        side.append(Overlap(instance=i.instance, component_ids=[i.number_id, j.number_id]))
                 if component_type == "cap":
                     if i.type == j.type and (i.bounding_box.x2 - i.bounding_box.x1) == (
                             j.bounding_box.x2 - j.bounding_box.x1) and i.schematic_connections["A"] == \

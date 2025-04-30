@@ -55,6 +55,7 @@ class CellCreator:
         self.updated_components = []
         self.origin_scaled_cell_offsets = list()
         self.FUNCTIONAL_TYPES = (Transistor, Resistor, Capacitor)
+        self.functional_component_order = []
 
         # Load config
         self.config = self.__load_config()
@@ -151,7 +152,8 @@ class CellCreator:
             components = components_grouped_by_circuit_cell[grouped_components]
             if any(isinstance(c, self.FUNCTIONAL_TYPES) for c
                    in components_grouped_by_circuit_cell[grouped_components]):
-                components = LPInitiator(components, connections, overlap_dict).initiate_linear_optimization()
+                components, self.functional_component_order = (
+                    LPInitiator(components, connections, overlap_dict).initiate_linear_optimization())
 
             # Step 3: Move all components to the origin
             origin_scaled_used_area = RectArea()
@@ -191,7 +193,8 @@ class CellCreator:
                                                  used_area=origin_scaled_used_area).get()
             components = GenerateRailTraces(project_properties=self.project_properties, components=components).get()
 
-            components = LibraryHandling(project_properties=self.project_properties, components=components).get()
+            components = LibraryHandling(project_properties=self.project_properties, components=components,
+                                         functional_component_order=self.functional_component_order).get()
 
             # Step 8: Move all components to the origin based on the updated cell bounding box from rail generation
             components = self.__move_all_components_to_origin_based_on_rail_offsets(components=components)

@@ -1,5 +1,7 @@
+import math
 
 from astar.a_star import astar_start
+from draw_result.visualize_grid import heatmap_test
 from traces.generate_astar_path_traces import segment_path
 from circuit.circuit_components import CircuitCell, Pin
 from logger.logger import get_a_logger
@@ -21,6 +23,7 @@ class AstarInitiator:
         self.CUSTOM_NET_ORDER = self.config["a_star_initiator"]["CUSTOM_NET_ORDER"]
         self.NET_ORDER = self.config["a_star_initiator"]["NET_ORDER"]
         self.TSP_NODE_ORDER = self.config["a_star_initiator"]["TSP_NODE_ORDER"]
+        self.REMOVE_LOOPS = self.config["a_star_initiator"]["REMOVE_LOOPS"]
         self.component_ports = component_ports
         self.routing_parameters = routing_parameters
         self.components = components
@@ -34,8 +37,6 @@ class AstarInitiator:
         self.real_goal_nodes = []
         self.path = {}
         self.seg_list = {}
-
-        self.test_net = None
 
     def __load_config(self, path="pyproject.toml"):
         try:
@@ -89,14 +90,22 @@ class AstarInitiator:
 
                             start, real_start, end, real_end = check_start_end_port(con, self.scaled_port_coordinates,
                                                                                     self.port_coordinates)
-
-                        self.goal_nodes.extend([start, end])
-                        self.real_goal_nodes.extend([real_start, real_end])
+                        if start not in self.goal_nodes:
+                            self.goal_nodes.append(start)
+                            self.real_goal_nodes.append(real_start)
+                        if end not in self.goal_nodes:
+                            self.goal_nodes.append(end)
+                            self.real_goal_nodes.append(real_end)
+                        # self.goal_nodes.extend([start, end])
+                        # self.real_goal_nodes.extend([real_start, real_end])
 
                         break
                     elif all(break_condition["single_connection"]):
-                        self.goal_nodes.append(start)
-                        self.real_goal_nodes.append(real_start)
+                        if start not in self.goal_nodes:
+                            self.goal_nodes.append(start)
+                            self.real_goal_nodes.append(real_start)
+                        # self.goal_nodes.append(start)
+                        # self.real_goal_nodes.append(real_start)
                         break
 
         self.goal_nodes = list(dict.fromkeys(self.goal_nodes))
@@ -121,22 +130,22 @@ class AstarInitiator:
                     break
             component_types = ["nmos", "pmos", "npn", "pnp", "mim", "vpp", "hpo", "xhpo"]
 
-            if object_type == "nmos" or object_type == "pmos":
-                if check_ignorable_port(components=self.components, object_id=object_id, port = port_type ):
+            if object_type == component_types[0] or object_type == component_types[1]:
+                if check_ignorable_port(components=self.components, object_id=object_id, port=port_type):
                     sizing = getattr(self.component_ports.cmos, "V"+port_type)
                 else:
                     sizing = getattr(self.component_ports.cmos, port_type)
                 h = sizing.height
                 w = sizing.width
-            elif object_type == "npn" or object_type == "pnp":
+            elif object_type == component_types[2] or object_type == component_types[3]:
                 sizing = getattr(self.component_ports.bipolar, port_type)
                 h = sizing.height
                 w = sizing.width
-            elif object_type == "mim" or object_type == "vpp":
+            elif object_type == component_types[4] or object_type == component_types[5]:
                 sizing = getattr(self.component_ports.capacitor, port_type)
                 h = sizing.height
                 w = sizing.width
-            elif object_type == "hpo" or object_type == "xhpo":
+            elif object_type == component_types[6] or object_type == component_types[7]:
                 sizing = getattr(self.component_ports.resistor, port_type)
                 h = sizing.height
                 w = sizing.width
@@ -174,7 +183,8 @@ class AstarInitiator:
 
                     for i in range(-self.routing_parameters.trace_width_scaled,
                                    self.routing_parameters.trace_width_scaled + 1):
-                        for p in range(-self.routing_parameters.trace_width_scaled-4, self.routing_parameters.trace_width_scaled +5):
+                        for p in range(-self.routing_parameters.trace_width_scaled-4,
+                                       self.routing_parameters.trace_width_scaled+5):
                             if y + i < len(self.grid_horizontal)-1 and x + p < len(self.grid_horizontal[0])-1:
                                 self.grid_horizontal[y + i][x + p] = self.TRACE_ON_GRID
 
@@ -184,12 +194,11 @@ class AstarInitiator:
         best_length = float('inf')
         best_start = None
         path = []
-        full_path = []
         if self.RUN_MULTIPLE_ASTAR:
             self.logger.info(f"Running A* multiple times for net: {net}")
             for start in self.goal_nodes:
                 self.logger.info(f"Starting A* with start node: {start}")
-                path, length = astar_start(self.grid_vertical, self.grid_horizontal,start, self.goal_nodes,
+                path, length = astar_start(self.grid_vertical, self.grid_horizontal, start, self.goal_nodes,
                                            self.routing_parameters.minimum_segment_length, self.TSP_NODE_ORDER,
                                            self.routing_parameters.trace_width_scaled)
                 self.logger.info(f"Finished running A* with start node: {start}")
@@ -202,6 +211,7 @@ class AstarInitiator:
             return best_path
         else:
             self.logger.info(f"Running A* one time for net: {net}")
+            self.logger.info(f"goal nodes: {self.goal_nodes}")
             for start in self.goal_nodes:
 
                 path, _ = astar_start(self.grid_vertical, self.grid_horizontal, start, self.goal_nodes,
@@ -212,6 +222,7 @@ class AstarInitiator:
                     break
                 else:
                     self.logger.info(f"Viable path not found, rerunning with different start node")
+                    self.TSP_NODE_ORDER = False
             if not path:
                 self.logger.info(f"Finished running A* no path found for net: {net}")
             else:
@@ -226,9 +237,11 @@ class AstarInitiator:
     def __initiate_astar(self):
         self.logger.info("Starting Initiate A*")
 
-        local_net_order = self.NET_ORDER if self.CUSTOM_NET_ORDER else self.net_list.pin_nets + self.net_list.applicable_nets
+        local_net_order = self.NET_ORDER if self.CUSTOM_NET_ORDER else (
+                self.net_list.pin_nets + self.net_list.applicable_nets)
+
         for net in local_net_order:
-            self.test_net = net
+
             # Skipping these nets, that are handled by other routing algorithm
             if self.__check_vdd_vss(net):
                 continue
@@ -243,7 +256,7 @@ class AstarInitiator:
             self.__lock_or_unlock_port(lock=0)
 
             if len(self.goal_nodes) > 1:
-                p = self.__run_multiple_astar_multiple_times(net = net)
+                p = self.__run_multiple_astar_multiple_times(net=net)
             elif len(self.goal_nodes) == 0:
                 self.logger.error(f"No goal nodes found in net: {net}")
                 p = []
@@ -255,7 +268,8 @@ class AstarInitiator:
             self.path.setdefault(net, {})["real_goal_nodes"] = self.real_goal_nodes
             # Make goal nodes non-walkable
             self.__lock_or_unlock_port(lock=1)
-
+            if self.REMOVE_LOOPS:
+                p = remove_loops_from_path(p)
             segments = segment_path(p)
             self.path.setdefault(net, {})["segments"] = segments
             self.seg_list.setdefault(net, []).extend(segments)
@@ -297,3 +311,30 @@ def check_start_end_port(con, scaled_port_coordinates: dict, port_coordinates: d
                 port_coordinates[con.end_comp_id + con.end_comp_type + designated_ports[1]].y)
 
     return start, real_start, end, real_end
+
+
+"""TESTING LOOP REMOVAL"""
+
+
+def euclidean_distance(p1, p2):
+    return math.hypot(p1[0] - p2[0], p1[1] - p2[1])
+
+
+def remove_loops_from_path(path, tolerance=1):
+    i = 0
+    while i < len(path) - 1:
+        current = path[i]
+        # Look ahead for a matching point
+        j = len(path) - 1
+        while j > i + 1:
+            if euclidean_distance(current, path[j]) < tolerance:
+                print(f"euclidean distance: {euclidean_distance(current, path[j])}")
+
+                print(f"Eliminated path: {path[i+1:j]}")
+                path = path[:i + 1] + path[j:]
+                break
+            j -= 1
+        else:
+            i += 1
+    return path
+

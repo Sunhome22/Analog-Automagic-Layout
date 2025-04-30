@@ -452,7 +452,6 @@ class SPICEparser:
                                              cell_chain='--'.join(self.cell_chain_list),
                                              current_library=current_library)
 
-                print(circuit_cell.cell_chain)
                 self.__add_components_for_each_circuit_cell(current_parent_cell=circuit_cell.cell)
 
     def __parse(self):
