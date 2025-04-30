@@ -50,7 +50,6 @@ class LibraryHandling:
 
         self.RELATIVE_COMPONENT_PLACEMENT = self.config["initiator_lp"]["RELATIVE_COMPONENT_PLACEMENT"]
         self.CUSTOM_COMPONENT_ORDER = self.config["initiator_lp"]["CUSTOM_COMPONENT_ORDER"]
-        self.CUSTOM_TRANSISTOR_ORDER = self.config["initiator_lp"]["CUSTOM_TRANSISTOR_ORDER"]
 
         # Make lists of different component types
         for component in self.components:

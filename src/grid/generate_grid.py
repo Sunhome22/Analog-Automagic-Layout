@@ -31,7 +31,7 @@ class Coordinates:
     x: int = field(default_factory=int)
     y: int = field(default_factory=int)
 
-    def __init__(self, x,y):
+    def __init__(self, x, y):
         self.x = x
         self.y = y
 
@@ -105,7 +105,7 @@ class GridGeneration:
 
         # INPUTS
         self.components = components
-
+        print(components)
         # PARAMETERS
         self.routing_parameters = RoutingParameters()
         self.component_ports = ComponentPorts()
@@ -301,7 +301,6 @@ class GridGeneration:
         self.__port_area()
         self.__calculate_non_overlap_parameters()
         self.__generate_grid()
-        heatmap_test(self.grid, "Ports")
         return (self.grid, self.scaled_port_coordinates, self.used_area,
                 self.port_coordinates, self.routing_parameters, self.component_ports)
 

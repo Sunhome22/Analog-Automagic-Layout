@@ -7,16 +7,8 @@
         "parent_cell": "ROOT_CELL",
         "cell_chain": "UTOP_JNW_BKLE",
         "type": "ipin",
-        "name": "INP",
-        "layout": {
-            "layer": "m2",
-            "area": {
-                "x1": 252,
-                "y1": 6473,
-                "x2": 395,
-                "y2": 6503
-            }
-        }
+        "name": "VDD",
+        "layout": ""
     },
     {
         "instance": "Pin",
@@ -26,7 +18,65 @@
         "parent_cell": "ROOT_CELL",
         "cell_chain": "UTOP_JNW_BKLE",
         "type": "ipin",
-        "name": "INN",
+        "name": "VSS",
+        "layout": ""
+    },
+    {
+        "instance": "CircuitCell",
+        "number_id": 0,
+        "name": "UTOP",
+        "cell": "JNW_BKLE",
+        "named_cell": "UTOP_JNW_BKLE",
+        "parent_cell": "ROOT_CELL",
+        "cell_chain": "UTOP_JNW_BKLE",
+        "group": null,
+        "schematic_connections": {
+            "VDD": "VDD",
+            "VSS": "VSS"
+        },
+        "transform_matrix": {
+            "a": 1,
+            "b": 0,
+            "c": 0,
+            "d": 0,
+            "e": 1,
+            "f": 0
+        },
+        "bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 0,
+            "y2": 0
+        }
+    },
+    {
+        "instance": "Pin",
+        "number_id": 4,
+        "cell": "OTA",
+        "named_cell": "U1_OTA",
+        "parent_cell": "JNW_BKLE",
+        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
+        "type": "ipin",
+        "name": "IN+",
+        "layout": {
+            "layer": "m2",
+            "area": {
+                "x1": 252,
+                "y1": 6073,
+                "x2": 395,
+                "y2": 6103
+            }
+        }
+    },
+    {
+        "instance": "Pin",
+        "number_id": 5,
+        "cell": "OTA",
+        "named_cell": "U1_OTA",
+        "parent_cell": "JNW_BKLE",
+        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
+        "type": "ipin",
+        "name": "IN-",
         "layout": {
             "layer": "m2",
             "area": {
@@ -39,11 +89,11 @@
     },
     {
         "instance": "Pin",
-        "number_id": 3,
-        "cell": "JNW_BKLE",
-        "named_cell": "UTOP_JNW_BKLE",
-        "parent_cell": "ROOT_CELL",
-        "cell_chain": "UTOP_JNW_BKLE",
+        "number_id": 6,
+        "cell": "OTA",
+        "named_cell": "U1_OTA",
+        "parent_cell": "JNW_BKLE",
+        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
         "type": "ipin",
         "name": "VDD",
         "layout": {
@@ -58,11 +108,11 @@
     },
     {
         "instance": "Pin",
-        "number_id": 4,
-        "cell": "JNW_BKLE",
-        "named_cell": "UTOP_JNW_BKLE",
-        "parent_cell": "ROOT_CELL",
-        "cell_chain": "UTOP_JNW_BKLE",
+        "number_id": 7,
+        "cell": "OTA",
+        "named_cell": "U1_OTA",
+        "parent_cell": "JNW_BKLE",
+        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
         "type": "ipin",
         "name": "VSS",
         "layout": {
@@ -77,11 +127,11 @@
     },
     {
         "instance": "Pin",
-        "number_id": 5,
-        "cell": "JNW_BKLE",
-        "named_cell": "UTOP_JNW_BKLE",
-        "parent_cell": "ROOT_CELL",
-        "cell_chain": "UTOP_JNW_BKLE",
+        "number_id": 8,
+        "cell": "OTA",
+        "named_cell": "U1_OTA",
+        "parent_cell": "JNW_BKLE",
+        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
         "type": "opin",
         "name": "OUT",
         "layout": {
@@ -96,17 +146,17 @@
     },
     {
         "instance": "Transistor",
-        "number_id": 6,
+        "number_id": 9,
         "name": "MP3<3>",
         "type": "pmos",
-        "cell": "JNW_BKLE",
-        "named_cell": "UTOP_JNW_BKLE",
-        "parent_cell": "ROOT_CELL",
-        "cell_chain": "UTOP_JNW_BKLE",
+        "cell": "OTA",
+        "named_cell": "U1_OTA",
+        "parent_cell": "JNW_BKLE",
+        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
         "group": null,
         "schematic_connections": {
             "D": "GATE",
-            "G": "INP",
+            "G": "IN+",
             "S": "OTA_SPLIT",
             "B": "VDD"
         },
@@ -158,264 +208,6 @@
             "a": 1,
             "b": 0,
             "c": 876,
-            "d": 0,
-            "e": 1,
-            "f": 6290
-        },
-        "bounding_box": {
-            "x1": 0,
-            "y1": 0,
-            "x2": 576,
-            "y2": 400
-        },
-        "overlap_distance": {
-            "x": 92,
-            "y": 64
-        },
-        "group_endpoint": "",
-        "group_endpoint_bounding_box": {
-            "x1": 0,
-            "y1": 0,
-            "x2": 576,
-            "y2": 240
-        }
-    },
-    {
-        "instance": "Transistor",
-        "number_id": 7,
-        "name": "MP3<2>",
-        "type": "pmos",
-        "cell": "JNW_BKLE",
-        "named_cell": "UTOP_JNW_BKLE",
-        "parent_cell": "ROOT_CELL",
-        "cell_chain": "UTOP_JNW_BKLE",
-        "group": null,
-        "schematic_connections": {
-            "D": "GATE",
-            "G": "INP",
-            "S": "OTA_SPLIT",
-            "B": "VDD"
-        },
-        "layout_name": "JNWATR_PCH_4C5F0",
-        "layout_library": "JNW_ATR_SKY130A",
-        "layout_ports": [
-            {
-                "type": "G",
-                "layer": "m1",
-                "area": {
-                    "x1": 80,
-                    "y1": 180,
-                    "x2": 112,
-                    "y2": 220
-                }
-            },
-            {
-                "type": "S",
-                "layer": "m1",
-                "area": {
-                    "x1": 144,
-                    "y1": 300,
-                    "x2": 240,
-                    "y2": 340
-                }
-            },
-            {
-                "type": "B",
-                "layer": "locali",
-                "area": {
-                    "x1": -48,
-                    "y1": 180,
-                    "x2": 48,
-                    "y2": 220
-                }
-            },
-            {
-                "type": "D",
-                "layer": "m1",
-                "area": {
-                    "x1": 336,
-                    "y1": 20,
-                    "x2": 432,
-                    "y2": 60
-                }
-            }
-        ],
-        "transform_matrix": {
-            "a": 1,
-            "b": 0,
-            "c": 300,
-            "d": 0,
-            "e": 1,
-            "f": 6290
-        },
-        "bounding_box": {
-            "x1": 0,
-            "y1": 0,
-            "x2": 576,
-            "y2": 400
-        },
-        "overlap_distance": {
-            "x": 92,
-            "y": 64
-        },
-        "group_endpoint": "",
-        "group_endpoint_bounding_box": {
-            "x1": 0,
-            "y1": 0,
-            "x2": 576,
-            "y2": 240
-        }
-    },
-    {
-        "instance": "Transistor",
-        "number_id": 8,
-        "name": "MP3<1>",
-        "type": "pmos",
-        "cell": "JNW_BKLE",
-        "named_cell": "UTOP_JNW_BKLE",
-        "parent_cell": "ROOT_CELL",
-        "cell_chain": "UTOP_JNW_BKLE",
-        "group": null,
-        "schematic_connections": {
-            "D": "GATE",
-            "G": "INP",
-            "S": "OTA_SPLIT",
-            "B": "VDD"
-        },
-        "layout_name": "JNWATR_PCH_4C5F0",
-        "layout_library": "JNW_ATR_SKY130A",
-        "layout_ports": [
-            {
-                "type": "G",
-                "layer": "m1",
-                "area": {
-                    "x1": 80,
-                    "y1": 180,
-                    "x2": 112,
-                    "y2": 220
-                }
-            },
-            {
-                "type": "S",
-                "layer": "m1",
-                "area": {
-                    "x1": 144,
-                    "y1": 300,
-                    "x2": 240,
-                    "y2": 340
-                }
-            },
-            {
-                "type": "B",
-                "layer": "locali",
-                "area": {
-                    "x1": -48,
-                    "y1": 180,
-                    "x2": 48,
-                    "y2": 220
-                }
-            },
-            {
-                "type": "D",
-                "layer": "m1",
-                "area": {
-                    "x1": 336,
-                    "y1": 20,
-                    "x2": 432,
-                    "y2": 60
-                }
-            }
-        ],
-        "transform_matrix": {
-            "a": 1,
-            "b": 0,
-            "c": 876,
-            "d": 0,
-            "e": 1,
-            "f": 5890
-        },
-        "bounding_box": {
-            "x1": 0,
-            "y1": 0,
-            "x2": 576,
-            "y2": 400
-        },
-        "overlap_distance": {
-            "x": 92,
-            "y": 64
-        },
-        "group_endpoint": "rail_bot",
-        "group_endpoint_bounding_box": {
-            "x1": 0,
-            "y1": 0,
-            "x2": 576,
-            "y2": 240
-        }
-    },
-    {
-        "instance": "Transistor",
-        "number_id": 9,
-        "name": "MP3<0>",
-        "type": "pmos",
-        "cell": "JNW_BKLE",
-        "named_cell": "UTOP_JNW_BKLE",
-        "parent_cell": "ROOT_CELL",
-        "cell_chain": "UTOP_JNW_BKLE",
-        "group": null,
-        "schematic_connections": {
-            "D": "GATE",
-            "G": "INP",
-            "S": "OTA_SPLIT",
-            "B": "VDD"
-        },
-        "layout_name": "JNWATR_PCH_4C5F0",
-        "layout_library": "JNW_ATR_SKY130A",
-        "layout_ports": [
-            {
-                "type": "G",
-                "layer": "m1",
-                "area": {
-                    "x1": 80,
-                    "y1": 180,
-                    "x2": 112,
-                    "y2": 220
-                }
-            },
-            {
-                "type": "S",
-                "layer": "m1",
-                "area": {
-                    "x1": 144,
-                    "y1": 300,
-                    "x2": 240,
-                    "y2": 340
-                }
-            },
-            {
-                "type": "B",
-                "layer": "locali",
-                "area": {
-                    "x1": -48,
-                    "y1": 180,
-                    "x2": 48,
-                    "y2": 220
-                }
-            },
-            {
-                "type": "D",
-                "layer": "m1",
-                "area": {
-                    "x1": 336,
-                    "y1": 20,
-                    "x2": 432,
-                    "y2": 60
-                }
-            }
-        ],
-        "transform_matrix": {
-            "a": 1,
-            "b": 0,
-            "c": 300,
             "d": 0,
             "e": 1,
             "f": 5890
@@ -441,16 +233,16 @@
     {
         "instance": "Transistor",
         "number_id": 10,
-        "name": "MP4<3>",
+        "name": "MP3<2>",
         "type": "pmos",
-        "cell": "JNW_BKLE",
-        "named_cell": "UTOP_JNW_BKLE",
-        "parent_cell": "ROOT_CELL",
-        "cell_chain": "UTOP_JNW_BKLE",
+        "cell": "OTA",
+        "named_cell": "U1_OTA",
+        "parent_cell": "JNW_BKLE",
+        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
         "group": null,
         "schematic_connections": {
-            "D": "OUT",
-            "G": "INN",
+            "D": "GATE",
+            "G": "IN+",
             "S": "OTA_SPLIT",
             "B": "VDD"
         },
@@ -504,7 +296,7 @@
             "c": 300,
             "d": 0,
             "e": 1,
-            "f": 7090
+            "f": 5890
         },
         "bounding_box": {
             "x1": 0,
@@ -516,7 +308,7 @@
             "x": 92,
             "y": 64
         },
-        "group_endpoint": "",
+        "group_endpoint": "rail_bot",
         "group_endpoint_bounding_box": {
             "x1": 0,
             "y1": 0,
@@ -527,16 +319,16 @@
     {
         "instance": "Transistor",
         "number_id": 11,
-        "name": "MP4<2>",
+        "name": "MP3<1>",
         "type": "pmos",
-        "cell": "JNW_BKLE",
-        "named_cell": "UTOP_JNW_BKLE",
-        "parent_cell": "ROOT_CELL",
-        "cell_chain": "UTOP_JNW_BKLE",
+        "cell": "OTA",
+        "named_cell": "U1_OTA",
+        "parent_cell": "JNW_BKLE",
+        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
         "group": null,
         "schematic_connections": {
-            "D": "OUT",
-            "G": "INN",
+            "D": "GATE",
+            "G": "IN+",
             "S": "OTA_SPLIT",
             "B": "VDD"
         },
@@ -587,10 +379,10 @@
         "transform_matrix": {
             "a": 1,
             "b": 0,
-            "c": 876,
+            "c": 300,
             "d": 0,
             "e": 1,
-            "f": 7090
+            "f": 6290
         },
         "bounding_box": {
             "x1": 0,
@@ -613,16 +405,16 @@
     {
         "instance": "Transistor",
         "number_id": 12,
-        "name": "MP4<1>",
+        "name": "MP3<0>",
         "type": "pmos",
-        "cell": "JNW_BKLE",
-        "named_cell": "UTOP_JNW_BKLE",
-        "parent_cell": "ROOT_CELL",
-        "cell_chain": "UTOP_JNW_BKLE",
+        "cell": "OTA",
+        "named_cell": "U1_OTA",
+        "parent_cell": "JNW_BKLE",
+        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
         "group": null,
         "schematic_connections": {
-            "D": "OUT",
-            "G": "INN",
+            "D": "GATE",
+            "G": "IN+",
             "S": "OTA_SPLIT",
             "B": "VDD"
         },
@@ -676,7 +468,7 @@
             "c": 876,
             "d": 0,
             "e": 1,
-            "f": 6690
+            "f": 6290
         },
         "bounding_box": {
             "x1": 0,
@@ -699,16 +491,188 @@
     {
         "instance": "Transistor",
         "number_id": 13,
-        "name": "MP4<0>",
+        "name": "MP4<3>",
         "type": "pmos",
-        "cell": "JNW_BKLE",
-        "named_cell": "UTOP_JNW_BKLE",
-        "parent_cell": "ROOT_CELL",
-        "cell_chain": "UTOP_JNW_BKLE",
+        "cell": "OTA",
+        "named_cell": "U1_OTA",
+        "parent_cell": "JNW_BKLE",
+        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
         "group": null,
         "schematic_connections": {
             "D": "OUT",
-            "G": "INN",
+            "G": "IN-",
+            "S": "OTA_SPLIT",
+            "B": "VDD"
+        },
+        "layout_name": "JNWATR_PCH_4C5F0",
+        "layout_library": "JNW_ATR_SKY130A",
+        "layout_ports": [
+            {
+                "type": "G",
+                "layer": "m1",
+                "area": {
+                    "x1": 80,
+                    "y1": 180,
+                    "x2": 112,
+                    "y2": 220
+                }
+            },
+            {
+                "type": "S",
+                "layer": "m1",
+                "area": {
+                    "x1": 144,
+                    "y1": 300,
+                    "x2": 240,
+                    "y2": 340
+                }
+            },
+            {
+                "type": "B",
+                "layer": "locali",
+                "area": {
+                    "x1": -48,
+                    "y1": 180,
+                    "x2": 48,
+                    "y2": 220
+                }
+            },
+            {
+                "type": "D",
+                "layer": "m1",
+                "area": {
+                    "x1": 336,
+                    "y1": 20,
+                    "x2": 432,
+                    "y2": 60
+                }
+            }
+        ],
+        "transform_matrix": {
+            "a": 1,
+            "b": 0,
+            "c": 300,
+            "d": 0,
+            "e": 1,
+            "f": 7090
+        },
+        "bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 576,
+            "y2": 400
+        },
+        "overlap_distance": {
+            "x": 92,
+            "y": 64
+        },
+        "group_endpoint": "",
+        "group_endpoint_bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 576,
+            "y2": 240
+        }
+    },
+    {
+        "instance": "Transistor",
+        "number_id": 14,
+        "name": "MP4<2>",
+        "type": "pmos",
+        "cell": "OTA",
+        "named_cell": "U1_OTA",
+        "parent_cell": "JNW_BKLE",
+        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
+        "group": null,
+        "schematic_connections": {
+            "D": "OUT",
+            "G": "IN-",
+            "S": "OTA_SPLIT",
+            "B": "VDD"
+        },
+        "layout_name": "JNWATR_PCH_4C5F0",
+        "layout_library": "JNW_ATR_SKY130A",
+        "layout_ports": [
+            {
+                "type": "G",
+                "layer": "m1",
+                "area": {
+                    "x1": 80,
+                    "y1": 180,
+                    "x2": 112,
+                    "y2": 220
+                }
+            },
+            {
+                "type": "S",
+                "layer": "m1",
+                "area": {
+                    "x1": 144,
+                    "y1": 300,
+                    "x2": 240,
+                    "y2": 340
+                }
+            },
+            {
+                "type": "B",
+                "layer": "locali",
+                "area": {
+                    "x1": -48,
+                    "y1": 180,
+                    "x2": 48,
+                    "y2": 220
+                }
+            },
+            {
+                "type": "D",
+                "layer": "m1",
+                "area": {
+                    "x1": 336,
+                    "y1": 20,
+                    "x2": 432,
+                    "y2": 60
+                }
+            }
+        ],
+        "transform_matrix": {
+            "a": 1,
+            "b": 0,
+            "c": 876,
+            "d": 0,
+            "e": 1,
+            "f": 7090
+        },
+        "bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 576,
+            "y2": 400
+        },
+        "overlap_distance": {
+            "x": 92,
+            "y": 64
+        },
+        "group_endpoint": "",
+        "group_endpoint_bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 576,
+            "y2": 240
+        }
+    },
+    {
+        "instance": "Transistor",
+        "number_id": 15,
+        "name": "MP4<1>",
+        "type": "pmos",
+        "cell": "OTA",
+        "named_cell": "U1_OTA",
+        "parent_cell": "JNW_BKLE",
+        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
+        "group": null,
+        "schematic_connections": {
+            "D": "OUT",
+            "G": "IN-",
             "S": "OTA_SPLIT",
             "B": "VDD"
         },
@@ -784,13 +748,99 @@
     },
     {
         "instance": "Transistor",
-        "number_id": 14,
+        "number_id": 16,
+        "name": "MP4<0>",
+        "type": "pmos",
+        "cell": "OTA",
+        "named_cell": "U1_OTA",
+        "parent_cell": "JNW_BKLE",
+        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
+        "group": null,
+        "schematic_connections": {
+            "D": "OUT",
+            "G": "IN-",
+            "S": "OTA_SPLIT",
+            "B": "VDD"
+        },
+        "layout_name": "JNWATR_PCH_4C5F0",
+        "layout_library": "JNW_ATR_SKY130A",
+        "layout_ports": [
+            {
+                "type": "G",
+                "layer": "m1",
+                "area": {
+                    "x1": 80,
+                    "y1": 180,
+                    "x2": 112,
+                    "y2": 220
+                }
+            },
+            {
+                "type": "S",
+                "layer": "m1",
+                "area": {
+                    "x1": 144,
+                    "y1": 300,
+                    "x2": 240,
+                    "y2": 340
+                }
+            },
+            {
+                "type": "B",
+                "layer": "locali",
+                "area": {
+                    "x1": -48,
+                    "y1": 180,
+                    "x2": 48,
+                    "y2": 220
+                }
+            },
+            {
+                "type": "D",
+                "layer": "m1",
+                "area": {
+                    "x1": 336,
+                    "y1": 20,
+                    "x2": 432,
+                    "y2": 60
+                }
+            }
+        ],
+        "transform_matrix": {
+            "a": 1,
+            "b": 0,
+            "c": 876,
+            "d": 0,
+            "e": 1,
+            "f": 6690
+        },
+        "bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 576,
+            "y2": 400
+        },
+        "overlap_distance": {
+            "x": 92,
+            "y": 64
+        },
+        "group_endpoint": "",
+        "group_endpoint_bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 576,
+            "y2": 240
+        }
+    },
+    {
+        "instance": "Transistor",
+        "number_id": 17,
         "name": "MP2",
         "type": "pmos",
-        "cell": "JNW_BKLE",
-        "named_cell": "UTOP_JNW_BKLE",
-        "parent_cell": "ROOT_CELL",
-        "cell_chain": "UTOP_JNW_BKLE",
+        "cell": "OTA",
+        "named_cell": "U1_OTA",
+        "parent_cell": "JNW_BKLE",
+        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
         "group": null,
         "schematic_connections": {
             "D": "OTA_SPLIT",
@@ -870,13 +920,13 @@
     },
     {
         "instance": "Transistor",
-        "number_id": 15,
+        "number_id": 18,
         "name": "MP1",
         "type": "pmos",
-        "cell": "JNW_BKLE",
-        "named_cell": "UTOP_JNW_BKLE",
-        "parent_cell": "ROOT_CELL",
-        "cell_chain": "UTOP_JNW_BKLE",
+        "cell": "OTA",
+        "named_cell": "U1_OTA",
+        "parent_cell": "JNW_BKLE",
+        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
         "group": null,
         "schematic_connections": {
             "D": "IB_GATE",
@@ -956,13 +1006,13 @@
     },
     {
         "instance": "Transistor",
-        "number_id": 16,
+        "number_id": 19,
         "name": "MN1",
         "type": "nmos",
-        "cell": "JNW_BKLE",
-        "named_cell": "UTOP_JNW_BKLE",
-        "parent_cell": "ROOT_CELL",
-        "cell_chain": "UTOP_JNW_BKLE",
+        "cell": "OTA",
+        "named_cell": "U1_OTA",
+        "parent_cell": "JNW_BKLE",
+        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
         "group": null,
         "schematic_connections": {
             "D": "GATE",
@@ -1042,13 +1092,13 @@
     },
     {
         "instance": "Transistor",
-        "number_id": 17,
+        "number_id": 20,
         "name": "MN2",
         "type": "nmos",
-        "cell": "JNW_BKLE",
-        "named_cell": "UTOP_JNW_BKLE",
-        "parent_cell": "ROOT_CELL",
-        "cell_chain": "UTOP_JNW_BKLE",
+        "cell": "OTA",
+        "named_cell": "U1_OTA",
+        "parent_cell": "JNW_BKLE",
+        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
         "group": null,
         "schematic_connections": {
             "D": "OUT",
@@ -1128,13 +1178,13 @@
     },
     {
         "instance": "Resistor",
-        "number_id": 18,
+        "number_id": 21,
         "name": "RH1",
         "type": "hpo",
-        "cell": "JNW_BKLE",
-        "named_cell": "UTOP_JNW_BKLE",
-        "parent_cell": "ROOT_CELL",
-        "cell_chain": "UTOP_JNW_BKLE",
+        "cell": "OTA",
+        "named_cell": "U1_OTA",
+        "parent_cell": "JNW_BKLE",
+        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
         "group": null,
         "schematic_connections": {
             "N": "AFTER_RESISTOR1",
@@ -1192,13 +1242,13 @@
     },
     {
         "instance": "Resistor",
-        "number_id": 19,
+        "number_id": 22,
         "name": "RH2",
         "type": "hpo",
-        "cell": "JNW_BKLE",
-        "named_cell": "UTOP_JNW_BKLE",
-        "parent_cell": "ROOT_CELL",
-        "cell_chain": "UTOP_JNW_BKLE",
+        "cell": "OTA",
+        "named_cell": "U1_OTA",
+        "parent_cell": "JNW_BKLE",
+        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
         "group": null,
         "schematic_connections": {
             "N": "AFTER_RESISTOR2",
@@ -1256,13 +1306,13 @@
     },
     {
         "instance": "Resistor",
-        "number_id": 20,
+        "number_id": 23,
         "name": "RH3",
         "type": "hpo",
-        "cell": "JNW_BKLE",
-        "named_cell": "UTOP_JNW_BKLE",
-        "parent_cell": "ROOT_CELL",
-        "cell_chain": "UTOP_JNW_BKLE",
+        "cell": "OTA",
+        "named_cell": "U1_OTA",
+        "parent_cell": "JNW_BKLE",
+        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
         "group": null,
         "schematic_connections": {
             "N": "VSS",
@@ -1320,19 +1370,19 @@
     },
     {
         "instance": "CircuitCell",
-        "number_id": 0,
-        "name": "UTOP",
-        "cell": "JNW_BKLE",
-        "named_cell": "UTOP_JNW_BKLE",
-        "parent_cell": "ROOT_CELL",
-        "cell_chain": "UTOP_JNW_BKLE",
+        "number_id": 3,
+        "name": "U1",
+        "cell": "OTA",
+        "named_cell": "U1_OTA",
+        "parent_cell": "JNW_BKLE",
+        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
         "group": null,
         "schematic_connections": {
-            "INP": "INP",
-            "INN": "INN",
             "VDD": "VDD",
-            "VSS": "VSS",
-            "OUT": "OUT"
+            "IN+": "net1",
+            "IN-": "net2",
+            "OUT": "net3",
+            "VSS": "VSS"
         },
         "transform_matrix": {
             "a": 1,
@@ -1351,19 +1401,19 @@
     },
     {
         "instance": "TraceNet",
-        "name": "INP",
-        "cell": "JNW_BKLE",
-        "named_cell": "UTOP_JNW_BKLE",
+        "name": "IN+",
+        "cell": "OTA",
+        "named_cell": "U1_OTA",
         "parent_cell": "",
-        "cell_chain": "UTOP_JNW_BKLE",
+        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
         "segments": [
             {
                 "layer": "m2",
                 "area": {
                     "x1": 252,
-                    "y1": 6473,
+                    "y1": 6073,
                     "x2": 395,
-                    "y2": 6503
+                    "y2": 6103
                 }
             },
             {
@@ -1379,45 +1429,45 @@
                 "layer": "m2",
                 "area": {
                     "x1": 252,
-                    "y1": 6073,
+                    "y1": 6473,
                     "x2": 410,
-                    "y2": 6103
+                    "y2": 6503
                 }
             },
             {
                 "layer": "m3",
                 "area": {
                     "x1": 380,
-                    "y1": 6073,
+                    "y1": 6473,
                     "x2": 410,
-                    "y2": 6103
+                    "y2": 6503
                 }
             },
             {
                 "layer": "m2",
                 "area": {
                     "x1": 380,
-                    "y1": 6073,
+                    "y1": 6473,
                     "x2": 986,
-                    "y2": 6103
+                    "y2": 6503
                 }
             },
             {
                 "layer": "m3",
                 "area": {
                     "x1": 956,
-                    "y1": 6073,
+                    "y1": 6473,
                     "x2": 986,
-                    "y2": 6103
+                    "y2": 6503
                 }
             },
             {
                 "layer": "m2",
                 "area": {
                     "x1": 828,
-                    "y1": 6073,
+                    "y1": 6473,
                     "x2": 986,
-                    "y2": 6103
+                    "y2": 6503
                 }
             },
             {
@@ -1433,9 +1483,9 @@
                 "layer": "m2",
                 "area": {
                     "x1": 828,
-                    "y1": 6473,
+                    "y1": 6073,
                     "x2": 971,
-                    "y2": 6503
+                    "y2": 6103
                 }
             }
         ],
@@ -1444,8 +1494,26 @@
                 "layer": "m1-m2",
                 "area": {
                     "x1": 956,
-                    "y1": 6470,
+                    "y1": 6070,
                     "x2": 988,
+                    "y2": 6110
+                }
+            },
+            {
+                "layer": "m1-m2",
+                "area": {
+                    "x1": 380,
+                    "y1": 6070,
+                    "x2": 412,
+                    "y2": 6110
+                }
+            },
+            {
+                "layer": "m1-m2",
+                "area": {
+                    "x1": 380,
+                    "y1": 6470,
+                    "x2": 412,
                     "y2": 6510
                 }
             },
@@ -1461,64 +1529,37 @@
             {
                 "layer": "m1-m2",
                 "area": {
-                    "x1": 956,
-                    "y1": 6070,
-                    "x2": 988,
-                    "y2": 6110
-                }
-            },
-            {
-                "layer": "m1-m2",
-                "area": {
-                    "x1": 956,
-                    "y1": 6070,
-                    "x2": 988,
-                    "y2": 6110
+                    "x1": 380,
+                    "y1": 6470,
+                    "x2": 412,
+                    "y2": 6510
                 }
             },
             {
                 "layer": "m1-m2",
                 "area": {
                     "x1": 956,
-                    "y1": 6070,
+                    "y1": 6470,
                     "x2": 988,
-                    "y2": 6110
+                    "y2": 6510
                 }
             },
             {
                 "layer": "m1-m2",
                 "area": {
-                    "x1": 380,
-                    "y1": 6070,
-                    "x2": 412,
-                    "y2": 6110
+                    "x1": 956,
+                    "y1": 6470,
+                    "x2": 988,
+                    "y2": 6510
                 }
             },
             {
                 "layer": "m1-m2",
                 "area": {
-                    "x1": 380,
-                    "y1": 6070,
-                    "x2": 412,
-                    "y2": 6110
-                }
-            },
-            {
-                "layer": "m1-m2",
-                "area": {
-                    "x1": 380,
-                    "y1": 6070,
-                    "x2": 412,
-                    "y2": 6110
-                }
-            },
-            {
-                "layer": "m2-m3",
-                "area": {
-                    "x1": 252,
-                    "y1": 6473,
-                    "x2": 282,
-                    "y2": 6503
+                    "x1": 956,
+                    "y1": 6470,
+                    "x2": 988,
+                    "y2": 6510
                 }
             },
             {
@@ -1533,46 +1574,46 @@
             {
                 "layer": "m2-m3",
                 "area": {
-                    "x1": 380,
-                    "y1": 6073,
-                    "x2": 410,
-                    "y2": 6103
+                    "x1": 252,
+                    "y1": 6473,
+                    "x2": 282,
+                    "y2": 6503
                 }
             },
             {
                 "layer": "m2-m3",
                 "area": {
                     "x1": 380,
-                    "y1": 6073,
+                    "y1": 6473,
                     "x2": 410,
-                    "y2": 6103
+                    "y2": 6503
+                }
+            },
+            {
+                "layer": "m2-m3",
+                "area": {
+                    "x1": 380,
+                    "y1": 6473,
+                    "x2": 410,
+                    "y2": 6503
                 }
             },
             {
                 "layer": "m2-m3",
                 "area": {
                     "x1": 956,
-                    "y1": 6073,
+                    "y1": 6473,
                     "x2": 986,
-                    "y2": 6103
+                    "y2": 6503
                 }
             },
             {
                 "layer": "m2-m3",
                 "area": {
                     "x1": 956,
-                    "y1": 6073,
+                    "y1": 6473,
                     "x2": 986,
-                    "y2": 6103
-                }
-            },
-            {
-                "layer": "m2-m3",
-                "area": {
-                    "x1": 828,
-                    "y1": 6073,
-                    "x2": 858,
-                    "y2": 6103
+                    "y2": 6503
                 }
             },
             {
@@ -1582,17 +1623,26 @@
                     "y1": 6473,
                     "x2": 858,
                     "y2": 6503
+                }
+            },
+            {
+                "layer": "m2-m3",
+                "area": {
+                    "x1": 828,
+                    "y1": 6073,
+                    "x2": 858,
+                    "y2": 6103
                 }
             }
         ]
     },
     {
         "instance": "TraceNet",
-        "name": "INN",
-        "cell": "JNW_BKLE",
-        "named_cell": "UTOP_JNW_BKLE",
+        "name": "IN-",
+        "cell": "OTA",
+        "named_cell": "U1_OTA",
         "parent_cell": "",
-        "cell_chain": "UTOP_JNW_BKLE",
+        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
         "segments": [
             {
                 "layer": "m2",
@@ -1698,33 +1748,6 @@
             {
                 "layer": "m1-m2",
                 "area": {
-                    "x1": 956,
-                    "y1": 6870,
-                    "x2": 988,
-                    "y2": 6910
-                }
-            },
-            {
-                "layer": "m1-m2",
-                "area": {
-                    "x1": 956,
-                    "y1": 6870,
-                    "x2": 988,
-                    "y2": 6910
-                }
-            },
-            {
-                "layer": "m1-m2",
-                "area": {
-                    "x1": 956,
-                    "y1": 6870,
-                    "x2": 988,
-                    "y2": 6910
-                }
-            },
-            {
-                "layer": "m1-m2",
-                "area": {
                     "x1": 380,
                     "y1": 6870,
                     "x2": 412,
@@ -1746,6 +1769,33 @@
                     "x1": 380,
                     "y1": 6870,
                     "x2": 412,
+                    "y2": 6910
+                }
+            },
+            {
+                "layer": "m1-m2",
+                "area": {
+                    "x1": 956,
+                    "y1": 6870,
+                    "x2": 988,
+                    "y2": 6910
+                }
+            },
+            {
+                "layer": "m1-m2",
+                "area": {
+                    "x1": 956,
+                    "y1": 6870,
+                    "x2": 988,
+                    "y2": 6910
+                }
+            },
+            {
+                "layer": "m1-m2",
+                "area": {
+                    "x1": 956,
+                    "y1": 6870,
+                    "x2": 988,
                     "y2": 6910
                 }
             },
@@ -1826,10 +1876,10 @@
     {
         "instance": "TraceNet",
         "name": "OUT",
-        "cell": "JNW_BKLE",
-        "named_cell": "UTOP_JNW_BKLE",
+        "cell": "OTA",
+        "named_cell": "U1_OTA",
         "parent_cell": "",
-        "cell_chain": "UTOP_JNW_BKLE",
+        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
         "segments": [
             {
                 "layer": "m2",
@@ -1971,36 +2021,36 @@
             {
                 "layer": "m1-m2",
                 "area": {
+                    "x1": 636,
+                    "y1": 6710,
+                    "x2": 732,
+                    "y2": 6750
+                }
+            },
+            {
+                "layer": "m1-m2",
+                "area": {
+                    "x1": 636,
+                    "y1": 6710,
+                    "x2": 732,
+                    "y2": 6750
+                }
+            },
+            {
+                "layer": "m1-m2",
+                "area": {
+                    "x1": 636,
+                    "y1": 6710,
+                    "x2": 732,
+                    "y2": 6750
+                }
+            },
+            {
+                "layer": "m1-m2",
+                "area": {
                     "x1": 1212,
                     "y1": 6710,
                     "x2": 1308,
-                    "y2": 6750
-                }
-            },
-            {
-                "layer": "m1-m2",
-                "area": {
-                    "x1": 636,
-                    "y1": 6710,
-                    "x2": 732,
-                    "y2": 6750
-                }
-            },
-            {
-                "layer": "m1-m2",
-                "area": {
-                    "x1": 636,
-                    "y1": 6710,
-                    "x2": 732,
-                    "y2": 6750
-                }
-            },
-            {
-                "layer": "m1-m2",
-                "area": {
-                    "x1": 636,
-                    "y1": 6710,
-                    "x2": 732,
                     "y2": 6750
                 }
             },
@@ -2063,10 +2113,10 @@
     {
         "instance": "TraceNet",
         "name": "GATE",
-        "cell": "JNW_BKLE",
-        "named_cell": "UTOP_JNW_BKLE",
+        "cell": "OTA",
+        "named_cell": "U1_OTA",
         "parent_cell": "",
-        "cell_chain": "UTOP_JNW_BKLE",
+        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
         "segments": [
             {
                 "layer": "m2",
@@ -2182,27 +2232,36 @@
                 "layer": "m1-m2",
                 "area": {
                     "x1": 1212,
-                    "y1": 6310,
+                    "y1": 5910,
                     "x2": 1308,
-                    "y2": 6350
+                    "y2": 5950
                 }
             },
             {
                 "layer": "m1-m2",
                 "area": {
                     "x1": 1212,
-                    "y1": 6310,
+                    "y1": 5910,
                     "x2": 1308,
-                    "y2": 6350
+                    "y2": 5950
                 }
             },
             {
                 "layer": "m1-m2",
                 "area": {
                     "x1": 1212,
-                    "y1": 6310,
+                    "y1": 5910,
                     "x2": 1308,
-                    "y2": 6350
+                    "y2": 5950
+                }
+            },
+            {
+                "layer": "m1-m2",
+                "area": {
+                    "x1": 636,
+                    "y1": 5910,
+                    "x2": 732,
+                    "y2": 5950
                 }
             },
             {
@@ -2236,36 +2295,27 @@
                 "layer": "m1-m2",
                 "area": {
                     "x1": 1212,
-                    "y1": 5910,
+                    "y1": 6310,
                     "x2": 1308,
-                    "y2": 5950
+                    "y2": 6350
                 }
             },
             {
                 "layer": "m1-m2",
                 "area": {
                     "x1": 1212,
-                    "y1": 5910,
+                    "y1": 6310,
                     "x2": 1308,
-                    "y2": 5950
+                    "y2": 6350
                 }
             },
             {
                 "layer": "m1-m2",
                 "area": {
                     "x1": 1212,
-                    "y1": 5910,
+                    "y1": 6310,
                     "x2": 1308,
-                    "y2": 5950
-                }
-            },
-            {
-                "layer": "m1-m2",
-                "area": {
-                    "x1": 636,
-                    "y1": 5910,
-                    "x2": 732,
-                    "y2": 5950
+                    "y2": 6350
                 }
             },
             {
@@ -2381,10 +2431,10 @@
     {
         "instance": "TraceNet",
         "name": "OTA_SPLIT",
-        "cell": "JNW_BKLE",
-        "named_cell": "UTOP_JNW_BKLE",
+        "cell": "OTA",
+        "named_cell": "U1_OTA",
         "parent_cell": "",
-        "cell_chain": "UTOP_JNW_BKLE",
+        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
         "segments": [
             {
                 "layer": "m2",
@@ -2399,7 +2449,7 @@
                 "layer": "m3",
                 "area": {
                     "x1": 493,
-                    "y1": 7395,
+                    "y1": 7027,
                     "x2": 523,
                     "y2": 7537
                 }
@@ -2407,7 +2457,25 @@
             {
                 "layer": "m2",
                 "area": {
-                    "x1": 493,
+                    "x1": 477,
+                    "y1": 7027,
+                    "x2": 523,
+                    "y2": 7057
+                }
+            },
+            {
+                "layer": "m3",
+                "area": {
+                    "x1": 477,
+                    "y1": 6995,
+                    "x2": 507,
+                    "y2": 7057
+                }
+            },
+            {
+                "layer": "m2",
+                "area": {
+                    "x1": 509,
                     "y1": 7395,
                     "x2": 1083,
                     "y2": 7425
@@ -2581,8 +2649,62 @@
                 "layer": "m1-m2",
                 "area": {
                     "x1": 1020,
-                    "y1": 6590,
+                    "y1": 6190,
                     "x2": 1116,
+                    "y2": 6230
+                }
+            },
+            {
+                "layer": "m1-m2",
+                "area": {
+                    "x1": 1020,
+                    "y1": 6190,
+                    "x2": 1116,
+                    "y2": 6230
+                }
+            },
+            {
+                "layer": "m1-m2",
+                "area": {
+                    "x1": 1020,
+                    "y1": 6190,
+                    "x2": 1116,
+                    "y2": 6230
+                }
+            },
+            {
+                "layer": "m1-m2",
+                "area": {
+                    "x1": 444,
+                    "y1": 6190,
+                    "x2": 540,
+                    "y2": 6230
+                }
+            },
+            {
+                "layer": "m1-m2",
+                "area": {
+                    "x1": 444,
+                    "y1": 6190,
+                    "x2": 540,
+                    "y2": 6230
+                }
+            },
+            {
+                "layer": "m1-m2",
+                "area": {
+                    "x1": 444,
+                    "y1": 6190,
+                    "x2": 540,
+                    "y2": 6230
+                }
+            },
+            {
+                "layer": "m1-m2",
+                "area": {
+                    "x1": 444,
+                    "y1": 6590,
+                    "x2": 540,
                     "y2": 6630
                 }
             },
@@ -2607,69 +2729,15 @@
             {
                 "layer": "m1-m2",
                 "area": {
-                    "x1": 444,
+                    "x1": 1020,
                     "y1": 6590,
-                    "x2": 540,
+                    "x2": 1116,
                     "y2": 6630
                 }
             },
             {
                 "layer": "m1-m2",
                 "area": {
-                    "x1": 1020,
-                    "y1": 6190,
-                    "x2": 1116,
-                    "y2": 6230
-                }
-            },
-            {
-                "layer": "m1-m2",
-                "area": {
-                    "x1": 1020,
-                    "y1": 6190,
-                    "x2": 1116,
-                    "y2": 6230
-                }
-            },
-            {
-                "layer": "m1-m2",
-                "area": {
-                    "x1": 1020,
-                    "y1": 6190,
-                    "x2": 1116,
-                    "y2": 6230
-                }
-            },
-            {
-                "layer": "m1-m2",
-                "area": {
-                    "x1": 444,
-                    "y1": 6190,
-                    "x2": 540,
-                    "y2": 6230
-                }
-            },
-            {
-                "layer": "m1-m2",
-                "area": {
-                    "x1": 444,
-                    "y1": 6190,
-                    "x2": 540,
-                    "y2": 6230
-                }
-            },
-            {
-                "layer": "m1-m2",
-                "area": {
-                    "x1": 444,
-                    "y1": 6190,
-                    "x2": 540,
-                    "y2": 6230
-                }
-            },
-            {
-                "layer": "m1-m2",
-                "area": {
                     "x1": 444,
                     "y1": 7390,
                     "x2": 540,
@@ -2710,6 +2778,33 @@
                     "y1": 7390,
                     "x2": 1116,
                     "y2": 7430
+                }
+            },
+            {
+                "layer": "m1-m2",
+                "area": {
+                    "x1": 444,
+                    "y1": 6990,
+                    "x2": 540,
+                    "y2": 7030
+                }
+            },
+            {
+                "layer": "m1-m2",
+                "area": {
+                    "x1": 444,
+                    "y1": 6990,
+                    "x2": 540,
+                    "y2": 7030
+                }
+            },
+            {
+                "layer": "m1-m2",
+                "area": {
+                    "x1": 444,
+                    "y1": 6990,
+                    "x2": 540,
+                    "y2": 7030
                 }
             },
             {
@@ -2761,9 +2856,18 @@
                 "layer": "m2-m3",
                 "area": {
                     "x1": 493,
-                    "y1": 7395,
+                    "y1": 7027,
                     "x2": 523,
-                    "y2": 7425
+                    "y2": 7057
+                }
+            },
+            {
+                "layer": "m2-m3",
+                "area": {
+                    "x1": 477,
+                    "y1": 7027,
+                    "x2": 507,
+                    "y2": 7057
                 }
             },
             {
@@ -2933,10 +3037,10 @@
     {
         "instance": "TraceNet",
         "name": "IB_GATE",
-        "cell": "JNW_BKLE",
-        "named_cell": "UTOP_JNW_BKLE",
+        "cell": "OTA",
+        "named_cell": "U1_OTA",
         "parent_cell": "",
-        "cell_chain": "UTOP_JNW_BKLE",
+        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
         "segments": [
             {
                 "layer": "m3",
@@ -3125,10 +3229,10 @@
     {
         "instance": "TraceNet",
         "name": "AFTER_RESISTOR1",
-        "cell": "JNW_BKLE",
-        "named_cell": "UTOP_JNW_BKLE",
+        "cell": "OTA",
+        "named_cell": "U1_OTA",
         "parent_cell": "",
-        "cell_chain": "UTOP_JNW_BKLE",
+        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
         "segments": [
             {
                 "layer": "m2",
@@ -3164,10 +3268,10 @@
     {
         "instance": "TraceNet",
         "name": "AFTER_RESISTOR2",
-        "cell": "JNW_BKLE",
-        "named_cell": "UTOP_JNW_BKLE",
+        "cell": "OTA",
+        "named_cell": "U1_OTA",
         "parent_cell": "",
-        "cell_chain": "UTOP_JNW_BKLE",
+        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
         "segments": [
             {
                 "layer": "m3",
@@ -3239,10 +3343,10 @@
     {
         "instance": "TraceNet",
         "name": "VDD",
-        "cell": "JNW_BKLE",
-        "named_cell": "UTOP_JNW_BKLE",
-        "parent_cell": "ROOT_CELL",
-        "cell_chain": "UTOP_JNW_BKLE",
+        "cell": "OTA",
+        "named_cell": "U1_OTA",
+        "parent_cell": "JNW_BKLE",
+        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
         "segments": [
             {
                 "layer": "locali",
@@ -3323,10 +3427,10 @@
     {
         "instance": "TraceNet",
         "name": "VSS",
-        "cell": "JNW_BKLE",
-        "named_cell": "UTOP_JNW_BKLE",
-        "parent_cell": "ROOT_CELL",
-        "cell_chain": "UTOP_JNW_BKLE",
+        "cell": "OTA",
+        "named_cell": "U1_OTA",
+        "parent_cell": "JNW_BKLE",
+        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
         "segments": [
             {
                 "layer": "locali",
@@ -3407,10 +3511,10 @@
     {
         "instance": "TraceNet",
         "name": "MP2_B_S",
-        "cell": "JNW_BKLE",
-        "named_cell": "UTOP_JNW_BKLE",
-        "parent_cell": "ROOT_CELL",
-        "cell_chain": "UTOP_JNW_BKLE",
+        "cell": "OTA",
+        "named_cell": "U1_OTA",
+        "parent_cell": "JNW_BKLE",
+        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
         "segments": [
             {
                 "layer": "locali",
@@ -3427,10 +3531,10 @@
     {
         "instance": "TraceNet",
         "name": "MP1_B_S",
-        "cell": "JNW_BKLE",
-        "named_cell": "UTOP_JNW_BKLE",
-        "parent_cell": "ROOT_CELL",
-        "cell_chain": "UTOP_JNW_BKLE",
+        "cell": "OTA",
+        "named_cell": "U1_OTA",
+        "parent_cell": "JNW_BKLE",
+        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
         "segments": [
             {
                 "layer": "locali",
@@ -3447,10 +3551,10 @@
     {
         "instance": "TraceNet",
         "name": "MP1_G_D",
-        "cell": "JNW_BKLE",
-        "named_cell": "UTOP_JNW_BKLE",
-        "parent_cell": "ROOT_CELL",
-        "cell_chain": "UTOP_JNW_BKLE",
+        "cell": "OTA",
+        "named_cell": "U1_OTA",
+        "parent_cell": "JNW_BKLE",
+        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
         "segments": [
             {
                 "layer": "locali",
@@ -3467,10 +3571,10 @@
     {
         "instance": "TraceNet",
         "name": "MN1_B_S",
-        "cell": "JNW_BKLE",
-        "named_cell": "UTOP_JNW_BKLE",
-        "parent_cell": "ROOT_CELL",
-        "cell_chain": "UTOP_JNW_BKLE",
+        "cell": "OTA",
+        "named_cell": "U1_OTA",
+        "parent_cell": "JNW_BKLE",
+        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
         "segments": [
             {
                 "layer": "locali",
@@ -3487,10 +3591,10 @@
     {
         "instance": "TraceNet",
         "name": "MN1_G_D",
-        "cell": "JNW_BKLE",
-        "named_cell": "UTOP_JNW_BKLE",
-        "parent_cell": "ROOT_CELL",
-        "cell_chain": "UTOP_JNW_BKLE",
+        "cell": "OTA",
+        "named_cell": "U1_OTA",
+        "parent_cell": "JNW_BKLE",
+        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
         "segments": [
             {
                 "layer": "locali",
@@ -3507,10 +3611,10 @@
     {
         "instance": "TraceNet",
         "name": "MN2_B_S",
-        "cell": "JNW_BKLE",
-        "named_cell": "UTOP_JNW_BKLE",
-        "parent_cell": "ROOT_CELL",
-        "cell_chain": "UTOP_JNW_BKLE",
+        "cell": "OTA",
+        "named_cell": "U1_OTA",
+        "parent_cell": "JNW_BKLE",
+        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
         "segments": [
             {
                 "layer": "locali",
@@ -3526,11 +3630,11 @@
     },
     {
         "instance": "TraceNet",
-        "name": "MP3<1>_MP3<0>_B_VDD_RAIL_BOT",
-        "cell": "JNW_BKLE",
-        "named_cell": "UTOP_JNW_BKLE",
-        "parent_cell": "ROOT_CELL",
-        "cell_chain": "UTOP_JNW_BKLE",
+        "name": "MP3<3>_MP3<2>_B_VDD_RAIL_BOT",
+        "cell": "OTA",
+        "named_cell": "U1_OTA",
+        "parent_cell": "JNW_BKLE",
+        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
         "segments": [
             {
                 "layer": "locali",
@@ -3566,10 +3670,10 @@
     {
         "instance": "TraceNet",
         "name": "MP2_MP1_B_VDD_RAIL_TOP",
-        "cell": "JNW_BKLE",
-        "named_cell": "UTOP_JNW_BKLE",
-        "parent_cell": "ROOT_CELL",
-        "cell_chain": "UTOP_JNW_BKLE",
+        "cell": "OTA",
+        "named_cell": "U1_OTA",
+        "parent_cell": "JNW_BKLE",
+        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
         "segments": [
             {
                 "layer": "locali",
@@ -3605,10 +3709,10 @@
     {
         "instance": "TraceNet",
         "name": "MN1_MN2_B_VSS_RAIL_TOP",
-        "cell": "JNW_BKLE",
-        "named_cell": "UTOP_JNW_BKLE",
-        "parent_cell": "ROOT_CELL",
-        "cell_chain": "UTOP_JNW_BKLE",
+        "cell": "OTA",
+        "named_cell": "U1_OTA",
+        "parent_cell": "JNW_BKLE",
+        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
         "segments": [
             {
                 "layer": "locali",
@@ -3644,10 +3748,10 @@
     {
         "instance": "TraceNet",
         "name": "MN1_MN2_B_VSS_RAIL_BOT",
-        "cell": "JNW_BKLE",
-        "named_cell": "UTOP_JNW_BKLE",
-        "parent_cell": "ROOT_CELL",
-        "cell_chain": "UTOP_JNW_BKLE",
+        "cell": "OTA",
+        "named_cell": "U1_OTA",
+        "parent_cell": "JNW_BKLE",
+        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
         "segments": [
             {
                 "layer": "locali",
@@ -3683,10 +3787,10 @@
     {
         "instance": "TraceNet",
         "name": "RH3_B_N",
-        "cell": "JNW_BKLE",
-        "named_cell": "UTOP_JNW_BKLE",
-        "parent_cell": "ROOT_CELL",
-        "cell_chain": "UTOP_JNW_BKLE",
+        "cell": "OTA",
+        "named_cell": "U1_OTA",
+        "parent_cell": "JNW_BKLE",
+        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
         "segments": [
             {
                 "layer": "locali",
@@ -3703,10 +3807,10 @@
     {
         "instance": "TraceNet",
         "name": "RH1_RH2_B_VSS_RAIL_TOP",
-        "cell": "JNW_BKLE",
-        "named_cell": "UTOP_JNW_BKLE",
-        "parent_cell": "ROOT_CELL",
-        "cell_chain": "UTOP_JNW_BKLE",
+        "cell": "OTA",
+        "named_cell": "U1_OTA",
+        "parent_cell": "JNW_BKLE",
+        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
         "segments": [
             {
                 "layer": "locali",
@@ -3742,10 +3846,10 @@
     {
         "instance": "TraceNet",
         "name": "RH1_RH2_B_VSS_RAIL_BOT",
-        "cell": "JNW_BKLE",
-        "named_cell": "UTOP_JNW_BKLE",
-        "parent_cell": "ROOT_CELL",
-        "cell_chain": "UTOP_JNW_BKLE",
+        "cell": "OTA",
+        "named_cell": "U1_OTA",
+        "parent_cell": "JNW_BKLE",
+        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
         "segments": [
             {
                 "layer": "locali",
@@ -3781,10 +3885,10 @@
     {
         "instance": "TraceNet",
         "name": "RH3_B_VSS_RAIL_TOP",
-        "cell": "JNW_BKLE",
-        "named_cell": "UTOP_JNW_BKLE",
-        "parent_cell": "ROOT_CELL",
-        "cell_chain": "UTOP_JNW_BKLE",
+        "cell": "OTA",
+        "named_cell": "U1_OTA",
+        "parent_cell": "JNW_BKLE",
+        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
         "segments": [
             {
                 "layer": "locali",
@@ -3820,10 +3924,10 @@
     {
         "instance": "TraceNet",
         "name": "RH3_B_VSS_RAIL_BOT",
-        "cell": "JNW_BKLE",
-        "named_cell": "UTOP_JNW_BKLE",
-        "parent_cell": "ROOT_CELL",
-        "cell_chain": "UTOP_JNW_BKLE",
+        "cell": "OTA",
+        "named_cell": "U1_OTA",
+        "parent_cell": "JNW_BKLE",
+        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
         "segments": [
             {
                 "layer": "locali",
@@ -3858,7 +3962,7 @@
     },
     {
         "instance": "Pin",
-        "number_id": 46,
+        "number_id": 49,
         "cell": "JNW_BKLE",
         "named_cell": "UTOP_JNW_BKLE",
         "parent_cell": "ROOT_CELL",
@@ -3877,7 +3981,7 @@
     },
     {
         "instance": "Pin",
-        "number_id": 47,
+        "number_id": 50,
         "cell": "JNW_BKLE",
         "named_cell": "UTOP_JNW_BKLE",
         "parent_cell": "ROOT_CELL",

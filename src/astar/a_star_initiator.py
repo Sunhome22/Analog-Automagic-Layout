@@ -248,7 +248,8 @@ class AstarInitiator:
 
             self.logger.info(net)
             self.__extract_goal_nodes(connection_list=self.connections["component_connections"], net=net)
-
+            if net == "OTA_SPLIT":
+                print(self.goal_nodes)
             if len(self.goal_nodes) == 0:
                 self.__extract_goal_nodes(connection_list=self.connections["single_connections"], net=net)
 
@@ -269,7 +270,7 @@ class AstarInitiator:
             # Make goal nodes non-walkable
             self.__lock_or_unlock_port(lock=1)
             if self.REMOVE_LOOPS:
-                p = remove_loops_from_path(p)
+                p = remove_box_loops_from_path(p, self.goal_nodes)
             segments = segment_path(p)
             self.path.setdefault(net, {})["segments"] = segments
             self.seg_list.setdefault(net, []).extend(segments)
@@ -320,7 +321,7 @@ def euclidean_distance(p1, p2):
     return math.hypot(p1[0] - p2[0], p1[1] - p2[1])
 
 
-def remove_loops_from_path(path, tolerance=1):
+def remove_box_loops_from_path(path, goal_nodes, tolerance=1):
     i = 0
     while i < len(path) - 1:
         current = path[i]
@@ -328,11 +329,22 @@ def remove_loops_from_path(path, tolerance=1):
         while j > i + 1:
             if euclidean_distance(current, path[j]) < tolerance:
                 loop_segment = path[i:j+1]
-                print(f"Loop candidate: {loop_segment}")
+
+                # If it's not a straight segment, it's a potential box
                 if not is_straight_line(loop_segment):
-                    print("Removing non-straight loop")
-                    path = path[:i+1] + path[j+1:]
-                    break
+                    loop_goals = [p for p in loop_segment[1:-1] if p in goal_nodes]
+
+                    if loop_goals:
+                        # Goal is inside the loop, so keep necessary part
+                        goal_idx = loop_segment.index(loop_goals[0])
+
+                        # Retain up to goal node (inclusive), cut from after that to end of loop
+                        path = path[:i + goal_idx + 1] + path[j+1:]
+                        break
+                    else:
+                        # No goal inside — remove entire loop
+                        path = path[:i+1] + path[j+1:]
+                        break
             j -= 1
         else:
             i += 1

@@ -151,7 +151,7 @@ class CellCreator:
             components = components_grouped_by_circuit_cell[grouped_components]
             if any(isinstance(c, self.FUNCTIONAL_TYPES) for c
                    in components_grouped_by_circuit_cell[grouped_components]):
-                components = LPInitiator(components, connections, overlap_dict).initiate_linear_optimization()
+                components, _ = LPInitiator(components, connections, overlap_dict).initiate_linear_optimization()
 
             # Step 3: Move all components to the origin
             origin_scaled_used_area = RectArea()

@@ -183,7 +183,7 @@ class GenerateAstarPathTraces:
                     if len(self.components[-1].segments) > 1:
                         obj.layout = RectAreaLayer(layer=self.components[-1].segments[0].layer,
                                                    area=self.components[-1].segments[0].area)
-                        
+
                     else:
 
                         for new_obj in self.components:
