@@ -324,18 +324,36 @@ def remove_loops_from_path(path, tolerance=1):
     i = 0
     while i < len(path) - 1:
         current = path[i]
-        # Look ahead for a matching point
         j = len(path) - 1
         while j > i + 1:
             if euclidean_distance(current, path[j]) < tolerance:
-                print(f"euclidean distance: {euclidean_distance(current, path[j])}")
-
-                print(f"Eliminated path: {path[i+1:j]}")
-                path = path[:i + 1] + path[j:]
-                break
+                loop_segment = path[i:j+1]
+                print(f"Loop candidate: {loop_segment}")
+                if not is_straight_line(loop_segment):
+                    print("Removing non-straight loop")
+                    path = path[:i+1] + path[j+1:]
+                    break
             j -= 1
         else:
             i += 1
     return path
+
+
+def is_straight_line(points, tolerance=1e-5):
+    if len(points) <= 2:
+        return True
+
+    # Direction vector of first segment
+    dx_ref = points[1][0] - points[0][0]
+    dy_ref = points[1][1] - points[0][1]
+
+    for i in range(1, len(points) - 1):
+        dx = points[i+1][0] - points[i][0]
+        dy = points[i+1][1] - points[i][1]
+        cross = dx_ref * dy - dy_ref * dx
+        if abs(cross) > tolerance:
+            return False
+    return True
+
 
 

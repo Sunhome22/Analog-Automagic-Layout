@@ -176,23 +176,23 @@ class GenerateAstarPathTraces:
 
     def __write_labels(self, net):
         if net in self.net_list.pin_nets:
-            self.logger.info("start wrtie labels")
+
             for obj in self.components:
                 if isinstance(obj, Pin) and obj.name == net:
-                    self.logger.info("1")
+
                     if len(self.components[-1].segments) > 1:
                         obj.layout = RectAreaLayer(layer=self.components[-1].segments[0].layer,
                                                    area=self.components[-1].segments[0].area)
-                        self.logger.info("2")
+                        
                     else:
-                        self.logger.info("3")
+
                         for new_obj in self.components:
                             if not isinstance(new_obj, (Pin, TraceNet, CircuitCell)):
                                 for port in new_obj.schematic_connections:
                                     if new_obj.schematic_connections[port] == net:
                                         for p in new_obj.layout_ports:
                                             if p.type == port:
-                                                self.logger.info("4")
+
                                                 obj.layout = RectAreaLayer(layer=p.layer, area=RectArea())
                                                 obj.layout.area.x1 = p.area.x1 + new_obj.transform_matrix.c
                                                 obj.layout.area.x2 = p.area.x2 + new_obj.transform_matrix.c
