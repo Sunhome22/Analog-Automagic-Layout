@@ -79,6 +79,8 @@ class GenerateAstarPathTraces:
 
         self.scale_offset_x /= len(goal_nodes) if len(goal_nodes) > 0 else 1
         self.scale_offset_y /= len(goal_nodes) if len(goal_nodes) > 0 else 1
+        self.logger.info(f"SCALE OFFSET X: {self.scale_offset_x}")
+        self.logger.info(f"SCALE OFFSET Y: {self.scale_offset_y}")
 
     def __calculate_real_coordinates(self, segment):
         start_x, start_y = segment[0]
@@ -173,17 +175,15 @@ class GenerateAstarPathTraces:
         self.components.append(trace)
 
     def __write_labels(self, net):
-        if net in self.net_list.pin_nets:
-            self.logger.info("start wrtie labels")
+
+        if net in self.net_list.pin_nets + self.net_list.applicable_nets:
             for obj in self.components:
                 if isinstance(obj, Pin) and obj.name == net:
                     self.logger.info("1")
                     if len(self.components[-1].segments) > 1:
                         obj.layout = RectAreaLayer(layer=self.components[-1].segments[0].layer,
                                                    area=self.components[-1].segments[0].area)
-                        self.logger.info("2")
                     else:
-                        self.logger.info("3")
                         for new_obj in self.components:
                             if not isinstance(new_obj, (Pin, TraceNet, CircuitCell)):
                                 for port in new_obj.schematic_connections:

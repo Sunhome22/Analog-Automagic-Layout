@@ -99,6 +99,9 @@ class GridGeneration:
         self.VIA_PADDING = self.config["magic_layout_creator"]["VIA_PADDING"]
         self.GRID_LEEWAY_X = self.config["generate_grid"]["GRID_LEEWAY_X"]
         self.GRID_LEEWAY_Y = self.config["generate_grid"]["GRID_LEEWAY_Y"]
+        self.ADJUST_MIN_SEG_LENGTH = self.config["generate_grid"]["scaled_parameters"]["ADJUST_MIN_SEG_LENGTH"]
+        self.ADJUST_PORT_SIZE = self.config["generate_grid"]["scaled_parameters"]["ADJUST_PORT_SCALED_SIZE"]
+        self.ADJUST_SEG_WIDTH = self.config["generate_grid"]["scaled_parameters"]["ADJUST_SEG_WIDTH"]
 
         # INPUTS
         self.components = components
@@ -157,23 +160,29 @@ class GridGeneration:
 
     def __calculate_non_overlap_parameters(self):
 
-        self.routing_parameters.trace_width_scaled = math.ceil((self.TRACE_WIDTH + self.VIA_MINIMUM_DISTANCE +
+        self.routing_parameters.trace_width_scaled = (math.ceil((self.TRACE_WIDTH + self.VIA_MINIMUM_DISTANCE +
                                                                 self.VIA_PADDING * 2) / self.SCALE_FACTOR) + 1
-        self.routing_parameters.minimum_segment_length = math.ceil((48 + self.VIA_MINIMUM_DISTANCE+self.VIA_PADDING * 2
-                                                                       + self.TRACE_WIDTH / 2) / self.SCALE_FACTOR) + 1
+                                                      + self.ADJUST_SEG_WIDTH)
+        self.routing_parameters.minimum_segment_length = (math.ceil((48 + self.VIA_MINIMUM_DISTANCE+self.VIA_PADDING * 2
+                                                                        + self.TRACE_WIDTH / 2) / self.SCALE_FACTOR) + 1
+                                                          + self.ADJUST_MIN_SEG_LENGTH)
         for obj in self.components:
 
             if not check_instance(obj):
 
                 for port in obj.layout_ports:
-                    port_height = math.ceil(((port.area.y2 - port.area.y1) / 2 + self.VIA_MINIMUM_DISTANCE
+                    port_height = (math.ceil(((port.area.y2 - port.area.y1) / 2 + self.VIA_MINIMUM_DISTANCE
                                              + self.VIA_PADDING * 2 + self.TRACE_WIDTH / 2) / self.SCALE_FACTOR) + 1
-                    port_width = math.ceil(((port.area.x2 - port.area.x1) / 2 + self.VIA_MINIMUM_DISTANCE
+                                   + self.ADJUST_PORT_SIZE)
+                    port_width = (math.ceil(((port.area.x2 - port.area.x1) / 2 + self.VIA_MINIMUM_DISTANCE
                                             + self.VIA_PADDING * 2 + self.TRACE_WIDTH / 2) / self.SCALE_FACTOR) + 1
-                    port_height_v = math.ceil(((port.area.y2 - port.area.y1) / 2 + self.VIA_PADDING
+                                  + self.ADJUST_PORT_SIZE)
+                    port_height_v = (math.ceil(((port.area.y2 - port.area.y1) / 2 + self.VIA_PADDING
                                                + self.TRACE_WIDTH / 2) / self.SCALE_FACTOR) + 1
-                    port_width_v = math.ceil(((port.area.x2 - port.area.x1) / 2 + self.VIA_PADDING
+                                     + self.ADJUST_PORT_SIZE)
+                    port_width_v = (math.ceil(((port.area.x2 - port.area.x1) / 2 + self.VIA_PADDING
                                               + self.TRACE_WIDTH / 2) / self.SCALE_FACTOR) + 1
+                                    + self.ADJUST_PORT_SIZE)
 
                     if isinstance(obj, Transistor):
 

@@ -1,3 +1,5 @@
+import math
+
 from astar.astar import astar_start
 from draw_result.visualize_grid import heatmap_test, save_matrix
 from traces.generate_astar_path_traces import segment_path
@@ -34,8 +36,6 @@ class AstarInitiator:
         self.real_goal_nodes = []
         self.path = {}
         self.seg_list = {}
-
-        self.test_net = None
 
     def __load_config(self, path="pyproject.toml"):
         try:
@@ -89,14 +89,22 @@ class AstarInitiator:
 
                             start, real_start, end, real_end = check_start_end_port(con, self.scaled_port_coordinates,
                                                                                     self.port_coordinates)
-
-                        self.goal_nodes.extend([start, end])
-                        self.real_goal_nodes.extend([real_start, real_end])
+                        if start not in self.goal_nodes:
+                            self.goal_nodes.append(start)
+                            self.real_goal_nodes.append(real_start)
+                        if end not in self.goal_nodes:
+                            self.goal_nodes.append(end)
+                            self.real_goal_nodes.append(real_end)
+                        # self.goal_nodes.extend([start, end])
+                        # self.real_goal_nodes.extend([real_start, real_end])
 
                         break
                     elif all(break_condition["single_connection"]):
-                        self.goal_nodes.append(start)
-                        self.real_goal_nodes.append(real_start)
+                        if start not in self.goal_nodes:
+                            self.goal_nodes.append(start)
+                            self.real_goal_nodes.append(real_start)
+                        # self.goal_nodes.append(start)
+                        # self.real_goal_nodes.append(real_start)
                         break
 
         self.goal_nodes = list(dict.fromkeys(self.goal_nodes))
@@ -173,7 +181,7 @@ class AstarInitiator:
                 for x, y in segment:
 
                     for i in range(-self.routing_parameters.trace_width_scaled,
-                                   self.routing_parameters.trace_width_scaled+1):
+                                   self.routing_parameters.trace_width_scaled + 1):
                         for p in range(-self.routing_parameters.trace_width_scaled-4,
                                        self.routing_parameters.trace_width_scaled+5):
                             if y + i < len(self.grid_horizontal)-1 and x + p < len(self.grid_horizontal[0])-1:
@@ -202,6 +210,7 @@ class AstarInitiator:
             return best_path
         else:
             self.logger.info(f"Running A* one time for net: {net}")
+            self.logger.info(f"goal nodes: {self.goal_nodes}")
             for start in self.goal_nodes:
 
                 path, _ = astar_start(self.grid_vertical, self.grid_horizontal, start, self.goal_nodes,
@@ -212,6 +221,7 @@ class AstarInitiator:
                     break
                 else:
                     self.logger.info(f"Viable path not found, rerunning with different start node")
+                    self.TSP_NODE_ORDER = False
             if not path:
                 self.logger.info(f"Finished running A* no path found for net: {net}")
             else:
@@ -228,8 +238,9 @@ class AstarInitiator:
 
         local_net_order = self.NET_ORDER if self.CUSTOM_NET_ORDER else (
                 self.net_list.pin_nets + self.net_list.applicable_nets)
+
         for net in local_net_order:
-            self.test_net = net
+
             # Skipping these nets, that are handled by other routing algorithm
             if self.__check_vdd_vss(net):
                 continue
@@ -256,7 +267,7 @@ class AstarInitiator:
             self.path.setdefault(net, {})["real_goal_nodes"] = self.real_goal_nodes
             # Make goal nodes non-walkable
             self.__lock_or_unlock_port(lock=1)
-
+            p = remove_loops_from_path(p)
             segments = segment_path(p)
             self.path.setdefault(net, {})["segments"] = segments
             self.seg_list.setdefault(net, []).extend(segments)
@@ -298,3 +309,28 @@ def check_start_end_port(con, scaled_port_coordinates: dict, port_coordinates: d
                 port_coordinates[con.end_comp_id + con.end_comp_type + designated_ports[1]].y)
 
     return start, real_start, end, real_end
+
+
+"""TESTING LOOP REMOVAL"""
+
+
+def euclidean_distance(p1, p2):
+    return math.hypot(p1[0] - p2[0], p1[1] - p2[1])
+
+
+def remove_loops_from_path(path, tolerance = 1):
+    i = 0
+    while i < len(path) - 1:
+        current = path[i]
+        # Look ahead for a match
+        for j in range(len(path) - 1, i + 1, -1):
+            if euclidean_distance(current, path[j]) < tolerance:
+                # Loop found: remove intermediate path
+                path = path[:i + 1] + path[j + 1:]
+                break  # Restart from current index
+        else:
+            i += 1  # No match, move to next
+    return path
+
+
+

@@ -108,7 +108,8 @@ class ConnectionLists:
 
         for connection in self.connections["local_connections"]:
 
-            if connection.start_comp_id == str(object_id) and (port == connection.start_area or port == connection.end_area):
+            if connection.start_comp_id == str(object_id) and (port == connection.start_area or
+                                                               port == connection.end_area):
                 if connection.start_comp_type == "nmos" or connection.start_comp_type == "pmos":
                     if connection.start_area != "B" and connection.end_area != "B":
                         return connection.start_area + connection.end_area
@@ -143,9 +144,10 @@ class ConnectionLists:
                                 net = component_1.schematic_connections[port_1]
                                 cell = component_1.cell
 
-                                port_1_area = self.__get_local_connection_area(component_1.number_id, port_1)
-                                port_2_area = self.__get_local_connection_area(component_2.number_id, port_2)
-
+                               # port_1_area = self.__get_local_connection_area(component_1.number_id, port_1)
+                               # port_2_area = self.__get_local_connection_area(component_2.number_id, port_2)
+                                port_1_area = port_1
+                                port_2_area = port_2
                                 entry = [Connection(component_1.number_id, component_1.type, port_1_area,
                                                     component_1.name, component_2.number_id, component_2.type,
                                                     port_2_area, component_2.name, cell, net),
@@ -227,14 +229,15 @@ class ConnectionLists:
     def __get_net_list(self):
         self.logger.info("running get_net_list")
         for obj in self.pins:
-            self.net_list.pin_nets.append(obj.name)
+            if obj.name not in self.net_list.pin_nets:
+                self.net_list.pin_nets.append(obj.name)
 
         for obj in self.components:
-
             for port_net in obj.schematic_connections.values():
                 if port_net not in self.net_list.applicable_nets + self.net_list.pin_nets:
                     self.net_list.applicable_nets.append(port_net)
-        self.net_list.applicable_nets = [item for item in self.net_list.applicable_nets if item not in self.net_list.pin_nets]
+        self.net_list.applicable_nets = [item for item in self.net_list.applicable_nets
+                                         if item not in self.net_list.pin_nets]
 
     def get(self):
 
