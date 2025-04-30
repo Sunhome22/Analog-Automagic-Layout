@@ -20,7 +20,7 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 from itertools import groupby
 from dataclasses import dataclass, field
-from typing import List, Dict
+from typing import List, Dict, Tuple
 from collections import defaultdict
 
 
@@ -50,7 +50,7 @@ def generate_local_traces_for_atr_sky130a_lib(self):
         if component.schematic_connections['G'] == component.schematic_connections['D']:
             __local_gate_to_drain_connection(self=self, component=component)
 
-    # Make y-coordinate group names
+    # Make dict of component names based on y-coordinate
     y_grouped_component_names = defaultdict(list)
     for component in self.atr_transistor_components:
         y_grouped_component_names[component.transform_matrix.f].append(component.name)
@@ -63,7 +63,7 @@ def generate_local_traces_for_atr_sky130a_lib(self):
                 re.search(r".*VSS.*", component.schematic_connections['B'], re.IGNORECASE)):
             components_with_bulk_to_rail_connection.append(component)
 
-    # Make a dict with groups of components that have the same y-coordinate
+    # Make groups of components that have their bulk connected to a rail and have the same y-coordinate
     y_group_components = defaultdict(list)
     for _, group in y_grouped_component_names.items():
         for comp_name in group:
@@ -175,23 +175,14 @@ def generate_bulk_to_rail_segments(self, rail: str, component: Transistor, y_par
     # self.CUSTOM_RELATIVE_PLACEMENT_ORDER = self.config["initiator_lp"]["CUSTOM_RELATIVE_PLACEMENT_ORDER"]
     # self.RELATIVE_PLACEMENT = self.config["initiator_lp"]["RELATIVE_PLACEMENT"]
     # self.CUSTOM_TRANSISTOR_ORDER = self.config["initiator_lp"]["CUSTOM_TRANSISTOR_ORDER"]
-    x1 = 0
-    x2 = 0
-    print(group_components)
+    #print(group_components)
     print("============")
-
+    rail_nr = 0
     for structural_component in self.structural_components:
         if re.search(rf"\b{rail}\b", structural_component.name, re.IGNORECASE):
-
-            if self.CUSTOM_RELATIVE_PLACEMENT_ORDER == "A":
-                x1 = structural_component.layout.area.x1
-                x2 = structural_component.layout.area.x2
-            else:
-                if self.CUSTOM_RELATIVE_PLACEMENT_ORDER[1] == "T":
-                    x1 = component.transform_matrix.c - 200
-                    x2 = component.transform_matrix.c + component.bounding_box.x2 + 200
-                    print(structural_component.layout.area.x2 - component.bounding_box.x2 + component.transform_matrix.c)
-
+            x1, x2 = __get_bulk_to_rail_length_of_component_placement_order(self=self,
+                                                                            structural_component=structural_component,
+                                                                            group_components=group_components)
 
             segment = RectArea(x1=x1,
                                y1=y_params[0] + component.transform_matrix.f - (bulk_width // 2) + y_params[1],
@@ -214,6 +205,33 @@ def generate_bulk_to_rail_segments(self, rail: str, component: Transistor, y_par
 
     self.components.append(trace)
 
+def __get_bulk_to_rail_length_of_component_placement_order(self, structural_component,
+                                                           group_components) -> Tuple[int, int]:
+    x1 = 0
+    x2 = 0
+    total_length = sum((component.bounding_box.x2 - component.bounding_box.x1) for component in group_components)
+    smallest_x_cord_comp = min(group_components, key=lambda component: component.transform_matrix.c)
+    print(total_length, smallest_x_cord_comp)
+
+    if self.RELATIVE_COMPONENT_PLACEMENT == "A":
+        x1 = structural_component.layout.area.x1
+        x2 = structural_component.layout.area.x2
+
+    elif self.RELATIVE_COMPONENT_PLACEMENT == "S":
+
+        if self.CUSTOM_COMPONENT_ORDER[0] == "T":
+            x1 = structural_component.layout.area.x1
+            x2 = structural_component.layout.area.x1 + total_length
+
+        elif self.CUSTOM_COMPONENT_ORDER[1] == "T":
+            x1 = smallest_x_cord_comp.transform_matrix.c - 200
+            x2 = smallest_x_cord_comp.transform_matrix.c + total_length + 200
+
+        elif self.CUSTOM_COMPONENT_ORDER[2] == "T":
+            x1 = structural_component.layout.area.x2 - total_length
+            x2 = structural_component.layout.area.x2
+
+    return x1, x2
 
 def get_component_group_endpoints_for_atr_sky130a_lib(self):
     components_and_positions = []

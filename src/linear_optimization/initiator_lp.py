@@ -24,9 +24,9 @@ class LPInitiator:
         self.config = self.__load_config()
         self.SUB_CELL_OFFSET = self.config["initiator_lp"]["SUB_CELL_OFFSET"]
         self.UNITED_RES_CAP = self.config["initiator_lp"]["UNITED_RES_CAP"]
-        self.RELATIVE_PLACEMENT = self.config["initiator_lp"]["RELATIVE_PLACEMENT"]
-        self.CUSTOM_RELATIVE_PLACEMENT_ORDER = self.config["initiator_lp"]["CUSTOM_RELATIVE_PLACEMENT_ORDER"]
-        self.ENABLE_CUSTOM_ORDER = self.config["initiator_lp"]["ENABLE_CUSTOM_ORDER"]
+        self.RELATIVE_COMPONENT_PLACEMENT = self.config["initiator_lp"]["RELATIVE_COMPONENT_PLACEMENT"]
+        self.CUSTOM_COMPONENT_ORDER = self.config["initiator_lp"]["CUSTOM_COMPONENT_ORDER"]
+        self.ENABLE_CUSTOM_COMPONENT_ORDER = self.config["initiator_lp"]["ENABLE_CUSTOM_COMPONENT_ORDER"]
         self.ENABLE_CUSTOM_TRANSISTOR_ORDER  = self.config["initiator_lp"]["ENABLE_CUSTOM_TRANSISTOR_ORDER"]
         self.CUSTOM_TRANSISTOR_ORDER = self.config["initiator_lp"]["CUSTOM_TRANSISTOR_ORDER"]
         self.CMOS_BIPOLAR_OFFSET = self.config["initiator_lp"]["CMOS_BIPOLAR_OFFSET"]
@@ -54,7 +54,7 @@ class LPInitiator:
         self.temp_transistor_x = []
         self.temp_transistor_y = []
 
-        if self.RELATIVE_PLACEMENT == "S":
+        if self.RELATIVE_COMPONENT_PLACEMENT == "S":
             self.x_offset = self.SUB_CELL_OFFSET
             self.y_offset = 0
         else:
@@ -151,13 +151,13 @@ class LPInitiator:
 
     def __get_previous_placement_offset(self):
         if self.placed_cells == 1:
-            if self.RELATIVE_PLACEMENT == "S":
+            if self.RELATIVE_COMPONENT_PLACEMENT == "S":
                 return self.used_area_all[0].x2-self.used_area_all[0].x1, 0
 
             else:
                 return 0, self.used_area_all[0].y2 - self.used_area_all[0].y1
         elif self.placed_cells == 2:
-            if self.RELATIVE_PLACEMENT == "S":
+            if self.RELATIVE_COMPONENT_PLACEMENT == "S":
                 return (self.used_area_all[0].x2 - self.used_area_all[0].x1  + self.used_area_all[1].x2
                         - self.used_area_all[1].x1, 0)
 
@@ -249,8 +249,8 @@ class LPInitiator:
 
     def __call_linear_optimization(self):
 
-        if self.ENABLE_CUSTOM_ORDER:
-            order = self.CUSTOM_RELATIVE_PLACEMENT_ORDER
+        if self.ENABLE_CUSTOM_COMPONENT_ORDER:
+            order = self.CUSTOM_COMPONENT_ORDER
         else:
             order = self.STANDARD_ORDER
 
