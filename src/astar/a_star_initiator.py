@@ -248,7 +248,8 @@ class AstarInitiator:
 
             self.logger.info(net)
             self.__extract_goal_nodes(connection_list=self.connections["component_connections"], net=net)
-
+            if net == "OTA_SPLIT":
+                print(self.goal_nodes)
             if len(self.goal_nodes) == 0:
                 self.__extract_goal_nodes(connection_list=self.connections["single_connections"], net=net)
 
@@ -269,7 +270,7 @@ class AstarInitiator:
             # Make goal nodes non-walkable
             self.__lock_or_unlock_port(lock=1)
             if self.REMOVE_LOOPS:
-                p = remove_loops_from_path(p)
+                p = remove_box_loops_from_path(p, self.goal_nodes)
             segments = segment_path(p)
             self.path.setdefault(net, {})["segments"] = segments
             self.seg_list.setdefault(net, []).extend(segments)
@@ -320,21 +321,50 @@ def euclidean_distance(p1, p2):
     return math.hypot(p1[0] - p2[0], p1[1] - p2[1])
 
 
-def remove_loops_from_path(path, tolerance=1):
+def remove_box_loops_from_path(path, goal_nodes, tolerance=1):
     i = 0
     while i < len(path) - 1:
         current = path[i]
-        # Look ahead for a matching point
         j = len(path) - 1
         while j > i + 1:
             if euclidean_distance(current, path[j]) < tolerance:
-                print(f"euclidean distance: {euclidean_distance(current, path[j])}")
+                loop_segment = path[i:j+1]
 
-                print(f"Eliminated path: {path[i+1:j]}")
-                path = path[:i + 1] + path[j:]
-                break
+                # If it's not a straight segment, it's a potential box
+                if not is_straight_line(loop_segment):
+                    loop_goals = [p for p in loop_segment[1:-1] if p in goal_nodes]
+
+                    if loop_goals:
+                        # Goal is inside the loop, so keep necessary part
+                        goal_idx = loop_segment.index(loop_goals[0])
+
+                        # Retain up to goal node (inclusive), cut from after that to end of loop
+                        path = path[:i + goal_idx + 1] + path[j+1:]
+                        break
+                    else:
+                        # No goal inside — remove entire loop
+                        path = path[:i+1] + path[j+1:]
+                        break
             j -= 1
         else:
             i += 1
     return path
+
+
+def is_straight_line(points, tolerance=1e-5):
+    if len(points) <= 2:
+        return True
+
+    # Direction vector of first segment
+    dx_ref = points[1][0] - points[0][0]
+    dy_ref = points[1][1] - points[0][1]
+
+    for i in range(1, len(points) - 1):
+        dx = points[i+1][0] - points[i][0]
+        dy = points[i+1][1] - points[i][1]
+        cross = dx_ref * dy - dy_ref * dx
+        if abs(cross) > tolerance:
+            return False
+    return True
+
 

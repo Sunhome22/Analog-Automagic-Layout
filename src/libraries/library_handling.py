@@ -39,6 +39,7 @@ class LibraryHandling:
         self.atr_transistor_components = []
         self.tr_resistor_components = []
         self.aal_capacitor_components = []
+        self.circuit_cell = CircuitCell()
         self.components = components
         self.functional_component_order = functional_component_order
 
@@ -51,6 +52,8 @@ class LibraryHandling:
 
         self.RELATIVE_COMPONENT_PLACEMENT = self.config["initiator_lp"]["RELATIVE_COMPONENT_PLACEMENT"]
 
+        #def pre_rail_generation_handling(self):
+        #def post_rail_generation_handling(self):
         # Make lists of different component types
         for component in self.components:
             if isinstance(component, Transistor) and re.search(r'_ATR_', component.layout_library):

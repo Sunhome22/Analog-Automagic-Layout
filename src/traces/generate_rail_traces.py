@@ -121,7 +121,6 @@ class GenerateRailTraces:
 
         # Default rail generation (only creates rails if there are functional components)
         if self.functional_components:
-
             # Automated adding of VDD/VSS ring nets around cell based on found pins
             rail_number = 0
             for component in self.structural_components:
