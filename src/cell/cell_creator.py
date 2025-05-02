@@ -16,6 +16,7 @@
 import os
 import re
 import copy
+import sys
 import subprocess
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
@@ -28,7 +29,7 @@ import tomllib
 
 from astar.a_star_initiator import AstarInitiator
 from connections.connections import ConnectionLists
-from grid.generate_grid import GridGeneration
+from grid.generate_grid import GridGeneration, Coordinates
 from linear_optimization.initiator_lp import LPInitiator
 from linear_optimization.linear_optimization import LinearOptimizationSolver
 from logger.logger import get_a_logger
@@ -41,6 +42,22 @@ from libraries.library_handling import LibraryHandling
 
 
 # =================================================== Cell Creator =====================================================
+@dataclass
+class CellToCellConnection:
+    parent_cell: str
+    parent_net: str
+    child_cell: str
+    child_net: str
+
+    def __init__(self, parent_cell: str, parent_net: str, child_cell: str, child_net: str):
+
+        self.parent_cell = parent_cell
+        self.parent_net = parent_net
+        self.child_cell = child_cell
+        self.child_net = child_net
+
+
+
 
 class CellCreator:
     logger = get_a_logger(__name__)
@@ -59,10 +76,12 @@ class CellCreator:
         # Load config
         self.config = self.__load_config()
         self.CELLS_PER_ROW_IN_TOP_CELL = self.config["cell_creator"]["CELLS_PER_ROW_IN_TOP_CELL"]
-
+        self.debug_list = None
         self.__create_cells()
         self.__set_cells_positions()
         self.__add_root_cell_rails()
+
+
         #self.__add_top_cell_rail_to_rail_connections()
 
     def __load_config(self, path="pyproject.toml"):
@@ -443,9 +462,7 @@ class CellCreator:
                                         if outside_connection == comp.name and comp.layout:
                                             # Valid pins that are connected to something and have layout
                                             cell_to_cell_connection.append(comp)
-                                            #print(f"others: {comp.name, comp.layout}")
-                                            for c in components_grouped_by_circuit_cell_with_children_cells_and_pins[
-                                                grouped_components]:
+                                            for c in components_grouped_by_circuit_cell_with_children_cells_and_pins[grouped_components]:
                                                 if isinstance(c, Pin):
                                                     if c.cell_chain == grouped_components:
                                                         if inside_connection == c.name and c.layout:
@@ -454,6 +471,7 @@ class CellCreator:
                                                             #print(f"others: {c.name, c.layout}")
 
                         cell_to_cell_connections.append(cell_to_cell_connection)
+        self.debug_list = cell_to_cell_connections
 
         # Update vertical and horizontal grids to include both cells that are being routed between
         # unfinished stuff here
@@ -495,9 +513,147 @@ class CellCreator:
         # for cell_nr_1, grouped_components_1 in enumerate(components_grouped_by_circuit_cell):
         #     for component_1 in components_grouped_by_circuit_cell[grouped_components_1]:
         #         if isinstance(component_1, CircuitCell):
+    @staticmethod
+    def __get_parent_cell_name(cell):
+        cell_chain = re.split(r'-{2,}', cell.cell_chain)
+
+        for index, cell_name in enumerate(cell_chain):
+            if cell_name == cell.named_cell:
+                return cell_chain[index-1]
+    @staticmethod
+    def __manhattan_distance(parent, child):
+        return abs(parent.x-child.x)+abs(parent.y-child.y)
+
+    def __stupid_routing(self, connection, parent_component, child_component, circuit_cells):
+        cell_chain = None
+        cell_cell = None
+        for cell in circuit_cells:
+            if cell.named_cell == connection.parent_cell:
+                cell_chain = cell.cell_chain
+                cell_cell = cell.cell
+
+        trace = TraceNet()
+        trace.instance = trace.__class__.__name__
+        trace.named_cell = connection.parent_cell
+        trace.cell_chain = cell_chain
+        trace.cell = cell_cell
+        trace.name = connection.parent_net + ":" + connection.child_net
+
+        x0 = min(parent_component.x, child_component.x)
+        x1 = max(parent_component.x, child_component.x)
+        y0 = min(parent_component.y, child_component.y)
+        y1 = max(parent_component.y, child_component.y)
+        trace.segments.append(RectAreaLayer(
+            layer="m4",
+            area=RectArea(
+                x1=int(x0),  # Adding width to trace
+                y1=int(y0) - (30 // 2),
+                x2=int(x1),
+                y2=int(y0) + (30 // 2)
+            )
+        ))
+
+        trace.segments.append(RectAreaLayer(
+            layer="m4",
+            area=RectArea(
+                x1=int(x1) - (30//2),  # Adding width to trace
+                y1=int(y0),
+                x2=int(x1) + (30//2),
+                y2=int(y1)
+            )
+        ))
+        self.updated_components.append(trace)
+
+    def __get_nearest_ports(self, connection, parent_components, child_components, circuit_cells):
+        print("Connection")
+        print(connection)
+        child_offset_x = 0
+        child_offset_y = 0
+        minimum_manhattan = sys.maxsize
+        min_parent_comp = None
+        min_child_comp = None
+        parent_port_coordinates = Coordinates(x=sys.maxsize, y=sys.maxsize)
+        child_port_coordinates = Coordinates(x=sys.maxsize, y=sys.maxsize)
+        temp_child_port_coordinates = Coordinates(x=sys.maxsize, y=sys.maxsize)
+        temp_parent_port_coordinates = Coordinates(x=sys.maxsize, y=sys.maxsize)
+        for cell in circuit_cells:
+            if cell.name == connection.child_cell:
+                child_offset_x = cell.transform_matrix.c
+                child_offset_y = cell.transform_matrix.f
+
+        for parent_component in parent_components:
+            for port in parent_component.schematic_connections:
+                if parent_component.schematic_connections[port] == connection.parent_net:
+                    for p in parent_component.layout_ports:
+                        if p.type == port:
+                            temp_parent_port_coordinates.x = ((p.area.x2 - p.area.x1)//2 +
+                                                         parent_component.transform_matrix.c)
+                            temp_parent_port_coordinates.y = ((p.area.x2 - p.area.x1)//2 +
+                                                         parent_component.transform_matrix.f)
+
+            for child_component in child_components:
+                for port in child_component.schematic_connections:
+                    if parent_component.schematic_connections[port] == connection.parent_net:
+                        for p in parent_component.layout_ports:
+                            if p.type == port:
+                                temp_child_port_coordinates.x = ((p.area.x2 - p.area.x1) // 2 +
+                                                            child_component.transform_matrix.c) + child_offset_x
+                                temp_child_port_coordinates.y = ((p.area.x2 - p.area.x1) // 2 +
+                                                            child_component.transform_matrix.f) + child_offset_y
+
+                                distance = self.__manhattan_distance(parent_port_coordinates, child_port_coordinates)
+                                if distance < minimum_manhattan:
+                                    minimum_manhattan = distance
+                                    min_parent_comp = parent_component
+                                    min_child_comp = child_component
+                                    parent_port_coordinates = temp_child_port_coordinates
+                                    child_port_coordinates = temp_child_port_coordinates
+
+        self.__stupid_routing(connection, parent_port_coordinates, child_port_coordinates, circuit_cells)
+
+    def __get_cell_to_cell_connections(self):
+        circuit_cells = list()
+        cell_to_cell_connections = list()
+        for component in self.updated_components:
+            if isinstance(component, CircuitCell):
+                circuit_cells.append(component)
+
+        for cell in circuit_cells:
+            for pin in cell.schematic_connections:
+                cell_to_cell_connections.append(CellToCellConnection(parent_cell=cell.named_parent_cell,
+                                                                     parent_net=cell.schematic_connections[pin],
+                                                                     child_cell=cell.named_cell,
+                                                                     child_net=pin))
+        for connection in cell_to_cell_connections:
+
+            parent_net_components = list()
+            child_net_components = list()
+            for cell in circuit_cells:
+                if cell.named_cell == connection.parent_cell:
+                    for component in self.updated_components:
+                        if (component.named_cell == cell.named_cell
+                                and not isinstance(component, (Pin, TraceNet, CircuitCell))):
+                            for port_connection in component.schematic_connections.values():
+                                if port_connection == connection.parent_net:
+                                    parent_net_components.append(copy.deepcopy(component))
+                elif cell.named_cell == connection.child_cell:
+                    for component in self.updated_components:
+                        if (component.named_cell == cell.named_cell
+                                and not isinstance(component, (Pin, TraceNet, CircuitCell))):
+                            for port_connection in component.schematic_connections.values():
+                                if port_connection == connection.parent_net:
+                                    child_net_components.append(copy.deepcopy(component))
+
+            self.__get_nearest_ports(connection, parent_net_components, child_net_components, circuit_cells)
+
+    def __debug_write_to_file(self):
+        with open("debug_cell_to_cell", 'w') as f:
+            for item in self.debug_list:
+                f.write(f"{item}\n")
 
     def __add_top_cell_rail_to_rail_connections(self):
         pass
 
     def get(self):
+        self.__get_cell_to_cell_connections()
         return self.updated_components

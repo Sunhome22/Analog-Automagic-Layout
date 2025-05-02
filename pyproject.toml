@@ -50,7 +50,7 @@ CUSTOM_COMPONENT_ORDER = ["B","R", "C", "T"]
 [linear_optimization]
 RUN = true
 TIME_LIMIT = 2
-SOLVER_MSG = true
+SOLVER_MSG = false
 CUSTOM_PARAMETERS = true
 
 [linear_optimization.standard]

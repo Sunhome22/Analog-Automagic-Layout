@@ -116,9 +116,6 @@ class LinearOptimizationSolver:
         if self.MIRROR:
             self.mirrored_components = self.__check_mirrored_components()
 
-            self.logger.info(f"MIRRORED COMP")
-            self.logger.info(f"obj1 {self.mirrored_components}")
-
     def __load_config(self, path="pyproject.toml"):
         try:
             with open(path, "rb") as f:

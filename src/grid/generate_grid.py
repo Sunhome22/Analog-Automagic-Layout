@@ -105,7 +105,7 @@ class GridGeneration:
 
         # INPUTS
         self.components = components
-        print(components)
+
         # PARAMETERS
         self.routing_parameters = RoutingParameters()
         self.component_ports = ComponentPorts()

@@ -49,6 +49,7 @@ class SPICEparser:
         self.last_cell_found = ''
         self.visited_cells = list()
         self.cell_chain_list = list()
+        self.prev_cell_name = "UROOT"
 
         self.__parse()
 
@@ -211,7 +212,8 @@ class SPICEparser:
 
         return component_category, component_type
 
-    def __get_component(self, spice_line: str, cell: str, named_cell: str, parent_cell: str, cell_chain: str,
+    def __get_component(self, spice_line: str, cell: str, named_cell: str, parent_cell: str, named_parent_cell: str,
+                        cell_chain: str,
                         current_library: str):
 
         # Check SPICE line for circuit component identifier
@@ -256,6 +258,7 @@ class SPICEparser:
                                         cell=cell,
                                         named_cell=named_cell,
                                         parent_cell=parent_cell,
+                                        named_parent_cell=named_parent_cell,
                                         cell_chain=cell_chain,
                                         group=filtered_group,
                                         schematic_connections={port_definitions[i]: line_words[i + 1] for i in
@@ -279,6 +282,7 @@ class SPICEparser:
                                     cell=cell,
                                     named_cell=named_cell,
                                     parent_cell=parent_cell,
+                                    named_parent_cell=named_parent_cell,
                                     cell_chain=cell_chain,
                                     group=filtered_group,
                                     schematic_connections={port_definitions[i]: line_words[i + 1] for i in
@@ -302,6 +306,7 @@ class SPICEparser:
                                       cell=cell,
                                       named_cell=named_cell,
                                       parent_cell=parent_cell,
+                                      named_parent_cell=named_parent_cell,
                                       cell_chain=cell_chain,
                                       group=filtered_group,
                                       schematic_connections={port_definitions[i]: line_words[i + 1] for i in
@@ -325,6 +330,7 @@ class SPICEparser:
                                              cell=cell,
                                              named_cell=named_cell,
                                              parent_cell=parent_cell,
+                                             named_parent_cell=named_parent_cell,
                                              cell_chain=cell_chain,
                                              group=filtered_group,
                                              schematic_connections={port_definitions[i]: line_words[i + 1] for i in
@@ -342,11 +348,11 @@ class SPICEparser:
 
             pin_type = ''.join(re.findall(r'[a-zA-Z]+', line_words[0]))
             pin = Pin(type=pin_type, cell=cell, named_cell=named_cell, parent_cell=parent_cell,
-                      cell_chain=cell_chain, name=line_words[1], number_id=len(self.components))
+                      named_parent_cell=named_parent_cell, cell_chain=cell_chain, name=line_words[1], number_id=len(self.components))
             pin.instance = pin.__class__.__name__  # add instance type
             self.components.append(pin)
 
-    def __build_list_of_circuit_cells(self, spice_line, current_cell_name):
+    def __build_list_of_circuit_cells(self, spice_line, current_cell: str):
         # Check SPICE line for circuit component identifier
         if re.match(r'^[^*.]', spice_line):
             line_words = spice_line.split()
@@ -385,7 +391,8 @@ class SPICEparser:
                 circuit_cell = CircuitCell(name=f"{line_words[0]}",
                                            cell=line_words[-1],
                                            named_cell=f"{line_words[0]}_{line_words[-1]}",
-                                           parent_cell=current_cell_name,
+                                           parent_cell=current_cell,
+                                           named_parent_cell=f"", # not added yet
                                            cell_chain=f"", # not added yet
                                            group=filtered_group,
                                            number_id=0, # not added yet
@@ -432,6 +439,8 @@ class SPICEparser:
                         break
 
                 circuit_cell.cell_chain = '--'.join(self.cell_chain_list)
+                circuit_cell.named_parent_cell = "UROOT_ROOT_CELL" if circuit_cell.parent_cell == "ROOT_CELL" \
+                    else self.cell_chain_list[-2]
                 circuit_cell.number_id = len(self.components)
                 self.components.append(copy.deepcopy(circuit_cell))
 
@@ -449,10 +458,11 @@ class SPICEparser:
                                              cell=circuit_cell.cell,
                                              named_cell=f"{circuit_cell.name}_{circuit_cell.cell}",
                                              parent_cell=circuit_cell.parent_cell,
+                                             named_parent_cell="UROOT_ROOT_CELL" if
+                                             circuit_cell.parent_cell == "ROOT_CELL" else self.cell_chain_list[-2],
                                              cell_chain='--'.join(self.cell_chain_list),
                                              current_library=current_library)
 
-                print(circuit_cell.cell_chain)
                 self.__add_components_for_each_circuit_cell(current_parent_cell=circuit_cell.cell)
 
     def __parse(self):
@@ -465,17 +475,16 @@ class SPICEparser:
         self.__get_port_info_for_circuit_cells(self.spice_file_content)
 
         for line in self.spice_file_content:
-            current_cell_name = self.__get_current_circuit_cell_name(line)
-
+            current_cell = self.__get_current_circuit_cell_name(line)
             # Append the highest hierarchical circuit cell to the list of circuit cells
             # "ROOT_CELL" is not a real cell and is taught of as one level above the highest defined cell
-            if current_cell_name == self.project_top_cell_name:
+            if current_cell == self.project_top_cell_name:
                 if re.match(r'\*\*\.subckt', line) or re.match(r'.subckt', line):
                     if line.split()[1] == self.project_top_cell_name:
                         self.__build_list_of_circuit_cells(spice_line=f"xUTOP " + f" ".join(line.split()[2:])
-                                                           + f" {line.split()[1]}", current_cell_name="ROOT_CELL")
+                                                           + f" {line.split()[1]}", current_cell="ROOT_CELL")
 
-            self.__build_list_of_circuit_cells(spice_line=line, current_cell_name=current_cell_name)
+            self.__build_list_of_circuit_cells(spice_line=line, current_cell=current_cell)
 
         self.__add_components_for_each_circuit_cell(current_parent_cell="ROOT_CELL")
 

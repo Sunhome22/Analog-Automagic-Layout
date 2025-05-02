@@ -89,6 +89,7 @@ class FunctionalComponent:
     cell: str = field(default_factory=str)
     named_cell: str = field(default_factory=str)
     parent_cell: str = field(default_factory=str)
+    named_parent_cell: str = field(default_factory=str)
     cell_chain: str = field(default_factory=str)
     group: str = field(default_factory=str)
     schematic_connections: dict = field(default_factory=dict)
@@ -160,6 +161,7 @@ class Pin:
     cell: str = field(default_factory=str)
     named_cell: str = field(default_factory=str)
     parent_cell: str = field(default_factory=str)
+    named_parent_cell: str = field(default_factory=str)
     cell_chain: str = field(default_factory=str)
     type: str = field(default_factory=str)
     name: str = field(default_factory=str)
@@ -177,6 +179,7 @@ class TraceNet:
     cell: str = field(default_factory=str)
     named_cell: str = field(default_factory=str)
     parent_cell: str = field(default_factory=str)
+    named_parent_cell: str = field(default_factory=str)
     cell_chain: str = field(default_factory=str)
     segments: List[RectAreaLayer] | dict = field(default_factory=list)
     vias: List[RectAreaLayer] | dict = field(default_factory=list)
@@ -199,6 +202,7 @@ class CircuitCell:
     cell: str = field(default_factory=str)
     named_cell: str = field(default_factory=str)
     parent_cell: str = field(default_factory=str)
+    named_parent_cell: str = field(default_factory=str)
     cell_chain: str = field(default_factory=str)
     group: str = field(default_factory=str)
     schematic_connections: dict = field(default_factory=dict)
@@ -212,6 +216,5 @@ class CircuitCell:
 
         if isinstance(self.transform_matrix, dict):
             self.transform_matrix = TransformMatrix(**self.transform_matrix)
-
 
 

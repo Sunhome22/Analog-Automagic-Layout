@@ -38,7 +38,7 @@ from circuit.circuit_components import (RectArea, RectAreaLayer, Transistor, Cap
 def update_bounding_boxes_for_atr_sky130a_lib(self):
 
     for component in self.atr_transistor_components:
-        print(component.group_endpoint, component.overlap_distance)
+        print("")
 
 
 # ============================================= Trace generation functions =============================================
@@ -176,7 +176,7 @@ def generate_bulk_to_rail_segments(self, rail: str, component: Transistor, y_par
     # self.RELATIVE_PLACEMENT = self.config["initiator_lp"]["RELATIVE_PLACEMENT"]
     # self.CUSTOM_TRANSISTOR_ORDER = self.config["initiator_lp"]["CUSTOM_TRANSISTOR_ORDER"]
     #print(group_components)
-    print("============")
+
     rail_nr = 0
     for structural_component in self.structural_components:
         if re.search(rf"\b{rail}\b", structural_component.name, re.IGNORECASE):
@@ -205,13 +205,14 @@ def generate_bulk_to_rail_segments(self, rail: str, component: Transistor, y_par
 
     self.components.append(trace)
 
+
 def __get_bulk_to_rail_length_of_component_placement_order(self, structural_component,
                                                            group_components) -> Tuple[int, int]:
     x1 = 0
     x2 = 0
     total_length = sum((component.bounding_box.x2 - component.bounding_box.x1) for component in group_components)
     smallest_x_cord_comp = min(group_components, key=lambda component: component.transform_matrix.c)
-    print(total_length, smallest_x_cord_comp)
+
 
     if self.RELATIVE_COMPONENT_PLACEMENT == "A":
         x1 = structural_component.layout.area.x1

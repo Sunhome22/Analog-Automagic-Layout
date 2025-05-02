@@ -20,16 +20,19 @@ from logger.logger import get_a_logger
 
 @dataclass
 class Nets:
-    applicable_nets:list
+    applicable_nets: list
     pin_nets: list
 
     def __init__(self, applicable_nets: list, pin_nets:list):
         self.applicable_nets = applicable_nets
         self.pin_nets = pin_nets
+
+
 @dataclass
 class Overlap:
-    instance : str
-    component_ids : list
+    instance: str
+    component_ids: list
+
 
 @dataclass
 class Connection:
@@ -43,8 +46,9 @@ class Connection:
     end_comp_name: str
     cell: str
     net: str
-    def __init__(self, start_comp_id: int|str, start_comp_type: str, start_area: str, start_comp_name: str, end_comp_id: int|str, end_comp_type: str, end_area: str, end_comp_name: str, cell: str, net: str):
 
+    def __init__(self, start_comp_id: int|str, start_comp_type: str, start_area: str, start_comp_name: str,
+                 end_comp_id: int | str, end_comp_type: str, end_area: str, end_comp_name: str, cell: str, net: str):
         self.start_comp_id = str(start_comp_id)
         self.start_comp_type = start_comp_type
         self.start_area = start_area
