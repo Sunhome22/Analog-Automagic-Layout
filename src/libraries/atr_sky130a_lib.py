@@ -273,16 +273,16 @@ def __add_connections_for_middle_placed_components(self, structural_component, g
             # Get bottom segment of current rail
             for component in self.components:
                 if isinstance(component, TraceNet) and component.cell_chain == structural_component.cell_chain:
-                    if (re.search(r".*VDD.*", component.name, re.IGNORECASE) and
-                            re.search(r".*VDD.*", structural_component.name, re.IGNORECASE)) or (
-                            re.search(r".*VSS*", component.name, re.IGNORECASE) and
-                            re.search(r".*VSS.*", structural_component.name, re.IGNORECASE)):
+                    if (re.search(r"^(?!.*(?:TOP|BOT)).*VDD.*$", component.name, re.IGNORECASE) and
+                        re.search(r"^(?!.*(?:TOP|BOT)).*VDD.*$", structural_component.name, re.IGNORECASE)) or (
+                            re.search(r"^(?!.*(?:TOP|BOT)).*VSS.*$", component.name, re.IGNORECASE) and
+                            re.search(r"^(?!.*(?:TOP|BOT)).*VSS.*$", structural_component.name, re.IGNORECASE)):
                         current_rail_bottom_segment = min(component.segments, key=lambda s: (s.area.y1, s.area.y2))
 
             segment_left = RectArea(x1=smallest_x_cord_comp.transform_matrix.c + structural_component.layout.area.x1,
                                     y1=current_rail_bottom_segment.area.y1,
                                     x2=smallest_x_cord_comp.transform_matrix.c + structural_component.layout.area.x1
-                                     + self.RAIL_RING_WIDTH,
+                                    + self.RAIL_RING_WIDTH,
                                     y2=structural_component.layout.area.y2)
 
             segment_right = RectArea(x1=smallest_x_cord_comp.transform_matrix.c - structural_component.layout.area.x1
@@ -324,6 +324,32 @@ def __add_connections_for_middle_placed_components(self, structural_component, g
             trace.vias.append(RectAreaLayer(layer='locali-m1', area=via_right_bot))
             trace.segments.append(RectAreaLayer(layer='m1', area=segment_left))
             trace.segments.append(RectAreaLayer(layer='m1', area=segment_right))
+
+
+def offset_components_by_group_endpoint_and_overlap_distance_for_atr_sky130a_lib(self):
+    """Updates position of components taking offset and group endpoint areas into account.
+    This is a hacky solution. TBD"""
+    pass
+    # if self.RELATIVE_COMPONENT_PLACEMENT == "S":
+    #
+    #     for component in self.atr_transistor_components:
+    #         component.transform_matrix.f += (component.group_endpoint_bounding_box.y2 -
+    #                                          component.group_endpoint_bounding_box.y1) + component.overlap_distance.y
+    #
+    #     #if self.functional_component_order == "":
+    #
+    # if self.RELATIVE_COMPONENT_PLACEMENT == "A":
+    #     offset = 0
+    #     for component in self.atr_transistor_components:
+    #         component.transform_matrix.c += component.overlap_distance.x
+    #         offset = (component.group_endpoint_bounding_box.y2 -
+    #                   component.group_endpoint_bounding_box.y1) + component.overlap_distance.y
+    #
+    #     for comp in self.components:
+    #         if isinstance(comp, CircuitCell):
+    #             comp.bounding_box.y2 += offset
+    #
+    #     #component.transform_matrix.c += 100
 
 
 def get_component_group_endpoints_for_atr_sky130a_lib(self):

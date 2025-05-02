@@ -3,5 +3,5 @@
   <component name="Black">
     <option name="sdkName" value="Python 3.12 (analog automagic layout)" />
   </component>
-  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.12 (analog automagic layout)" project-jdk-type="Python SDK" />
+  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.12 (car_counter_v2)" project-jdk-type="Python SDK" />
 </project>

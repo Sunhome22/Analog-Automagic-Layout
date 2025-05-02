@@ -38,7 +38,8 @@ class LibraryHandling:
         self.transistor_components = []
         self.atr_transistor_components = []
         self.tr_resistor_components = []
-        self.aal_capacitor_components = []
+        self.aal_misc_capacitor_components = []
+        self.aal_misc_pnp_components = []
         self.circuit_cell = CircuitCell()
         self.components = components
         self.functional_component_order = functional_component_order
@@ -49,11 +50,8 @@ class LibraryHandling:
         self.INIT_RAIL_RING_OFFSET_Y = self.config["generate_rail_traces"]["INIT_RAIL_RING_OFFSET_Y"]
         self.RAIL_RING_OFFSET = self.config["generate_rail_traces"]["RAIL_RING_OFFSET"]
         self.RAIL_RING_WIDTH = self.config["generate_rail_traces"]["RAIL_RING_WIDTH"]
-
         self.RELATIVE_COMPONENT_PLACEMENT = self.config["initiator_lp"]["RELATIVE_COMPONENT_PLACEMENT"]
 
-        #def pre_rail_generation_handling(self):
-        #def post_rail_generation_handling(self):
         # Make lists of different component types
         for component in self.components:
             if isinstance(component, Transistor) and re.search(r'_ATR_', component.layout_library):
@@ -64,6 +62,9 @@ class LibraryHandling:
 
             if isinstance(component, Capacitor) and re.search(r'AAL_MISC', component.layout_library):
                 self.aal_capacitor_components.append(component)
+
+            if isinstance(component, Transistor) and re.search(r'AAL_MISC', component.layout_library):
+                self.aal_misc_pnp_components.append(component)
 
             if isinstance(component, (Pin, CircuitCell)):
                 self.structural_components.append(component)
@@ -76,9 +77,19 @@ class LibraryHandling:
             if isinstance(component, CircuitCell):
                 self.circuit_cell = component
 
+    def pre_trace_generation(self):
+
         # ATR SKY130A library component handling
         if self.atr_transistor_components:
             atr.get_component_group_endpoints_for_atr_sky130a_lib(self=self)
+            atr.offset_components_by_group_endpoint_and_overlap_distance_for_atr_sky130a_lib(self=self)
+
+        return self.components
+
+    def post_rail_generation(self):
+
+        # ATR SKY130A library component handling
+        if self.atr_transistor_components:
             atr.generate_local_traces_for_atr_sky130a_lib(self=self)
 
         # TR SKY130A library component handling
@@ -86,8 +97,10 @@ class LibraryHandling:
             tr.generate_local_traces_for_tr_sky130a_lib_resistors(self=self)
 
         # AAL_MISC SKY130A library component handling
-        if self.aal_capacitor_components:
-            aal.generate_local_traces_for_aal_misc_sky130a_lib(self=self)
+        if self.aal_misc_pnp_components:
+            aal.generate_local_traces_for_aal_misc_sky130a_lib_pnp(self=self)
+
+        return self.components
 
     def __load_config(self, path="pyproject.toml"):
         try:
@@ -96,5 +109,3 @@ class LibraryHandling:
         except (FileNotFoundError, tomllib.TOMLDecodeError) as e:
             self.logger.error(f"Error loading config: {e}")
 
-    def get(self):
-        return self.components

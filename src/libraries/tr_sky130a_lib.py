@@ -146,7 +146,7 @@ def __local_bulk_to_rail_connection(self, component, rail: str, group_name: str,
 
 
 def generate_bulk_to_rail(self, rail: str, component, y_params: tuple,
-                                   group_endpoint: str, group_name: str, group_components: list):
+                          group_endpoint: str, group_name: str, group_components: list):
 
     trace = TraceNet(name=f"{group_name}_B_{rail}_{group_endpoint}", named_cell=component.named_cell)
     trace.instance = trace.__class__.__name__
@@ -258,10 +258,11 @@ def __add_connections_for_middle_placed_components(self, structural_component, g
             # Get bottom segment of current rail
             for component in self.components:
                 if isinstance(component, TraceNet) and component.cell_chain == structural_component.cell_chain:
-                    if (re.search(r".*VDD.*", component.name, re.IGNORECASE) and
-                            re.search(r".*VDD.*", structural_component.name, re.IGNORECASE)) or (
-                            re.search(r".*VSS.*", component.name, re.IGNORECASE) and
-                            re.search(r".*VSS.*", structural_component.name, re.IGNORECASE)):
+                    if (re.search(r"^(?!.*(?:TOP|BOT)).*VDD.*$", component.name, re.IGNORECASE) and
+                        re.search(r"^(?!.*(?:TOP|BOT)).*VDD.*$", structural_component.name, re.IGNORECASE)) or (
+                        re.search(r"^(?!.*(?:TOP|BOT)).*VSS.*$", component.name, re.IGNORECASE) and
+                            re.search(r"^(?!.*(?:TOP|BOT)).*VSS.*$", structural_component.name, re.IGNORECASE)):
+
                         current_rail_bottom_segment = min(component.segments, key=lambda s: (s.area.y1, s.area.y2))
 
             segment_left = RectArea(x1=smallest_x_cord_comp.transform_matrix.c + structural_component.layout.area.x1,

@@ -1358,5 +1358,155 @@
             "x2": 2236,
             "y2": 1720
         }
+    },
+    {
+        "instance": "Transistor",
+        "number_id": 24,
+        "name": "QP1",
+        "type": "pnp",
+        "cell": "OTA",
+        "named_cell": "U1_OTA",
+        "parent_cell": "JNW_BKLE",
+        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
+        "group": null,
+        "schematic_connections": {
+            "C": "VSS",
+            "B": "VDD",
+            "E": "VDD"
+        },
+        "layout_name": "AALMISC_PNP_W3p40L3p40",
+        "layout_library": "AAL_MISC_SKY130A",
+        "layout_ports": [
+            {
+                "type": "E",
+                "layer": "locali",
+                "area": {
+                    "x1": 277,
+                    "y1": 313,
+                    "x2": 401,
+                    "y2": 365
+                }
+            },
+            {
+                "type": "C",
+                "layer": "locali",
+                "area": {
+                    "x1": 306,
+                    "y1": 626,
+                    "x2": 357,
+                    "y2": 650
+                }
+            },
+            {
+                "type": "B",
+                "layer": "locali",
+                "area": {
+                    "x1": 295,
+                    "y1": 551,
+                    "x2": 354,
+                    "y2": 571
+                }
+            }
+        ],
+        "transform_matrix": {
+            "a": 0,
+            "b": 0,
+            "c": 0,
+            "d": 0,
+            "e": 0,
+            "f": 0
+        },
+        "bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 670,
+            "y2": 670
+        },
+        "overlap_distance": {
+            "x": 0,
+            "y": 0
+        },
+        "group_endpoint": "",
+        "group_endpoint_bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 0,
+            "y2": 0
+        }
+    },
+    {
+        "instance": "Transistor",
+        "number_id": 25,
+        "name": "QP2",
+        "type": "pnp",
+        "cell": "OTA",
+        "named_cell": "U1_OTA",
+        "parent_cell": "JNW_BKLE",
+        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
+        "group": null,
+        "schematic_connections": {
+            "C": "VSS",
+            "B": "VDD",
+            "E": "VDD"
+        },
+        "layout_name": "AALMISC_PNP_W3p40L3p40",
+        "layout_library": "AAL_MISC_SKY130A",
+        "layout_ports": [
+            {
+                "type": "E",
+                "layer": "locali",
+                "area": {
+                    "x1": 277,
+                    "y1": 313,
+                    "x2": 401,
+                    "y2": 365
+                }
+            },
+            {
+                "type": "C",
+                "layer": "locali",
+                "area": {
+                    "x1": 306,
+                    "y1": 626,
+                    "x2": 357,
+                    "y2": 650
+                }
+            },
+            {
+                "type": "B",
+                "layer": "locali",
+                "area": {
+                    "x1": 295,
+                    "y1": 551,
+                    "x2": 354,
+                    "y2": 571
+                }
+            }
+        ],
+        "transform_matrix": {
+            "a": 0,
+            "b": 0,
+            "c": 0,
+            "d": 0,
+            "e": 0,
+            "f": 0
+        },
+        "bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 670,
+            "y2": 670
+        },
+        "overlap_distance": {
+            "x": 0,
+            "y": 0
+        },
+        "group_endpoint": "",
+        "group_endpoint_bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 0,
+            "y2": 0
+        }
     }
 ]
