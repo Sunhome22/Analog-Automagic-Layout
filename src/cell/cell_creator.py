@@ -565,8 +565,6 @@ class CellCreator:
         self.updated_components.append(trace)
 
     def __get_nearest_ports(self, connection, parent_components, child_components, circuit_cells):
-        print("Connection")
-        print(connection)
         child_offset_x = 0
         child_offset_y = 0
         minimum_manhattan = sys.maxsize
@@ -577,13 +575,14 @@ class CellCreator:
         temp_child_port_coordinates = Coordinates(x=sys.maxsize, y=sys.maxsize)
         temp_parent_port_coordinates = Coordinates(x=sys.maxsize, y=sys.maxsize)
         for cell in circuit_cells:
-            if cell.name == connection.child_cell:
+            if cell.named_cell == connection.child_cell:
                 child_offset_x = cell.transform_matrix.c
                 child_offset_y = cell.transform_matrix.f
 
         for parent_component in parent_components:
             for port in parent_component.schematic_connections:
                 if parent_component.schematic_connections[port] == connection.parent_net:
+
                     for p in parent_component.layout_ports:
                         if p.type == port:
                             temp_parent_port_coordinates.x = ((p.area.x2 - p.area.x1)//2 +
@@ -591,23 +590,29 @@ class CellCreator:
                             temp_parent_port_coordinates.y = ((p.area.x2 - p.area.x1)//2 +
                                                          parent_component.transform_matrix.f)
 
+
             for child_component in child_components:
-                for port in child_component.schematic_connections:
-                    if parent_component.schematic_connections[port] == connection.parent_net:
-                        for p in parent_component.layout_ports:
-                            if p.type == port:
+                for port2 in child_component.schematic_connections:
+                    if child_component.schematic_connections[port2] == connection.child_net:
+
+                        for p in child_component.layout_ports:
+                            if p.type == port2:
                                 temp_child_port_coordinates.x = ((p.area.x2 - p.area.x1) // 2 +
                                                             child_component.transform_matrix.c) + child_offset_x
                                 temp_child_port_coordinates.y = ((p.area.x2 - p.area.x1) // 2 +
                                                             child_component.transform_matrix.f) + child_offset_y
 
-                                distance = self.__manhattan_distance(parent_port_coordinates, child_port_coordinates)
+                                distance = self.__manhattan_distance(temp_parent_port_coordinates,
+                                                                     temp_child_port_coordinates)
                                 if distance < minimum_manhattan:
                                     minimum_manhattan = distance
+
                                     min_parent_comp = parent_component
                                     min_child_comp = child_component
                                     parent_port_coordinates = temp_child_port_coordinates
                                     child_port_coordinates = temp_child_port_coordinates
+                                    print(f"PARENT PORT COORDINATES {parent_port_coordinates}")
+                                    print(f"CHILD PORT COORDINATES {child_port_coordinates}")
 
         self.__stupid_routing(connection, parent_port_coordinates, child_port_coordinates, circuit_cells)
 
@@ -628,21 +633,17 @@ class CellCreator:
 
             parent_net_components = list()
             child_net_components = list()
-            for cell in circuit_cells:
-                if cell.named_cell == connection.parent_cell:
-                    for component in self.updated_components:
-                        if (component.named_cell == cell.named_cell
-                                and not isinstance(component, (Pin, TraceNet, CircuitCell))):
-                            for port_connection in component.schematic_connections.values():
-                                if port_connection == connection.parent_net:
-                                    parent_net_components.append(copy.deepcopy(component))
-                elif cell.named_cell == connection.child_cell:
-                    for component in self.updated_components:
-                        if (component.named_cell == cell.named_cell
-                                and not isinstance(component, (Pin, TraceNet, CircuitCell))):
-                            for port_connection in component.schematic_connections.values():
-                                if port_connection == connection.parent_net:
-                                    child_net_components.append(copy.deepcopy(component))
+            for component in self.updated_components:
+                if (component.named_cell == connection.parent_cell
+                        and not isinstance(component, (Pin, TraceNet, CircuitCell))):
+                    for port_connection in component.schematic_connections.values():
+                        if port_connection == connection.parent_net:
+                            parent_net_components.append(copy.deepcopy(component))
+                elif (component.named_cell == connection.child_cell
+                        and not isinstance(component, (Pin, TraceNet, CircuitCell))):
+                    for port_connection in component.schematic_connections.values():
+                        if port_connection == connection.child_net:
+                            child_net_components.append(copy.deepcopy(component))
 
             self.__get_nearest_ports(connection, parent_net_components, child_net_components, circuit_cells)
 
