@@ -5,6 +5,7 @@
         "cell": "JNW_BKLE",
         "named_cell": "UTOP_JNW_BKLE",
         "parent_cell": "ROOT_CELL",
+        "named_parent_cell": "UROOT_ROOT_CELL",
         "cell_chain": "UTOP_JNW_BKLE",
         "type": "ipin",
         "name": "VDD",
@@ -16,6 +17,7 @@
         "cell": "JNW_BKLE",
         "named_cell": "UTOP_JNW_BKLE",
         "parent_cell": "ROOT_CELL",
+        "named_parent_cell": "UROOT_ROOT_CELL",
         "cell_chain": "UTOP_JNW_BKLE",
         "type": "ipin",
         "name": "VSS",
@@ -28,6 +30,7 @@
         "cell": "JNW_BKLE",
         "named_cell": "UTOP_JNW_BKLE",
         "parent_cell": "ROOT_CELL",
+        "named_parent_cell": "UROOT_ROOT_CELL",
         "cell_chain": "UTOP_JNW_BKLE",
         "group": null,
         "schematic_connections": {
@@ -55,6 +58,7 @@
         "cell": "OTA",
         "named_cell": "U1_OTA",
         "parent_cell": "JNW_BKLE",
+        "named_parent_cell": "UTOP_JNW_BKLE",
         "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
         "type": "ipin",
         "name": "IN+",
@@ -74,6 +78,7 @@
         "cell": "OTA",
         "named_cell": "U1_OTA",
         "parent_cell": "JNW_BKLE",
+        "named_parent_cell": "UTOP_JNW_BKLE",
         "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
         "type": "ipin",
         "name": "IN-",
@@ -93,6 +98,7 @@
         "cell": "OTA",
         "named_cell": "U1_OTA",
         "parent_cell": "JNW_BKLE",
+        "named_parent_cell": "UTOP_JNW_BKLE",
         "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
         "type": "ipin",
         "name": "VDD",
@@ -100,9 +106,9 @@
             "layer": "locali",
             "area": {
                 "x1": 100,
-                "y1": 5565,
-                "x2": 4088,
-                "y2": 5615
+                "y1": 5510,
+                "x2": 5708,
+                "y2": 5560
             }
         }
     },
@@ -112,6 +118,7 @@
         "cell": "OTA",
         "named_cell": "U1_OTA",
         "parent_cell": "JNW_BKLE",
+        "named_parent_cell": "UTOP_JNW_BKLE",
         "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
         "type": "ipin",
         "name": "VSS",
@@ -119,9 +126,9 @@
             "layer": "locali",
             "area": {
                 "x1": 0,
-                "y1": 5665,
-                "x2": 4188,
-                "y2": 5715
+                "y1": 5610,
+                "x2": 5808,
+                "y2": 5660
             }
         }
     },
@@ -131,6 +138,7 @@
         "cell": "OTA",
         "named_cell": "U1_OTA",
         "parent_cell": "JNW_BKLE",
+        "named_parent_cell": "UTOP_JNW_BKLE",
         "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
         "type": "opin",
         "name": "OUT",
@@ -152,6 +160,7 @@
         "cell": "OTA",
         "named_cell": "U1_OTA",
         "parent_cell": "JNW_BKLE",
+        "named_parent_cell": "UTOP_JNW_BKLE",
         "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
         "group": null,
         "schematic_connections": {
@@ -238,6 +247,7 @@
         "cell": "OTA",
         "named_cell": "U1_OTA",
         "parent_cell": "JNW_BKLE",
+        "named_parent_cell": "UTOP_JNW_BKLE",
         "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
         "group": null,
         "schematic_connections": {
@@ -324,6 +334,7 @@
         "cell": "OTA",
         "named_cell": "U1_OTA",
         "parent_cell": "JNW_BKLE",
+        "named_parent_cell": "UTOP_JNW_BKLE",
         "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
         "group": null,
         "schematic_connections": {
@@ -410,6 +421,7 @@
         "cell": "OTA",
         "named_cell": "U1_OTA",
         "parent_cell": "JNW_BKLE",
+        "named_parent_cell": "UTOP_JNW_BKLE",
         "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
         "group": null,
         "schematic_connections": {
@@ -496,6 +508,7 @@
         "cell": "OTA",
         "named_cell": "U1_OTA",
         "parent_cell": "JNW_BKLE",
+        "named_parent_cell": "UTOP_JNW_BKLE",
         "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
         "group": null,
         "schematic_connections": {
@@ -582,6 +595,7 @@
         "cell": "OTA",
         "named_cell": "U1_OTA",
         "parent_cell": "JNW_BKLE",
+        "named_parent_cell": "UTOP_JNW_BKLE",
         "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
         "group": null,
         "schematic_connections": {
@@ -668,6 +682,7 @@
         "cell": "OTA",
         "named_cell": "U1_OTA",
         "parent_cell": "JNW_BKLE",
+        "named_parent_cell": "UTOP_JNW_BKLE",
         "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
         "group": null,
         "schematic_connections": {
@@ -754,6 +769,7 @@
         "cell": "OTA",
         "named_cell": "U1_OTA",
         "parent_cell": "JNW_BKLE",
+        "named_parent_cell": "UTOP_JNW_BKLE",
         "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
         "group": null,
         "schematic_connections": {
@@ -840,6 +856,7 @@
         "cell": "OTA",
         "named_cell": "U1_OTA",
         "parent_cell": "JNW_BKLE",
+        "named_parent_cell": "UTOP_JNW_BKLE",
         "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
         "group": null,
         "schematic_connections": {
@@ -926,6 +943,7 @@
         "cell": "OTA",
         "named_cell": "U1_OTA",
         "parent_cell": "JNW_BKLE",
+        "named_parent_cell": "UTOP_JNW_BKLE",
         "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
         "group": null,
         "schematic_connections": {
@@ -1012,6 +1030,7 @@
         "cell": "OTA",
         "named_cell": "U1_OTA",
         "parent_cell": "JNW_BKLE",
+        "named_parent_cell": "UTOP_JNW_BKLE",
         "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
         "group": null,
         "schematic_connections": {
@@ -1098,6 +1117,7 @@
         "cell": "OTA",
         "named_cell": "U1_OTA",
         "parent_cell": "JNW_BKLE",
+        "named_parent_cell": "UTOP_JNW_BKLE",
         "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
         "group": null,
         "schematic_connections": {
@@ -1184,6 +1204,7 @@
         "cell": "OTA",
         "named_cell": "U1_OTA",
         "parent_cell": "JNW_BKLE",
+        "named_parent_cell": "UTOP_JNW_BKLE",
         "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
         "group": null,
         "schematic_connections": {
@@ -1248,6 +1269,7 @@
         "cell": "OTA",
         "named_cell": "U1_OTA",
         "parent_cell": "JNW_BKLE",
+        "named_parent_cell": "UTOP_JNW_BKLE",
         "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
         "group": null,
         "schematic_connections": {
@@ -1295,7 +1317,7 @@
             "c": 1752,
             "d": 0,
             "e": 1,
-            "f": 2020
+            "f": 3740
         },
         "bounding_box": {
             "x1": 0,
@@ -1312,6 +1334,7 @@
         "cell": "OTA",
         "named_cell": "U1_OTA",
         "parent_cell": "JNW_BKLE",
+        "named_parent_cell": "UTOP_JNW_BKLE",
         "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
         "group": null,
         "schematic_connections": {
@@ -1359,7 +1382,7 @@
             "c": 1752,
             "d": 0,
             "e": 1,
-            "f": 3795
+            "f": 1970
         },
         "bounding_box": {
             "x1": 0,
@@ -1369,12 +1392,381 @@
         }
     },
     {
+        "instance": "Transistor",
+        "number_id": 24,
+        "name": "QP1",
+        "type": "pnp",
+        "cell": "OTA",
+        "named_cell": "U1_OTA",
+        "parent_cell": "JNW_BKLE",
+        "named_parent_cell": "UTOP_JNW_BKLE",
+        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
+        "group": null,
+        "schematic_connections": {
+            "C": "VSS",
+            "B": "VSS",
+            "E": "VDD"
+        },
+        "layout_name": "AALMISC_PNP_W3p40L3p40",
+        "layout_library": "AAL_MISC_SKY130A",
+        "layout_ports": [
+            {
+                "type": "E",
+                "layer": "locali",
+                "area": {
+                    "x1": 270,
+                    "y1": 313,
+                    "x2": 400,
+                    "y2": 365
+                }
+            },
+            {
+                "type": "C",
+                "layer": "locali",
+                "area": {
+                    "x1": 310,
+                    "y1": 608,
+                    "x2": 360,
+                    "y2": 657
+                }
+            },
+            {
+                "type": "B",
+                "layer": "locali",
+                "area": {
+                    "x1": 310,
+                    "y1": 540,
+                    "x2": 360,
+                    "y2": 575
+                }
+            }
+        ],
+        "transform_matrix": {
+            "a": 1,
+            "b": 0,
+            "c": 1400,
+            "d": 0,
+            "e": 1,
+            "f": 200
+        },
+        "bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 670,
+            "y2": 670
+        },
+        "overlap_distance": {
+            "x": 0,
+            "y": 0
+        },
+        "group_endpoint": "",
+        "group_endpoint_bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 0,
+            "y2": 0
+        }
+    },
+    {
+        "instance": "Transistor",
+        "number_id": 25,
+        "name": "QP2",
+        "type": "pnp",
+        "cell": "OTA",
+        "named_cell": "U1_OTA",
+        "parent_cell": "JNW_BKLE",
+        "named_parent_cell": "UTOP_JNW_BKLE",
+        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
+        "group": null,
+        "schematic_connections": {
+            "C": "VSS",
+            "B": "VSS",
+            "E": "VDD"
+        },
+        "layout_name": "AALMISC_PNP_W3p40L3p40",
+        "layout_library": "AAL_MISC_SKY130A",
+        "layout_ports": [
+            {
+                "type": "E",
+                "layer": "locali",
+                "area": {
+                    "x1": 270,
+                    "y1": 313,
+                    "x2": 400,
+                    "y2": 365
+                }
+            },
+            {
+                "type": "C",
+                "layer": "locali",
+                "area": {
+                    "x1": 310,
+                    "y1": 608,
+                    "x2": 360,
+                    "y2": 657
+                }
+            },
+            {
+                "type": "B",
+                "layer": "locali",
+                "area": {
+                    "x1": 310,
+                    "y1": 540,
+                    "x2": 360,
+                    "y2": 575
+                }
+            }
+        ],
+        "transform_matrix": {
+            "a": 1,
+            "b": 0,
+            "c": 1400,
+            "d": 0,
+            "e": 1,
+            "f": 990
+        },
+        "bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 670,
+            "y2": 670
+        },
+        "overlap_distance": {
+            "x": 0,
+            "y": 0
+        },
+        "group_endpoint": "",
+        "group_endpoint_bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 0,
+            "y2": 0
+        }
+    },
+    {
+        "instance": "Capacitor",
+        "number_id": 26,
+        "name": "CM1",
+        "type": "mim",
+        "cell": "OTA",
+        "named_cell": "U1_OTA",
+        "parent_cell": "JNW_BKLE",
+        "named_parent_cell": "UTOP_JNW_BKLE",
+        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
+        "group": null,
+        "schematic_connections": {
+            "A": "VDD",
+            "B": "VSS"
+        },
+        "layout_name": "AALMISC_CAP50f",
+        "layout_library": "AAL_MISC_SKY130A",
+        "layout_ports": [
+            {
+                "type": "A",
+                "layer": "m3",
+                "area": {
+                    "x1": 0,
+                    "y1": 262,
+                    "x2": 580,
+                    "y2": 842
+                }
+            },
+            {
+                "type": "B",
+                "layer": "m3",
+                "area": {
+                    "x1": 0,
+                    "y1": 0,
+                    "x2": 580,
+                    "y2": 162
+                }
+            }
+        ],
+        "transform_matrix": {
+            "a": 1,
+            "b": 0,
+            "c": 5028,
+            "d": 0,
+            "e": 1,
+            "f": 200
+        },
+        "bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 580,
+            "y2": 842
+        }
+    },
+    {
+        "instance": "Capacitor",
+        "number_id": 27,
+        "name": "CM2",
+        "type": "mim",
+        "cell": "OTA",
+        "named_cell": "U1_OTA",
+        "parent_cell": "JNW_BKLE",
+        "named_parent_cell": "UTOP_JNW_BKLE",
+        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
+        "group": null,
+        "schematic_connections": {
+            "A": "VDD",
+            "B": "VSS"
+        },
+        "layout_name": "AALMISC_CAP50f",
+        "layout_library": "AAL_MISC_SKY130A",
+        "layout_ports": [
+            {
+                "type": "A",
+                "layer": "m3",
+                "area": {
+                    "x1": 0,
+                    "y1": 262,
+                    "x2": 580,
+                    "y2": 842
+                }
+            },
+            {
+                "type": "B",
+                "layer": "m3",
+                "area": {
+                    "x1": 0,
+                    "y1": 0,
+                    "x2": 580,
+                    "y2": 162
+                }
+            }
+        ],
+        "transform_matrix": {
+            "a": 1,
+            "b": 0,
+            "c": 4388,
+            "d": 0,
+            "e": 1,
+            "f": 200
+        },
+        "bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 580,
+            "y2": 842
+        }
+    },
+    {
+        "instance": "Capacitor",
+        "number_id": 28,
+        "name": "CM3",
+        "type": "mim",
+        "cell": "OTA",
+        "named_cell": "U1_OTA",
+        "parent_cell": "JNW_BKLE",
+        "named_parent_cell": "UTOP_JNW_BKLE",
+        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
+        "group": null,
+        "schematic_connections": {
+            "A": "VDD",
+            "B": "VSS"
+        },
+        "layout_name": "AALMISC_CAP50f",
+        "layout_library": "AAL_MISC_SKY130A",
+        "layout_ports": [
+            {
+                "type": "A",
+                "layer": "m3",
+                "area": {
+                    "x1": 0,
+                    "y1": 262,
+                    "x2": 580,
+                    "y2": 842
+                }
+            },
+            {
+                "type": "B",
+                "layer": "m3",
+                "area": {
+                    "x1": 0,
+                    "y1": 0,
+                    "x2": 580,
+                    "y2": 162
+                }
+            }
+        ],
+        "transform_matrix": {
+            "a": 1,
+            "b": 0,
+            "c": 5028,
+            "d": 0,
+            "e": 1,
+            "f": 1100
+        },
+        "bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 580,
+            "y2": 842
+        }
+    },
+    {
+        "instance": "Capacitor",
+        "number_id": 29,
+        "name": "CM4",
+        "type": "mim",
+        "cell": "OTA",
+        "named_cell": "U1_OTA",
+        "parent_cell": "JNW_BKLE",
+        "named_parent_cell": "UTOP_JNW_BKLE",
+        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
+        "group": null,
+        "schematic_connections": {
+            "A": "VDD",
+            "B": "VSS"
+        },
+        "layout_name": "AALMISC_CAP50f",
+        "layout_library": "AAL_MISC_SKY130A",
+        "layout_ports": [
+            {
+                "type": "A",
+                "layer": "m3",
+                "area": {
+                    "x1": 0,
+                    "y1": 262,
+                    "x2": 580,
+                    "y2": 842
+                }
+            },
+            {
+                "type": "B",
+                "layer": "m3",
+                "area": {
+                    "x1": 0,
+                    "y1": 0,
+                    "x2": 580,
+                    "y2": 162
+                }
+            }
+        ],
+        "transform_matrix": {
+            "a": 1,
+            "b": 0,
+            "c": 4388,
+            "d": 0,
+            "e": 1,
+            "f": 1100
+        },
+        "bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 580,
+            "y2": 842
+        }
+    },
+    {
         "instance": "CircuitCell",
         "number_id": 3,
         "name": "U1",
         "cell": "OTA",
         "named_cell": "U1_OTA",
         "parent_cell": "JNW_BKLE",
+        "named_parent_cell": "UTOP_JNW_BKLE",
         "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
         "group": null,
         "schematic_connections": {
@@ -1395,8 +1787,8 @@
         "bounding_box": {
             "x1": 0,
             "y1": 0,
-            "x2": 4238,
-            "y2": 5765
+            "x2": 5858,
+            "y2": 5710
         }
     },
     {
@@ -1405,6 +1797,7 @@
         "cell": "OTA",
         "named_cell": "U1_OTA",
         "parent_cell": "",
+        "named_parent_cell": "",
         "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
         "segments": [
             {
@@ -1642,6 +2035,7 @@
         "cell": "OTA",
         "named_cell": "U1_OTA",
         "parent_cell": "",
+        "named_parent_cell": "",
         "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
         "segments": [
             {
@@ -1879,6 +2273,7 @@
         "cell": "OTA",
         "named_cell": "U1_OTA",
         "parent_cell": "",
+        "named_parent_cell": "",
         "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
         "segments": [
             {
@@ -2116,6 +2511,7 @@
         "cell": "OTA",
         "named_cell": "U1_OTA",
         "parent_cell": "",
+        "named_parent_cell": "",
         "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
         "segments": [
             {
@@ -2434,6 +2830,7 @@
         "cell": "OTA",
         "named_cell": "U1_OTA",
         "parent_cell": "",
+        "named_parent_cell": "",
         "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
         "segments": [
             {
@@ -3040,6 +3437,7 @@
         "cell": "OTA",
         "named_cell": "U1_OTA",
         "parent_cell": "",
+        "named_parent_cell": "",
         "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
         "segments": [
             {
@@ -3232,33 +3630,34 @@
         "cell": "OTA",
         "named_cell": "U1_OTA",
         "parent_cell": "",
+        "named_parent_cell": "",
         "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
         "segments": [
             {
+                "layer": "m2",
+                "area": {
+                    "x1": 2001,
+                    "y1": 1703,
+                    "x2": 3584,
+                    "y2": 1733
+                }
+            },
+            {
                 "layer": "m3",
                 "area": {
-                    "x1": 1986,
-                    "y1": 1718,
-                    "x2": 2016,
-                    "y2": 3349
+                    "x1": 3554,
+                    "y1": 1703,
+                    "x2": 3584,
+                    "y2": 5269
                 }
             },
             {
                 "layer": "m2",
                 "area": {
-                    "x1": 1986,
-                    "y1": 3319,
-                    "x2": 3744,
-                    "y2": 3349
-                }
-            },
-            {
-                "layer": "m3",
-                "area": {
-                    "x1": 3714,
-                    "y1": 3319,
-                    "x2": 3744,
-                    "y2": 3542
+                    "x1": 3554,
+                    "y1": 5239,
+                    "x2": 3729,
+                    "y2": 5269
                 }
             }
         ],
@@ -3276,27 +3675,27 @@
                 "layer": "locali-m1",
                 "area": {
                     "x1": 3662,
-                    "y1": 3480,
+                    "y1": 5200,
                     "x2": 3806,
-                    "y2": 3600
+                    "y2": 5320
                 }
             },
             {
                 "layer": "m2-m3",
                 "area": {
-                    "x1": 1986,
-                    "y1": 3319,
-                    "x2": 2016,
-                    "y2": 3349
+                    "x1": 3554,
+                    "y1": 1703,
+                    "x2": 3584,
+                    "y2": 1733
                 }
             },
             {
                 "layer": "m2-m3",
                 "area": {
-                    "x1": 3714,
-                    "y1": 3319,
-                    "x2": 3744,
-                    "y2": 3349
+                    "x1": 3554,
+                    "y1": 5239,
+                    "x2": 3584,
+                    "y2": 5269
                 }
             }
         ]
@@ -3307,33 +3706,34 @@
         "cell": "OTA",
         "named_cell": "U1_OTA",
         "parent_cell": "",
+        "named_parent_cell": "",
         "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
         "segments": [
             {
+                "layer": "m2",
+                "area": {
+                    "x1": 2001,
+                    "y1": 5241,
+                    "x2": 3360,
+                    "y2": 5271
+                }
+            },
+            {
                 "layer": "m3",
                 "area": {
-                    "x1": 1986,
-                    "y1": 3540,
-                    "x2": 2016,
-                    "y2": 4483
+                    "x1": 3330,
+                    "y1": 3465,
+                    "x2": 3360,
+                    "y2": 5271
                 }
             },
             {
                 "layer": "m2",
                 "area": {
-                    "x1": 1986,
-                    "y1": 4453,
-                    "x2": 3744,
-                    "y2": 4483
-                }
-            },
-            {
-                "layer": "m3",
-                "area": {
-                    "x1": 3714,
-                    "y1": 4453,
-                    "x2": 3744,
-                    "y2": 5300
+                    "x1": 3330,
+                    "y1": 3465,
+                    "x2": 3729,
+                    "y2": 3495
                 }
             }
         ],
@@ -3342,36 +3742,36 @@
                 "layer": "locali-m1",
                 "area": {
                     "x1": 1934,
-                    "y1": 3480,
+                    "y1": 5200,
                     "x2": 2078,
-                    "y2": 3600
+                    "y2": 5320
                 }
             },
             {
                 "layer": "locali-m1",
                 "area": {
                     "x1": 3662,
-                    "y1": 5255,
+                    "y1": 3430,
                     "x2": 3806,
-                    "y2": 5375
+                    "y2": 3550
                 }
             },
             {
                 "layer": "m2-m3",
                 "area": {
-                    "x1": 1986,
-                    "y1": 4453,
-                    "x2": 2016,
-                    "y2": 4483
+                    "x1": 3330,
+                    "y1": 5241,
+                    "x2": 3360,
+                    "y2": 5271
                 }
             },
             {
                 "layer": "m2-m3",
                 "area": {
-                    "x1": 3714,
-                    "y1": 4453,
-                    "x2": 3744,
-                    "y2": 4483
+                    "x1": 3330,
+                    "y1": 3465,
+                    "x2": 3360,
+                    "y2": 3495
                 }
             }
         ]
@@ -3382,15 +3782,16 @@
         "cell": "OTA",
         "named_cell": "U1_OTA",
         "parent_cell": "JNW_BKLE",
+        "named_parent_cell": "",
         "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
         "segments": [
             {
                 "layer": "locali",
                 "area": {
                     "x1": 100,
-                    "y1": 5565,
-                    "x2": 4088,
-                    "y2": 5615
+                    "y1": 5510,
+                    "x2": 5708,
+                    "y2": 5560
                 }
             },
             {
@@ -3398,7 +3799,7 @@
                 "area": {
                     "x1": 100,
                     "y1": 100,
-                    "x2": 4088,
+                    "x2": 5708,
                     "y2": 150
                 }
             },
@@ -3408,16 +3809,16 @@
                     "x1": 100,
                     "y1": 150,
                     "x2": 150,
-                    "y2": 5565
+                    "y2": 5510
                 }
             },
             {
                 "layer": "m1",
                 "area": {
-                    "x1": 4038,
+                    "x1": 5658,
                     "y1": 150,
-                    "x2": 4088,
-                    "y2": 5565
+                    "x2": 5708,
+                    "y2": 5510
                 }
             }
         ],
@@ -3426,9 +3827,9 @@
                 "layer": "locali-m1",
                 "area": {
                     "x1": 100,
-                    "y1": 5565,
+                    "y1": 5510,
                     "x2": 150,
-                    "y2": 5615
+                    "y2": 5560
                 }
             },
             {
@@ -3443,18 +3844,18 @@
             {
                 "layer": "locali-m1",
                 "area": {
-                    "x1": 4038,
-                    "y1": 5565,
-                    "x2": 4088,
-                    "y2": 5615
+                    "x1": 5658,
+                    "y1": 5510,
+                    "x2": 5708,
+                    "y2": 5560
                 }
             },
             {
                 "layer": "locali-m1",
                 "area": {
-                    "x1": 4038,
+                    "x1": 5658,
                     "y1": 100,
-                    "x2": 4088,
+                    "x2": 5708,
                     "y2": 150
                 }
             }
@@ -3466,15 +3867,16 @@
         "cell": "OTA",
         "named_cell": "U1_OTA",
         "parent_cell": "JNW_BKLE",
+        "named_parent_cell": "",
         "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
         "segments": [
             {
                 "layer": "locali",
                 "area": {
                     "x1": 0,
-                    "y1": 5665,
-                    "x2": 4188,
-                    "y2": 5715
+                    "y1": 5610,
+                    "x2": 5808,
+                    "y2": 5660
                 }
             },
             {
@@ -3482,7 +3884,7 @@
                 "area": {
                     "x1": 0,
                     "y1": 0,
-                    "x2": 4188,
+                    "x2": 5808,
                     "y2": 50
                 }
             },
@@ -3492,16 +3894,16 @@
                     "x1": 0,
                     "y1": 50,
                     "x2": 50,
-                    "y2": 5665
+                    "y2": 5610
                 }
             },
             {
                 "layer": "m1",
                 "area": {
-                    "x1": 4138,
+                    "x1": 5758,
                     "y1": 50,
-                    "x2": 4188,
-                    "y2": 5665
+                    "x2": 5808,
+                    "y2": 5610
                 }
             }
         ],
@@ -3510,9 +3912,9 @@
                 "layer": "locali-m1",
                 "area": {
                     "x1": 0,
-                    "y1": 5665,
+                    "y1": 5610,
                     "x2": 50,
-                    "y2": 5715
+                    "y2": 5660
                 }
             },
             {
@@ -3527,18 +3929,18 @@
             {
                 "layer": "locali-m1",
                 "area": {
-                    "x1": 4138,
-                    "y1": 5665,
-                    "x2": 4188,
-                    "y2": 5715
+                    "x1": 5758,
+                    "y1": 5610,
+                    "x2": 5808,
+                    "y2": 5660
                 }
             },
             {
                 "layer": "locali-m1",
                 "area": {
-                    "x1": 4138,
+                    "x1": 5758,
                     "y1": 0,
-                    "x2": 4188,
+                    "x2": 5808,
                     "y2": 50
                 }
             }
@@ -3550,6 +3952,7 @@
         "cell": "OTA",
         "named_cell": "U1_OTA",
         "parent_cell": "JNW_BKLE",
+        "named_parent_cell": "",
         "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
         "segments": [
             {
@@ -3570,6 +3973,7 @@
         "cell": "OTA",
         "named_cell": "U1_OTA",
         "parent_cell": "JNW_BKLE",
+        "named_parent_cell": "",
         "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
         "segments": [
             {
@@ -3590,6 +3994,7 @@
         "cell": "OTA",
         "named_cell": "U1_OTA",
         "parent_cell": "JNW_BKLE",
+        "named_parent_cell": "",
         "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
         "segments": [
             {
@@ -3610,6 +4015,7 @@
         "cell": "OTA",
         "named_cell": "U1_OTA",
         "parent_cell": "JNW_BKLE",
+        "named_parent_cell": "",
         "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
         "segments": [
             {
@@ -3630,6 +4036,7 @@
         "cell": "OTA",
         "named_cell": "U1_OTA",
         "parent_cell": "JNW_BKLE",
+        "named_parent_cell": "",
         "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
         "segments": [
             {
@@ -3650,6 +4057,7 @@
         "cell": "OTA",
         "named_cell": "U1_OTA",
         "parent_cell": "JNW_BKLE",
+        "named_parent_cell": "",
         "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
         "segments": [
             {
@@ -3670,6 +4078,7 @@
         "cell": "OTA",
         "named_cell": "U1_OTA",
         "parent_cell": "JNW_BKLE",
+        "named_parent_cell": "",
         "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
         "segments": [
             {
@@ -3700,6 +4109,7 @@
         "cell": "OTA",
         "named_cell": "U1_OTA",
         "parent_cell": "JNW_BKLE",
+        "named_parent_cell": "",
         "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
         "segments": [
             {
@@ -3730,6 +4140,7 @@
         "cell": "OTA",
         "named_cell": "U1_OTA",
         "parent_cell": "JNW_BKLE",
+        "named_parent_cell": "",
         "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
         "segments": [
             {
@@ -3760,6 +4171,7 @@
         "cell": "OTA",
         "named_cell": "U1_OTA",
         "parent_cell": "JNW_BKLE",
+        "named_parent_cell": "",
         "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
         "segments": [
             {
@@ -3790,15 +4202,16 @@
         "cell": "OTA",
         "named_cell": "U1_OTA",
         "parent_cell": "JNW_BKLE",
+        "named_parent_cell": "",
         "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
         "segments": [
             {
                 "layer": "locali",
                 "area": {
                     "x1": 1760,
-                    "y1": 5255,
+                    "y1": 3430,
                     "x2": 2078,
-                    "y2": 5375
+                    "y2": 3550
                 }
             }
         ],
@@ -3810,15 +4223,34 @@
         "cell": "OTA",
         "named_cell": "U1_OTA",
         "parent_cell": "JNW_BKLE",
+        "named_parent_cell": "",
         "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
         "segments": [
             {
                 "layer": "locali",
                 "area": {
-                    "x1": 1752,
+                    "x1": 1552,
                     "y1": 1864,
                     "x2": 4188,
                     "y2": 1920
+                }
+            },
+            {
+                "layer": "m1",
+                "area": {
+                    "x1": 1552,
+                    "y1": 0,
+                    "x2": 1602,
+                    "y2": 5660
+                }
+            },
+            {
+                "layer": "m1",
+                "area": {
+                    "x1": 4138,
+                    "y1": 0,
+                    "x2": 4188,
+                    "y2": 5660
                 }
             }
         ],
@@ -3826,9 +4258,63 @@
             {
                 "layer": "locali-m1",
                 "area": {
+                    "x1": 1552,
+                    "y1": 1864,
+                    "x2": 1602,
+                    "y2": 1920
+                }
+            },
+            {
+                "layer": "locali-m1",
+                "area": {
                     "x1": 4138,
                     "y1": 1864,
                     "x2": 4188,
+                    "y2": 1920
+                }
+            },
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 4138,
+                    "y1": 0,
+                    "x2": 4188,
+                    "y2": 50
+                }
+            },
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 4138,
+                    "y1": 5610,
+                    "x2": 4188,
+                    "y2": 5660
+                }
+            },
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 1552,
+                    "y1": 0,
+                    "x2": 1602,
+                    "y2": 50
+                }
+            },
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 1552,
+                    "y1": 5610,
+                    "x2": 1602,
+                    "y2": 5660
+                }
+            },
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 1552,
+                    "y1": 1864,
+                    "x2": 1602,
                     "y2": 1920
                 }
             }
@@ -3840,15 +4326,34 @@
         "cell": "OTA",
         "named_cell": "U1_OTA",
         "parent_cell": "JNW_BKLE",
+        "named_parent_cell": "",
         "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
         "segments": [
             {
                 "layer": "locali",
                 "area": {
-                    "x1": 1752,
+                    "x1": 1552,
                     "y1": 200,
                     "x2": 4188,
                     "y2": 256
+                }
+            },
+            {
+                "layer": "m1",
+                "area": {
+                    "x1": 1552,
+                    "y1": 0,
+                    "x2": 1602,
+                    "y2": 5660
+                }
+            },
+            {
+                "layer": "m1",
+                "area": {
+                    "x1": 4138,
+                    "y1": 0,
+                    "x2": 4188,
+                    "y2": 5660
                 }
             }
         ],
@@ -3856,9 +4361,63 @@
             {
                 "layer": "locali-m1",
                 "area": {
+                    "x1": 1552,
+                    "y1": 200,
+                    "x2": 1602,
+                    "y2": 256
+                }
+            },
+            {
+                "layer": "locali-m1",
+                "area": {
                     "x1": 4138,
                     "y1": 200,
                     "x2": 4188,
+                    "y2": 256
+                }
+            },
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 4138,
+                    "y1": 0,
+                    "x2": 4188,
+                    "y2": 50
+                }
+            },
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 4138,
+                    "y1": 5610,
+                    "x2": 4188,
+                    "y2": 5660
+                }
+            },
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 1552,
+                    "y1": 0,
+                    "x2": 1602,
+                    "y2": 50
+                }
+            },
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 1552,
+                    "y1": 5610,
+                    "x2": 1602,
+                    "y2": 5660
+                }
+            },
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 1552,
+                    "y1": 200,
+                    "x2": 1602,
                     "y2": 256
                 }
             }
@@ -3870,15 +4429,34 @@
         "cell": "OTA",
         "named_cell": "U1_OTA",
         "parent_cell": "JNW_BKLE",
+        "named_parent_cell": "",
         "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
         "segments": [
             {
                 "layer": "locali",
                 "area": {
-                    "x1": 1752,
-                    "y1": 3684,
+                    "x1": 1552,
+                    "y1": 5404,
                     "x2": 4188,
-                    "y2": 3740
+                    "y2": 5460
+                }
+            },
+            {
+                "layer": "m1",
+                "area": {
+                    "x1": 1552,
+                    "y1": 0,
+                    "x2": 1602,
+                    "y2": 5660
+                }
+            },
+            {
+                "layer": "m1",
+                "area": {
+                    "x1": 4138,
+                    "y1": 0,
+                    "x2": 4188,
+                    "y2": 5660
                 }
             }
         ],
@@ -3886,10 +4464,64 @@
             {
                 "layer": "locali-m1",
                 "area": {
+                    "x1": 1552,
+                    "y1": 5404,
+                    "x2": 1602,
+                    "y2": 5460
+                }
+            },
+            {
+                "layer": "locali-m1",
+                "area": {
                     "x1": 4138,
-                    "y1": 3684,
+                    "y1": 5404,
                     "x2": 4188,
-                    "y2": 3740
+                    "y2": 5460
+                }
+            },
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 4138,
+                    "y1": 0,
+                    "x2": 4188,
+                    "y2": 50
+                }
+            },
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 4138,
+                    "y1": 5610,
+                    "x2": 4188,
+                    "y2": 5660
+                }
+            },
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 1552,
+                    "y1": 0,
+                    "x2": 1602,
+                    "y2": 50
+                }
+            },
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 1552,
+                    "y1": 5610,
+                    "x2": 1602,
+                    "y2": 5660
+                }
+            },
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 1552,
+                    "y1": 5404,
+                    "x2": 1602,
+                    "y2": 5460
                 }
             }
         ]
@@ -3900,15 +4532,34 @@
         "cell": "OTA",
         "named_cell": "U1_OTA",
         "parent_cell": "JNW_BKLE",
+        "named_parent_cell": "",
         "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
         "segments": [
             {
                 "layer": "locali",
                 "area": {
-                    "x1": 1752,
-                    "y1": 2020,
+                    "x1": 1552,
+                    "y1": 3740,
                     "x2": 4188,
-                    "y2": 2076
+                    "y2": 3796
+                }
+            },
+            {
+                "layer": "m1",
+                "area": {
+                    "x1": 1552,
+                    "y1": 0,
+                    "x2": 1602,
+                    "y2": 5660
+                }
+            },
+            {
+                "layer": "m1",
+                "area": {
+                    "x1": 4138,
+                    "y1": 0,
+                    "x2": 4188,
+                    "y2": 5660
                 }
             }
         ],
@@ -3916,10 +4567,64 @@
             {
                 "layer": "locali-m1",
                 "area": {
+                    "x1": 1552,
+                    "y1": 3740,
+                    "x2": 1602,
+                    "y2": 3796
+                }
+            },
+            {
+                "layer": "locali-m1",
+                "area": {
                     "x1": 4138,
-                    "y1": 2020,
+                    "y1": 3740,
                     "x2": 4188,
-                    "y2": 2076
+                    "y2": 3796
+                }
+            },
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 4138,
+                    "y1": 0,
+                    "x2": 4188,
+                    "y2": 50
+                }
+            },
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 4138,
+                    "y1": 5610,
+                    "x2": 4188,
+                    "y2": 5660
+                }
+            },
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 1552,
+                    "y1": 0,
+                    "x2": 1602,
+                    "y2": 50
+                }
+            },
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 1552,
+                    "y1": 5610,
+                    "x2": 1602,
+                    "y2": 5660
+                }
+            },
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 1552,
+                    "y1": 3740,
+                    "x2": 1602,
+                    "y2": 3796
                 }
             }
         ]
@@ -3930,15 +4635,34 @@
         "cell": "OTA",
         "named_cell": "U1_OTA",
         "parent_cell": "JNW_BKLE",
+        "named_parent_cell": "",
         "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
         "segments": [
             {
                 "layer": "locali",
                 "area": {
-                    "x1": 1752,
-                    "y1": 5459,
+                    "x1": 1552,
+                    "y1": 3634,
                     "x2": 4188,
-                    "y2": 5515
+                    "y2": 3690
+                }
+            },
+            {
+                "layer": "m1",
+                "area": {
+                    "x1": 1552,
+                    "y1": 0,
+                    "x2": 1602,
+                    "y2": 5660
+                }
+            },
+            {
+                "layer": "m1",
+                "area": {
+                    "x1": 4138,
+                    "y1": 0,
+                    "x2": 4188,
+                    "y2": 5660
                 }
             }
         ],
@@ -3946,10 +4670,64 @@
             {
                 "layer": "locali-m1",
                 "area": {
+                    "x1": 1552,
+                    "y1": 3634,
+                    "x2": 1602,
+                    "y2": 3690
+                }
+            },
+            {
+                "layer": "locali-m1",
+                "area": {
                     "x1": 4138,
-                    "y1": 5459,
+                    "y1": 3634,
                     "x2": 4188,
-                    "y2": 5515
+                    "y2": 3690
+                }
+            },
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 4138,
+                    "y1": 0,
+                    "x2": 4188,
+                    "y2": 50
+                }
+            },
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 4138,
+                    "y1": 5610,
+                    "x2": 4188,
+                    "y2": 5660
+                }
+            },
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 1552,
+                    "y1": 0,
+                    "x2": 1602,
+                    "y2": 50
+                }
+            },
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 1552,
+                    "y1": 5610,
+                    "x2": 1602,
+                    "y2": 5660
+                }
+            },
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 1552,
+                    "y1": 3634,
+                    "x2": 1602,
+                    "y2": 3690
                 }
             }
         ]
@@ -3960,15 +4738,34 @@
         "cell": "OTA",
         "named_cell": "U1_OTA",
         "parent_cell": "JNW_BKLE",
+        "named_parent_cell": "",
         "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
         "segments": [
             {
                 "layer": "locali",
                 "area": {
-                    "x1": 1752,
-                    "y1": 3795,
+                    "x1": 1552,
+                    "y1": 1970,
                     "x2": 4188,
-                    "y2": 3851
+                    "y2": 2026
+                }
+            },
+            {
+                "layer": "m1",
+                "area": {
+                    "x1": 1552,
+                    "y1": 0,
+                    "x2": 1602,
+                    "y2": 5660
+                }
+            },
+            {
+                "layer": "m1",
+                "area": {
+                    "x1": 4138,
+                    "y1": 0,
+                    "x2": 4188,
+                    "y2": 5660
                 }
             }
         ],
@@ -3976,20 +4773,75 @@
             {
                 "layer": "locali-m1",
                 "area": {
+                    "x1": 1552,
+                    "y1": 1970,
+                    "x2": 1602,
+                    "y2": 2026
+                }
+            },
+            {
+                "layer": "locali-m1",
+                "area": {
                     "x1": 4138,
-                    "y1": 3795,
+                    "y1": 1970,
                     "x2": 4188,
-                    "y2": 3851
+                    "y2": 2026
+                }
+            },
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 4138,
+                    "y1": 0,
+                    "x2": 4188,
+                    "y2": 50
+                }
+            },
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 4138,
+                    "y1": 5610,
+                    "x2": 4188,
+                    "y2": 5660
+                }
+            },
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 1552,
+                    "y1": 0,
+                    "x2": 1602,
+                    "y2": 50
+                }
+            },
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 1552,
+                    "y1": 5610,
+                    "x2": 1602,
+                    "y2": 5660
+                }
+            },
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 1552,
+                    "y1": 1970,
+                    "x2": 1602,
+                    "y2": 2026
                 }
             }
         ]
     },
     {
         "instance": "Pin",
-        "number_id": 51,
+        "number_id": 57,
         "cell": "JNW_BKLE",
         "named_cell": "UTOP_JNW_BKLE",
         "parent_cell": "ROOT_CELL",
+        "named_parent_cell": "UROOT_ROOT_CELL",
         "cell_chain": "UTOP_JNW_BKLE",
         "type": "ipin",
         "name": "VDD",
@@ -3997,18 +4849,19 @@
             "layer": "locali",
             "area": {
                 "x1": -100,
-                "y1": 5765,
-                "x2": 4288,
-                "y2": 5815
+                "y1": 5710,
+                "x2": 5908,
+                "y2": 5760
             }
         }
     },
     {
         "instance": "Pin",
-        "number_id": 52,
+        "number_id": 58,
         "cell": "JNW_BKLE",
         "named_cell": "UTOP_JNW_BKLE",
         "parent_cell": "ROOT_CELL",
+        "named_parent_cell": "UROOT_ROOT_CELL",
         "cell_chain": "UTOP_JNW_BKLE",
         "type": "ipin",
         "name": "VSS",
@@ -4016,9 +4869,9 @@
             "layer": "locali",
             "area": {
                 "x1": -200,
-                "y1": 5865,
-                "x2": 4388,
-                "y2": 5915
+                "y1": 5810,
+                "x2": 6008,
+                "y2": 5860
             }
         }
     },
@@ -4028,15 +4881,16 @@
         "cell": "JNW_BKLE",
         "named_cell": "UTOP_JNW_BKLE",
         "parent_cell": "ROOT_CELL",
+        "named_parent_cell": "",
         "cell_chain": "UTOP_JNW_BKLE",
         "segments": [
             {
                 "layer": "locali",
                 "area": {
                     "x1": -100,
-                    "y1": 5765,
-                    "x2": 4288,
-                    "y2": 5815
+                    "y1": 5710,
+                    "x2": 5908,
+                    "y2": 5760
                 }
             },
             {
@@ -4044,7 +4898,7 @@
                 "area": {
                     "x1": -100,
                     "y1": -100,
-                    "x2": 4288,
+                    "x2": 5908,
                     "y2": -50
                 }
             },
@@ -4054,16 +4908,16 @@
                     "x1": -100,
                     "y1": -50,
                     "x2": -50,
-                    "y2": 5765
+                    "y2": 5710
                 }
             },
             {
                 "layer": "m1",
                 "area": {
-                    "x1": 4238,
+                    "x1": 5858,
                     "y1": -50,
-                    "x2": 4288,
-                    "y2": 5765
+                    "x2": 5908,
+                    "y2": 5710
                 }
             }
         ],
@@ -4072,9 +4926,9 @@
                 "layer": "locali-m1",
                 "area": {
                     "x1": -100,
-                    "y1": 5765,
+                    "y1": 5710,
                     "x2": -50,
-                    "y2": 5815
+                    "y2": 5760
                 }
             },
             {
@@ -4089,18 +4943,18 @@
             {
                 "layer": "locali-m1",
                 "area": {
-                    "x1": 4238,
-                    "y1": 5765,
-                    "x2": 4288,
-                    "y2": 5815
+                    "x1": 5858,
+                    "y1": 5710,
+                    "x2": 5908,
+                    "y2": 5760
                 }
             },
             {
                 "layer": "locali-m1",
                 "area": {
-                    "x1": 4238,
+                    "x1": 5858,
                     "y1": -100,
-                    "x2": 4288,
+                    "x2": 5908,
                     "y2": -50
                 }
             }
@@ -4112,15 +4966,16 @@
         "cell": "JNW_BKLE",
         "named_cell": "UTOP_JNW_BKLE",
         "parent_cell": "ROOT_CELL",
+        "named_parent_cell": "",
         "cell_chain": "UTOP_JNW_BKLE",
         "segments": [
             {
                 "layer": "locali",
                 "area": {
                     "x1": -200,
-                    "y1": 5865,
-                    "x2": 4388,
-                    "y2": 5915
+                    "y1": 5810,
+                    "x2": 6008,
+                    "y2": 5860
                 }
             },
             {
@@ -4128,7 +4983,7 @@
                 "area": {
                     "x1": -200,
                     "y1": -200,
-                    "x2": 4388,
+                    "x2": 6008,
                     "y2": -150
                 }
             },
@@ -4138,16 +4993,16 @@
                     "x1": -200,
                     "y1": -150,
                     "x2": -150,
-                    "y2": 5865
+                    "y2": 5810
                 }
             },
             {
                 "layer": "m1",
                 "area": {
-                    "x1": 4338,
+                    "x1": 5958,
                     "y1": -150,
-                    "x2": 4388,
-                    "y2": 5865
+                    "x2": 6008,
+                    "y2": 5810
                 }
             }
         ],
@@ -4156,9 +5011,9 @@
                 "layer": "locali-m1",
                 "area": {
                     "x1": -200,
-                    "y1": 5865,
+                    "y1": 5810,
                     "x2": -150,
-                    "y2": 5915
+                    "y2": 5860
                 }
             },
             {
@@ -4173,18 +5028,18 @@
             {
                 "layer": "locali-m1",
                 "area": {
-                    "x1": 4338,
-                    "y1": 5865,
-                    "x2": 4388,
-                    "y2": 5915
+                    "x1": 5958,
+                    "y1": 5810,
+                    "x2": 6008,
+                    "y2": 5860
                 }
             },
             {
                 "layer": "locali-m1",
                 "area": {
-                    "x1": 4338,
+                    "x1": 5958,
                     "y1": -200,
-                    "x2": 4388,
+                    "x2": 6008,
                     "y2": -150
                 }
             }

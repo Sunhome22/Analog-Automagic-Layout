@@ -1382,5 +1382,373 @@
             "x2": 2236,
             "y2": 1720
         }
+    },
+    {
+        "instance": "Transistor",
+        "number_id": 24,
+        "name": "QP1",
+        "type": "pnp",
+        "cell": "OTA",
+        "named_cell": "U1_OTA",
+        "parent_cell": "JNW_BKLE",
+        "named_parent_cell": "UTOP_JNW_BKLE",
+        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
+        "group": null,
+        "schematic_connections": {
+            "C": "VSS",
+            "B": "VSS",
+            "E": "VDD"
+        },
+        "layout_name": "AALMISC_PNP_W3p40L3p40",
+        "layout_library": "AAL_MISC_SKY130A",
+        "layout_ports": [
+            {
+                "type": "E",
+                "layer": "locali",
+                "area": {
+                    "x1": 270,
+                    "y1": 313,
+                    "x2": 400,
+                    "y2": 365
+                }
+            },
+            {
+                "type": "C",
+                "layer": "locali",
+                "area": {
+                    "x1": 310,
+                    "y1": 608,
+                    "x2": 360,
+                    "y2": 657
+                }
+            },
+            {
+                "type": "B",
+                "layer": "locali",
+                "area": {
+                    "x1": 310,
+                    "y1": 540,
+                    "x2": 360,
+                    "y2": 575
+                }
+            }
+        ],
+        "transform_matrix": {
+            "a": 0,
+            "b": 0,
+            "c": 0,
+            "d": 0,
+            "e": 0,
+            "f": 0
+        },
+        "bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 670,
+            "y2": 670
+        },
+        "overlap_distance": {
+            "x": 0,
+            "y": 0
+        },
+        "group_endpoint": "",
+        "group_endpoint_bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 0,
+            "y2": 0
+        }
+    },
+    {
+        "instance": "Transistor",
+        "number_id": 25,
+        "name": "QP2",
+        "type": "pnp",
+        "cell": "OTA",
+        "named_cell": "U1_OTA",
+        "parent_cell": "JNW_BKLE",
+        "named_parent_cell": "UTOP_JNW_BKLE",
+        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
+        "group": null,
+        "schematic_connections": {
+            "C": "VSS",
+            "B": "VSS",
+            "E": "VDD"
+        },
+        "layout_name": "AALMISC_PNP_W3p40L3p40",
+        "layout_library": "AAL_MISC_SKY130A",
+        "layout_ports": [
+            {
+                "type": "E",
+                "layer": "locali",
+                "area": {
+                    "x1": 270,
+                    "y1": 313,
+                    "x2": 400,
+                    "y2": 365
+                }
+            },
+            {
+                "type": "C",
+                "layer": "locali",
+                "area": {
+                    "x1": 310,
+                    "y1": 608,
+                    "x2": 360,
+                    "y2": 657
+                }
+            },
+            {
+                "type": "B",
+                "layer": "locali",
+                "area": {
+                    "x1": 310,
+                    "y1": 540,
+                    "x2": 360,
+                    "y2": 575
+                }
+            }
+        ],
+        "transform_matrix": {
+            "a": 0,
+            "b": 0,
+            "c": 0,
+            "d": 0,
+            "e": 0,
+            "f": 0
+        },
+        "bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 670,
+            "y2": 670
+        },
+        "overlap_distance": {
+            "x": 0,
+            "y": 0
+        },
+        "group_endpoint": "",
+        "group_endpoint_bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 0,
+            "y2": 0
+        }
+    },
+    {
+        "instance": "Capacitor",
+        "number_id": 26,
+        "name": "CM1",
+        "type": "mim",
+        "cell": "OTA",
+        "named_cell": "U1_OTA",
+        "parent_cell": "JNW_BKLE",
+        "named_parent_cell": "UTOP_JNW_BKLE",
+        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
+        "group": null,
+        "schematic_connections": {
+            "A": "VDD",
+            "B": "VSS"
+        },
+        "layout_name": "AALMISC_CAP50f",
+        "layout_library": "AAL_MISC_SKY130A",
+        "layout_ports": [
+            {
+                "type": "A",
+                "layer": "m3",
+                "area": {
+                    "x1": 0,
+                    "y1": 262,
+                    "x2": 580,
+                    "y2": 842
+                }
+            },
+            {
+                "type": "B",
+                "layer": "m3",
+                "area": {
+                    "x1": 0,
+                    "y1": 0,
+                    "x2": 580,
+                    "y2": 162
+                }
+            }
+        ],
+        "transform_matrix": {
+            "a": 0,
+            "b": 0,
+            "c": 0,
+            "d": 0,
+            "e": 0,
+            "f": 0
+        },
+        "bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 580,
+            "y2": 842
+        }
+    },
+    {
+        "instance": "Capacitor",
+        "number_id": 27,
+        "name": "CM2",
+        "type": "mim",
+        "cell": "OTA",
+        "named_cell": "U1_OTA",
+        "parent_cell": "JNW_BKLE",
+        "named_parent_cell": "UTOP_JNW_BKLE",
+        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
+        "group": null,
+        "schematic_connections": {
+            "A": "VDD",
+            "B": "VSS"
+        },
+        "layout_name": "AALMISC_CAP50f",
+        "layout_library": "AAL_MISC_SKY130A",
+        "layout_ports": [
+            {
+                "type": "A",
+                "layer": "m3",
+                "area": {
+                    "x1": 0,
+                    "y1": 262,
+                    "x2": 580,
+                    "y2": 842
+                }
+            },
+            {
+                "type": "B",
+                "layer": "m3",
+                "area": {
+                    "x1": 0,
+                    "y1": 0,
+                    "x2": 580,
+                    "y2": 162
+                }
+            }
+        ],
+        "transform_matrix": {
+            "a": 0,
+            "b": 0,
+            "c": 0,
+            "d": 0,
+            "e": 0,
+            "f": 0
+        },
+        "bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 580,
+            "y2": 842
+        }
+    },
+    {
+        "instance": "Capacitor",
+        "number_id": 28,
+        "name": "CM3",
+        "type": "mim",
+        "cell": "OTA",
+        "named_cell": "U1_OTA",
+        "parent_cell": "JNW_BKLE",
+        "named_parent_cell": "UTOP_JNW_BKLE",
+        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
+        "group": null,
+        "schematic_connections": {
+            "A": "VDD",
+            "B": "VSS"
+        },
+        "layout_name": "AALMISC_CAP50f",
+        "layout_library": "AAL_MISC_SKY130A",
+        "layout_ports": [
+            {
+                "type": "A",
+                "layer": "m3",
+                "area": {
+                    "x1": 0,
+                    "y1": 262,
+                    "x2": 580,
+                    "y2": 842
+                }
+            },
+            {
+                "type": "B",
+                "layer": "m3",
+                "area": {
+                    "x1": 0,
+                    "y1": 0,
+                    "x2": 580,
+                    "y2": 162
+                }
+            }
+        ],
+        "transform_matrix": {
+            "a": 0,
+            "b": 0,
+            "c": 0,
+            "d": 0,
+            "e": 0,
+            "f": 0
+        },
+        "bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 580,
+            "y2": 842
+        }
+    },
+    {
+        "instance": "Capacitor",
+        "number_id": 29,
+        "name": "CM4",
+        "type": "mim",
+        "cell": "OTA",
+        "named_cell": "U1_OTA",
+        "parent_cell": "JNW_BKLE",
+        "named_parent_cell": "UTOP_JNW_BKLE",
+        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
+        "group": null,
+        "schematic_connections": {
+            "A": "VDD",
+            "B": "VSS"
+        },
+        "layout_name": "AALMISC_CAP50f",
+        "layout_library": "AAL_MISC_SKY130A",
+        "layout_ports": [
+            {
+                "type": "A",
+                "layer": "m3",
+                "area": {
+                    "x1": 0,
+                    "y1": 262,
+                    "x2": 580,
+                    "y2": 842
+                }
+            },
+            {
+                "type": "B",
+                "layer": "m3",
+                "area": {
+                    "x1": 0,
+                    "y1": 0,
+                    "x2": 580,
+                    "y2": 162
+                }
+            }
+        ],
+        "transform_matrix": {
+            "a": 0,
+            "b": 0,
+            "c": 0,
+            "d": 0,
+            "e": 0,
+            "f": 0
+        },
+        "bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 580,
+            "y2": 842
+        }
     }
 ]

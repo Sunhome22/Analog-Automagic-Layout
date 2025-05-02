@@ -227,7 +227,8 @@ def __create_bulk_to_rail_based_on_component_placement_order(
             trace.vias.append(RectAreaLayer(layer='locali-m1', area=via_right))
             trace.segments.append(RectAreaLayer(layer='locali', area=segment))
 
-        elif self.functional_component_order[1] == "R" or self.functional_component_order[2] == "R":
+        elif (self.functional_component_order[1] == "R" and len(self.functional_component_order) > 2
+              or self.functional_component_order[2] == "R" and len(self.functional_component_order) > 3):
             x1 = smallest_x_component.transform_matrix.c + structural_component.layout.area.x1
             x2 = smallest_x_component.transform_matrix.c + total_length - structural_component.layout.area.x1
 
@@ -250,7 +251,8 @@ def __create_bulk_to_rail_based_on_component_placement_order(
 def __add_connections_for_middle_placed_components(self, structural_component, group_components, trace):
     if self.RELATIVE_COMPONENT_PLACEMENT == "S" and len(self.functional_component_order) > 2:
 
-        if self.functional_component_order[1] == "R" or self.functional_component_order[2] == "R":
+        if (self.functional_component_order[1] == "R" and len(self.functional_component_order) > 2
+                or self.functional_component_order[2] == "R" and len(self.functional_component_order) > 3):
             current_rail_bottom_segment = RectAreaLayer()
             smallest_x_cord_comp = min(group_components, key=lambda component: component.transform_matrix.c)
             total_length = sum((component.bounding_box.x2 - component.bounding_box.x1) for component in group_components)

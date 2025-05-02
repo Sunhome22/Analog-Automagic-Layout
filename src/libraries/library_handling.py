@@ -61,7 +61,7 @@ class LibraryHandling:
                 self.tr_resistor_components.append(component)
 
             if isinstance(component, Capacitor) and re.search(r'AAL_MISC', component.layout_library):
-                self.aal_capacitor_components.append(component)
+                self.aal_misc_capacitor_components.append(component)
 
             if isinstance(component, Transistor) and re.search(r'AAL_MISC', component.layout_library):
                 self.aal_misc_pnp_components.append(component)
@@ -99,6 +99,9 @@ class LibraryHandling:
         # AAL_MISC SKY130A library component handling
         if self.aal_misc_pnp_components:
             aal.generate_local_traces_for_aal_misc_sky130a_lib_pnp(self=self)
+
+        # if self.aal_misc_pnp_components:
+        #     aal.generate_local_traces_for_aal_misc_sky130a_lib_pnp(self=self)
 
         return self.components
 

@@ -49,6 +49,10 @@ def magic_component_parsing_for_aal_misc_sky130a_lib(self, layout_file_path: str
 
 
 def generate_local_traces_for_aal_misc_sky130a_lib_pnp(self):
+    for component in self.aal_misc_pnp_components:
+        if component.schematic_connections['B'] == component.schematic_connections['C']:
+            __local_base_to_collector_connection(self=self, component=component)
+
     # Make dict of component names based on y-coordinate
     y_grouped_component_names = defaultdict(list)
     for component in self.aal_misc_pnp_components:
@@ -62,7 +66,7 @@ def generate_local_traces_for_aal_misc_sky130a_lib_pnp(self):
                 re.search(r".*VSS.*", component.schematic_connections['C'], re.IGNORECASE)):
             components_with_collector_to_rail_connection.append(component)
 
-    # Make groups of components that have their bulk connected to a rail and have the same y-coordinate
+    # Make groups of components that have their collectors connected to a rail and have the same y-coordinate
     y_group_components = defaultdict(list)
     for _, group in y_grouped_component_names.items():
         for comp_name in group:
@@ -71,9 +75,9 @@ def generate_local_traces_for_aal_misc_sky130a_lib_pnp(self):
                     group_name = "_".join(map(str, group))
                     y_group_components[group_name].append(component)
 
-    # Iterate over y-grouped components and check for match against bulk to rail components. On component hit against a
-    # group discard all other components within group. This solution removes redundant rail traces for each component
-    # with the same y-coordinates.
+    # Iterate over y-grouped components and check for match against collectors to rail components.
+    # On component hit against a group discard all other components within group. This solution removes redundant rail
+    # traces for each component with the same y-coordinates.
     for _, group in y_grouped_component_names.items():
         found_comp = False
         for comp_name in group:
@@ -85,6 +89,25 @@ def generate_local_traces_for_aal_misc_sky130a_lib_pnp(self):
                                                          rail=component.schematic_connections['C'],
                                                          group_name=group_name,
                                                          group_components=y_group_components[group_name])
+
+
+def __local_base_to_collector_connection(self, component):
+    trace = TraceNet(name=f"{component.name}_B_C", named_cell=component.named_cell)
+    trace.instance = trace.__class__.__name__
+    trace.cell = self.circuit_cell.cell
+    trace.parent_cell = self.circuit_cell.parent_cell
+    trace.cell_chain = self.circuit_cell.cell_chain
+    print("yo")
+    collector_x1 = next((port.area.x1 for port in component.layout_ports if port.type == 'C'))
+    collector_x2 = next((port.area.x2 for port in component.layout_ports if port.type == 'C'))
+    collector_y1 = next((port.area.y1 for port in component.layout_ports if port.type == 'C'))
+    base_y2 = next((port.area.y2 for port in component.layout_ports if port.type == 'B'))
+
+    trace.segments = [RectAreaLayer(layer='locali', area=RectArea(x1=collector_x1 + component.transform_matrix.c,
+                                                                  y1=base_y2 + component.transform_matrix.f,
+                                                                  x2=collector_x2 + component.transform_matrix.c,
+                                                                  y2=collector_y1 + component.transform_matrix.f))]
+    self.components.append(trace)
 
 
 def __local_collector_to_rail_connection(self, component, rail: str, group_name: str, group_components: list):
@@ -107,9 +130,9 @@ def generate_collector_to_rail(self, rail: str, component, y_params: tuple,
     trace.parent_cell = self.circuit_cell.parent_cell
     trace.cell_chain = self.circuit_cell.cell_chain
 
-    bulk_y1 = next((port.area.y1 for port in component.layout_ports if port.type == 'C'))
-    bulk_y2 = next((port.area.y2 for port in component.layout_ports if port.type == 'C'))
-    bulk_width = abs(bulk_y2 - bulk_y1)
+    collector_y1 = next((port.area.y1 for port in component.layout_ports if port.type == 'C'))
+    collector_y2 = next((port.area.y2 for port in component.layout_ports if port.type == 'C'))
+    collector_width = abs(collector_y2 - collector_y1)
 
     for structural_component in self.structural_components:
         if re.search(rf"\b{rail}\b", structural_component.name, re.IGNORECASE):
@@ -118,7 +141,7 @@ def generate_collector_to_rail(self, rail: str, component, y_params: tuple,
                 structural_component=structural_component,
                 y_params=y_params,
                 component=component,
-                bulk_width=bulk_width,
+                collector_width=collector_width,
                 group_components=group_components,
                 trace=trace
             )
@@ -128,7 +151,7 @@ def generate_collector_to_rail(self, rail: str, component, y_params: tuple,
 
 
 def __create_collector_to_rail_based_on_component_placement_order(
-        self, structural_component, y_params, component, bulk_width, group_components, trace):
+        self, structural_component, y_params, component, collector_width, group_components, trace):
 
     total_length = sum((comp.bounding_box.x2 - comp.bounding_box.x1) for comp in group_components)
     smallest_x_component = min(group_components, key=lambda comp: comp.transform_matrix.c)
@@ -137,16 +160,16 @@ def __create_collector_to_rail_based_on_component_placement_order(
         x1 = structural_component.layout.area.x1
         x2 = structural_component.layout.area.x2
 
-        segment = RectArea(x1=x1, y1=y_params[0] + component.transform_matrix.f - bulk_width * y_params[1],
-                           x2=x2, y2=y_params[0] + component.transform_matrix.f + bulk_width * y_params[2])
+        segment = RectArea(x1=x1, y1=y_params[0] + component.transform_matrix.f - collector_width * y_params[1],
+                           x2=x2, y2=y_params[0] + component.transform_matrix.f + collector_width * y_params[2])
 
-        via_left = RectArea(x1=x1, y1=y_params[0] + component.transform_matrix.f - bulk_width * y_params[1],
+        via_left = RectArea(x1=x1, y1=y_params[0] + component.transform_matrix.f - collector_width * y_params[1],
                             x2=x1 + self.RAIL_RING_WIDTH,
-                            y2=y_params[0] + component.transform_matrix.f + bulk_width * y_params[2])
+                            y2=y_params[0] + component.transform_matrix.f + collector_width * y_params[2])
 
         via_right = RectArea(x1=x2 - self.RAIL_RING_WIDTH,
-                             y1=y_params[0] + component.transform_matrix.f - bulk_width * y_params[1],
-                             x2=x2, y2=y_params[0] + component.transform_matrix.f + bulk_width * y_params[2])
+                             y1=y_params[0] + component.transform_matrix.f - collector_width * y_params[1],
+                             x2=x2, y2=y_params[0] + component.transform_matrix.f + collector_width * y_params[2])
 
         trace.vias.append(RectAreaLayer(layer='locali-m1', area=via_left))
         trace.vias.append(RectAreaLayer(layer='locali-m1', area=via_right))
@@ -158,12 +181,12 @@ def __create_collector_to_rail_based_on_component_placement_order(
             x1 = structural_component.layout.area.x1
             x2 = total_length
 
-            segment = RectArea(x1=x1, y1=y_params[0] + component.transform_matrix.f - bulk_width * y_params[1],
-                               x2=x2, y2=y_params[0] + component.transform_matrix.f + bulk_width * y_params[2])
+            segment = RectArea(x1=x1, y1=y_params[0] + component.transform_matrix.f - collector_width * y_params[1],
+                               x2=x2, y2=y_params[0] + component.transform_matrix.f + collector_width * y_params[2])
 
-            via_left = RectArea(x1=x1, y1=y_params[0] + component.transform_matrix.f - bulk_width * y_params[1],
+            via_left = RectArea(x1=x1, y1=y_params[0] + component.transform_matrix.f - collector_width * y_params[1],
                                 x2=x1 + self.RAIL_RING_WIDTH,
-                                y2=y_params[0] + component.transform_matrix.f + bulk_width * y_params[2])
+                                y2=y_params[0] + component.transform_matrix.f + collector_width * y_params[2])
             trace.vias.append(RectAreaLayer(layer='locali-m1', area=via_left))
             trace.segments.append(RectAreaLayer(layer='locali', area=segment))
 
@@ -171,29 +194,30 @@ def __create_collector_to_rail_based_on_component_placement_order(
             x1 = structural_component.layout.area.x2 - total_length + structural_component.layout.area.x1
             x2 = structural_component.layout.area.x2
 
-            segment = RectArea(x1=x1, y1=y_params[0] + component.transform_matrix.f - bulk_width * y_params[1],
-                               x2=x2, y2=y_params[0] + component.transform_matrix.f + bulk_width * y_params[2])
+            segment = RectArea(x1=x1, y1=y_params[0] + component.transform_matrix.f - collector_width * y_params[1],
+                               x2=x2, y2=y_params[0] + component.transform_matrix.f + collector_width * y_params[2])
 
             via_right = RectArea(x1=x2 - self.RAIL_RING_WIDTH,
-                                 y1=y_params[0] + component.transform_matrix.f - bulk_width * y_params[1],
-                                 x2=x2, y2=y_params[0] + component.transform_matrix.f + bulk_width * y_params[2])
+                                 y1=y_params[0] + component.transform_matrix.f - collector_width * y_params[1],
+                                 x2=x2, y2=y_params[0] + component.transform_matrix.f + collector_width * y_params[2])
             trace.vias.append(RectAreaLayer(layer='locali-m1', area=via_right))
             trace.segments.append(RectAreaLayer(layer='locali', area=segment))
 
-        elif self.functional_component_order[1] == "B" or self.functional_component_order[2] == "B":
+        elif (self.functional_component_order[1] == "B" and len(self.functional_component_order) > 2
+                or self.functional_component_order[2] == "B" and len(self.functional_component_order) > 3):
             x1 = smallest_x_component.transform_matrix.c + structural_component.layout.area.x1
             x2 = smallest_x_component.transform_matrix.c + total_length - structural_component.layout.area.x1
 
-            segment = RectArea(x1=x1, y1=y_params[0] + component.transform_matrix.f - bulk_width * y_params[1],
-                               x2=x2, y2=y_params[0] + component.transform_matrix.f + bulk_width * y_params[2])
+            segment = RectArea(x1=x1, y1=y_params[0] + component.transform_matrix.f - collector_width * y_params[1],
+                               x2=x2, y2=y_params[0] + component.transform_matrix.f + collector_width * y_params[2])
 
-            via_left = RectArea(x1=x1, y1=y_params[0] + component.transform_matrix.f - bulk_width * y_params[1],
+            via_left = RectArea(x1=x1, y1=y_params[0] + component.transform_matrix.f - collector_width * y_params[1],
                                 x2=x1 + self.RAIL_RING_WIDTH,
-                                y2=y_params[0] + component.transform_matrix.f + bulk_width * y_params[2])
+                                y2=y_params[0] + component.transform_matrix.f + collector_width * y_params[2])
 
             via_right = RectArea(x1=x2 - self.RAIL_RING_WIDTH,
-                                 y1=y_params[0] + component.transform_matrix.f - bulk_width * y_params[1],
-                                 x2=x2, y2=y_params[0] + component.transform_matrix.f + bulk_width * y_params[2])
+                                 y1=y_params[0] + component.transform_matrix.f - collector_width * y_params[1],
+                                 x2=x2, y2=y_params[0] + component.transform_matrix.f + collector_width * y_params[2])
 
             trace.vias.append(RectAreaLayer(layer='locali-m1', area=via_left))
             trace.vias.append(RectAreaLayer(layer='locali-m1', area=via_right))
@@ -203,7 +227,8 @@ def __create_collector_to_rail_based_on_component_placement_order(
 def __add_connections_for_middle_placed_components(self, structural_component, group_components, trace):
     if self.RELATIVE_COMPONENT_PLACEMENT == "S" and len(self.functional_component_order) > 2:
 
-        if self.functional_component_order[1] == "B" or self.functional_component_order[2] == "B":
+        if (self.functional_component_order[1] == "B" and len(self.functional_component_order) > 2
+                or self.functional_component_order[2] == "B" and len(self.functional_component_order) > 3) :
             current_rail_bottom_segment = RectAreaLayer()
             smallest_x_cord_comp = min(group_components, key=lambda component: component.transform_matrix.c)
             total_length = sum((component.bounding_box.x2 - component.bounding_box.x1) for component in group_components)

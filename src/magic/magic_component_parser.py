@@ -18,6 +18,7 @@ import re
 from circuit.circuit_components import LayoutPort, RectArea, Transistor, Capacitor, Resistor, DigitalBlock
 from logger.logger import get_a_logger
 from dataclasses import fields
+import math
 import libraries.atr_sky130a_lib as atr
 import libraries.tr_sky130a_lib as tr
 import libraries.aal_misc_sky130a_lib as aal
@@ -113,10 +114,10 @@ class MagicComponentsParser:
             text_line_words = text_line.split()
 
             layout_port = LayoutPort(type=text_line_words[-1], layer=text_line_words[1],
-                                     area=RectArea(x1=int(text_line_words[3]) // self.scale_factor,
-                                                   y1=int(text_line_words[4]) // self.scale_factor,
-                                                   x2=int(text_line_words[5]) // self.scale_factor,
-                                                   y2=int(text_line_words[6]) // self.scale_factor))
+                                     area=RectArea(x1=math.ceil(int(text_line_words[3]) / self.scale_factor),
+                                                   y1=math.ceil(int(text_line_words[4]) / self.scale_factor),
+                                                   x2=math.floor(int(text_line_words[5]) / self.scale_factor),
+                                                   y2=math.floor(int(text_line_words[6]) / self.scale_factor)))
 
             component.layout_ports.append(layout_port)
 
