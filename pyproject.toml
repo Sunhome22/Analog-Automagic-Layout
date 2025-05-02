@@ -80,7 +80,7 @@ THETA = 5
 GRID_SIZE = 12000
 
 [linear_optimization.resistor]
-UNIT_HEIGHT = 50
+UNIT_HEIGHT = 25
 UNIT_WIDTH = 50
 MIRROR = true
 STOP_TOLERANCE = 0.005
