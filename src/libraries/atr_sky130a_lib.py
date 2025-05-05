@@ -60,10 +60,11 @@ def offset_components_by_group_endpoint_and_overlap_distance_for_atr_sky130a_lib
             component.transform_matrix.c += component.overlap_distance.x
             offset = (component.group_endpoint_bounding_box.y2 -
                       component.group_endpoint_bounding_box.y1) + component.overlap_distance.y
+            component.transform_matrix.f += offset
 
-        for comp in self.components:
-            if isinstance(comp, CircuitCell):
-                comp.bounding_box.y2 += offset
+        # for comp in self.components:
+        #     if isinstance(comp, CircuitCell):
+        #         comp.bounding_box.y2 += offset
 
         #component.transform_matrix.c += 100
 
