@@ -17,7 +17,7 @@
 - [ ] Fix gathering of deeper information when cells inherit other cells. Overlap distance is for example not handled
 - [x] Fix missing rail and tap in a specific layout edge case (see .json file)
 - [x] Deal with 15 vs 16 net missmatch when placing multiple cell within each other but not connected.
-- [] How many VDD nets is common to have. Is it ok to assume all cells have the same number of VDD nets?
+- [x] How many VDD nets is common to have. Is it ok to assume all cells have the same number of VDD nets?
 
 ## Notes
 - Vias get turned into multiple smaller ones when converting to GDSII. Always want atleast two, however
@@ -40,6 +40,11 @@
 - Is it safe to say that all components always will have a FIXED_BBOX parameter? No
 - Do routing in m3 and m4
 
+
+- Running unit_res_cap is not working.
+- Area allowed to route in needs to be fixed for the 50f cap
+- Sub cell distance should have a value between each sub cell and not one for all!
+
 ## Notes on running multiple cells
 - Spice parsing and magic layout parsing will happen once also. 
 - MagicLayoutCreator is going to be ran once on all components.
@@ -50,3 +55,4 @@
 - "__add_components_for_each_circuit_cell" a circuit cell get properly added for every unique cell (deals with
 - nested cells). In cell creator for each iteration we deal with components with the same cell chain. 
 - In Magic layout creator's "_generate_magic_files" magic files get created 
+

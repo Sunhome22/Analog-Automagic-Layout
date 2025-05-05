@@ -33,17 +33,53 @@ from circuit.circuit_components import (RectArea, RectAreaLayer, Transistor, Cap
 # ======================================================================================================================
 
 
-# ============================================ Bounding box update functions ===========================================
+# ================================================= Update positioning  ================================================
 
-def update_bounding_boxes_for_atr_sky130a_lib(self):
+def offset_components_by_group_endpoint_and_overlap_distance_for_atr_sky130a_lib(self):
+    """Updates position of components taking offset and group endpoint areas into account.
+    This is a hacky solution. TBD"""
 
-    for component in self.atr_transistor_components:
-        print(component.group_endpoint, component.overlap_distance)
+    atr_transistor_components = []
+    for component in self.components:
+        if isinstance(component, Transistor) and re.search(r'_ATR_', component.layout_library):
+            atr_transistor_components.append(component)
+
+    if not atr_transistor_components:
+        return
+
+    if self.RELATIVE_COMPONENT_PLACEMENT == "S":
+
+        for component in atr_transistor_components:
+            component.transform_matrix.f += (component.group_endpoint_bounding_box.y2 -
+                                             component.group_endpoint_bounding_box.y1) + component.overlap_distance.y
+            component.transform_matrix.c += component.overlap_distance.x
+
+    if self.RELATIVE_COMPONENT_PLACEMENT == "A":
+        offset = 0
+        for component in atr_transistor_components:
+            component.transform_matrix.c += component.overlap_distance.x
+            offset = (component.group_endpoint_bounding_box.y2 -
+                      component.group_endpoint_bounding_box.y1) + component.overlap_distance.y
+
+        for comp in self.components:
+            if isinstance(comp, CircuitCell):
+                comp.bounding_box.y2 += offset
+
+        #component.transform_matrix.c += 100
 
 
 # ============================================= Trace generation functions =============================================
 def generate_local_traces_for_atr_sky130a_lib(self):
-    for component in self.atr_transistor_components:
+    atr_transistor_components = []
+
+    for component in self.components:
+        if isinstance(component, Transistor) and re.search(r'_ATR_', component.layout_library):
+            atr_transistor_components.append(component)
+
+    if not atr_transistor_components:
+        return
+
+    for component in atr_transistor_components:
         if component.schematic_connections['B'] == component.schematic_connections['S']:
             __local_bulk_to_source_connection(self=self, component=component)
 
@@ -52,13 +88,13 @@ def generate_local_traces_for_atr_sky130a_lib(self):
 
     # Make dict of component names based on y-coordinate
     y_grouped_component_names = defaultdict(list)
-    for component in self.atr_transistor_components:
+    for component in atr_transistor_components:
         y_grouped_component_names[component.transform_matrix.f].append(component.name)
     y_grouped_component_names = dict(y_grouped_component_names)
 
     # Get components connecting bulk to rail
     components_with_bulk_to_rail_connection = []
-    for component in self.atr_transistor_components:
+    for component in atr_transistor_components:
         if (re.search(r".*VDD.*", component.schematic_connections['B'], re.IGNORECASE) or
                 re.search(r".*VSS.*", component.schematic_connections['B'], re.IGNORECASE)):
             components_with_bulk_to_rail_connection.append(component)
@@ -174,30 +210,31 @@ def generate_bulk_to_rail_segments(self, rail: str, component: Transistor, y_par
 
     for structural_component in self.structural_components:
         if re.search(rf"\b{rail}\b", structural_component.name, re.IGNORECASE):
-
             __create_bulk_to_rail_based_on_component_placement_order(
                 self=self,
-                structural_component=structural_component,
+                pin=structural_component,
                 y_params=y_params,
                 component=component,
                 bulk_width=bulk_width,
                 group_components=group_components,
-                trace=trace
+                trace=trace,
             )
-            __add_connections_for_middle_placed_components(self=self, structural_component=structural_component,
-                                                           group_components=group_components, trace=trace)
+            __add_connections_for_middle_placed_components(
+                self=self,
+                pin=structural_component,
+                group_components=group_components, trace=trace)
     self.components.append(trace)
 
 
 def __create_bulk_to_rail_based_on_component_placement_order(
-        self, structural_component, y_params, component, bulk_width, group_components, trace):
+        self, pin, y_params, component, bulk_width, group_components, trace):
 
     total_length = sum((comp.bounding_box.x2 - comp.bounding_box.x1) for comp in group_components)
     smallest_x_component = min(group_components, key=lambda comp: comp.transform_matrix.c)
 
     if self.RELATIVE_COMPONENT_PLACEMENT == "A" or len(self.functional_component_order) == 1:
-        x1 = structural_component.layout.area.x1
-        x2 = structural_component.layout.area.x2
+        x1 = pin.layout.area.x1
+        x2 = pin.layout.area.x2
 
         segment = RectArea(x1=x1, y1=y_params[0] + component.transform_matrix.f - (bulk_width // 2) + y_params[1],
                            x2=x2, y2=y_params[0] + component.transform_matrix.f + (bulk_width // 2) + y_params[1])
@@ -217,7 +254,7 @@ def __create_bulk_to_rail_based_on_component_placement_order(
     elif self.RELATIVE_COMPONENT_PLACEMENT == "S":
 
         if self.functional_component_order[0] == "T":
-            x1 = structural_component.layout.area.x1
+            x1 = pin.layout.area.x1
             x2 = total_length
 
             segment = RectArea(x1=x1, y1=y_params[0] + component.transform_matrix.f - (bulk_width // 2) + y_params[1],
@@ -230,8 +267,8 @@ def __create_bulk_to_rail_based_on_component_placement_order(
             trace.segments.append(RectAreaLayer(layer='locali', area=segment))
 
         elif self.functional_component_order[-1] == "T":
-            x1 = structural_component.layout.area.x2 - total_length + structural_component.layout.area.x1
-            x2 = structural_component.layout.area.x2
+            x1 = pin.layout.area.x2 - total_length + pin.layout.area.x1
+            x2 = pin.layout.area.x2
 
             segment = RectArea(x1=x1, y1=y_params[0] + component.transform_matrix.f - (bulk_width // 2) + y_params[1],
                                x2=x2, y2=y_params[0] + component.transform_matrix.f + (bulk_width // 2) + y_params[1])
@@ -244,8 +281,8 @@ def __create_bulk_to_rail_based_on_component_placement_order(
 
         elif (self.functional_component_order[1] == "T" and len(self.functional_component_order) > 2
               or self.functional_component_order[2] == "T" and len(self.functional_component_order) > 3):
-            x1 = smallest_x_component.transform_matrix.c + structural_component.layout.area.x1
-            x2 = smallest_x_component.transform_matrix.c + total_length - structural_component.layout.area.x1
+            x1 = smallest_x_component.transform_matrix.c + pin.layout.area.x1
+            x2 = smallest_x_component.transform_matrix.c + total_length - pin.layout.area.x1
 
             segment = RectArea(x1=x1, y1=y_params[0] + component.transform_matrix.f - (bulk_width // 2) + y_params[1],
                                x2=x2, y2=y_params[0] + component.transform_matrix.f + (bulk_width // 2) + y_params[1])
@@ -263,7 +300,7 @@ def __create_bulk_to_rail_based_on_component_placement_order(
             trace.segments.append(RectAreaLayer(layer='locali', area=segment))
 
 
-def __add_connections_for_middle_placed_components(self, structural_component, group_components, trace):
+def __add_connections_for_middle_placed_components(self, pin, group_components, trace):
     if self.RELATIVE_COMPONENT_PLACEMENT == "S" and len(self.functional_component_order) > 2:
 
         if (self.functional_component_order[1] == "T" and len(self.functional_component_order) > 2
@@ -274,51 +311,51 @@ def __add_connections_for_middle_placed_components(self, structural_component, g
 
             # Get bottom segment of current rail
             for component in self.components:
-                if isinstance(component, TraceNet) and component.cell_chain == structural_component.cell_chain:
+                if isinstance(component, TraceNet) and component.cell_chain == pin.cell_chain:
                     if (re.search(r"^(?!.*(?:TOP|BOT)).*VDD.*$", component.name, re.IGNORECASE) and
-                        re.search(r"^(?!.*(?:TOP|BOT)).*VDD.*$", structural_component.name, re.IGNORECASE)) or (
+                        re.search(r"^(?!.*(?:TOP|BOT)).*VDD.*$", pin.name, re.IGNORECASE)) or (
                             re.search(r"^(?!.*(?:TOP|BOT)).*VSS.*$", component.name, re.IGNORECASE) and
-                            re.search(r"^(?!.*(?:TOP|BOT)).*VSS.*$", structural_component.name, re.IGNORECASE)):
+                            re.search(r"^(?!.*(?:TOP|BOT)).*VSS.*$", pin.name, re.IGNORECASE)):
                         current_rail_bottom_segment = min(component.segments, key=lambda s: (s.area.y1, s.area.y2))
 
-            segment_left = RectArea(x1=smallest_x_cord_comp.transform_matrix.c + structural_component.layout.area.x1,
+            segment_left = RectArea(x1=smallest_x_cord_comp.transform_matrix.c + pin.layout.area.x1,
                                     y1=current_rail_bottom_segment.area.y1,
-                                    x2=smallest_x_cord_comp.transform_matrix.c + structural_component.layout.area.x1
+                                    x2=smallest_x_cord_comp.transform_matrix.c + pin.layout.area.x1
                                     + self.RAIL_RING_WIDTH,
-                                    y2=structural_component.layout.area.y2)
+                                    y2=pin.layout.area.y2)
 
-            segment_right = RectArea(x1=smallest_x_cord_comp.transform_matrix.c - structural_component.layout.area.x1
+            segment_right = RectArea(x1=smallest_x_cord_comp.transform_matrix.c - pin.layout.area.x1
                                      + total_length - self.RAIL_RING_WIDTH,
                                      y1=current_rail_bottom_segment.area.y1,
-                                     x2=smallest_x_cord_comp.transform_matrix.c - structural_component.layout.area.x1
+                                     x2=smallest_x_cord_comp.transform_matrix.c - pin.layout.area.x1
                                      + total_length,
-                                     y2=structural_component.layout.area.y2)
+                                     y2=pin.layout.area.y2)
 
-            via_right_top = RectArea(x1=smallest_x_cord_comp.transform_matrix.c + structural_component.layout.area.x1,
+            via_right_top = RectArea(x1=smallest_x_cord_comp.transform_matrix.c + pin.layout.area.x1,
                                      y1=current_rail_bottom_segment.area.y1,
-                                     x2=smallest_x_cord_comp.transform_matrix.c + structural_component.layout.area.x1
+                                     x2=smallest_x_cord_comp.transform_matrix.c + pin.layout.area.x1
                                      + self.RAIL_RING_WIDTH,
                                      y2=current_rail_bottom_segment.area.y1 + self.RAIL_RING_WIDTH)
 
-            via_right_bot = RectArea(x1=smallest_x_cord_comp.transform_matrix.c + structural_component.layout.area.x1,
-                                     y1=structural_component.layout.area.y2 - self.RAIL_RING_WIDTH,
-                                     x2=smallest_x_cord_comp.transform_matrix.c + structural_component.layout.area.x1
+            via_right_bot = RectArea(x1=smallest_x_cord_comp.transform_matrix.c + pin.layout.area.x1,
+                                     y1=pin.layout.area.y2 - self.RAIL_RING_WIDTH,
+                                     x2=smallest_x_cord_comp.transform_matrix.c + pin.layout.area.x1
                                      + self.RAIL_RING_WIDTH,
-                                     y2=structural_component.layout.area.y2)
+                                     y2=pin.layout.area.y2)
 
-            via_left_top = RectArea(x1=smallest_x_cord_comp.transform_matrix.c - structural_component.layout.area.x1
+            via_left_top = RectArea(x1=smallest_x_cord_comp.transform_matrix.c - pin.layout.area.x1
                                     + total_length - self.RAIL_RING_WIDTH,
                                     y1=current_rail_bottom_segment.area.y1,
-                                    x2=smallest_x_cord_comp.transform_matrix.c - structural_component.layout.area.x1
+                                    x2=smallest_x_cord_comp.transform_matrix.c - pin.layout.area.x1
                                     + total_length,
                                     y2=current_rail_bottom_segment.area.y1 + self.RAIL_RING_WIDTH)
 
-            via_left_bot = RectArea(x1=smallest_x_cord_comp.transform_matrix.c - structural_component.layout.area.x1
+            via_left_bot = RectArea(x1=smallest_x_cord_comp.transform_matrix.c - pin.layout.area.x1
                                     + total_length - self.RAIL_RING_WIDTH,
-                                    y1=structural_component.layout.area.y2 - self.RAIL_RING_WIDTH,
-                                    x2=smallest_x_cord_comp.transform_matrix.c - structural_component.layout.area.x1
+                                    y1=pin.layout.area.y2 - self.RAIL_RING_WIDTH,
+                                    x2=smallest_x_cord_comp.transform_matrix.c - pin.layout.area.x1
                                     + total_length,
-                                    y2=structural_component.layout.area.y2)
+                                    y2=pin.layout.area.y2)
 
             trace.vias.append(RectAreaLayer(layer='locali-m1', area=via_left_top))
             trace.vias.append(RectAreaLayer(layer='locali-m1', area=via_left_bot))
@@ -328,36 +365,18 @@ def __add_connections_for_middle_placed_components(self, structural_component, g
             trace.segments.append(RectAreaLayer(layer='m1', area=segment_right))
 
 
-def offset_components_by_group_endpoint_and_overlap_distance_for_atr_sky130a_lib(self):
-    """Updates position of components taking offset and group endpoint areas into account.
-    This is a hacky solution. TBD"""
-    pass
-    # if self.RELATIVE_COMPONENT_PLACEMENT == "S":
-    #
-    #     for component in self.atr_transistor_components:
-    #         component.transform_matrix.f += (component.group_endpoint_bounding_box.y2 -
-    #                                          component.group_endpoint_bounding_box.y1) + component.overlap_distance.y
-    #
-    #     #if self.functional_component_order == "":
-    #
-    # if self.RELATIVE_COMPONENT_PLACEMENT == "A":
-    #     offset = 0
-    #     for component in self.atr_transistor_components:
-    #         component.transform_matrix.c += component.overlap_distance.x
-    #         offset = (component.group_endpoint_bounding_box.y2 -
-    #                   component.group_endpoint_bounding_box.y1) + component.overlap_distance.y
-    #
-    #     for comp in self.components:
-    #         if isinstance(comp, CircuitCell):
-    #             comp.bounding_box.y2 += offset
-    #
-    #     #component.transform_matrix.c += 100
-
-
 def get_component_group_endpoints_for_atr_sky130a_lib(self):
     components_and_positions = []
+    atr_transistor_components = []
 
-    for component in self.atr_transistor_components:
+    for component in self.components:
+        if isinstance(component, Transistor) and re.search(r'_ATR_', component.layout_library):
+            atr_transistor_components.append(component)
+
+    if not atr_transistor_components:
+        return
+
+    for component in atr_transistor_components:
         components_and_positions.append((component, component.transform_matrix.c, component.transform_matrix.f))
 
     # Sorts components first by x and then by y (ascending order)
@@ -391,20 +410,20 @@ def get_component_group_endpoints_for_atr_sky130a_lib(self):
     possible_y_min_components = []
 
     # Assignment of no rail endpoints
-    for component in self.atr_transistor_components:
+    for component in atr_transistor_components:
         for components in grouped_components_x:
             y_group_index = components[0][2]
 
             # Special handling is need in the case there are just 2, 3 or 4 components
             # Maybe there is some other way to solve this
-            if 2 <= len(self.atr_transistor_components) <= 4:
+            if 2 <= len(atr_transistor_components) <= 4:
                 idx = [c[0][0] for c in components].index(component)
 
-                is_top_bot = ((idx == 0 and (len(components) == 1 or len(self.atr_transistor_components) == 3))
-                              or len(self.atr_transistor_components) == 2)
+                is_top_bot = ((idx == 0 and (len(components) == 1 or len(atr_transistor_components) == 3))
+                              or len(atr_transistor_components) == 2)
 
                 is_top = ((idx == len(components) - 1 and len(components) > 1)
-                          or (idx == 1 and len(self.atr_transistor_components) == 4))
+                          or (idx == 1 and len(atr_transistor_components) == 4))
 
                 is_bot = (idx == 0 and len(components) > 1) or (idx == len(components) - 2)
 
@@ -438,7 +457,7 @@ def get_component_group_endpoints_for_atr_sky130a_lib(self):
     for min_y_components in list(find_min_y_components(possible_y_min_components).values()):
         for min_y_component in min_y_components:
 
-            for component in self.atr_transistor_components:
+            for component in atr_transistor_components:
                 if min_y_component == component:
                     if component.group_endpoint == "no_rail_top/bot":
                         component.group_endpoint = "rail_bot/no_rail_top"
@@ -447,7 +466,7 @@ def get_component_group_endpoints_for_atr_sky130a_lib(self):
 
     for max_y_components in list(find_max_y_components(possible_y_max_components).values()):
         for max_y_component in max_y_components:
-            for component in self.atr_transistor_components:
+            for component in atr_transistor_components:
                 if max_y_component == component:
                     if component.group_endpoint == "rail_bot/no_rail_top":
                         component.group_endpoint = "rail_top/bot"
@@ -601,7 +620,8 @@ def magic_component_parsing_for_atr_sky130a_lib(self, layout_file_path: str, com
     try:
         with open(layout_file_path, "r") as magic_file:
             for text_line in magic_file:
-                get_component_endpoint_bounding_box_for_atr_sky130a_lib(self=self, text_line=text_line, component=component)
+                get_component_endpoint_bounding_box_for_atr_sky130a_lib(self=self, text_line=text_line,
+                                                                        component=component)
 
     except FileNotFoundError:
         self.logger.error(f"The file {layout_file_path} was not found.")

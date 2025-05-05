@@ -21,7 +21,7 @@ from dataclasses import fields
 import math
 import libraries.atr_sky130a_lib as atr
 import libraries.tr_sky130a_lib as tr
-import libraries.aal_misc_sky130a_lib as aal
+import libraries.aal_misc_sky130a_lib as aal_misc
 
 # ============================================= Magic component parser =================================================
 
@@ -79,9 +79,9 @@ class MagicComponentsParser:
                                                                   component=component)
                 # AAL MISC SKY130A LIB component handling
                 if re.search(r'AAL_MISC', component.layout_library):
-                    aal.magic_component_parsing_for_aal_misc_sky130a_lib(self=self, layout_file_path=layout_file_path,
-                                                                         component=component)
-
+                    aal_misc.magic_component_parsing_for_aal_misc_sky130a_lib(self=self,
+                                                                              layout_file_path=layout_file_path,
+                                                                              component=component)
                 self.__check_component_is_valid(component=component)
 
         # Process complete

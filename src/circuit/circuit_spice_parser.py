@@ -49,7 +49,6 @@ class SPICEparser:
         self.last_cell_found = ''
         self.visited_cells = list()
         self.cell_chain_list = list()
-        self.prev_cell_name = "UROOT"
 
         self.__parse()
 

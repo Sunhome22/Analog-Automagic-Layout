@@ -9,15 +9,21 @@
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/constraints.txt" beforeDir="false" afterPath="$PROJECT_DIR$/constraints.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/TODO.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/TODO.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pyproject.toml" beforeDir="false" afterPath="$PROJECT_DIR$/pyproject.toml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/cell/cell_creator.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/cell/cell_creator.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/circuit/circuit_spice_parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/circuit/circuit_spice_parser.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/json_converter/components_COMPLETED.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/json_converter/components_COMPLETED.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/json_converter/components_temp_before_cell_creator.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/json_converter/components_temp_before_cell_creator.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/libraries/aal_misc_sky130a_lib.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/libraries/aal_misc_sky130a_lib.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/libraries/atr_sky130a_lib.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/libraries/atr_sky130a_lib.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/libraries/library_handling.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/libraries/library_handling.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/libraries/tr_sky130a_lib.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/libraries/tr_sky130a_lib.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/linear_optimization/initiator_lp.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/linear_optimization/initiator_lp.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/linear_optimization/linear_optimization.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/linear_optimization/linear_optimization.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/linear_optimization/previous_placement_solution.pkl" beforeDir="false" afterPath="$PROJECT_DIR$/src/linear_optimization/previous_placement_solution.pkl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/magic/magic_component_parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/magic/magic_component_parser.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/traces/generate_rail_traces.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/traces/generate_rail_traces.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -102,7 +108,7 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-python-sdk-98f27166c754-ba05f1cad1b1-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-242.21829.153" />
+        <option value="bundled-python-sdk-975db3bf15a3-31b6be0877a2-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-241.18034.82" />
       </set>
     </attachedChunks>
   </component>

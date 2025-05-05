@@ -148,6 +148,16 @@ class LPInitiator:
                 return (0,
                         self.used_area_all[0].y2 - self.used_area_all[0].y1 + self.used_area_all[1].y2
                         - self.used_area_all[1].y1)
+        elif self.placed_cells == 3:
+            if self.RELATIVE_COMPONENT_PLACEMENT == "S":
+                return (self.used_area_all[0].x2 - self.used_area_all[0].x1 + self.used_area_all[1].x2
+                        - self.used_area_all[1].x1 + self.used_area_all[2].x2 - self.used_area_all[2].x1, 0)
+
+            else:
+                return (0,
+                        self.used_area_all[0].y2 - self.used_area_all[0].y1 + self.used_area_all[1].y2
+                        - self.used_area_all[1].y1 + self.used_area_all[2].y2 - self.used_area_all[2].y1)
+
         else:
             return 0, 0
 
@@ -167,7 +177,6 @@ class LPInitiator:
                                                         - self.used_area.y1 + self.placed_cells
                                                         * self.y_offset + previous_y)])
         self.placed_cells += 1
-        self.logger.info(f"placed_cells: {self.placed_cells}")
 
     def __call_linear_optimization(self):
 

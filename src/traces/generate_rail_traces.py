@@ -46,7 +46,7 @@ class GenerateRailTraces:
         for component in self.components:
             if isinstance(component, (Pin, CircuitCell)):
                 self.structural_components.append(component)
-                self.structural_components.sort(key=lambda comp: comp.name)
+                self.structural_components.sort(key=lambda comp: comp.name, reverse=True)  # Reversed alphabetical sort
 
             if isinstance(component, (Transistor, Resistor, Capacitor)):
                 self.functional_components.append(component)
