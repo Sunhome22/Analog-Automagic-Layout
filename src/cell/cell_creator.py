@@ -163,19 +163,35 @@ class CellCreator:
             # Step 4: Move all components to the origin
             origin_scaled_used_area = RectArea()
             used_area = RectArea()
+            predefined_area_offset = RectArea()
             if any(isinstance(c, self.FUNCTIONAL_TYPES) for c
                    in components_grouped_by_circuit_cell[grouped_components]):
                 _, _, used_area, _, _, _ = GridGeneration(components=components).initialize_grid_generation()
-                origin_scaled_used_area = RectArea(x1=0, y1=0, x2=abs(used_area.x2 - used_area.x1),
-                                                   y2=abs(used_area.y2 - used_area.y1))
+
+                for component in components:
+                    if isinstance(component, CircuitCell):
+                        # Takes into account any predefined offset
+                        predefined_area_offset = RectArea(
+                            x1=component.bounding_box.x1,
+                            y1=component.bounding_box.y1,
+                            x2=component.bounding_box.x2,
+                            y2=component.bounding_box.y2)
+
+                        origin_scaled_used_area = RectArea(
+                            x1=0,
+                            y1=0,
+                            x2=abs(used_area.x2 - used_area.x1) + abs(predefined_area_offset.x2
+                                                                      - predefined_area_offset.x1),
+                            y2=abs(used_area.y2 - used_area.y1) + abs(predefined_area_offset.y2
+                                                                      - predefined_area_offset.y1))
+
             for component in components:
                 if isinstance(component, CircuitCell):
+                    print(origin_scaled_used_area)
                     component.bounding_box = origin_scaled_used_area
                 elif isinstance(component, self.FUNCTIONAL_TYPES):
-                    component.transform_matrix.c -= used_area.x1
-                    component.transform_matrix.f -= used_area.y1
-
-
+                    component.transform_matrix.c -= used_area.x1 + predefined_area_offset.x1
+                    component.transform_matrix.f -= used_area.y1 + predefined_area_offset.y1
 
             # Step 5: Grid generation
             grid, scaled_port_coordinates, used_area, port_coordinates, routing_parameters, component_ports \
@@ -195,7 +211,7 @@ class CellCreator:
 
             # Step 7: Generate A* traces
             components = GenerateAstarPathTraces(components=components, paths=paths, net_list=net_list,
-                                                 used_area=origin_scaled_used_area).get()
+                                                 used_area=used_area).get()
 
             # Step 8: Generate rail traces
             components = GenerateRailTraces(project_properties=self.project_properties, components=components).get()

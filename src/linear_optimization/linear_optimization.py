@@ -80,8 +80,8 @@ class LinearOptimizationSolver:
         self.d_y = {}
         # Setup of problem space and solver
         self.problem_space = pulp.LpProblem("ComponentPlacement", pulp.LpMinimize)
-        self.solver = pulp.SCIP_PY(msg=self.SOLVER_MSG, mip=False, warmStart=False,
-                                   options=[f"limits/gap={self.STOP_TOLERANCE}"])
+        self.solver = pulp.SCIP_PY(msg=self.SOLVER_MSG, mip=True, warmStart=False,
+                                   options=[f"limits/gap={self.STOP_TOLERANCE}", "misc/usesymmetry=2"])
 
         # Make lists of functional components and structural components
         for comp in self.components:
