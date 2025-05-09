@@ -22,7 +22,7 @@ from itertools import groupby
 from dataclasses import dataclass, field
 from typing import List, Dict, Tuple
 from collections import defaultdict
-
+import time
 
 from logger.logger import get_a_logger
 from circuit.circuit_components import (RectArea, RectAreaLayer, Transistor, Capacitor, Resistor, Pin, CircuitCell,
@@ -540,8 +540,9 @@ def place_transistor_endpoints_for_atr_sky130a_lib(self, component: Transistor):
         if component.group_endpoint in {"rail_top", "no_rail_top", "rail_top/no_rail_bot", "rail_bot/no_rail_top",
                                         "rail_top/bot", "no_rail_top/bot"}:
             self.magic_file_lines.extend([
-                f"use {layout_name_top} {component.group}_{component.name}_TAPTOP "
-                f"{self.current_component_library_path}",
+                f"use {layout_name_top}  {component.group}_{component.name}_TAPTOP "
+                f"../{re.search(r'[^/]+$', self.current_component_library_path).group()}",
+                f"timestamp {int(time.time())}",
                 f"transform {component.transform_matrix.a} {component.transform_matrix.b} "
                 f"{component.transform_matrix.c} {component.transform_matrix.d} {component.transform_matrix.e} "
                 f"{component.transform_matrix.f + component.bounding_box.y2}",
@@ -552,8 +553,9 @@ def place_transistor_endpoints_for_atr_sky130a_lib(self, component: Transistor):
         if component.group_endpoint in {"rail_bot", "no_rail_bot", "rail_bot/no_rail_top", "rail_top/no_rail_bot",
                                         "rail_top/bot", "no_rail_top/bot"}:
             self.magic_file_lines.extend([
-                f"use {layout_name_bot} {component.group}_{component.name}_TAPBOT "
-                f"{self.current_component_library_path}",
+                f"use {layout_name_bot}  {component.group}_{component.name}_TAPBOT "
+                f"../{re.search(r'[^/]+$', self.current_component_library_path).group()}",
+                f"timestamp {int(time.time())}",
                 f"transform {component.transform_matrix.a} {component.transform_matrix.b}"
                 f" {component.transform_matrix.c} {component.transform_matrix.d} {component.transform_matrix.e} "
                 f"{component.transform_matrix.f - component.group_endpoint_bounding_box.y2}",
