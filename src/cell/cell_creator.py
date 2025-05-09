@@ -170,28 +170,52 @@ class CellCreator:
             components = components_grouped_by_circuit_cell[grouped_components]
             if any(isinstance(c, self.FUNCTIONAL_TYPES) for c
                    in components_grouped_by_circuit_cell[grouped_components]):
-                components, _ = LPInitiator(components, connections, overlap_dict).initiate_linear_optimization()
+                components, self.functional_component_order = (
+                    LPInitiator(components, connections, overlap_dict).initiate_linear_optimization())
 
-            # Step 3: Move all components to the origin
+            # Step 3: Library specific handling pre trace generation
+            components = (
+                LibraryHandling(project_properties=self.project_properties, components=components,
+                                functional_component_order=self.functional_component_order).pre_trace_generation())
+
+            # Step 4: Move all components to the origin
             origin_scaled_used_area = RectArea()
             used_area = RectArea()
+            predefined_area_offset = RectArea()
             if any(isinstance(c, self.FUNCTIONAL_TYPES) for c
                    in components_grouped_by_circuit_cell[grouped_components]):
                 _, _, used_area, _, _, _ = GridGeneration(components=components).initialize_grid_generation()
-                origin_scaled_used_area = RectArea(x1=0, y1=0, x2=abs(used_area.x2 - used_area.x1),
-                                                   y2=abs(used_area.y2 - used_area.y1))
+
+                for component in components:
+                    if isinstance(component, CircuitCell):
+                        # Takes into account any predefined offset
+                        predefined_area_offset = RectArea(
+                            x1=component.bounding_box.x1,
+                            y1=component.bounding_box.y1,
+                            x2=component.bounding_box.x2,
+                            y2=component.bounding_box.y2)
+
+                        origin_scaled_used_area = RectArea(
+                            x1=0,
+                            y1=0,
+                            x2=abs(used_area.x2 - used_area.x1) + abs(predefined_area_offset.x2
+                                                                      - predefined_area_offset.x1),
+                            y2=abs(used_area.y2 - used_area.y1) + abs(predefined_area_offset.y2
+                                                                      - predefined_area_offset.y1))
+
             for component in components:
                 if isinstance(component, CircuitCell):
+                    print(origin_scaled_used_area)
                     component.bounding_box = origin_scaled_used_area
                 elif isinstance(component, self.FUNCTIONAL_TYPES):
-                    component.transform_matrix.c -= used_area.x1
-                    component.transform_matrix.f -= used_area.y1
+                    component.transform_matrix.c -= used_area.x1 + predefined_area_offset.x1
+                    component.transform_matrix.f -= used_area.y1 + predefined_area_offset.y1
 
-            # Step 4: Grid generation
+            # Step 5: Grid generation
             grid, scaled_port_coordinates, used_area, port_coordinates, routing_parameters, component_ports \
                 = GridGeneration(components=components).initialize_grid_generation()
 
-            # Step 5: A star path routing between component ports
+            # Step 6: A star path routing between component ports
             paths, grid_vertical, grid_horizontal = (
                 AstarInitiator(grid=grid,
                                connections=connections,
@@ -203,14 +227,17 @@ class CellCreator:
                                component_ports=component_ports
                                ).get())
 
-            # Step 6: Handle specifics for components of different libraries
-
-            # Step 7: Trace generation
+            # Step 7: Generate A* traces
             components = GenerateAstarPathTraces(components=components, paths=paths, net_list=net_list,
-                                                 used_area=origin_scaled_used_area).get()
+                                                 used_area=used_area).get()
+
+            # Step 8: Generate rail traces
             components = GenerateRailTraces(project_properties=self.project_properties, components=components).get()
 
-            components = LibraryHandling(project_properties=self.project_properties, components=components).get()
+            # Step 9: Library specific handling post rail generation
+            components = (
+                LibraryHandling(project_properties=self.project_properties, components=components,
+                                functional_component_order=self.functional_component_order).post_rail_generation())
 
             # Step 8: Move all components to the origin based on the updated cell bounding box from rail generation
             components = self.__move_all_components_to_origin_based_on_rail_offsets(components=components)
@@ -531,7 +558,7 @@ class CellCreator:
             if cell.named_cell == connection.parent_cell:
                 cell_chain = cell.cell_chain
                 cell_cell = cell.cell
-
+            break
         trace = TraceNet()
         trace.instance = trace.__class__.__name__
         trace.named_cell = connection.parent_cell
@@ -570,49 +597,57 @@ class CellCreator:
         minimum_manhattan = sys.maxsize
         min_parent_comp = None
         min_child_comp = None
-        parent_port_coordinates = Coordinates(x=sys.maxsize, y=sys.maxsize)
-        child_port_coordinates = Coordinates(x=sys.maxsize, y=sys.maxsize)
-        temp_child_port_coordinates = Coordinates(x=sys.maxsize, y=sys.maxsize)
-        temp_parent_port_coordinates = Coordinates(x=sys.maxsize, y=sys.maxsize)
+        parent_port_coordinates = Coordinates(x=0, y=0)
+        child_port_coordinates = Coordinates(x=0, y=0)
+        temp_child_port_coordinates = Coordinates(x=0, y=0)
+        temp_parent_port_coordinates = Coordinates(x=0, y=0)
         for cell in circuit_cells:
             if cell.named_cell == connection.child_cell:
                 child_offset_x = cell.transform_matrix.c
                 child_offset_y = cell.transform_matrix.f
-
+                break
+        print(f"offset: {child_offset_x}, {child_offset_y}")
         for parent_component in parent_components:
             for port in parent_component.schematic_connections:
                 if parent_component.schematic_connections[port] == connection.parent_net:
-
                     for p in parent_component.layout_ports:
                         if p.type == port:
                             temp_parent_port_coordinates.x = ((p.area.x2 - p.area.x1)//2 +
-                                                         parent_component.transform_matrix.c)
+                                                              parent_component.transform_matrix.c)
                             temp_parent_port_coordinates.y = ((p.area.x2 - p.area.x1)//2 +
-                                                         parent_component.transform_matrix.f)
+                                                              parent_component.transform_matrix.f)
 
+                            for child_component in child_components:
+                                for port2 in child_component.schematic_connections:
+                                    if child_component.schematic_connections[port2] == connection.child_net:
 
-            for child_component in child_components:
-                for port2 in child_component.schematic_connections:
-                    if child_component.schematic_connections[port2] == connection.child_net:
+                                        for p2 in child_component.layout_ports:
+                                            if p.type == port2:
+                                                temp_child_port_coordinates.x = (((p2.area.x2 - p2.area.x1) // 2 +
+                                                                                 child_component.transform_matrix.c)
+                                                                                 + child_offset_x)
+                                                temp_child_port_coordinates.y = (((p2.area.x2 - p2.area.x1) // 2 +
+                                                                                 child_component.transform_matrix.f)
+                                                                                 + child_offset_y)
 
-                        for p in child_component.layout_ports:
-                            if p.type == port2:
-                                temp_child_port_coordinates.x = ((p.area.x2 - p.area.x1) // 2 +
-                                                            child_component.transform_matrix.c) + child_offset_x
-                                temp_child_port_coordinates.y = ((p.area.x2 - p.area.x1) // 2 +
-                                                            child_component.transform_matrix.f) + child_offset_y
+                                                distance = self.__manhattan_distance(temp_parent_port_coordinates,
+                                                                                     temp_child_port_coordinates)
+                                                if distance < minimum_manhattan:
+                                                    print(temp_child_port_coordinates)
+                                                    print(temp_parent_port_coordinates)
+                                                    minimum_manhattan = distance
 
-                                distance = self.__manhattan_distance(temp_parent_port_coordinates,
-                                                                     temp_child_port_coordinates)
-                                if distance < minimum_manhattan:
-                                    minimum_manhattan = distance
+                                                    min_parent_comp = parent_component
+                                                    min_child_comp = child_component
 
-                                    min_parent_comp = parent_component
-                                    min_child_comp = child_component
-                                    parent_port_coordinates = temp_child_port_coordinates
-                                    child_port_coordinates = temp_child_port_coordinates
-                                    print(f"PARENT PORT COORDINATES {parent_port_coordinates}")
-                                    print(f"CHILD PORT COORDINATES {child_port_coordinates}")
+                                                    print("PARENT COMP")
+                                                    print(min_parent_comp)
+                                                    print("CHILD COMP")
+                                                    print(min_child_comp)
+                                                    parent_port_coordinates = temp_parent_port_coordinates
+                                                    child_port_coordinates = temp_child_port_coordinates
+                                                    print(f"PARENT PORT COORDINATES {parent_port_coordinates}")
+                                                    print(f"CHILD PORT COORDINATES {child_port_coordinates}")
 
         self.__stupid_routing(connection, parent_port_coordinates, child_port_coordinates, circuit_cells)
 

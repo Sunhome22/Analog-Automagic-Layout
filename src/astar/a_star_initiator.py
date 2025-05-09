@@ -3,7 +3,7 @@ import math
 from astar.a_star import astar_start
 from draw_result.visualize_grid import heatmap_test
 from traces.generate_astar_path_traces import segment_path
-from circuit.circuit_components import CircuitCell, Pin
+from circuit.circuit_components import CircuitCell, Pin, Capacitor
 from logger.logger import get_a_logger
 import tomllib
 import re
@@ -21,7 +21,6 @@ class AstarInitiator:
         self.config = self.__load_config()
         self.RUN_MULTIPLE_ASTAR = self.config["a_star_initiator"]["RUN_MULTIPLE_ASTAR"]
         self.CUSTOM_NET_ORDER = self.config["a_star_initiator"]["CUSTOM_NET_ORDER"]
-        self.NET_ORDER = self.config["a_star_initiator"]["NET_ORDER"]
         self.TSP_NODE_ORDER = self.config["a_star_initiator"]["TSP_NODE_ORDER"]
         self.REMOVE_LOOPS = self.config["a_star_initiator"]["REMOVE_LOOPS"]
         self.component_ports = component_ports
@@ -37,6 +36,10 @@ class AstarInitiator:
         self.real_goal_nodes = []
         self.path = {}
         self.seg_list = {}
+        self.special_goals = []
+
+        if self.CUSTOM_NET_ORDER:
+            self.NET_ORDER = self.config["a_star_initiator"]["custom_net_order"][self.components[0].cell]
 
     def __load_config(self, path="pyproject.toml"):
         try:
@@ -63,6 +66,7 @@ class AstarInitiator:
                     if not all(instance_condition["instance"]):
 
                         if placed_object.number_id == int(con.start_comp_id):
+
                             start = (self.scaled_port_coordinates[con.start_comp_id + con.start_comp_type
                                                                   + con.start_area[0]].x,
                                      self.scaled_port_coordinates[con.start_comp_id + con.start_comp_type
@@ -71,6 +75,8 @@ class AstarInitiator:
                                                                 + con.start_area[0]].x,
                                           self.port_coordinates[con.start_comp_id + con.start_comp_type
                                                                 + con.start_area[0]].y)
+                            if isinstance(placed_object, Capacitor) and con.start_area == "A":
+                                self.special_goals.append(start)
 
                         if con.end_comp_id != "" and placed_object.number_id == int(con.end_comp_id):
                             end = (self.scaled_port_coordinates[con.end_comp_id + con.end_comp_type
@@ -79,6 +85,8 @@ class AstarInitiator:
                                                                 + con.end_area[0]].y)
                             real_end = (self.port_coordinates[con.end_comp_id + con.end_comp_type + con.end_area[0]].x,
                                         self.port_coordinates[con.end_comp_id + con.end_comp_type + con.end_area[0]].y)
+                            if isinstance(placed_object, Capacitor) and con.end_area == "A":
+                                self.special_goals.append(end)
 
                     break_condition = {
                         "component_connection": [start is not None, end is not None],
@@ -86,10 +94,10 @@ class AstarInitiator:
                     }
                     if all(break_condition["component_connection"]):
 
-                        if len(con.start_area) >= 2 or len(con.end_area) >= 2:
-
-                            start, real_start, end, real_end = check_start_end_port(con, self.scaled_port_coordinates,
-                                                                                    self.port_coordinates)
+                        # if len(con.start_area) >= 2 or len(con.end_area) >= 2:
+                        #
+                        #     start, real_start, end, real_end = check_start_end_port(con, self.scaled_port_coordinates,
+                        #                                                             self.port_coordinates)
                         if start not in self.goal_nodes:
                             self.goal_nodes.append(start)
                             self.real_goal_nodes.append(real_start)
@@ -157,9 +165,9 @@ class AstarInitiator:
                     if y < len(self.grid_vertical) and x < len(self.grid_vertical[0]):
                         if not self.grid_vertical[y][x] == self.TRACE_ON_GRID:
                             self.grid_vertical[y][x] = lock
-
-                        if not self.grid_horizontal[y][x] == self.TRACE_ON_GRID:
-                            self.grid_horizontal[y][x] = lock
+                        if node not in self.special_goals:
+                            if not self.grid_horizontal[y][x] == self.TRACE_ON_GRID:
+                                self.grid_horizontal[y][x] = lock
 
     def __update_grid(self, net):
 

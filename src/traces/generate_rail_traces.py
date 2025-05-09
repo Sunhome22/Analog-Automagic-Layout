@@ -46,7 +46,7 @@ class GenerateRailTraces:
         for component in self.components:
             if isinstance(component, (Pin, CircuitCell)):
                 self.structural_components.append(component)
-                self.structural_components.sort(key=lambda comp: comp.name)
+                self.structural_components.sort(key=lambda comp: comp.name, reverse=True)  # Reversed alphabetical sort
 
             if isinstance(component, (Transistor, Resistor, Capacitor)):
                 self.functional_components.append(component)
@@ -121,7 +121,6 @@ class GenerateRailTraces:
 
         # Default rail generation (only creates rails if there are functional components)
         if self.functional_components:
-
             # Automated adding of VDD/VSS ring nets around cell based on found pins
             rail_number = 0
             for component in self.structural_components:

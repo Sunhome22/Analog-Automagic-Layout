@@ -18,9 +18,10 @@ import re
 from circuit.circuit_components import LayoutPort, RectArea, Transistor, Capacitor, Resistor, DigitalBlock
 from logger.logger import get_a_logger
 from dataclasses import fields
+import math
 import libraries.atr_sky130a_lib as atr
 import libraries.tr_sky130a_lib as tr
-import libraries.aal_misc_sky130a_lib as aal
+import libraries.aal_misc_sky130a_lib as aal_misc
 
 # ============================================= Magic component parser =================================================
 
@@ -51,6 +52,7 @@ class MagicComponentsParser:
 
             if isinstance(component, (Transistor, Capacitor, Resistor, DigitalBlock)):
                 updated_components += 1
+
                 # Find library of current component
                 self.current_component_library_path = next(
                     (lib.path for lib in self.component_libraries if component.layout_library in lib.path), None)
@@ -77,9 +79,9 @@ class MagicComponentsParser:
                                                                   component=component)
                 # AAL MISC SKY130A LIB component handling
                 if re.search(r'AAL_MISC', component.layout_library):
-                    aal.magic_component_parsing_for_aal_misc_sky130a_lib(self=self, layout_file_path=layout_file_path,
-                                                                         component=component)
-
+                    aal_misc.magic_component_parsing_for_aal_misc_sky130a_lib(self=self,
+                                                                              layout_file_path=layout_file_path,
+                                                                              component=component)
                 self.__check_component_is_valid(component=component)
 
         # Process complete
@@ -112,10 +114,10 @@ class MagicComponentsParser:
             text_line_words = text_line.split()
 
             layout_port = LayoutPort(type=text_line_words[-1], layer=text_line_words[1],
-                                     area=RectArea(x1=int(text_line_words[3]) // self.scale_factor,
-                                                   y1=int(text_line_words[4]) // self.scale_factor,
-                                                   x2=int(text_line_words[5]) // self.scale_factor,
-                                                   y2=int(text_line_words[6]) // self.scale_factor))
+                                     area=RectArea(x1=math.ceil(int(text_line_words[3]) / self.scale_factor),
+                                                   y1=math.ceil(int(text_line_words[4]) / self.scale_factor),
+                                                   x2=math.floor(int(text_line_words[5]) / self.scale_factor),
+                                                   y2=math.floor(int(text_line_words[6]) / self.scale_factor)))
 
             component.layout_ports.append(layout_port)
 

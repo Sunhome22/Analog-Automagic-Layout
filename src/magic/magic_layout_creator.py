@@ -293,7 +293,9 @@ class MagicLayoutCreator:
             (lib.path for lib in self.component_libraries if component.layout_library in lib.path), None)
 
         self.magic_file_lines.extend([
-            f"use {component.layout_name} {component.group}_{component.name} {self.current_component_library_path}",
+            f"use {component.layout_name}  {component.group}_{component.name} "
+            f"../{re.search(r'[^/]+$', self.current_component_library_path).group()}",
+            f"timestamp {int(time.time())}",
             f"transform {component.transform_matrix.a} {component.transform_matrix.b}"
             f" {component.transform_matrix.c} {component.transform_matrix.d}"
             f" {component.transform_matrix.e} {component.transform_matrix.f}",

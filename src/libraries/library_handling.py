@@ -20,7 +20,7 @@ import tomllib
 import re
 import libraries.atr_sky130a_lib as atr
 import libraries.tr_sky130a_lib as tr
-import libraries.aal_misc_sky130a_lib as aal
+import libraries.aal_misc_sky130a_lib as aal_misc
 
 # ============================================ ATR SKY130A Handling ====================================================
 
@@ -28,7 +28,7 @@ import libraries.aal_misc_sky130a_lib as aal
 class LibraryHandling:
     logger = get_a_logger(__name__)
 
-    def __init__(self, project_properties, components):
+    def __init__(self, project_properties, components, functional_component_order):
         self.project_top_cell_name = project_properties.top_cell_name
         self.project_top_lib_name = project_properties.top_lib_name
         self.project_directory = project_properties.directory
@@ -36,10 +36,10 @@ class LibraryHandling:
         self.structural_components = []
         self.functional_components = []
         self.transistor_components = []
-        self.atr_transistor_components = []
-        self.tr_resistor_components = []
-        self.aal_capacitor_components = []
+        self.aal_misc_mim_capacitor_components = []
+        self.circuit_cell = CircuitCell()
         self.components = components
+        self.functional_component_order = functional_component_order
 
         # Load config
         self.config = self.__load_config()
@@ -47,24 +47,18 @@ class LibraryHandling:
         self.INIT_RAIL_RING_OFFSET_Y = self.config["generate_rail_traces"]["INIT_RAIL_RING_OFFSET_Y"]
         self.RAIL_RING_OFFSET = self.config["generate_rail_traces"]["RAIL_RING_OFFSET"]
         self.RAIL_RING_WIDTH = self.config["generate_rail_traces"]["RAIL_RING_WIDTH"]
-
         self.RELATIVE_COMPONENT_PLACEMENT = self.config["initiator_lp"]["RELATIVE_COMPONENT_PLACEMENT"]
-        self.CUSTOM_COMPONENT_ORDER = self.config["initiator_lp"]["CUSTOM_COMPONENT_ORDER"]
 
         # Make lists of different component types
         for component in self.components:
-            if isinstance(component, Transistor) and re.search(r'_ATR_', component.layout_library):
-                self.atr_transistor_components.append(component)
 
-            if isinstance(component, Resistor) and re.search(r'_TR_', component.layout_library):
-                self.tr_resistor_components.append(component)
-
-            if isinstance(component, Capacitor) and re.search(r'AAL_MISC', component.layout_library):
-                self.aal_capacitor_components.append(component)
+            if (isinstance(component, Capacitor) and re.search(r'AAL_MISC', component.layout_library)
+                    and component.type == "mim"):
+                self.aal_misc_mim_capacitor_components.append(component)
 
             if isinstance(component, (Pin, CircuitCell)):
                 self.structural_components.append(component)
-                self.structural_components.sort(key=lambda comp: comp.name)
+                self.structural_components.sort(key=lambda comp: comp.name, reverse=True)  # Reversed alphabetical sort
 
             if isinstance(component, (Transistor, Resistor, Capacitor)):
                 self.functional_components.append(component)
@@ -73,18 +67,17 @@ class LibraryHandling:
             if isinstance(component, CircuitCell):
                 self.circuit_cell = component
 
-        # ATR SKY130A library component handling
-        if self.atr_transistor_components:
-            atr.get_component_group_endpoints_for_atr_sky130a_lib(self=self)
-            atr.generate_local_traces_for_atr_sky130a_lib(self=self)
+    def pre_trace_generation(self):
+        atr.get_component_group_endpoints_for_atr_sky130a_lib(self=self)
+        atr.offset_components_by_group_endpoint_and_overlap_distance_for_atr_sky130a_lib(self=self)
+        return self.components
 
-        # TR SKY130A library component handling
-        if self.tr_resistor_components:
-            tr.generate_local_traces_for_tr_sky130a_lib_resistors(self=self)
-
-        # AAL_MISC SKY130A library component handling
-        if self.aal_capacitor_components:
-            aal.generate_local_traces_for_aal_misc_sky130a_lib(self=self)
+    def post_rail_generation(self):
+        tr.generate_local_traces_for_tr_sky130a_lib_resistors(self=self)
+        atr.generate_local_traces_for_atr_sky130a_lib(self=self)
+        aal_misc.generate_local_traces_for_aal_misc_sky130a_lib_pnp_bipolars(self=self)
+        aal_misc.generate_local_traces_for_aal_misc_sky130a_lib_mim_capacitors(self=self)
+        return self.components
 
     def __load_config(self, path="pyproject.toml"):
         try:
@@ -93,5 +86,4 @@ class LibraryHandling:
         except (FileNotFoundError, tomllib.TOMLDecodeError) as e:
             self.logger.error(f"Error loading config: {e}")
 
-    def get(self):
-        return self.components
+

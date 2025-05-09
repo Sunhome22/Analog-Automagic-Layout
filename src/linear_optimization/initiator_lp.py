@@ -20,7 +20,9 @@ class LPInitiator:
 
         #load config
         self.config = self.__load_config()
-        self.SUB_CELL_OFFSET = self.config["initiator_lp"]["SUB_CELL_OFFSET"]
+        self.SUB_CELL_OFFSET_1 = self.config["initiator_lp"]["SUB_CELL_OFFSET_1"]
+        self.SUB_CELL_OFFSET_2 = self.config["initiator_lp"]["SUB_CELL_OFFSET_2"]
+        self.SUB_CELL_OFFSET_3 = self.config["initiator_lp"]["SUB_CELL_OFFSET_3"]
         self.UNITED_RES_CAP = self.config["initiator_lp"]["UNITED_RES_CAP"]
         self.RELATIVE_COMPONENT_PLACEMENT = self.config["initiator_lp"]["RELATIVE_COMPONENT_PLACEMENT"]
         self.CUSTOM_COMPONENT_ORDER = self.config["initiator_lp"]["CUSTOM_COMPONENT_ORDER"]
@@ -47,13 +49,6 @@ class LPInitiator:
         self.coordinates_x = []
         self.coordinates_y = []
 
-        if self.RELATIVE_COMPONENT_PLACEMENT == "S":
-            self.x_offset = self.SUB_CELL_OFFSET
-            self.y_offset = 0
-        else:
-            self.x_offset = 0
-            self.y_offset = self.SUB_CELL_OFFSET
-
     def __load_config(self, path="pyproject.toml"):
         try:
             with open(path, "rb") as f:
@@ -78,6 +73,8 @@ class LPInitiator:
                     self.used_area.y2 = max(self.used_area.y2, round(pulp.value(self.coordinates_y[key]))
                                             + obj.bounding_box.y2)
         self.used_area_all.append(self.used_area)
+
+        print(f"USED AREA {self.used_area}")
 
     def __extract_components(self):
 
@@ -134,29 +131,31 @@ class LPInitiator:
 
     def __get_previous_placement_offset(self):
         if self.placed_cells == 1:
-            if self.RELATIVE_COMPONENT_PLACEMENT == "S":
-                return self.used_area_all[0].x2-self.used_area_all[0].x1, 0
+            if self.RELATIVE_COMPONENT_PLACEMENT == "V":
+                return self.used_area_all[0].x2-self.used_area_all[0].x1 + self.SUB_CELL_OFFSET_1, 0
 
             else:
-                return 0, self.used_area_all[0].y2 - self.used_area_all[0].y1
+                return 0, self.used_area_all[0].y2 - self.used_area_all[0].y1 + self.SUB_CELL_OFFSET_1
         elif self.placed_cells == 2:
-            if self.RELATIVE_COMPONENT_PLACEMENT == "S":
+            if self.RELATIVE_COMPONENT_PLACEMENT == "V":
                 return (self.used_area_all[0].x2 - self.used_area_all[0].x1 + self.used_area_all[1].x2
-                        - self.used_area_all[1].x1, 0)
+                        - self.used_area_all[1].x1 + self.SUB_CELL_OFFSET_1 + self.SUB_CELL_OFFSET_2, 0)
 
             else:
                 return (0,
                         self.used_area_all[0].y2 - self.used_area_all[0].y1 + self.used_area_all[1].y2
-                        - self.used_area_all[1].y1)
+                        - self.used_area_all[1].y1 + self.SUB_CELL_OFFSET_1 + self.SUB_CELL_OFFSET_2)
         elif self.placed_cells == 3:
-            if self.RELATIVE_COMPONENT_PLACEMENT == "S":
+            if self.RELATIVE_COMPONENT_PLACEMENT == "V":
                 return (self.used_area_all[0].x2 - self.used_area_all[0].x1 + self.used_area_all[1].x2
-                        - self.used_area_all[1].x1 + self.used_area_all[2].x2 - self.used_area_all[2].x1, 0)
+                        - self.used_area_all[1].x1 + self.used_area_all[2].x2 - self.used_area_all[2].x1
+                        + self.SUB_CELL_OFFSET_1 + self.SUB_CELL_OFFSET_2 + self.SUB_CELL_OFFSET_3, 0)
 
             else:
                 return (0,
                         self.used_area_all[0].y2 - self.used_area_all[0].y1 + self.used_area_all[1].y2
-                        - self.used_area_all[1].y1 + self.used_area_all[2].y2 - self.used_area_all[2].y1)
+                        - self.used_area_all[1].y1 + self.used_area_all[2].y2 - self.used_area_all[2].y1
+                        + self.SUB_CELL_OFFSET_1 + self.SUB_CELL_OFFSET_2 + self.SUB_CELL_OFFSET_3)
 
         else:
             return 0, 0
@@ -171,11 +170,9 @@ class LPInitiator:
 
                     component.transform_matrix.set([1, 0,
                                                     int(round(pulp.value(self.coordinates_x[component.number_id]))
-                                                        - self.used_area.x1 + self.placed_cells
-                                                        * self.x_offset + previous_x), 0, 1,
+                                                        - self.used_area.x1 + previous_x), 0, 1,
                                                     int(round(pulp.value(self.coordinates_y[component.number_id]))
-                                                        - self.used_area.y1 + self.placed_cells
-                                                        * self.y_offset + previous_y)])
+                                                        - self.used_area.y1 + previous_y)])
         self.placed_cells += 1
 
     def __call_linear_optimization(self):

@@ -1213,8 +1213,8 @@
         "group": null,
         "schematic_connections": {
             "VDD": "VDD",
-            "VIN": "VO",
-            "VIP": "net1",
+            "VIN": "net2",
+            "VIP": "VO",
             "VO": "net5",
             "I_BIAS": "net6",
             "VSS": "VSS"

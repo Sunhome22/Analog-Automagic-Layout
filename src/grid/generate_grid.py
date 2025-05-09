@@ -102,7 +102,10 @@ class GridGeneration:
         self.ADJUST_MIN_SEG_LENGTH = self.config["generate_grid"]["scaled_parameters"]["ADJUST_MIN_SEG_LENGTH"]
         self.ADJUST_PORT_SIZE = self.config["generate_grid"]["scaled_parameters"]["ADJUST_PORT_SCALED_SIZE"]
         self.ADJUST_SEG_WIDTH = self.config["generate_grid"]["scaled_parameters"]["ADJUST_SEG_WIDTH"]
-
+        self.ADJUST_CAP_PORT_WIDTH = self.config["generate_grid"]["scaled_parameters"]["ADJUST_CAP_PORT_WIDTH"]
+        self.ADJUST_CAP_PORT_HEIGHT = self.config["generate_grid"]["scaled_parameters"]["ADJUST_CAP_PORT_HEIGHT"]
+        self.ADJUST_RES_PORT_WIDTH = self.config["generate_grid"]["scaled_parameters"]["ADJUST_RES_PORT_WIDTH"]
+        self.ADJUST_RES_PORT_HEIGHT = self.config["generate_grid"]["scaled_parameters"]["ADJUST_RES_PORT_HEIGHT"]
         # INPUTS
         self.components = components
 
@@ -229,25 +232,25 @@ class GridGeneration:
 
                         elif port.type == "P":
 
-                            self.component_ports.resistor.P.width = port_width - 2
-                            self.component_ports.resistor.P.height = port_height + 1
+                            self.component_ports.resistor.P.width = port_width + self.ADJUST_RES_PORT_WIDTH
+                            self.component_ports.resistor.P.height = port_height + self.ADJUST_RES_PORT_HEIGHT
 
                         elif port.type == "N":
 
-                            self.component_ports.resistor.N.width = port_width - 2
-                            self.component_ports.resistor.N.height = port_height + 1
+                            self.component_ports.resistor.N.width = port_width + self.ADJUST_RES_PORT_WIDTH
+                            self.component_ports.resistor.N.height = port_height + self.ADJUST_RES_PORT_HEIGHT
 
                     elif isinstance(obj, Capacitor):
 
                         if port.type == "A":
 
-                            self.component_ports.capacitor.A.width = port_width
-                            self.component_ports.capacitor.A.height = port_height
+                            self.component_ports.capacitor.A.width = port_width + self.ADJUST_CAP_PORT_WIDTH
+                            self.component_ports.capacitor.A.height = port_height + self.ADJUST_CAP_PORT_HEIGHT
 
                         elif port.type == "B":
 
-                            self.component_ports.capacitor.B.width = port_width
-                            self.component_ports.capacitor.B.width = port_height
+                            self.component_ports.capacitor.B.width = port_width + self.ADJUST_CAP_PORT_WIDTH
+                            self.component_ports.capacitor.B.width = port_height + self.ADJUST_CAP_PORT_HEIGHT
 
     def __generate_grid(self):
 

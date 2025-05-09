@@ -65,6 +65,7 @@ class LinearOptimizationSolver:
         self.overlap = overlap
         self.object_type = object_type
 
+
         # Data structures
         self.x_possible = []
         self.y_possible = []
@@ -112,9 +113,11 @@ class LinearOptimizationSolver:
             self.width[c.number_id] = c.bounding_box.x2 - c.bounding_box.x1
             self.height[c.number_id] = c.bounding_box.y2 - c.bounding_box.y1
 
-        # Debugging
         if self.MIRROR:
             self.mirrored_components = self.__check_mirrored_components()
+        # Debugging
+
+
 
     def __load_config(self, path="pyproject.toml"):
         try:
