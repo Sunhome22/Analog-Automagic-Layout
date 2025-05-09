@@ -72,6 +72,7 @@ class CellCreator:
         self.updated_components = []
         self.origin_scaled_cell_offsets = list()
         self.FUNCTIONAL_TYPES = (Transistor, Resistor, Capacitor)
+        self.functional_component_order = []
 
         # Load config
         self.config = self.__load_config()
@@ -558,7 +559,7 @@ class CellCreator:
             if cell.named_cell == connection.parent_cell:
                 cell_chain = cell.cell_chain
                 cell_cell = cell.cell
-            break
+                break
         trace = TraceNet()
         trace.instance = trace.__class__.__name__
         trace.named_cell = connection.parent_cell
@@ -575,7 +576,7 @@ class CellCreator:
             area=RectArea(
                 x1=int(x0),  # Adding width to trace
                 y1=int(y0) - (30 // 2),
-                x2=int(x1),
+                x2=int(x1+15),
                 y2=int(y0) + (30 // 2)
             )
         ))
@@ -610,11 +611,12 @@ class CellCreator:
         for parent_component in parent_components:
             for port in parent_component.schematic_connections:
                 if parent_component.schematic_connections[port] == connection.parent_net:
+                    print("FOUND CONNECTION port")
                     for p in parent_component.layout_ports:
                         if p.type == port:
-                            temp_parent_port_coordinates.x = ((p.area.x2 - p.area.x1)//2 +
+                            temp_parent_port_coordinates.x = ((p.area.x2 + p.area.x1)//2 +
                                                               parent_component.transform_matrix.c)
-                            temp_parent_port_coordinates.y = ((p.area.x2 - p.area.x1)//2 +
+                            temp_parent_port_coordinates.y = ((p.area.y2 + p.area.y1)//2 +
                                                               parent_component.transform_matrix.f)
 
                             for child_component in child_components:
@@ -623,10 +625,10 @@ class CellCreator:
 
                                         for p2 in child_component.layout_ports:
                                             if p.type == port2:
-                                                temp_child_port_coordinates.x = (((p2.area.x2 - p2.area.x1) // 2 +
+                                                temp_child_port_coordinates.x = (((p2.area.x2 + p2.area.x1) // 2 +
                                                                                  child_component.transform_matrix.c)
                                                                                  + child_offset_x)
-                                                temp_child_port_coordinates.y = (((p2.area.x2 - p2.area.x1) // 2 +
+                                                temp_child_port_coordinates.y = (((p2.area.y2 + p2.area.y1) // 2 +
                                                                                  child_component.transform_matrix.f)
                                                                                  + child_offset_y)
 
@@ -640,15 +642,19 @@ class CellCreator:
                                                     min_parent_comp = parent_component
                                                     min_child_comp = child_component
 
-                                                    print("PARENT COMP")
-                                                    print(min_parent_comp)
-                                                    print("CHILD COMP")
-                                                    print(min_child_comp)
+
                                                     parent_port_coordinates = temp_parent_port_coordinates
                                                     child_port_coordinates = temp_child_port_coordinates
-                                                    print(f"PARENT PORT COORDINATES {parent_port_coordinates}")
-                                                    print(f"CHILD PORT COORDINATES {child_port_coordinates}")
+        print("CONNECTION")
+        print(connection)
+        print("PARENT COMP")
+        print(min_parent_comp)
+        print("CHILD COMP")
+        print(min_child_comp)
 
+        print(f"offset {child_offset_x}, {child_offset_y}")
+        print(f"PARENT PORT COORDINATES {parent_port_coordinates}")
+        print(f"CHILD PORT COORDINATES {child_port_coordinates}")
         self.__stupid_routing(connection, parent_port_coordinates, child_port_coordinates, circuit_cells)
 
     def __get_cell_to_cell_connections(self):
@@ -665,7 +671,9 @@ class CellCreator:
                                                                      child_cell=cell.named_cell,
                                                                      child_net=pin))
         for connection in cell_to_cell_connections:
-
+            if (connection.parent_cell == "UTOP_JNW_BKLE" or connection.parent_net == "VDD"
+                    or connection.parent_net == "VSS"):
+                continue
             parent_net_components = list()
             child_net_components = list()
             for component in self.updated_components:
@@ -679,7 +687,10 @@ class CellCreator:
                     for port_connection in component.schematic_connections.values():
                         if port_connection == connection.child_net:
                             child_net_components.append(copy.deepcopy(component))
-
+            print(f"number of parent net comp {len(parent_net_components)}")
+            print(parent_net_components)
+            print(f"number of child net comp {len(child_net_components)}")
+            print(child_net_components)
             self.__get_nearest_ports(connection, parent_net_components, child_net_components, circuit_cells)
 
     def __debug_write_to_file(self):

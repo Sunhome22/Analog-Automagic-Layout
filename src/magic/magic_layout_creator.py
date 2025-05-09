@@ -193,8 +193,9 @@ class MagicLayoutCreator:
                                             y2=port.area.y2 + component.transform_matrix.f)
 
                         # Hinder placement of connection points to bulks since they are always connected in the
-                        # lowest metal
-                        if port.type == "B" or segment.layer == self.METAL_LAYERS[0]:
+                        # lowest metal and cell to cell routing in the highest metal
+                        if (port.type == "B" or segment.layer == self.METAL_LAYERS[0] or
+                                segment.layer == self.METAL_LAYERS[4]):
                             continue
 
                         # Check for overlap between the port and the segment and add vias accordingly

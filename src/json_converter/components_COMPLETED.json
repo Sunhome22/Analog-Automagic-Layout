@@ -65,10 +65,10 @@
         "layout": {
             "layer": "locali",
             "area": {
-                "x1": 0,
-                "y1": 4150,
-                "x2": 1752,
-                "y2": 4200
+                "x1": 100,
+                "y1": 4050,
+                "x2": 1652,
+                "y2": 4100
             }
         }
     },
@@ -85,10 +85,10 @@
         "layout": {
             "layer": "locali",
             "area": {
-                "x1": 100,
-                "y1": 4050,
-                "x2": 1652,
-                "y2": 4100
+                "x1": 0,
+                "y1": 4150,
+                "x2": 1752,
+                "y2": 4200
             }
         }
     },
@@ -2222,7 +2222,7 @@
     },
     {
         "instance": "TraceNet",
-        "name": "VDD",
+        "name": "VSS",
         "cell": "COMP2",
         "named_cell": "U1_COMP2",
         "parent_cell": "JNW_BKLE",
@@ -2307,7 +2307,7 @@
     },
     {
         "instance": "TraceNet",
-        "name": "VSS",
+        "name": "VDD",
         "cell": "COMP2",
         "named_cell": "U1_COMP2",
         "parent_cell": "JNW_BKLE",
@@ -2696,9 +2696,9 @@
             {
                 "layer": "locali",
                 "area": {
-                    "x1": 300,
+                    "x1": 100,
                     "y1": 2332,
-                    "x2": 300,
+                    "x2": 1652,
                     "y2": 2428
                 }
             }
@@ -2707,18 +2707,18 @@
             {
                 "layer": "locali-m1",
                 "area": {
-                    "x1": 300,
+                    "x1": 100,
                     "y1": 2332,
-                    "x2": 350,
+                    "x2": 150,
                     "y2": 2428
                 }
             },
             {
                 "layer": "locali-m1",
                 "area": {
-                    "x1": 250,
+                    "x1": 1602,
                     "y1": 2332,
-                    "x2": 300,
+                    "x2": 1652,
                     "y2": 2428
                 }
             }
@@ -2736,9 +2736,9 @@
             {
                 "layer": "locali",
                 "area": {
-                    "x1": 300,
+                    "x1": 0,
                     "y1": 332,
-                    "x2": 300,
+                    "x2": 1752,
                     "y2": 428
                 }
             }
@@ -2747,18 +2747,18 @@
             {
                 "layer": "locali-m1",
                 "area": {
-                    "x1": 300,
+                    "x1": 0,
                     "y1": 332,
-                    "x2": 350,
+                    "x2": 50,
                     "y2": 428
                 }
             },
             {
                 "layer": "locali-m1",
                 "area": {
-                    "x1": 250,
+                    "x1": 1702,
                     "y1": 332,
-                    "x2": 300,
+                    "x2": 1752,
                     "y2": 428
                 }
             }
@@ -2776,9 +2776,9 @@
             {
                 "layer": "locali",
                 "area": {
-                    "x1": 300,
+                    "x1": 0,
                     "y1": 1772,
-                    "x2": 300,
+                    "x2": 1752,
                     "y2": 1868
                 }
             }
@@ -2787,18 +2787,18 @@
             {
                 "layer": "locali-m1",
                 "area": {
-                    "x1": 300,
+                    "x1": 0,
                     "y1": 1772,
-                    "x2": 350,
+                    "x2": 50,
                     "y2": 1868
                 }
             },
             {
                 "layer": "locali-m1",
                 "area": {
-                    "x1": 250,
+                    "x1": 1702,
                     "y1": 1772,
-                    "x2": 300,
+                    "x2": 1752,
                     "y2": 1868
                 }
             }
@@ -2816,9 +2816,9 @@
             {
                 "layer": "locali",
                 "area": {
-                    "x1": 300,
+                    "x1": 100,
                     "y1": 3772,
-                    "x2": 300,
+                    "x2": 1652,
                     "y2": 3868
                 }
             }
@@ -2827,18 +2827,18 @@
             {
                 "layer": "locali-m1",
                 "area": {
-                    "x1": 300,
+                    "x1": 100,
                     "y1": 3772,
-                    "x2": 350,
+                    "x2": 150,
                     "y2": 3868
                 }
             },
             {
                 "layer": "locali-m1",
                 "area": {
-                    "x1": 250,
+                    "x1": 1602,
                     "y1": 3772,
-                    "x2": 300,
+                    "x2": 1652,
                     "y2": 3868
                 }
             }
@@ -2857,10 +2857,10 @@
         "layout": {
             "layer": "locali",
             "area": {
-                "x1": 0,
-                "y1": 4150,
-                "x2": 1752,
-                "y2": 4200
+                "x1": 100,
+                "y1": 4050,
+                "x2": 1652,
+                "y2": 4100
             }
         }
     },
@@ -2877,10 +2877,10 @@
         "layout": {
             "layer": "locali",
             "area": {
-                "x1": 100,
-                "y1": 4050,
-                "x2": 1652,
-                "y2": 4100
+                "x1": 0,
+                "y1": 4150,
+                "x2": 1752,
+                "y2": 4200
             }
         }
     },
@@ -5014,7 +5014,7 @@
     },
     {
         "instance": "TraceNet",
-        "name": "VDD",
+        "name": "VSS",
         "cell": "COMP3",
         "named_cell": "U1_COMP3",
         "parent_cell": "COMP2",
@@ -5099,7 +5099,7 @@
     },
     {
         "instance": "TraceNet",
-        "name": "VSS",
+        "name": "VDD",
         "cell": "COMP3",
         "named_cell": "U1_COMP3",
         "parent_cell": "COMP2",
@@ -5488,9 +5488,9 @@
             {
                 "layer": "locali",
                 "area": {
-                    "x1": 300,
+                    "x1": 100,
                     "y1": 2332,
-                    "x2": 300,
+                    "x2": 1652,
                     "y2": 2428
                 }
             }
@@ -5499,18 +5499,18 @@
             {
                 "layer": "locali-m1",
                 "area": {
-                    "x1": 300,
+                    "x1": 100,
                     "y1": 2332,
-                    "x2": 350,
+                    "x2": 150,
                     "y2": 2428
                 }
             },
             {
                 "layer": "locali-m1",
                 "area": {
-                    "x1": 250,
+                    "x1": 1602,
                     "y1": 2332,
-                    "x2": 300,
+                    "x2": 1652,
                     "y2": 2428
                 }
             }
@@ -5528,9 +5528,9 @@
             {
                 "layer": "locali",
                 "area": {
-                    "x1": 300,
+                    "x1": 0,
                     "y1": 332,
-                    "x2": 300,
+                    "x2": 1752,
                     "y2": 428
                 }
             }
@@ -5539,18 +5539,18 @@
             {
                 "layer": "locali-m1",
                 "area": {
-                    "x1": 300,
+                    "x1": 0,
                     "y1": 332,
-                    "x2": 350,
+                    "x2": 50,
                     "y2": 428
                 }
             },
             {
                 "layer": "locali-m1",
                 "area": {
-                    "x1": 250,
+                    "x1": 1702,
                     "y1": 332,
-                    "x2": 300,
+                    "x2": 1752,
                     "y2": 428
                 }
             }
@@ -5568,9 +5568,9 @@
             {
                 "layer": "locali",
                 "area": {
-                    "x1": 300,
+                    "x1": 0,
                     "y1": 1772,
-                    "x2": 300,
+                    "x2": 1752,
                     "y2": 1868
                 }
             }
@@ -5579,18 +5579,18 @@
             {
                 "layer": "locali-m1",
                 "area": {
-                    "x1": 300,
+                    "x1": 0,
                     "y1": 1772,
-                    "x2": 350,
+                    "x2": 50,
                     "y2": 1868
                 }
             },
             {
                 "layer": "locali-m1",
                 "area": {
-                    "x1": 250,
+                    "x1": 1702,
                     "y1": 1772,
-                    "x2": 300,
+                    "x2": 1752,
                     "y2": 1868
                 }
             }
@@ -5608,9 +5608,9 @@
             {
                 "layer": "locali",
                 "area": {
-                    "x1": 300,
+                    "x1": 100,
                     "y1": 3772,
-                    "x2": 300,
+                    "x2": 1652,
                     "y2": 3868
                 }
             }
@@ -5619,18 +5619,18 @@
             {
                 "layer": "locali-m1",
                 "area": {
-                    "x1": 300,
+                    "x1": 100,
                     "y1": 3772,
-                    "x2": 350,
+                    "x2": 150,
                     "y2": 3868
                 }
             },
             {
                 "layer": "locali-m1",
                 "area": {
-                    "x1": 250,
+                    "x1": 1602,
                     "y1": 3772,
-                    "x2": 300,
+                    "x2": 1652,
                     "y2": 3868
                 }
             }
@@ -5649,10 +5649,10 @@
         "layout": {
             "layer": "locali",
             "area": {
-                "x1": -100,
-                "y1": 4250,
-                "x2": 3654,
-                "y2": 4300
+                "x1": -200,
+                "y1": 4350,
+                "x2": 3754,
+                "y2": 4400
             }
         }
     },
@@ -5669,97 +5669,12 @@
         "layout": {
             "layer": "locali",
             "area": {
-                "x1": -200,
-                "y1": 4350,
-                "x2": 3754,
-                "y2": 4400
+                "x1": -100,
+                "y1": 4250,
+                "x2": 3654,
+                "y2": 4300
             }
         }
-    },
-    {
-        "instance": "TraceNet",
-        "name": "VDD",
-        "cell": "JNW_BKLE",
-        "named_cell": "UTOP_JNW_BKLE",
-        "parent_cell": "ROOT_CELL",
-        "named_parent_cell": "",
-        "cell_chain": "UTOP_JNW_BKLE",
-        "segments": [
-            {
-                "layer": "locali",
-                "area": {
-                    "x1": -100,
-                    "y1": 4250,
-                    "x2": 3654,
-                    "y2": 4300
-                }
-            },
-            {
-                "layer": "locali",
-                "area": {
-                    "x1": -100,
-                    "y1": -100,
-                    "x2": 3654,
-                    "y2": -50
-                }
-            },
-            {
-                "layer": "m1",
-                "area": {
-                    "x1": -100,
-                    "y1": -50,
-                    "x2": -50,
-                    "y2": 4250
-                }
-            },
-            {
-                "layer": "m1",
-                "area": {
-                    "x1": 3604,
-                    "y1": -50,
-                    "x2": 3654,
-                    "y2": 4250
-                }
-            }
-        ],
-        "vias": [
-            {
-                "layer": "locali-m1",
-                "area": {
-                    "x1": -100,
-                    "y1": 4250,
-                    "x2": -50,
-                    "y2": 4300
-                }
-            },
-            {
-                "layer": "locali-m1",
-                "area": {
-                    "x1": -100,
-                    "y1": -100,
-                    "x2": -50,
-                    "y2": -50
-                }
-            },
-            {
-                "layer": "locali-m1",
-                "area": {
-                    "x1": 3604,
-                    "y1": 4250,
-                    "x2": 3654,
-                    "y2": 4300
-                }
-            },
-            {
-                "layer": "locali-m1",
-                "area": {
-                    "x1": 3604,
-                    "y1": -100,
-                    "x2": 3654,
-                    "y2": -50
-                }
-            }
-        ]
     },
     {
         "instance": "TraceNet",
@@ -5773,6 +5688,91 @@
             {
                 "layer": "locali",
                 "area": {
+                    "x1": -100,
+                    "y1": 4250,
+                    "x2": 3654,
+                    "y2": 4300
+                }
+            },
+            {
+                "layer": "locali",
+                "area": {
+                    "x1": -100,
+                    "y1": -100,
+                    "x2": 3654,
+                    "y2": -50
+                }
+            },
+            {
+                "layer": "m1",
+                "area": {
+                    "x1": -100,
+                    "y1": -50,
+                    "x2": -50,
+                    "y2": 4250
+                }
+            },
+            {
+                "layer": "m1",
+                "area": {
+                    "x1": 3604,
+                    "y1": -50,
+                    "x2": 3654,
+                    "y2": 4250
+                }
+            }
+        ],
+        "vias": [
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": -100,
+                    "y1": 4250,
+                    "x2": -50,
+                    "y2": 4300
+                }
+            },
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": -100,
+                    "y1": -100,
+                    "x2": -50,
+                    "y2": -50
+                }
+            },
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 3604,
+                    "y1": 4250,
+                    "x2": 3654,
+                    "y2": 4300
+                }
+            },
+            {
+                "layer": "locali-m1",
+                "area": {
+                    "x1": 3604,
+                    "y1": -100,
+                    "x2": 3654,
+                    "y2": -50
+                }
+            }
+        ]
+    },
+    {
+        "instance": "TraceNet",
+        "name": "VDD",
+        "cell": "JNW_BKLE",
+        "named_cell": "UTOP_JNW_BKLE",
+        "parent_cell": "ROOT_CELL",
+        "named_parent_cell": "",
+        "cell_chain": "UTOP_JNW_BKLE",
+        "segments": [
+            {
+                "layer": "locali",
+                "area": {
                     "x1": -200,
                     "y1": 4350,
                     "x2": 3754,
@@ -5842,295 +5842,6 @@
                     "y1": -200,
                     "x2": 3754,
                     "y2": -150
-                }
-            }
-        ]
-    },
-    {
-        "instance": "TraceNet",
-        "name": "VDD:VDD",
-        "cell": null,
-        "named_cell": "UROOT_ROOT_CELL",
-        "parent_cell": "",
-        "named_parent_cell": "",
-        "cell_chain": null,
-        "segments": [
-            {
-                "layer": "m4",
-                "area": {
-                    "x1": 0,
-                    "y1": -15,
-                    "x2": 0,
-                    "y2": 15
-                }
-            },
-            {
-                "layer": "m4",
-                "area": {
-                    "x1": -15,
-                    "y1": 0,
-                    "x2": 15,
-                    "y2": 0
-                }
-            }
-        ],
-        "vias": []
-    },
-    {
-        "instance": "TraceNet",
-        "name": "VSS:VSS",
-        "cell": null,
-        "named_cell": "UROOT_ROOT_CELL",
-        "parent_cell": "",
-        "named_parent_cell": "",
-        "cell_chain": null,
-        "segments": [
-            {
-                "layer": "m4",
-                "area": {
-                    "x1": 0,
-                    "y1": -15,
-                    "x2": 0,
-                    "y2": 15
-                }
-            },
-            {
-                "layer": "m4",
-                "area": {
-                    "x1": -15,
-                    "y1": 0,
-                    "x2": 15,
-                    "y2": 0
-                }
-            }
-        ],
-        "vias": []
-    },
-    {
-        "instance": "TraceNet",
-        "name": "VDD:VDD",
-        "cell": "JNW_BKLE",
-        "named_cell": "UTOP_JNW_BKLE",
-        "parent_cell": "",
-        "named_parent_cell": "",
-        "cell_chain": "UTOP_JNW_BKLE",
-        "segments": [
-            {
-                "layer": "m4",
-                "area": {
-                    "x1": 0,
-                    "y1": -15,
-                    "x2": 0,
-                    "y2": 15
-                }
-            },
-            {
-                "layer": "m4",
-                "area": {
-                    "x1": -15,
-                    "y1": 0,
-                    "x2": 15,
-                    "y2": 0
-                }
-            }
-        ],
-        "vias": []
-    },
-    {
-        "instance": "TraceNet",
-        "name": "net1:VIN",
-        "cell": "JNW_BKLE",
-        "named_cell": "UTOP_JNW_BKLE",
-        "parent_cell": "",
-        "named_parent_cell": "",
-        "cell_chain": "UTOP_JNW_BKLE",
-        "segments": [
-            {
-                "layer": "m4",
-                "area": {
-                    "x1": 0,
-                    "y1": -15,
-                    "x2": 0,
-                    "y2": 15
-                }
-            },
-            {
-                "layer": "m4",
-                "area": {
-                    "x1": -15,
-                    "y1": 0,
-                    "x2": 15,
-                    "y2": 0
-                }
-            }
-        ],
-        "vias": []
-    },
-    {
-        "instance": "TraceNet",
-        "name": "net2:VIP",
-        "cell": "JNW_BKLE",
-        "named_cell": "UTOP_JNW_BKLE",
-        "parent_cell": "",
-        "named_parent_cell": "",
-        "cell_chain": "UTOP_JNW_BKLE",
-        "segments": [
-            {
-                "layer": "m4",
-                "area": {
-                    "x1": 0,
-                    "y1": -15,
-                    "x2": 0,
-                    "y2": 15
-                }
-            },
-            {
-                "layer": "m4",
-                "area": {
-                    "x1": -15,
-                    "y1": 0,
-                    "x2": 15,
-                    "y2": 0
-                }
-            }
-        ],
-        "vias": []
-    },
-    {
-        "instance": "TraceNet",
-        "name": "net3:VO",
-        "cell": "JNW_BKLE",
-        "named_cell": "UTOP_JNW_BKLE",
-        "parent_cell": "",
-        "named_parent_cell": "",
-        "cell_chain": "UTOP_JNW_BKLE",
-        "segments": [
-            {
-                "layer": "m4",
-                "area": {
-                    "x1": 0,
-                    "y1": -15,
-                    "x2": 0,
-                    "y2": 15
-                }
-            },
-            {
-                "layer": "m4",
-                "area": {
-                    "x1": -15,
-                    "y1": 0,
-                    "x2": 15,
-                    "y2": 0
-                }
-            }
-        ],
-        "vias": []
-    },
-    {
-        "instance": "TraceNet",
-        "name": "net4:I_BIAS",
-        "cell": "JNW_BKLE",
-        "named_cell": "UTOP_JNW_BKLE",
-        "parent_cell": "",
-        "named_parent_cell": "",
-        "cell_chain": "UTOP_JNW_BKLE",
-        "segments": [
-            {
-                "layer": "m4",
-                "area": {
-                    "x1": 0,
-                    "y1": -15,
-                    "x2": 0,
-                    "y2": 15
-                }
-            },
-            {
-                "layer": "m4",
-                "area": {
-                    "x1": -15,
-                    "y1": 0,
-                    "x2": 15,
-                    "y2": 0
-                }
-            }
-        ],
-        "vias": []
-    },
-    {
-        "instance": "TraceNet",
-        "name": "VSS:VSS",
-        "cell": "JNW_BKLE",
-        "named_cell": "UTOP_JNW_BKLE",
-        "parent_cell": "",
-        "named_parent_cell": "",
-        "cell_chain": "UTOP_JNW_BKLE",
-        "segments": [
-            {
-                "layer": "m4",
-                "area": {
-                    "x1": 0,
-                    "y1": -15,
-                    "x2": 0,
-                    "y2": 15
-                }
-            },
-            {
-                "layer": "m4",
-                "area": {
-                    "x1": -15,
-                    "y1": 0,
-                    "x2": 15,
-                    "y2": 0
-                }
-            }
-        ],
-        "vias": []
-    },
-    {
-        "instance": "TraceNet",
-        "name": "VDD:VDD",
-        "cell": "COMP2",
-        "named_cell": "U1_COMP2",
-        "parent_cell": "",
-        "named_parent_cell": "",
-        "cell_chain": "UTOP_JNW_BKLE--U1_COMP2",
-        "segments": [
-            {
-                "layer": "m4",
-                "area": {
-                    "x1": 348,
-                    "y1": 933,
-                    "x2": 2150,
-                    "y2": 963
-                }
-            },
-            {
-                "layer": "m4",
-                "area": {
-                    "x1": 2135,
-                    "y1": 948,
-                    "x2": 2165,
-                    "y2": 948
-                }
-            }
-        ],
-        "vias": [
-            {
-                "layer": "m1-m2",
-                "area": {
-                    "x1": 1212,
-                    "y1": 920,
-                    "x2": 1308,
-                    "y2": 960
-                }
-            },
-            {
-                "layer": "m1-m2",
-                "area": {
-                    "x1": 636,
-                    "y1": 920,
-                    "x2": 732,
-                    "y2": 960
                 }
             }
         ]
@@ -6147,42 +5858,23 @@
             {
                 "layer": "m4",
                 "area": {
-                    "x1": 348,
-                    "y1": 933,
-                    "x2": 2150,
-                    "y2": 963
+                    "x1": 684,
+                    "y1": 925,
+                    "x2": 2501,
+                    "y2": 955
                 }
             },
             {
                 "layer": "m4",
                 "area": {
-                    "x1": 2135,
-                    "y1": 948,
-                    "x2": 2165,
-                    "y2": 2548
+                    "x1": 2471,
+                    "y1": 940,
+                    "x2": 2501,
+                    "y2": 2540
                 }
             }
         ],
-        "vias": [
-            {
-                "layer": "m1-m2",
-                "area": {
-                    "x1": 1212,
-                    "y1": 920,
-                    "x2": 1308,
-                    "y2": 960
-                }
-            },
-            {
-                "layer": "m1-m2",
-                "area": {
-                    "x1": 636,
-                    "y1": 920,
-                    "x2": 732,
-                    "y2": 960
-                }
-            }
-        ]
+        "vias": []
     },
     {
         "instance": "TraceNet",
@@ -6198,7 +5890,7 @@
                 "area": {
                     "x1": 0,
                     "y1": -15,
-                    "x2": 0,
+                    "x2": 15,
                     "y2": 15
                 }
             },
@@ -6228,7 +5920,7 @@
                 "area": {
                     "x1": 0,
                     "y1": -15,
-                    "x2": 0,
+                    "x2": 15,
                     "y2": 15
                 }
             },
@@ -6258,7 +5950,7 @@
                 "area": {
                     "x1": 0,
                     "y1": -15,
-                    "x2": 0,
+                    "x2": 15,
                     "y2": 15
                 }
             },
@@ -6273,45 +5965,5 @@
             }
         ],
         "vias": []
-    },
-    {
-        "instance": "TraceNet",
-        "name": "VSS:VSS",
-        "cell": "COMP2",
-        "named_cell": "U1_COMP2",
-        "parent_cell": "",
-        "named_parent_cell": "",
-        "cell_chain": "UTOP_JNW_BKLE--U1_COMP2",
-        "segments": [
-            {
-                "layer": "m4",
-                "area": {
-                    "x1": 924,
-                    "y1": 2933,
-                    "x2": 2726,
-                    "y2": 2963
-                }
-            },
-            {
-                "layer": "m4",
-                "area": {
-                    "x1": 2711,
-                    "y1": 2948,
-                    "x2": 2741,
-                    "y2": 2948
-                }
-            }
-        ],
-        "vias": [
-            {
-                "layer": "m1-m2",
-                "area": {
-                    "x1": 1212,
-                    "y1": 2920,
-                    "x2": 1308,
-                    "y2": 2960
-                }
-            }
-        ]
     }
 ]
