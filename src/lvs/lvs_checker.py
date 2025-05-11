@@ -26,6 +26,7 @@ from logger.logger import get_a_logger
 
 # ================================================= LVS checker ========================================================
 
+
 class LVSchecking:
     logger = get_a_logger(__name__)
 
@@ -41,9 +42,10 @@ class LVSchecking:
 
         # Runs LVS command from work directory of project
         try:
-            subprocess.run(['make lvsall'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True,
+            output = subprocess.run(['make lvsall'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True,
                            check=True, shell=True, cwd=work_directory)
-            self.logger.info("TBD!")
+            self.logger.info(output.stdout)
 
         except subprocess.CalledProcessError as e:
-            self.logger.warning(f"'make lvsall' command had problems: {e.stderr}")
+            self.logger.error(f"'make lvsall' command had problems: {e.stderr}")
+            self.logger.error(e.stdout)

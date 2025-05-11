@@ -8,22 +8,49 @@
       <change beforePath="$PROJECT_DIR$/.idea/Analog-Automagic-Layout.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Analog-Automagic-Layout.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/constraints.txt" beforeDir="false" afterPath="$PROJECT_DIR$/constraints.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/constraints.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/Install SCIP suite with cmake on server.txt" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/TODO.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/TODO.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pyproject.toml" beforeDir="false" afterPath="$PROJECT_DIR$/pyproject.toml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/cell/cell_creator.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/cell/cell_creator.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/circuit/circuit_spice_parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/circuit/circuit_spice_parser.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/json_converter/components_COMPLETED.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/json_converter/components_COMPLETED.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/json_converter/components_temp_before_cell_creator.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/json_converter/components_temp_before_cell_creator.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/astar/a_star_initiator.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/astar/a_star_initiator.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/connections/connections.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/connections/connections.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/drc/drc_checker.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/drc/drc_checker.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/drc/drc_errors_plot.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/drc/drc_errors_plot.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/json_converter/components_(edge_case_test_for_endpoints).json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/json_converter/components_COMPLETED.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/json_converter/components_complete.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/json_converter/components_digital_test.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/json_converter/components_for_comp_circuit.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/json_converter/components_for_comp_circuit_lvs_clean.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/json_converter/components_multiple_cell_test.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/json_converter/components_multiple_cell_test_1.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/json_converter/components_temp_before_cell_creator.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/json_converter/components_test.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/json_converter/components_with_traces_update_1.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/json_converter/fix_missing_rail_and_tap_in_this_layout.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/json_converter/json_converter.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/json_converter/json_converter.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/libraries/aal_misc_sky130a_lib.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/libraries/aal_misc_sky130a_lib.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/libraries/atr_sky130a_lib.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/libraries/atr_sky130a_lib.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/libraries/library_handling.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/libraries/library_handling.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/libraries/tr_sky130a_lib.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/libraries/tr_sky130a_lib.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/linear_optimization/initiator_lp.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/linear_optimization/initiator_lp.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/linear_optimization/linear_optimization.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/linear_optimization/linear_optimization.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/linear_optimization/previous_placement_solution.pkl" beforeDir="false" afterPath="$PROJECT_DIR$/src/linear_optimization/previous_placement_solution.pkl" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/magic/magic_component_parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/magic/magic_component_parser.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/traces/generate_rail_traces.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/traces/generate_rail_traces.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lvs/lvs_checker.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/lvs/lvs_checker.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/results/Comparator_OTA_complete_generation_data.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/results/Comparator_OTA_complete_generation_data_2.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/results/Comparator_OTA_complete_generation_data_3.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/results/Comparator_OTA_complete_generation_data_4.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/results/Comparator_OTA_complete_generation_data_5.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/results/Comparator_OTA_complete_generation_data_6.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/results/Comparator_OTA_complete_generation_data_8_hours.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/results/OTA_comparator_placement_in_layout.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/results/OTA_comparator_placement_with_traces_1.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/results/OTA_comparator_placement_with_traces_2.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/results/OTA_placement _and_routing_matplotlib.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/results/Simplified_trace_test_result.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/results/proposed_placement_and_routing.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/results/test_placement.png" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -108,7 +135,7 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-python-sdk-98f27166c754-ba05f1cad1b1-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-242.21829.153" />
+        <option value="bundled-python-sdk-975db3bf15a3-31b6be0877a2-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-241.18034.82" />
       </set>
     </attachedChunks>
   </component>

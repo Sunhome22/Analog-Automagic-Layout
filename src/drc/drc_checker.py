@@ -145,7 +145,8 @@ class DRCchecking:
         ax.set_xlabel('X-axis')
         ax.set_ylabel('Y-axis')
         ax.set_title('DRC Errors')
-        self.logger.info(f"Detailed DRC errors plotted from custom log and saved to '{self.current_file_directory}/drc_errors_plot.png'")
+        self.logger.info(f"Detailed DRC errors plotted from custom log and saved to "
+                         f"'{self.current_file_directory}/drc_errors_plot.png'")
         plt.savefig(f"{self.current_file_directory}/drc_errors_plot.png", dpi=500)
 
 

@@ -373,7 +373,7 @@ def __create_port_to_rail_connection_based_on_component_placement_order(
     total_length = sum((comp.bounding_box.x2 - comp.bounding_box.x1) for comp in group_components)
     smallest_x_component = min(group_components, key=lambda comp: comp.transform_matrix.c)
 
-    if self.RELATIVE_COMPONENT_PLACEMENT == "A" or len(self.functional_component_order) == 1:
+    if self.RELATIVE_COMPONENT_PLACEMENT == "V" or len(self.functional_component_order) == 1:
         x1 = pin.layout.area.x1
         x2 = pin.layout.area.x2
 
@@ -392,7 +392,7 @@ def __create_port_to_rail_connection_based_on_component_placement_order(
         trace.vias.append(RectAreaLayer(layer='locali-m1', area=via_right))
         trace.segments.append(RectAreaLayer(layer='locali', area=segment))
 
-    elif self.RELATIVE_COMPONENT_PLACEMENT == "S":
+    elif self.RELATIVE_COMPONENT_PLACEMENT == "H":
 
         if self.functional_component_order[0] == component_type:
             x1 = pin.layout.area.x1
@@ -454,7 +454,7 @@ def __create_port_to_rail_connection_based_on_component_placement_order(
 def __add_connections_for_middle_placed_components(self, pin: Pin, group_components: list, trace: TraceNet,
                                                    component_type: str):
 
-    if self.RELATIVE_COMPONENT_PLACEMENT == "S" and len(self.functional_component_order) > 2:
+    if self.RELATIVE_COMPONENT_PLACEMENT == "H" and len(self.functional_component_order) > 2:
 
         if (self.functional_component_order[1] == component_type and len(self.functional_component_order) > 2
                 or self.functional_component_order[2] == component_type and len(

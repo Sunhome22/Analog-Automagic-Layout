@@ -37,7 +37,7 @@ from circuit.circuit_components import (RectArea, RectAreaLayer, Transistor, Cap
 
 def offset_components_by_group_endpoint_and_overlap_distance_for_atr_sky130a_lib(self):
     """Updates position of components taking offset and group endpoint areas into account.
-    This is a hacky solution. TBD"""
+    This is a somewhat hacky solution and there are still likely edge cases"""
 
     atr_transistor_components = []
     for component in self.components:
@@ -47,27 +47,97 @@ def offset_components_by_group_endpoint_and_overlap_distance_for_atr_sky130a_lib
     if not atr_transistor_components:
         return
 
-    if self.RELATIVE_COMPONENT_PLACEMENT == "S":
+    if self.RELATIVE_COMPONENT_PLACEMENT == "H":
 
-        for component in atr_transistor_components:
-            component.transform_matrix.f += (component.group_endpoint_bounding_box.y2 -
-                                             component.group_endpoint_bounding_box.y1) + component.overlap_distance.y
-            component.transform_matrix.c += component.overlap_distance.x
+        if len(self.functional_component_order) == 1:
+            offset_y = 0
+            offset_x = 0
+            for component in atr_transistor_components:
+                offset_x = component.overlap_distance.x
+                offset_y = (component.group_endpoint_bounding_box.y2 -
+                            component.group_endpoint_bounding_box.y1) + component.overlap_distance.y
 
-    if self.RELATIVE_COMPONENT_PLACEMENT == "A":
-        offset = 0
-        for component in atr_transistor_components:
-            component.transform_matrix.c += component.overlap_distance.x
-            offset = (component.group_endpoint_bounding_box.y2 -
-                      component.group_endpoint_bounding_box.y1) + component.overlap_distance.y
-            print(offset)
+            for comp in self.components:
+                if isinstance(comp, CircuitCell):
+                    comp.bounding_box.y1 -= offset_y
+                    comp.bounding_box.y2 += offset_y
+                    comp.bounding_box.x1 -= offset_x
+                    comp.bounding_box.x2 += offset_x
 
-        for comp in self.components:
-            if isinstance(comp, CircuitCell):
-                comp.bounding_box.y1 -= offset
+        elif self.functional_component_order[0] == "T":
+            offset = 0
+            for component in atr_transistor_components:
+                component.transform_matrix.f += (component.group_endpoint_bounding_box.y2 -
+                                                 component.group_endpoint_bounding_box.y1) + component.overlap_distance.y
+                offset = component.overlap_distance.x
 
+            for comp in self.components:
+                if isinstance(comp, CircuitCell):
+                    comp.bounding_box.x1 -= offset
+
+        elif self.functional_component_order[-1] == "T":
+            offset = 0
+            for component in atr_transistor_components:
+                component.transform_matrix.f += (component.group_endpoint_bounding_box.y2 -
+                                                 component.group_endpoint_bounding_box.y1) + component.overlap_distance.y
+                offset = component.overlap_distance.x
+
+            for comp in self.components:
+                if isinstance(comp, CircuitCell):
+                    comp.bounding_box.x2 += offset
+
+        elif (self.functional_component_order[1] == "T" and len(self.functional_component_order) > 2
+              or self.functional_component_order[2] == "T" and len(self.functional_component_order) > 3):
+            for component in atr_transistor_components:
+                component.transform_matrix.f += (component.group_endpoint_bounding_box.y2 -
+                                                 component.group_endpoint_bounding_box.y1) + component.overlap_distance.y
+
+    if self.RELATIVE_COMPONENT_PLACEMENT == "V":
+        if len(self.functional_component_order) == 1:
+            offset_y = 0
+            offset_x = 0
+            for component in atr_transistor_components:
+                offset_x = component.overlap_distance.x
+                offset_y = (component.group_endpoint_bounding_box.y2 -
+                            component.group_endpoint_bounding_box.y1) + component.overlap_distance.y
+
+            for comp in self.components:
+                if isinstance(comp, CircuitCell):
+                    comp.bounding_box.y1 -= offset_y
+                    comp.bounding_box.y2 += offset_y
+                    comp.bounding_box.x1 -= offset_x
+                    comp.bounding_box.x2 += offset_x
+
+        elif self.functional_component_order[0] == "T":
+            offset = 0
+            for component in atr_transistor_components:
+                component.transform_matrix.c += component.overlap_distance.x
+                offset = (component.group_endpoint_bounding_box.y2 -
+                          component.group_endpoint_bounding_box.y1) + component.overlap_distance.y
+
+            for comp in self.components:
+                if isinstance(comp, CircuitCell):
+                    comp.bounding_box.y1 -= offset
+
+        elif self.functional_component_order[-1] == "T":
+            offset = 0
+            for component in atr_transistor_components:
+                component.transform_matrix.c += component.overlap_distance.x
+                offset = (component.group_endpoint_bounding_box.y2 -
+                          component.group_endpoint_bounding_box.y1) + component.overlap_distance.y
+
+            for comp in self.components:
+                if isinstance(comp, CircuitCell):
+                    comp.bounding_box.y2 += offset
+
+        elif (self.functional_component_order[1] == "T" and len(self.functional_component_order) > 2
+              or self.functional_component_order[2] == "T" and len(self.functional_component_order) > 3):
+            for component in atr_transistor_components:
+                component.transform_matrix.c += component.overlap_distance.x
 
 # ============================================= Trace generation functions =============================================
+
+
 def generate_local_traces_for_atr_sky130a_lib(self):
     atr_transistor_components = []
 
@@ -229,9 +299,11 @@ def __create_bulk_to_rail_based_on_component_placement_order(
         self, pin, y_params, component, bulk_width, group_components, trace):
 
     total_length = sum((comp.bounding_box.x2 - comp.bounding_box.x1) for comp in group_components)
+    # + sum(comp.overlap_distance.x for comp in group_components)
+
     smallest_x_component = min(group_components, key=lambda comp: comp.transform_matrix.c)
 
-    if self.RELATIVE_COMPONENT_PLACEMENT == "A" or len(self.functional_component_order) == 1:
+    if self.RELATIVE_COMPONENT_PLACEMENT == "V" or len(self.functional_component_order) == 1:
         x1 = pin.layout.area.x1
         x2 = pin.layout.area.x2
 
@@ -250,7 +322,7 @@ def __create_bulk_to_rail_based_on_component_placement_order(
         trace.vias.append(RectAreaLayer(layer='locali-m1', area=via_right))
         trace.segments.append(RectAreaLayer(layer='locali', area=segment))
 
-    elif self.RELATIVE_COMPONENT_PLACEMENT == "S":
+    elif self.RELATIVE_COMPONENT_PLACEMENT == "H":
 
         if self.functional_component_order[0] == "T":
             x1 = pin.layout.area.x1
@@ -300,7 +372,7 @@ def __create_bulk_to_rail_based_on_component_placement_order(
 
 
 def __add_connections_for_middle_placed_components(self, pin, group_components, trace):
-    if self.RELATIVE_COMPONENT_PLACEMENT == "S" and len(self.functional_component_order) > 2:
+    if self.RELATIVE_COMPONENT_PLACEMENT == "H" and len(self.functional_component_order) > 2:
 
         if (self.functional_component_order[1] == "T" and len(self.functional_component_order) > 2
                 or self.functional_component_order[2] == "T" and len(self.functional_component_order) > 3):

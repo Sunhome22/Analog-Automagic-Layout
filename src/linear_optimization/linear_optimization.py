@@ -65,6 +65,7 @@ class LinearOptimizationSolver:
         self.overlap = overlap
         self.object_type = object_type
 
+
         # Data structures
         self.x_possible = []
         self.y_possible = []
@@ -80,8 +81,8 @@ class LinearOptimizationSolver:
         self.d_y = {}
         # Setup of problem space and solver
         self.problem_space = pulp.LpProblem("ComponentPlacement", pulp.LpMinimize)
-        self.solver = pulp.SCIP_PY(msg=self.SOLVER_MSG, mip=True, warmStart=False,
-                                   options=[f"limits/gap={self.STOP_TOLERANCE}", "misc/usesymmetry=2"])
+        self.solver = pulp.SCIP_PY(msg=self.SOLVER_MSG, mip=False, warmStart=False,
+                                   options=[f"limits/gap={self.STOP_TOLERANCE}"])
 
         # Make lists of functional components and structural components
         for comp in self.components:
@@ -112,9 +113,11 @@ class LinearOptimizationSolver:
             self.width[c.number_id] = c.bounding_box.x2 - c.bounding_box.x1
             self.height[c.number_id] = c.bounding_box.y2 - c.bounding_box.y1
 
-        # Debugging
         if self.MIRROR:
             self.mirrored_components = self.__check_mirrored_components()
+        # Debugging
+
+
 
     def __load_config(self, path="pyproject.toml"):
         try:
