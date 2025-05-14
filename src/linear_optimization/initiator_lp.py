@@ -131,13 +131,13 @@ class LPInitiator:
 
     def __get_previous_placement_offset(self):
         if self.placed_cells == 1:
-            if self.RELATIVE_COMPONENT_PLACEMENT == "V":
+            if self.RELATIVE_COMPONENT_PLACEMENT == "H":
                 return self.used_area_all[0].x2-self.used_area_all[0].x1 + self.SUB_CELL_OFFSET_1, 0
 
             else:
                 return 0, self.used_area_all[0].y2 - self.used_area_all[0].y1 + self.SUB_CELL_OFFSET_1
         elif self.placed_cells == 2:
-            if self.RELATIVE_COMPONENT_PLACEMENT == "V":
+            if self.RELATIVE_COMPONENT_PLACEMENT == "H":
                 return (self.used_area_all[0].x2 - self.used_area_all[0].x1 + self.used_area_all[1].x2
                         - self.used_area_all[1].x1 + self.SUB_CELL_OFFSET_1 + self.SUB_CELL_OFFSET_2, 0)
 
@@ -146,7 +146,7 @@ class LPInitiator:
                         self.used_area_all[0].y2 - self.used_area_all[0].y1 + self.used_area_all[1].y2
                         - self.used_area_all[1].y1 + self.SUB_CELL_OFFSET_1 + self.SUB_CELL_OFFSET_2)
         elif self.placed_cells == 3:
-            if self.RELATIVE_COMPONENT_PLACEMENT == "V":
+            if self.RELATIVE_COMPONENT_PLACEMENT == "H":
                 return (self.used_area_all[0].x2 - self.used_area_all[0].x1 + self.used_area_all[1].x2
                         - self.used_area_all[1].x1 + self.used_area_all[2].x2 - self.used_area_all[2].x1
                         + self.SUB_CELL_OFFSET_1 + self.SUB_CELL_OFFSET_2 + self.SUB_CELL_OFFSET_3, 0)

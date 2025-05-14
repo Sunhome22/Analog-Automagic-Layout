@@ -117,8 +117,6 @@ class LinearOptimizationSolver:
             self.mirrored_components = self.__check_mirrored_components()
         # Debugging
 
-
-
     def __load_config(self, path="pyproject.toml"):
         try:
             with open(path, "rb") as f:
