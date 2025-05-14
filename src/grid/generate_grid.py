@@ -21,7 +21,7 @@ from logger.logger import get_a_logger
 import math
 import numpy as np
 import matplotlib.pyplot as plt
-from draw_result.visualize_grid import visualize_grid
+from draw_result.visualize_grid import visualize_grid, heatmap_test
 from dataclasses import dataclass, field
 import tomllib
 
@@ -99,7 +99,13 @@ class GridGeneration:
         self.VIA_PADDING = self.config["magic_layout_creator"]["VIA_PADDING"]
         self.GRID_LEEWAY_X = self.config["generate_grid"]["GRID_LEEWAY_X"]
         self.GRID_LEEWAY_Y = self.config["generate_grid"]["GRID_LEEWAY_Y"]
-
+        self.ADJUST_MIN_SEG_LENGTH = self.config["generate_grid"]["scaled_parameters"]["ADJUST_MIN_SEG_LENGTH"]
+        self.ADJUST_PORT_SIZE = self.config["generate_grid"]["scaled_parameters"]["ADJUST_PORT_SCALED_SIZE"]
+        self.ADJUST_SEG_WIDTH = self.config["generate_grid"]["scaled_parameters"]["ADJUST_SEG_WIDTH"]
+        self.ADJUST_CAP_PORT_WIDTH = self.config["generate_grid"]["scaled_parameters"]["ADJUST_CAP_PORT_WIDTH"]
+        self.ADJUST_CAP_PORT_HEIGHT = self.config["generate_grid"]["scaled_parameters"]["ADJUST_CAP_PORT_HEIGHT"]
+        self.ADJUST_RES_PORT_WIDTH = self.config["generate_grid"]["scaled_parameters"]["ADJUST_RES_PORT_WIDTH"]
+        self.ADJUST_RES_PORT_HEIGHT = self.config["generate_grid"]["scaled_parameters"]["ADJUST_RES_PORT_HEIGHT"]
         # INPUTS
         self.components = components
 
@@ -119,6 +125,16 @@ class GridGeneration:
                 return tomllib.load(f)
         except (FileNotFoundError, tomllib.TOMLDecodeError) as e:
             self.logger.error(f"Error loading config: {e}")
+
+    def get_used_area(self):
+        for obj in self.components:
+            if not check_instance(obj):  # Skip components of these types
+                self.used_area.x1 = min(self.used_area.x1, obj.transform_matrix.c)
+                self.used_area.y1 = min(self.used_area.y1, obj.transform_matrix.f)
+                self.used_area.x2 = max(self.used_area.x2, obj.transform_matrix.c + obj.bounding_box.x2)
+                self.used_area.y2 = max(self.used_area.y2, obj.transform_matrix.f + obj.bounding_box.y2)
+
+        return self.used_area
 
     def __port_area(self):
 
@@ -157,23 +173,29 @@ class GridGeneration:
 
     def __calculate_non_overlap_parameters(self):
 
-        self.routing_parameters.trace_width_scaled = math.ceil((self.TRACE_WIDTH + self.VIA_MINIMUM_DISTANCE +
+        self.routing_parameters.trace_width_scaled = (math.ceil((self.TRACE_WIDTH + self.VIA_MINIMUM_DISTANCE +
                                                                 self.VIA_PADDING * 2) / self.SCALE_FACTOR) + 1
-        self.routing_parameters.minimum_segment_length = math.ceil((48 + self.VIA_MINIMUM_DISTANCE+self.VIA_PADDING * 2
-                                                                       + self.TRACE_WIDTH / 2) / self.SCALE_FACTOR) + 1
+                                                      + self.ADJUST_SEG_WIDTH)
+        self.routing_parameters.minimum_segment_length = (math.ceil((48 + self.VIA_MINIMUM_DISTANCE+self.VIA_PADDING * 2
+                                                                        + self.TRACE_WIDTH / 2) / self.SCALE_FACTOR) + 1
+                                                          + self.ADJUST_MIN_SEG_LENGTH)
         for obj in self.components:
 
             if not check_instance(obj):
 
                 for port in obj.layout_ports:
-                    port_height = math.ceil(((port.area.y2 - port.area.y1) / 2 + self.VIA_MINIMUM_DISTANCE
+                    port_height = (math.ceil(((port.area.y2 - port.area.y1) / 2 + self.VIA_MINIMUM_DISTANCE
                                              + self.VIA_PADDING * 2 + self.TRACE_WIDTH / 2) / self.SCALE_FACTOR) + 1
-                    port_width = math.ceil(((port.area.x2 - port.area.x1) / 2 + self.VIA_MINIMUM_DISTANCE
+                                   + self.ADJUST_PORT_SIZE)
+                    port_width = (math.ceil(((port.area.x2 - port.area.x1) / 2 + self.VIA_MINIMUM_DISTANCE
                                             + self.VIA_PADDING * 2 + self.TRACE_WIDTH / 2) / self.SCALE_FACTOR) + 1
-                    port_height_v = math.ceil(((port.area.y2 - port.area.y1) / 2 + self.VIA_PADDING
+                                  + self.ADJUST_PORT_SIZE)
+                    port_height_v = (math.ceil(((port.area.y2 - port.area.y1) / 2 + self.VIA_PADDING
                                                + self.TRACE_WIDTH / 2) / self.SCALE_FACTOR) + 1
-                    port_width_v = math.ceil(((port.area.x2 - port.area.x1) / 2 + self.VIA_PADDING
+                                     + self.ADJUST_PORT_SIZE)
+                    port_width_v = (math.ceil(((port.area.x2 - port.area.x1) / 2 + self.VIA_PADDING
                                               + self.TRACE_WIDTH / 2) / self.SCALE_FACTOR) + 1
+                                    + self.ADJUST_PORT_SIZE)
 
                     if isinstance(obj, Transistor):
 
@@ -220,25 +242,25 @@ class GridGeneration:
 
                         elif port.type == "P":
 
-                            self.component_ports.resistor.P.width = port_width - 2
-                            self.component_ports.resistor.P.height = port_height + 1
+                            self.component_ports.resistor.P.width = port_width + self.ADJUST_RES_PORT_WIDTH
+                            self.component_ports.resistor.P.height = port_height + self.ADJUST_RES_PORT_HEIGHT
 
                         elif port.type == "N":
 
-                            self.component_ports.resistor.N.width = port_width - 2
-                            self.component_ports.resistor.N.height = port_height + 1
+                            self.component_ports.resistor.N.width = port_width + self.ADJUST_RES_PORT_WIDTH
+                            self.component_ports.resistor.N.height = port_height + self.ADJUST_RES_PORT_HEIGHT
 
                     elif isinstance(obj, Capacitor):
 
                         if port.type == "A":
 
-                            self.component_ports.capacitor.A.width = port_width
-                            self.component_ports.capacitor.A.height = port_height
+                            self.component_ports.capacitor.A.width = port_width + self.ADJUST_CAP_PORT_WIDTH
+                            self.component_ports.capacitor.A.height = port_height + self.ADJUST_CAP_PORT_HEIGHT
 
                         elif port.type == "B":
 
-                            self.component_ports.capacitor.B.width = port_width
-                            self.component_ports.capacitor.B.width = port_height
+                            self.component_ports.capacitor.B.width = port_width + self.ADJUST_CAP_PORT_WIDTH
+                            self.component_ports.capacitor.B.width = port_height + self.ADJUST_CAP_PORT_HEIGHT
 
     def __generate_grid(self):
 
@@ -292,7 +314,6 @@ class GridGeneration:
         self.__port_area()
         self.__calculate_non_overlap_parameters()
         self.__generate_grid()
-
         return (self.grid, self.scaled_port_coordinates, self.used_area,
                 self.port_coordinates, self.routing_parameters, self.component_ports)
 

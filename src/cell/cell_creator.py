@@ -166,7 +166,7 @@ class CellCreator:
             predefined_area_offset = RectArea()
             if any(isinstance(c, self.FUNCTIONAL_TYPES) for c
                    in components_grouped_by_circuit_cell[grouped_components]):
-                _, _, used_area, _, _, _ = GridGeneration(components=components).initialize_grid_generation()
+                used_area = GridGeneration(components=components).get_used_area()
 
                 for component in components:
                     if isinstance(component, CircuitCell):
@@ -187,7 +187,6 @@ class CellCreator:
 
             for component in components:
                 if isinstance(component, CircuitCell):
-                    print(origin_scaled_used_area)
                     component.bounding_box = origin_scaled_used_area
                 elif isinstance(component, self.FUNCTIONAL_TYPES):
                     component.transform_matrix.c -= used_area.x1 + predefined_area_offset.x1

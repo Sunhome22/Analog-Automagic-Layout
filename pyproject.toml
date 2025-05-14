@@ -74,9 +74,9 @@ OFFSET_X = 184
 OFFSET_Y = 700
 VERTICAL_SYMMETRY = true
 HORIZONTAL_SYMMETRY = false
-ALPHA = 0.001
-BETA = 100
-THETA = 1
+ALPHA = 0.01
+BETA = 1000
+THETA = 5
 GRID_SIZE = 7000
 
 [linear_optimization.resistor]
@@ -152,12 +152,21 @@ RAIL_RING_WIDTH = 50
 # -> Grid leeway x/y - extra space outside of component placement for additional routing space
 
 [generate_grid]
-
 SCALE_FACTOR = 16
 TRACE_WIDTH = 30
 VIA_MINIMUM_DISTANCE = 20
-GRID_LEEWAY_X = 300
+GRID_LEEWAY_X = 500
 GRID_LEEWAY_Y = 500
+
+[generate_grid.scaled_parameters]
+ADJUST_MIN_SEG_LENGTH = 0
+ADJUST_PORT_SCALED_SIZE = 0
+ADJUST_SEG_WIDTH = 0
+ADJUST_CAP_PORT_WIDTH = 3
+ADJUST_CAP_PORT_HEIGHT = 2
+ADJUST_RES_PORT_WIDTH = 1
+ADJUST_RES_PORT_HEIGHT = 1
+
 # Astar initiator config options
 # -> Run multiple astar - allows a star to be executed with each goal node as initial position to find the shortest path
 # -> Custom net order - allows predefined order of nets in a star execution
@@ -166,9 +175,14 @@ GRID_LEEWAY_Y = 500
 [a_star_initiator]
 RUN_MULTIPLE_ASTAR = false
 CUSTOM_NET_ORDER = false
-REMOVE_LOOPS = true
+REMOVE_LOOPS = false
 TSP_NODE_ORDER = true
 NET_ORDER = ["GATE", "INN",  "INP", "OUT", "IB_GATE", "AFTER_RESISTOR1", "AFTER_RESISTOR2", "OTA_SPLIT", "VDD", "VSS"]
+
+[a_star_initiator.custom_net_order]
+JNW_BKLE = ["VDD", "VSS"]
+COMP2 = ["net4", "VO","VIP", "VIN", "I_BIAS", "net3", "net1", "net2", "VDD", "VSS"]
+COMP3 = ["net4", "VO","VIP", "VIN", "I_BIAS", "net3", "net1", "net2", "VDD", "VSS"]
 
 # Cell creator config options
 # -> Cells per row in top cell - Defined how many cells should placed per row in the projects defined top cell

@@ -17,7 +17,6 @@ import os
 import time
 from circuit.circuit_components import (RectArea, Transistor, Capacitor, Resistor, Pin, CircuitCell, TraceNet,
                                         RectAreaLayer)
-from magic.magic_drawer import get_pixel_boxes_from_text, get_black_white_pixel_boxes_from_image
 from logger.logger import get_a_logger
 from collections import deque
 import tomllib
@@ -51,6 +50,7 @@ class MagicLayoutCreator:
         self.VIA_PADDING = self.config["magic_layout_creator"]["VIA_PADDING"]
         self.METAL_LAYERS = self.config["magic_layout_creator"]["METAL_LAYERS"]
         self.VIA_MAP = self.config["magic_layout_creator"]["VIA_MAP"]
+        self.TRACE_WIDTH = self.config["generate_grid"]["TRACE_WIDTH"]
 
         self.__generate_magic_files()
 
@@ -61,35 +61,8 @@ class MagicLayoutCreator:
         except (FileNotFoundError, tomllib.TOMLDecodeError) as e:
             self.logger.error(f"Error loading config: {e}")
 
-    def place_black_white_picture(self, image_path: str, layer1: str, layer2: str):
-        """Not used"""
-        black_pixels, white_pixels = get_black_white_pixel_boxes_from_image(image_path)
-
-        self.magic_file_lines.append(f"<< {layer1} >>")
-        for box in black_pixels:
-            rect_area = RectArea()
-            rect_area.set(box)
-            self.magic_file_lines.append(f"rect {rect_area.x1} {rect_area.y1} {rect_area.x2} {rect_area.y2}")
-
-        self.magic_file_lines.append(f"<< {layer2} >>")
-        for box in white_pixels:
-            rect_area = RectArea()
-            rect_area.set(box)
-            self.magic_file_lines.append(f"rect {rect_area.x1} {rect_area.y1} {rect_area.x2} {rect_area.y2}")
-
-    def place_text(self, layer: str, text: str):
-        """Not used"""
-        pixel_boxes = get_pixel_boxes_from_text(text)
-
-        self.magic_file_lines.append(f"<< {layer} >>")
-
-        for box in pixel_boxes:
-            rect_area = RectArea()
-            rect_area.set(box)
-            self.magic_file_lines.append(f"rect {rect_area.x1} {rect_area.y1} {rect_area.x2} {rect_area.y2}")
-
-    def __place_box(self, layer: str, area: RectArea):
-        """Adds a box to the list of magic file lines"""
+    def __place_rect_in_layer(self, layer: str, area: RectArea):
+        """Adds a rectangle in a specified layer to the list of magic file lines"""
 
         self.magic_file_lines.extend([
             f"<< {layer} >>",
@@ -128,12 +101,12 @@ class MagicLayoutCreator:
         # Place all required metal(s)
         if metal_layers is not None:
             for metal_layer in metal_layers:
-                self.__place_box(layer=metal_layer, area=metal_area)
+                self.__place_rect_in_layer(layer=metal_layer, area=metal_area)
 
         # Place all required via(s)
         if via_layers is not None:
             for via_layer in via_layers:
-                self.__place_box(layer=via_layer, area=area)
+                self.__place_rect_in_layer(layer=via_layer, area=area)
 
     def __add_trace_net_vias(self, trace_net: TraceNet) -> int:
         """Checks for overlap between segments of a trace net in different layers and adds vias.
@@ -193,7 +166,7 @@ class MagicLayoutCreator:
                                             y2=port.area.y2 + component.transform_matrix.f)
 
                         # Hinder placement of connection points to bulks since they are always connected in the
-                        # lowest metal. Also hinder connections to metal 4 since that is for cell to cell routing
+                        # lowest metal. Also hinder connections to metal 4 since that reserved for cell to cell routing
                         if (port.type == "B" or segment.layer == self.METAL_LAYERS[0]
                                 or segment.layer == self.METAL_LAYERS[4]):
                             continue
@@ -266,7 +239,7 @@ class MagicLayoutCreator:
 
         # Add predefined trace segments
         for segment in trace_net.segments:
-            self.__place_box(layer=segment.layer, area=segment.area)
+            self.__place_rect_in_layer(layer=segment.layer, area=segment.area)
             segment_count += 1
 
         # Add predefined trace vias
@@ -356,15 +329,15 @@ class MagicLayoutCreator:
             if isinstance(component, (Transistor, Resistor, Capacitor)):
                 self.__functional_component_creator(component=component)
 
-        # Place connection points
-        for component in components:
-            if isinstance(component, TraceNet):
-                self.__add_trace_net_connection_point(trace_net=component, components=components)
-
         # Place trace nets
         for component in components:
             if isinstance(component, TraceNet):
                 self.__trace_net_creator(trace_net=component)
+
+        # Place connection points
+        for component in components:
+            if isinstance(component, TraceNet):
+                self.__add_trace_net_connection_point(trace_net=component, components=components)
 
         # Place circuit cells
         for component in components:

@@ -74,8 +74,6 @@ class LPInitiator:
                                             + obj.bounding_box.y2)
         self.used_area_all.append(self.used_area)
 
-        print(f"USED AREA {self.used_area}")
-
     def __extract_components(self):
 
         for obj in self.components:

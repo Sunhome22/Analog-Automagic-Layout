@@ -377,7 +377,7 @@ class SPICEparser:
                 self.logger.error(f"- xCM?/xCV? MIM/VPP Capacitors")
                 self.logger.error(f"- xQN?/xQP? NPN/PNP")
                 self.logger.error(f"- xMN?/xMP? NMOS/PMOS")
-                self.logger.error(f"- xD? Digital Blocks")
+                self.logger.error(f"- xD? Digital Blocks (NOT HANDLED)")
                 self.logger.error(f"- xU? Circuit Cells")
                 sys.exit()
 

@@ -37,6 +37,10 @@ from collections import defaultdict
 
 from traces.generate_astar_path_traces import *
 import os
+
+from utils.layout_to_svg import LayoutToSVG
+
+
 # ========================================== Set-up classes and constants ==============================================
 
 
@@ -55,12 +59,12 @@ class ProjectProperties:
 
 
 # Component libraries
-atr_lib = ComponentLibrary(name="JNWATR", path="~/aicex/ip/jnw_bkle_sky130A/design/JNW_ATR_SKY130A")
-tr_lib = ComponentLibrary(name="JNWTR", path="~/aicex/ip/jnw_bkle_sky130A/design/JNW_TR_SKY130A")
-misc_lib = ComponentLibrary(name="AALMISC", path="~/aicex/ip/jnw_bkle_sky130A/design/AAL_MISC_SKY130A")
+atr_lib = ComponentLibrary(name="JNWATR", path="~/aicex/ip/jnw_bkle_sky130a/design/JNW_ATR_SKY130A")
+tr_lib = ComponentLibrary(name="JNWTR", path="~/aicex/ip/jnw_bkle_sky130a/design/JNW_TR_SKY130A")
+misc_lib = ComponentLibrary(name="AALMISC", path="~/aicex/ip/jnw_bkle_sky130a/design/AAL_MISC_SKY130A")
 
 
-project_properties = ProjectProperties(directory="~/aicex/ip/jnw_bkle_sky130A",
+project_properties = ProjectProperties(directory="~/aicex/ip/jnw_bkle_sky130a",
                                        top_cell_name="JNW_BKLE",
                                        top_lib_name="JNW_BKLE_SKY130A",
                                        component_libraries=[atr_lib, tr_lib, misc_lib])
@@ -69,16 +73,18 @@ project_properties = ProjectProperties(directory="~/aicex/ip/jnw_bkle_sky130A",
 
 
 def main():
-    components = SPICEparser(project_properties=project_properties).get()
-    components = MagicComponentsParser(project_properties=project_properties, components=components).get()
-    save_to_json(components, file_name="src/results/temp_components_before_cell_creator.json")
+    # components = SPICEparser(project_properties=project_properties).get()
+    # components = MagicComponentsParser(project_properties=project_properties, components=components).get()
+    # save_to_json(components, file_name="src/results/temp_components_before_cell_creator.json")
+    #
+    # components = CellCreator(project_properties=project_properties, components=components).get()
+    # MagicLayoutCreator(project_properties=project_properties, components=components)
+    # save_to_json(components, file_name="src/results/complete_component_info.json")
+    #
+    # DRCchecking(project_properties=project_properties)
+    # LVSchecking(project_properties=project_properties)
 
-    components = CellCreator(project_properties=project_properties, components=components).get()
-    MagicLayoutCreator(project_properties=project_properties, components=components)
-    save_to_json(components, file_name="src/results/complete_component_info.json")
-
-    DRCchecking(project_properties=project_properties)
-    LVSchecking(project_properties=project_properties)
+    LayoutToSVG(project_properties=project_properties)
 
 
 if __name__ == '__main__':

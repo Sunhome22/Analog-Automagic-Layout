@@ -2730,7 +2730,6 @@ int __pyx_module_is_main_a_star = 0;
 /* #### Code section: global_var ### */
 static PyObject *__pyx_builtin_IndexError;
 static PyObject *__pyx_builtin_range;
-static PyObject *__pyx_builtin_print;
 static PyObject *__pyx_builtin_zip;
 static PyObject *__pyx_builtin_enumerate;
 static PyObject *__pyx_builtin_min;
@@ -2760,7 +2759,6 @@ static const char __pyx_k_spec[] = "__spec__";
 static const char __pyx_k_test[] = "__test__";
 static const char __pyx_k_close[] = "close";
 static const char __pyx_k_order[] = "order";
-static const char __pyx_k_print[] = "print";
 static const char __pyx_k_range[] = "range";
 static const char __pyx_k_start[] = "start";
 static const char __pyx_k_state[] = "state";
@@ -2921,7 +2919,6 @@ typedef struct {
   PyObject *__pyx_n_s_pickle;
   PyObject *__pyx_n_s_pop;
   PyObject *__pyx_kp_s_pop_from_empty_priority_queue;
-  PyObject *__pyx_n_s_print;
   PyObject *__pyx_n_s_pyx_PickleError;
   PyObject *__pyx_n_s_pyx_checksum;
   PyObject *__pyx_n_s_pyx_result;
@@ -3079,7 +3076,6 @@ static int __pyx_m_clear(PyObject *m) {
   Py_CLEAR(clear_module_state->__pyx_n_s_pickle);
   Py_CLEAR(clear_module_state->__pyx_n_s_pop);
   Py_CLEAR(clear_module_state->__pyx_kp_s_pop_from_empty_priority_queue);
-  Py_CLEAR(clear_module_state->__pyx_n_s_print);
   Py_CLEAR(clear_module_state->__pyx_n_s_pyx_PickleError);
   Py_CLEAR(clear_module_state->__pyx_n_s_pyx_checksum);
   Py_CLEAR(clear_module_state->__pyx_n_s_pyx_result);
@@ -3215,7 +3211,6 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
   Py_VISIT(traverse_module_state->__pyx_n_s_pickle);
   Py_VISIT(traverse_module_state->__pyx_n_s_pop);
   Py_VISIT(traverse_module_state->__pyx_kp_s_pop_from_empty_priority_queue);
-  Py_VISIT(traverse_module_state->__pyx_n_s_print);
   Py_VISIT(traverse_module_state->__pyx_n_s_pyx_PickleError);
   Py_VISIT(traverse_module_state->__pyx_n_s_pyx_checksum);
   Py_VISIT(traverse_module_state->__pyx_n_s_pyx_result);
@@ -3361,7 +3356,6 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
 #define __pyx_n_s_pickle __pyx_mstate_global->__pyx_n_s_pickle
 #define __pyx_n_s_pop __pyx_mstate_global->__pyx_n_s_pop
 #define __pyx_kp_s_pop_from_empty_priority_queue __pyx_mstate_global->__pyx_kp_s_pop_from_empty_priority_queue
-#define __pyx_n_s_print __pyx_mstate_global->__pyx_n_s_print
 #define __pyx_n_s_pyx_PickleError __pyx_mstate_global->__pyx_n_s_pyx_PickleError
 #define __pyx_n_s_pyx_checksum __pyx_mstate_global->__pyx_n_s_pyx_checksum
 #define __pyx_n_s_pyx_result __pyx_mstate_global->__pyx_n_s_pyx_result
@@ -6467,7 +6461,7 @@ static PyObject *__pyx_f_6a_star_cap_seg(PyObject *__pyx_v_seg, PyObject *__pyx_
  *     return seg if seg < minimum_segment_length else minimum_segment_length
  * 
  * def astar_start(grid_vertical, grid_horizontal, start, goal_nodes, minimum_segment_length, tsp, trace_width_scaled):             # <<<<<<<<<<<<<<
- *     print(goal_nodes)
+ * 
  *     path = []
  */
 
@@ -6685,20 +6679,9 @@ static PyObject *__pyx_pf_6a_star_astar_start(CYTHON_UNUSED PyObject *__pyx_self
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("astar_start", 1);
 
-  /* "a_star.pyx":141
- * 
- * def astar_start(grid_vertical, grid_horizontal, start, goal_nodes, minimum_segment_length, tsp, trace_width_scaled):
- *     print(goal_nodes)             # <<<<<<<<<<<<<<
- *     path = []
- *     cost = 0
- */
-  __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_builtin_print, __pyx_v_goal_nodes); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 141, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-
   /* "a_star.pyx":142
  * def astar_start(grid_vertical, grid_horizontal, start, goal_nodes, minimum_segment_length, tsp, trace_width_scaled):
- *     print(goal_nodes)
+ * 
  *     path = []             # <<<<<<<<<<<<<<
  *     cost = 0
  *     failed_nodes = []
@@ -6709,7 +6692,7 @@ static PyObject *__pyx_pf_6a_star_astar_start(CYTHON_UNUSED PyObject *__pyx_self
   __pyx_t_1 = 0;
 
   /* "a_star.pyx":143
- *     print(goal_nodes)
+ * 
  *     path = []
  *     cost = 0             # <<<<<<<<<<<<<<
  *     failed_nodes = []
@@ -7425,7 +7408,7 @@ static PyObject *__pyx_pf_6a_star_astar_start(CYTHON_UNUSED PyObject *__pyx_self
  *     return seg if seg < minimum_segment_length else minimum_segment_length
  * 
  * def astar_start(grid_vertical, grid_horizontal, start, goal_nodes, minimum_segment_length, tsp, trace_width_scaled):             # <<<<<<<<<<<<<<
- *     print(goal_nodes)
+ * 
  *     path = []
  */
 
@@ -12007,7 +11990,6 @@ static int __Pyx_CreateStringTabAndInitStrings(void) {
     {&__pyx_n_s_pickle, __pyx_k_pickle, sizeof(__pyx_k_pickle), 0, 0, 1, 1},
     {&__pyx_n_s_pop, __pyx_k_pop, sizeof(__pyx_k_pop), 0, 0, 1, 1},
     {&__pyx_kp_s_pop_from_empty_priority_queue, __pyx_k_pop_from_empty_priority_queue, sizeof(__pyx_k_pop_from_empty_priority_queue), 0, 0, 1, 0},
-    {&__pyx_n_s_print, __pyx_k_print, sizeof(__pyx_k_print), 0, 0, 1, 1},
     {&__pyx_n_s_pyx_PickleError, __pyx_k_pyx_PickleError, sizeof(__pyx_k_pyx_PickleError), 0, 0, 1, 1},
     {&__pyx_n_s_pyx_checksum, __pyx_k_pyx_checksum, sizeof(__pyx_k_pyx_checksum), 0, 0, 1, 1},
     {&__pyx_n_s_pyx_result, __pyx_k_pyx_result, sizeof(__pyx_k_pyx_result), 0, 0, 1, 1},
@@ -12044,7 +12026,6 @@ static int __Pyx_CreateStringTabAndInitStrings(void) {
 static CYTHON_SMALL_CODE int __Pyx_InitCachedBuiltins(void) {
   __pyx_builtin_IndexError = __Pyx_GetBuiltinName(__pyx_n_s_IndexError); if (!__pyx_builtin_IndexError) __PYX_ERR(0, 28, __pyx_L1_error)
   __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) __PYX_ERR(0, 80, __pyx_L1_error)
-  __pyx_builtin_print = __Pyx_GetBuiltinName(__pyx_n_s_print); if (!__pyx_builtin_print) __PYX_ERR(0, 141, __pyx_L1_error)
   __pyx_builtin_zip = __Pyx_GetBuiltinName(__pyx_n_s_zip); if (!__pyx_builtin_zip) __PYX_ERR(0, 225, __pyx_L1_error)
   __pyx_builtin_enumerate = __Pyx_GetBuiltinName(__pyx_n_s_enumerate); if (!__pyx_builtin_enumerate) __PYX_ERR(0, 193, __pyx_L1_error)
   __pyx_builtin_min = __Pyx_GetBuiltinName(__pyx_n_s_min); if (!__pyx_builtin_min) __PYX_ERR(0, 327, __pyx_L1_error)
@@ -12147,7 +12128,7 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  *     return seg if seg < minimum_segment_length else minimum_segment_length
  * 
  * def astar_start(grid_vertical, grid_horizontal, start, goal_nodes, minimum_segment_length, tsp, trace_width_scaled):             # <<<<<<<<<<<<<<
- *     print(goal_nodes)
+ * 
  *     path = []
  */
   __pyx_tuple__15 = PyTuple_Pack(15, __pyx_n_s_grid_vertical, __pyx_n_s_grid_horizontal, __pyx_n_s_start, __pyx_n_s_goal_nodes, __pyx_n_s_minimum_segment_length, __pyx_n_s_tsp, __pyx_n_s_trace_width_scaled, __pyx_n_s_path, __pyx_n_s_cost, __pyx_n_s_failed_nodes, __pyx_n_s_order, __pyx_n_s_i, __pyx_n_s_partial_path, __pyx_n_s_partial_cost, __pyx_n_s_segments); if (unlikely(!__pyx_tuple__15)) __PYX_ERR(0, 140, __pyx_L1_error)
@@ -12698,7 +12679,7 @@ if (!__Pyx_RefNanny) {
  *     return seg if seg < minimum_segment_length else minimum_segment_length
  * 
  * def astar_start(grid_vertical, grid_horizontal, start, goal_nodes, minimum_segment_length, tsp, trace_width_scaled):             # <<<<<<<<<<<<<<
- *     print(goal_nodes)
+ * 
  *     path = []
  */
   __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_6a_star_1astar_start, 0, __pyx_n_s_astar_start, NULL, __pyx_n_s_a_star, __pyx_d, ((PyObject *)__pyx_codeobj__16)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 140, __pyx_L1_error)

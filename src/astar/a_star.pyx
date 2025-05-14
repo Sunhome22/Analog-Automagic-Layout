@@ -138,7 +138,7 @@ cdef cap_seg(seg, minimum_segment_length):
     return seg if seg < minimum_segment_length else minimum_segment_length
 
 def astar_start(grid_vertical, grid_horizontal, start, goal_nodes, minimum_segment_length, tsp, trace_width_scaled):
-    print(goal_nodes)
+
     path = []
     cost = 0
     failed_nodes = []

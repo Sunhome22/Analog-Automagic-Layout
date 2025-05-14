@@ -154,7 +154,7 @@
         "parent_cell": "JNW_BKLE",
         "named_parent_cell": "UTOP_JNW_BKLE",
         "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
-        "group": null,
+        "group": "diff1",
         "schematic_connections": {
             "D": "GATE",
             "G": "IN+",
@@ -241,7 +241,7 @@
         "parent_cell": "JNW_BKLE",
         "named_parent_cell": "UTOP_JNW_BKLE",
         "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
-        "group": null,
+        "group": "diff1",
         "schematic_connections": {
             "D": "GATE",
             "G": "IN+",
@@ -328,7 +328,7 @@
         "parent_cell": "JNW_BKLE",
         "named_parent_cell": "UTOP_JNW_BKLE",
         "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
-        "group": null,
+        "group": "diff1",
         "schematic_connections": {
             "D": "GATE",
             "G": "IN+",
@@ -415,7 +415,7 @@
         "parent_cell": "JNW_BKLE",
         "named_parent_cell": "UTOP_JNW_BKLE",
         "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
-        "group": null,
+        "group": "diff1",
         "schematic_connections": {
             "D": "GATE",
             "G": "IN+",
@@ -502,7 +502,7 @@
         "parent_cell": "JNW_BKLE",
         "named_parent_cell": "UTOP_JNW_BKLE",
         "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
-        "group": null,
+        "group": "diff1",
         "schematic_connections": {
             "D": "OUT",
             "G": "IN-",
@@ -589,7 +589,7 @@
         "parent_cell": "JNW_BKLE",
         "named_parent_cell": "UTOP_JNW_BKLE",
         "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
-        "group": null,
+        "group": "diff1",
         "schematic_connections": {
             "D": "OUT",
             "G": "IN-",
@@ -676,7 +676,7 @@
         "parent_cell": "JNW_BKLE",
         "named_parent_cell": "UTOP_JNW_BKLE",
         "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
-        "group": null,
+        "group": "diff1",
         "schematic_connections": {
             "D": "OUT",
             "G": "IN-",
@@ -763,7 +763,7 @@
         "parent_cell": "JNW_BKLE",
         "named_parent_cell": "UTOP_JNW_BKLE",
         "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
-        "group": null,
+        "group": "diff1",
         "schematic_connections": {
             "D": "OUT",
             "G": "IN-",
@@ -850,7 +850,7 @@
         "parent_cell": "JNW_BKLE",
         "named_parent_cell": "UTOP_JNW_BKLE",
         "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
-        "group": null,
+        "group": "mirror1",
         "schematic_connections": {
             "D": "OTA_SPLIT",
             "G": "IB_GATE",
@@ -937,7 +937,7 @@
         "parent_cell": "JNW_BKLE",
         "named_parent_cell": "UTOP_JNW_BKLE",
         "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
-        "group": null,
+        "group": "mirror1",
         "schematic_connections": {
             "D": "IB_GATE",
             "G": "IB_GATE",
@@ -1024,7 +1024,7 @@
         "parent_cell": "JNW_BKLE",
         "named_parent_cell": "UTOP_JNW_BKLE",
         "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
-        "group": null,
+        "group": "mirror2",
         "schematic_connections": {
             "D": "GATE",
             "G": "GATE",
@@ -1111,7 +1111,7 @@
         "parent_cell": "JNW_BKLE",
         "named_parent_cell": "UTOP_JNW_BKLE",
         "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
-        "group": null,
+        "group": "mirror2",
         "schematic_connections": {
             "D": "OUT",
             "G": "GATE",
@@ -1198,7 +1198,7 @@
         "parent_cell": "JNW_BKLE",
         "named_parent_cell": "UTOP_JNW_BKLE",
         "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
-        "group": null,
+        "group": "bias1",
         "schematic_connections": {
             "N": "AFTER_RESISTOR1",
             "P": "IB_GATE",
@@ -1263,7 +1263,7 @@
         "parent_cell": "JNW_BKLE",
         "named_parent_cell": "UTOP_JNW_BKLE",
         "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
-        "group": null,
+        "group": "bias1",
         "schematic_connections": {
             "N": "AFTER_RESISTOR2",
             "P": "AFTER_RESISTOR1",
@@ -1328,7 +1328,7 @@
         "parent_cell": "JNW_BKLE",
         "named_parent_cell": "UTOP_JNW_BKLE",
         "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
-        "group": null,
+        "group": "bias1",
         "schematic_connections": {
             "N": "VSS",
             "P": "AFTER_RESISTOR2",
