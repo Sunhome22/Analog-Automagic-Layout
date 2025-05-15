@@ -1,8 +1,8 @@
 # ==================================================================================================================== #
-# Copyright (C) 2024 Bjørn K.T. Solheim, Leidulv Tønnesland
+# Copyright (C) 2025 Bjørn K.T. Solheim, Leidulv Tønnesland
 # ==================================================================================================================== #
 # This program is free software: you can redistribute it and/or modify it under the terms of
-# the GNU General Public License as published by the Free Software Foundation, version 3.
+# the GNU General Public License as published by the Free Software Foundation, version 2.
 #
 # This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 # without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -298,8 +298,7 @@ def generate_bulk_to_rail_segments(self, rail: str, component: Transistor, y_par
 def __create_bulk_to_rail_based_on_component_placement_order(
         self, pin, y_params, component, bulk_width, group_components, trace):
 
-    total_length = sum((comp.bounding_box.x2 - comp.bounding_box.x1) for comp in group_components)
-    # + sum(comp.overlap_distance.x for comp in group_components)
+    total_length = sum((comp.bounding_box.x2 - comp.bounding_box.x1) for comp in group_components) + sum(comp.overlap_distance.x for comp in group_components)
 
     smallest_x_component = min(group_components, key=lambda comp: comp.transform_matrix.c)
 

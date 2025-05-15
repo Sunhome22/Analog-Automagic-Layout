@@ -1,8 +1,8 @@
 # ==================================================================================================================== #
-# Copyright (C) 2024 Bjørn K.T. Solheim, Leidulv Tønnesland
+# Copyright (C) 2025 Bjørn K.T. Solheim, Leidulv Tønnesland
 # ==================================================================================================================== #
 # This program is free software: you can redistribute it and/or modify it under the terms of
-# the GNU General Public License as published by the Free Software Foundation, version 3.
+# the GNU General Public License as published by the Free Software Foundation, version 2.
 #
 # This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 # without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -21,7 +21,6 @@ from logger.logger import get_a_logger
 import math
 import numpy as np
 import matplotlib.pyplot as plt
-from draw_result.visualize_grid import visualize_grid, heatmap_test
 from dataclasses import dataclass, field
 import tomllib
 

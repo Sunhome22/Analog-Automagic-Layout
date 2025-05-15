@@ -1,14 +1,10 @@
-#!/pri/bjs1/Analog-Automagic-Layout/venv/bin/python
-# #!/home/bjorn/Analog-Automagic-Layout/venv/bin/python
-
-import re
-from cell.cell_creator import CellCreator
+# #!/user_defined_path/Analog-Automagic-Layout/venv/bin/python
 
 # ==================================================================================================================== #
-# Copyright (C) 2024 Bjørn K.T. Solheim, Leidulv Tønnesland
+# Copyright (C) 2025 Bjørn K.T. Solheim, Leidulv Tønnesland
 # ==================================================================================================================== #
 # This program is free software: you can redistribute it and/or modify it under the terms of
-# the GNU General Public License as published by the Free Software Foundation, version 3.
+# the GNU General Public License as published by the Free Software Foundation, version 2.
 #
 # This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 # without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -24,21 +20,11 @@ from magic.magic_layout_creator import MagicLayoutCreator
 from dataclasses import dataclass, asdict
 from magic.magic_component_parser import MagicComponentsParser
 from json_converter.json_converter import save_to_json, load_from_json
-from logger.logger import get_a_logger
-from circuit.circuit_components import TraceNet, RectAreaLayer, RectArea
-from draw_result.draw import draw_result
-from linear_optimization.linear_optimization import *
-from grid.generate_grid import *
-from connections.connections import *
-from traces import generate_astar_path_traces
 from drc.drc_checker import DRCchecking
 from lvs.lvs_checker import LVSchecking
-from collections import defaultdict
-
 from traces.generate_astar_path_traces import *
-import os
-
 from utils.layout_to_svg import LayoutToSVG
+from cell.cell_creator import CellCreator
 
 
 # ========================================== Set-up classes and constants ==============================================
@@ -73,18 +59,18 @@ project_properties = ProjectProperties(directory="~/aicex/ip/jnw_bkle_sky130a",
 
 
 def main():
-    # components = SPICEparser(project_properties=project_properties).get()
-    # components = MagicComponentsParser(project_properties=project_properties, components=components).get()
-    # save_to_json(components, file_name="src/results/temp_components_before_cell_creator.json")
-    #
-    # components = CellCreator(project_properties=project_properties, components=components).get()
-    # MagicLayoutCreator(project_properties=project_properties, components=components)
-    # save_to_json(components, file_name="src/results/complete_component_info.json")
-    #
-    # DRCchecking(project_properties=project_properties)
-    # LVSchecking(project_properties=project_properties)
+    components = SPICEparser(project_properties=project_properties).get()
+    components = MagicComponentsParser(project_properties=project_properties, components=components).get()
+    save_to_json(components, file_name="src/results/temp_components_before_cell_creator.json")
 
-    LayoutToSVG(project_properties=project_properties)
+    components = CellCreator(project_properties=project_properties, components=components).get()
+    MagicLayoutCreator(project_properties=project_properties, components=components)
+    save_to_json(components, file_name="src/results/complete_component_info.json")
+
+    DRCchecking(project_properties=project_properties)
+    LVSchecking(project_properties=project_properties)
+
+    LayoutToSVG(project_properties=project_properties).create_custom_svg_from_layout_cell(cell="OTA")
 
 
 if __name__ == '__main__':

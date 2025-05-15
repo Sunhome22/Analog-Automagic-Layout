@@ -1,8 +1,8 @@
 # ==================================================================================================================== #
-# Copyright (C) 2024 Bjørn K.T. Solheim, Leidulv Tønnesland
+# Copyright (C) 2025 Bjørn K.T. Solheim, Leidulv Tønnesland
 # ==================================================================================================================== #
 # This program is free software: you can redistribute it and/or modify it under the terms of
-# the GNU General Public License as published by the Free Software Foundation, version 3.
+# the GNU General Public License as published by the Free Software Foundation, version 2.
 #
 # This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 # without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -15,13 +15,7 @@
 
 # ================================================== Libraries =========================================================
 import os
-import re
 import subprocess
-import matplotlib.pyplot as plt
-import matplotlib.patches as patches
-from dataclasses import dataclass, field
-from typing import List, Dict
-from collections import defaultdict
 from logger.logger import get_a_logger
 
 # ================================================= LVS checker ========================================================

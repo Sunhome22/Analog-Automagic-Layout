@@ -19,12 +19,15 @@ dependencies = {file = ["requirements.txt"]}
 # ===================================================== Configs ========================================================
 
 # Initiator of Linear optimization config options
-# -> Sub Cell Offset X - Offset between groupings of resistors, capacitors and transistors
-# -> United Res Cap - Allows placement of resistors and capacitors in the same cell
-# -> RELATIVE PLACEMENT - Of components in the same cell, either "S" - side by side or "A" - Above
-# -> CUSTOM RELATIVE PLACEMENT ORDER - Decides order of placement. The first placement will be leftmost or below
-# -> ENABLE CUSTOM TRANSISTOR ORDER - enables custom transistor order. The first element is placed below the other
-# -> CUSTOM TRANSISTOR ORDER - The defined custom order, can be changed. Utilize "C" for cmos and "B" for bipolar
+# -> Sub Cell Offset 1-3 - Offset between groupings of resistors, capacitors and transistors
+# -> United Res Cap - Allows placement of resistors and capacitors in the same subcell
+# -> RELATIVE COMPONENT PLACEMENT - Of components in the same cell, either "H" - Horizontal  or "V" - Vertical placement
+# -> ENABLE CUSTOM RELATIVE PLACEMENT ORDER - Decides order of placement. The first placement will be leftmost or below
+# -> CUSTOM COMPONENT ORDER - The defined custom order. Utilize letters
+#       "T" - MOSFET
+#       "B" - BJT
+#       "R" - Resistor
+#       "C" - Capacitor
 
 [initiator_lp]
 UNITED_RES_CAP = false
@@ -36,22 +39,23 @@ SUB_CELL_OFFSET_2 = 200
 SUB_CELL_OFFSET_3 = 200
 
 # Linear optimization config options
-# -> Alpha - Constant for weighing the importance of total Manhattan distance between
-#                     components in the objective function
-# -> Beta - Constant for weighing the importance of perimeter along the x-axis in the objective function
-# -> Theta - Constant for weighing the importance of perimeter along the y-axis in the objective function
-# -> Unit_width, Unit_height - Unit width and height are intervals of allowable placements along the x- and y-axis
-# -> Offset_x, Offset_y - Minimum offset along the x- and y-axis between components that can not overlap
-# -> Mirror - Boolean used for debugging. Turns on or off the mirroring constraint
-# -> Run - Boolean used for debugging. Turns on or off the execution of linear optimization
-# -> Stop_tolerance - MIP gap threshold percentage for when to stop searching with respect to the relative difference
+# -> RUN - Boolean used for debugging. Turns on or off the execution of linear optimization
+# -> SOLVER MSG - Enables print functions in the solver
+# -> ALPHA - Constant for weighing the importance of total Manhattan distance between
+#            components in the objective function
+# -> BETA - Constant for weighing the importance of perimeter along the x-axis in the objective function
+# -> THETA - Constant for weighing the importance of perimeter along the y-axis in the objective function
+# -> UNIT_WIDTH, UNIT_HEIGHT - Additional intervals of allowable placements along the x- and y-axis
+# -> OFFSET_Y, OFFSET_Y - Minimum offset along the x- and y-axis between components that can not overlap
+# -> MIRROR - Boolean used for debugging. Turns on or off the mirroring constraint
+# -> STOP_TOLERANCE - MIP gap threshold percentage for when to stop searching with respect to the relative difference
 #                     between primal and dual solutions
 # -> CUSTOM_PARAMETERS - Boolean choosing between parameters in standard or using specific parameters for
-#                     different components
+#                        different components
+# -> GRID_SIZE - Size of space components have to fit within
 
 [linear_optimization]
 RUN = true
-TIME_LIMIT = 2
 SOLVER_MSG = true
 CUSTOM_PARAMETERS = true
 
@@ -132,11 +136,15 @@ TECHNOLOGY = 'sky130A'
 METAL_LAYERS = ['locali', 'm1', 'm2', 'm3', 'm4', 'm5']
 VIA_MAP = {"locali-m1" = "viali", "m1-m2" = "via1", "m2-m3" = "via2", "m3-m4" = "via3", "m4-m5" = "via4"}
 VIA_PADDING = 7
+#TECHNOLOGY = 'ihp13g2'
+#METAL_LAYERS = ['locali', 'm1', 'm2', 'm3', 'm4', 'm5']
+#VIA_MAP = {"locali-m1" = "viali", "m1-m2" = "via1", "m2-m3" = "via2", "m3-m4" = "via3", "m4-m5" = "via4"}
+#VIA_PADDING = 7
 
 # Generate rail traces config options
 # -> Init rail ring offset x/y - offset from cells defined bounding box
 # -> rail ring offset - distance from the outside of one ring to the outside of the next
-# -> rail width - width of the rails
+# -> rail width
 
 [generate_rail_traces]
 INIT_RAIL_RING_OFFSET_Y = 50
@@ -145,11 +153,12 @@ RAIL_RING_OFFSET = 100
 RAIL_RING_WIDTH = 50
 
 # Generate grid config options
-# -> Grid size - area the components have to fit within
-# -> Scale factor - shrink factor for routing space representation
-# -> Via minimum distance - minimum offset between via points
-# -> Trace width - width of traces
-# -> Grid leeway x/y - extra space outside of component placement for additional routing space
+# -> SCALE_FACTOR - Factor determining descale for routing space representation
+# -> TRACE_WIDTH - width of traces
+# -> VIA_MINIMUM_DISTANCE - minimum offset between via points
+# -> GRID_LEEWAY_X/Y - extra space outside of component placement for additional routing space
+# -> SCALED_PARAMETERS - Certain parameters are calculated and utilized in routing space.
+#                        The adjust variables allow for easy manual adjustments of sizings.
 
 [generate_grid]
 SCALE_FACTOR = 16
@@ -168,9 +177,13 @@ ADJUST_RES_PORT_WIDTH = 1
 ADJUST_RES_PORT_HEIGHT = 1
 
 # Astar initiator config options
-# -> Run multiple astar - allows a star to be executed with each goal node as initial position to find the shortest path
-# -> Custom net order - allows predefined order of nets in a star execution
-# -> Net order - the predefined order
+# -> RUN_MULTIPLE_ASTAR - Allows A* to be executed with each goal node as initial position to find the shortest path
+# -> CUSTOM_NET_ORDER - Enables utilizing predefined order of nets in A* execution.
+# -> REMOVE_LOOPS - Enables functionality that removes unnecessary loops generated in A*
+# -> TSP_NODE_ORDER - Enables functionality that pre_computes the best order of goal nodes,
+#                     and executes A* between pairs of goal nodes. Increase speed, but might be supoptimal
+# -> NET_ORDER - Predefined net orders. Variable names should correspond to CELL names.
+#                All cells and nets have to be defined.
 
 [a_star_initiator]
 RUN_MULTIPLE_ASTAR = false
@@ -185,7 +198,7 @@ COMP2 = ["net4", "VO","VIP", "VIN", "I_BIAS", "net3", "net1", "net2", "VDD", "VS
 COMP3 = ["net4", "VO","VIP", "VIN", "I_BIAS", "net3", "net1", "net2", "VDD", "VSS"]
 
 # Cell creator config options
-# -> Cells per row in top cell - Defined how many cells should placed per row in the projects defined top cell
+# -> Cells per row in top cell - Define how many cells should placed per row in the projects defined top cell
 [cell_creator]
 CELLS_PER_ROW_IN_TOP_CELL = 1
 

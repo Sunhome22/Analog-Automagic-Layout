@@ -13,4 +13,6 @@ six==1.17.0
 seaborn==0.13.2
 numba==0.61.2
 pyscipopt==5.4.1
-cython==3.0.12
+PySCIPOpt==5.2.1
+gdspy==1.6.13
+Cython==3.0.12
