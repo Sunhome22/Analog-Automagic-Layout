@@ -48,6 +48,8 @@ class LibraryHandling:
         self.RAIL_RING_OFFSET = self.config["generate_rail_traces"]["RAIL_RING_OFFSET"]
         self.RAIL_RING_WIDTH = self.config["generate_rail_traces"]["RAIL_RING_WIDTH"]
         self.RELATIVE_COMPONENT_PLACEMENT = self.config["initiator_lp"]["RELATIVE_COMPONENT_PLACEMENT"]
+        self.METAL_LAYERS = self.config["magic_layout_creator"]["METAL_LAYERS"]
+        self.VIA_MAP = self.config["magic_layout_creator"]["VIA_MAP"]
 
         # Make lists of different component types
         for component in self.components:

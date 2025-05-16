@@ -132,14 +132,14 @@ GRID_SIZE = 8000
 # -> Via padding - defines how much padding in units of 1e-8m should be added around all vias
 
 [magic_layout_creator]
-TECHNOLOGY = 'sky130A'
-METAL_LAYERS = ['locali', 'm1', 'm2', 'm3', 'm4', 'm5']
-VIA_MAP = {"locali-m1" = "viali", "m1-m2" = "via1", "m2-m3" = "via2", "m3-m4" = "via3", "m4-m5" = "via4"}
-VIA_PADDING = 7
-#TECHNOLOGY = 'ihp13g2'
+#TECHNOLOGY = 'sky130A'
 #METAL_LAYERS = ['locali', 'm1', 'm2', 'm3', 'm4', 'm5']
 #VIA_MAP = {"locali-m1" = "viali", "m1-m2" = "via1", "m2-m3" = "via2", "m3-m4" = "via3", "m4-m5" = "via4"}
 #VIA_PADDING = 7
+TECHNOLOGY = 'ihp-sg13g2'
+METAL_LAYERS = ['metal1', 'metal2', 'metal3', 'metal4', 'metal5']
+VIA_MAP = {"metal1-metal2" = "via1", "metal2-metal3" = "via2", "metal3-metal4" = "via3", "metal4-metal5" = "via4"}
+VIA_PADDING = 7
 
 # Generate rail traces config options
 # -> Init rail ring offset x/y - offset from cells defined bounding box
@@ -188,7 +188,7 @@ ADJUST_RES_PORT_HEIGHT = 1
 [a_star_initiator]
 RUN_MULTIPLE_ASTAR = false
 CUSTOM_NET_ORDER = false
-REMOVE_LOOPS = false
+REMOVE_LOOPS = true
 TSP_NODE_ORDER = true
 NET_ORDER = ["GATE", "INN",  "INP", "OUT", "IB_GATE", "AFTER_RESISTOR1", "AFTER_RESISTOR2", "OTA_SPLIT", "VDD", "VSS"]
 

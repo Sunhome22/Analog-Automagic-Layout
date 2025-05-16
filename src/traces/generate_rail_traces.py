@@ -41,6 +41,8 @@ class GenerateRailTraces:
         self.INIT_RAIL_RING_OFFSET_Y = self.config["generate_rail_traces"]["INIT_RAIL_RING_OFFSET_Y"]
         self.RAIL_RING_OFFSET = self.config["generate_rail_traces"]["RAIL_RING_OFFSET"]
         self.RAIL_RING_WIDTH = self.config["generate_rail_traces"]["RAIL_RING_WIDTH"]
+        self.METAL_LAYERS = self.config["magic_layout_creator"]["METAL_LAYERS"]
+        self.VIA_MAP = self.config["magic_layout_creator"]["VIA_MAP"]
 
         # Make lists of different component types
         for component in self.components:
@@ -97,20 +99,20 @@ class GenerateRailTraces:
         top_right_via = RectArea(x1=right_segment.x1, y1=top_segment.y1, x2=right_segment.x2, y2=top_segment.y2)
         bot_right_via = RectArea(x1=right_segment.x1, y1=bot_segment.y1, x2=right_segment.x2, y2=bot_segment.y2)
 
-        trace.vias = [RectAreaLayer(layer='locali-m1', area=top_left_via),
-                      RectAreaLayer(layer='locali-m1', area=bot_left_via),
-                      RectAreaLayer(layer='locali-m1', area=top_right_via),
-                      RectAreaLayer(layer='locali-m1', area=bot_right_via)]
+        trace.vias = [RectAreaLayer(layer=f'{self.METAL_LAYERS[0]}-{self.METAL_LAYERS[1]}', area=top_left_via),
+                      RectAreaLayer(layer=f'{self.METAL_LAYERS[0]}-{self.METAL_LAYERS[1]}', area=bot_left_via),
+                      RectAreaLayer(layer=f'{self.METAL_LAYERS[0]}-{self.METAL_LAYERS[1]}', area=top_right_via),
+                      RectAreaLayer(layer=f'{self.METAL_LAYERS[0]}-{self.METAL_LAYERS[1]}', area=bot_right_via)]
 
-        trace.segments = [RectAreaLayer(layer="locali", area=top_segment),
-                          RectAreaLayer(layer="locali", area=bot_segment),
-                          RectAreaLayer(layer="m1", area=left_segment),
-                          RectAreaLayer(layer="m1", area=right_segment)]
+        trace.segments = [RectAreaLayer(layer=self.METAL_LAYERS[0], area=top_segment),
+                          RectAreaLayer(layer=self.METAL_LAYERS[0], area=bot_segment),
+                          RectAreaLayer(layer=self.METAL_LAYERS[1], area=left_segment),
+                          RectAreaLayer(layer=self.METAL_LAYERS[1], area=right_segment)]
 
         self.components.append(trace)
 
         # Make top segment layout area for pin
-        pin.layout = RectAreaLayer(layer="locali", area=top_segment)
+        pin.layout = RectAreaLayer(layer=self.METAL_LAYERS[0], area=top_segment)
 
     def __generate_rails(self):
 

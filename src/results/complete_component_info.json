@@ -2,23 +2,23 @@
     {
         "instance": "Pin",
         "number_id": 1,
-        "cell": "JNW_BKLE",
-        "named_cell": "UTOP_JNW_BKLE",
+        "cell": "LELO_BKLE",
+        "named_cell": "UTOP_LELO_BKLE",
         "parent_cell": "ROOT_CELL",
         "named_parent_cell": "UROOT_ROOT_CELL",
-        "cell_chain": "UTOP_JNW_BKLE",
+        "cell_chain": "UTOP_LELO_BKLE",
         "type": "ipin",
-        "name": "VDD",
+        "name": "VDD_1V8",
         "layout": ""
     },
     {
         "instance": "Pin",
         "number_id": 2,
-        "cell": "JNW_BKLE",
-        "named_cell": "UTOP_JNW_BKLE",
+        "cell": "LELO_BKLE",
+        "named_cell": "UTOP_LELO_BKLE",
         "parent_cell": "ROOT_CELL",
         "named_parent_cell": "UROOT_ROOT_CELL",
-        "cell_chain": "UTOP_JNW_BKLE",
+        "cell_chain": "UTOP_LELO_BKLE",
         "type": "ipin",
         "name": "VSS",
         "layout": ""
@@ -27,14 +27,14 @@
         "instance": "CircuitCell",
         "number_id": 0,
         "name": "UTOP",
-        "cell": "JNW_BKLE",
-        "named_cell": "UTOP_JNW_BKLE",
+        "cell": "LELO_BKLE",
+        "named_cell": "UTOP_LELO_BKLE",
         "parent_cell": "ROOT_CELL",
         "named_parent_cell": "UROOT_ROOT_CELL",
-        "cell_chain": "UTOP_JNW_BKLE",
+        "cell_chain": "UTOP_LELO_BKLE",
         "group": null,
         "schematic_connections": {
-            "VDD": "VDD",
+            "VDD_1V8": "VDD_1V8",
             "VSS": "VSS"
         },
         "transform_matrix": {
@@ -55,247 +55,180 @@
     {
         "instance": "Pin",
         "number_id": 4,
-        "cell": "OTA",
-        "named_cell": "U1_OTA",
-        "parent_cell": "JNW_BKLE",
-        "named_parent_cell": "UTOP_JNW_BKLE",
-        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
+        "cell": "COMP2",
+        "named_cell": "U1_COMP2",
+        "parent_cell": "LELO_BKLE",
+        "named_parent_cell": "UTOP_LELO_BKLE",
+        "cell_chain": "UTOP_LELO_BKLE--U1_COMP2",
         "type": "ipin",
-        "name": "IN+",
+        "name": "VSS",
         "layout": {
-            "layer": "m2",
+            "layer": "metal1",
             "area": {
-                "x1": 820,
-                "y1": 2187,
-                "x2": 963,
-                "y2": 2217
+                "x1": 100,
+                "y1": 4478,
+                "x2": 2988,
+                "y2": 4528
             }
         }
     },
     {
         "instance": "Pin",
         "number_id": 5,
-        "cell": "OTA",
-        "named_cell": "U1_OTA",
-        "parent_cell": "JNW_BKLE",
-        "named_parent_cell": "UTOP_JNW_BKLE",
-        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
+        "cell": "COMP2",
+        "named_cell": "U1_COMP2",
+        "parent_cell": "LELO_BKLE",
+        "named_parent_cell": "UTOP_LELO_BKLE",
+        "cell_chain": "UTOP_LELO_BKLE--U1_COMP2",
         "type": "ipin",
-        "name": "IN-",
+        "name": "VDD",
         "layout": {
-            "layer": "m2",
+            "layer": "metal1",
             "area": {
-                "x1": 820,
-                "y1": 2987,
-                "x2": 963,
-                "y2": 3017
+                "x1": 0,
+                "y1": 4578,
+                "x2": 3088,
+                "y2": 4628
             }
         }
     },
     {
         "instance": "Pin",
         "number_id": 6,
-        "cell": "OTA",
-        "named_cell": "U1_OTA",
-        "parent_cell": "JNW_BKLE",
-        "named_parent_cell": "UTOP_JNW_BKLE",
-        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
+        "cell": "COMP2",
+        "named_cell": "U1_COMP2",
+        "parent_cell": "LELO_BKLE",
+        "named_parent_cell": "UTOP_LELO_BKLE",
+        "cell_chain": "UTOP_LELO_BKLE--U1_COMP2",
         "type": "ipin",
-        "name": "VDD",
+        "name": "VIP",
         "layout": {
-            "layer": "locali",
+            "layer": "metal2",
             "area": {
-                "x1": 0,
-                "y1": 5610,
-                "x2": 4080,
-                "y2": 5660
+                "x1": 893,
+                "y1": 1344,
+                "x2": 935,
+                "y2": 1384
             }
         }
     },
     {
         "instance": "Pin",
         "number_id": 7,
-        "cell": "OTA",
-        "named_cell": "U1_OTA",
-        "parent_cell": "JNW_BKLE",
-        "named_parent_cell": "UTOP_JNW_BKLE",
-        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
+        "cell": "COMP2",
+        "named_cell": "U1_COMP2",
+        "parent_cell": "LELO_BKLE",
+        "named_parent_cell": "UTOP_LELO_BKLE",
+        "cell_chain": "UTOP_LELO_BKLE--U1_COMP2",
         "type": "ipin",
-        "name": "VSS",
+        "name": "VIN",
         "layout": {
-            "layer": "locali",
+            "layer": "metal2",
             "area": {
-                "x1": 100,
-                "y1": 5510,
-                "x2": 3980,
-                "y2": 5560
+                "x1": 1649,
+                "y1": 1344,
+                "x2": 1691,
+                "y2": 1384
             }
         }
     },
     {
         "instance": "Pin",
         "number_id": 8,
-        "cell": "OTA",
-        "named_cell": "U1_OTA",
-        "parent_cell": "JNW_BKLE",
-        "named_parent_cell": "UTOP_JNW_BKLE",
-        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
+        "cell": "COMP2",
+        "named_cell": "U1_COMP2",
+        "parent_cell": "LELO_BKLE",
+        "named_parent_cell": "UTOP_LELO_BKLE",
+        "cell_chain": "UTOP_LELO_BKLE--U1_COMP2",
         "type": "opin",
-        "name": "OUT",
+        "name": "VO",
         "layout": {
-            "layer": "m2",
+            "layer": "metal3",
             "area": {
-                "x1": 1251,
-                "y1": 523,
-                "x2": 1410,
-                "y2": 553
+                "x1": 2048,
+                "y1": 2685,
+                "x2": 2207,
+                "y2": 2715
             }
         }
     },
     {
-        "instance": "Transistor",
+        "instance": "Pin",
         "number_id": 9,
-        "name": "MP3<3>",
-        "type": "pmos",
-        "cell": "OTA",
-        "named_cell": "U1_OTA",
-        "parent_cell": "JNW_BKLE",
-        "named_parent_cell": "UTOP_JNW_BKLE",
-        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
-        "group": "diff1",
-        "schematic_connections": {
-            "D": "GATE",
-            "G": "IN+",
-            "S": "OTA_SPLIT",
-            "B": "VDD"
-        },
-        "layout_name": "JNWATR_PCH_4C5F0",
-        "layout_library": "JNW_ATR_SKY130A",
-        "layout_ports": [
-            {
-                "type": "G",
-                "layer": "m1",
-                "area": {
-                    "x1": 80,
-                    "y1": 180,
-                    "x2": 112,
-                    "y2": 220
-                }
-            },
-            {
-                "type": "S",
-                "layer": "m1",
-                "area": {
-                    "x1": 144,
-                    "y1": 300,
-                    "x2": 240,
-                    "y2": 340
-                }
-            },
-            {
-                "type": "B",
-                "layer": "locali",
-                "area": {
-                    "x1": -48,
-                    "y1": 180,
-                    "x2": 48,
-                    "y2": 220
-                }
-            },
-            {
-                "type": "D",
-                "layer": "m1",
-                "area": {
-                    "x1": 336,
-                    "y1": 20,
-                    "x2": 432,
-                    "y2": 60
-                }
+        "cell": "COMP2",
+        "named_cell": "U1_COMP2",
+        "parent_cell": "LELO_BKLE",
+        "named_parent_cell": "UTOP_LELO_BKLE",
+        "cell_chain": "UTOP_LELO_BKLE--U1_COMP2",
+        "type": "ipin",
+        "name": "I_BIAS",
+        "layout": {
+            "layer": "metal3",
+            "area": {
+                "x1": 913,
+                "y1": 1743,
+                "x2": 1665,
+                "y2": 1773
             }
-        ],
-        "transform_matrix": {
-            "a": 1,
-            "b": 0,
-            "c": 292,
-            "d": 0,
-            "e": 1,
-            "f": 2004
-        },
-        "bounding_box": {
-            "x1": 0,
-            "y1": 0,
-            "x2": 576,
-            "y2": 400
-        },
-        "overlap_distance": {
-            "x": 92,
-            "y": 64
-        },
-        "group_endpoint": "",
-        "group_endpoint_bounding_box": {
-            "x1": 0,
-            "y1": 0,
-            "x2": 576,
-            "y2": 240
         }
     },
     {
         "instance": "Transistor",
         "number_id": 10,
-        "name": "MP3<2>",
-        "type": "pmos",
-        "cell": "OTA",
-        "named_cell": "U1_OTA",
-        "parent_cell": "JNW_BKLE",
-        "named_parent_cell": "UTOP_JNW_BKLE",
-        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
+        "name": "MN1",
+        "type": "nmos",
+        "cell": "COMP2",
+        "named_cell": "U1_COMP2",
+        "parent_cell": "LELO_BKLE",
+        "named_parent_cell": "UTOP_LELO_BKLE",
+        "cell_chain": "UTOP_LELO_BKLE--U1_COMP2",
         "group": "diff1",
         "schematic_connections": {
-            "D": "GATE",
-            "G": "IN+",
-            "S": "OTA_SPLIT",
-            "B": "VDD"
+            "D": "net3",
+            "G": "VIP",
+            "S": "net1",
+            "B": "VSS"
         },
-        "layout_name": "JNWATR_PCH_4C5F0",
-        "layout_library": "JNW_ATR_SKY130A",
+        "layout_name": "LELOATR_NCH_4C5F0",
+        "layout_library": "LELO_ATR_IHP13G2",
         "layout_ports": [
             {
                 "type": "G",
-                "layer": "m1",
+                "layer": "metal2",
                 "area": {
-                    "x1": 80,
+                    "x1": 105,
                     "y1": 180,
-                    "x2": 112,
+                    "x2": 147,
                     "y2": 220
                 }
             },
             {
                 "type": "S",
-                "layer": "m1",
+                "layer": "metal2",
                 "area": {
-                    "x1": 144,
+                    "x1": 189,
                     "y1": 300,
-                    "x2": 240,
+                    "x2": 315,
                     "y2": 340
                 }
             },
             {
                 "type": "B",
-                "layer": "locali",
+                "layer": "metal1",
                 "area": {
-                    "x1": -48,
+                    "x1": -63,
                     "y1": 180,
-                    "x2": 48,
+                    "x2": 63,
                     "y2": 220
                 }
             },
             {
                 "type": "D",
-                "layer": "m1",
+                "layer": "metal2",
                 "area": {
-                    "x1": 336,
+                    "x1": 441,
                     "y1": 20,
-                    "x2": 432,
+                    "x2": 567,
                     "y2": 60
                 }
             }
@@ -303,86 +236,86 @@
         "transform_matrix": {
             "a": 1,
             "b": 0,
-            "c": 868,
+            "c": 788,
             "d": 0,
             "e": 1,
-            "f": 2004
+            "f": 1164
         },
         "bounding_box": {
             "x1": 0,
             "y1": 0,
-            "x2": 576,
+            "x2": 756,
             "y2": 400
         },
         "overlap_distance": {
-            "x": 92,
-            "y": 64
+            "x": 504,
+            "y": 240
         },
         "group_endpoint": "",
         "group_endpoint_bounding_box": {
             "x1": 0,
             "y1": 0,
-            "x2": 576,
+            "x2": 756,
             "y2": 240
         }
     },
     {
         "instance": "Transistor",
         "number_id": 11,
-        "name": "MP3<1>",
-        "type": "pmos",
-        "cell": "OTA",
-        "named_cell": "U1_OTA",
-        "parent_cell": "JNW_BKLE",
-        "named_parent_cell": "UTOP_JNW_BKLE",
-        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
+        "name": "MN2",
+        "type": "nmos",
+        "cell": "COMP2",
+        "named_cell": "U1_COMP2",
+        "parent_cell": "LELO_BKLE",
+        "named_parent_cell": "UTOP_LELO_BKLE",
+        "cell_chain": "UTOP_LELO_BKLE--U1_COMP2",
         "group": "diff1",
         "schematic_connections": {
-            "D": "GATE",
-            "G": "IN+",
-            "S": "OTA_SPLIT",
-            "B": "VDD"
+            "D": "net2",
+            "G": "VIN",
+            "S": "net1",
+            "B": "VSS"
         },
-        "layout_name": "JNWATR_PCH_4C5F0",
-        "layout_library": "JNW_ATR_SKY130A",
+        "layout_name": "LELOATR_NCH_4C5F0",
+        "layout_library": "LELO_ATR_IHP13G2",
         "layout_ports": [
             {
                 "type": "G",
-                "layer": "m1",
+                "layer": "metal2",
                 "area": {
-                    "x1": 80,
+                    "x1": 105,
                     "y1": 180,
-                    "x2": 112,
+                    "x2": 147,
                     "y2": 220
                 }
             },
             {
                 "type": "S",
-                "layer": "m1",
+                "layer": "metal2",
                 "area": {
-                    "x1": 144,
+                    "x1": 189,
                     "y1": 300,
-                    "x2": 240,
+                    "x2": 315,
                     "y2": 340
                 }
             },
             {
                 "type": "B",
-                "layer": "locali",
+                "layer": "metal1",
                 "area": {
-                    "x1": -48,
+                    "x1": -63,
                     "y1": 180,
-                    "x2": 48,
+                    "x2": 63,
                     "y2": 220
                 }
             },
             {
                 "type": "D",
-                "layer": "m1",
+                "layer": "metal2",
                 "area": {
-                    "x1": 336,
+                    "x1": 441,
                     "y1": 20,
-                    "x2": 432,
+                    "x2": 567,
                     "y2": 60
                 }
             }
@@ -390,86 +323,86 @@
         "transform_matrix": {
             "a": 1,
             "b": 0,
-            "c": 292,
+            "c": 1544,
             "d": 0,
             "e": 1,
-            "f": 1604
+            "f": 1164
         },
         "bounding_box": {
             "x1": 0,
             "y1": 0,
-            "x2": 576,
+            "x2": 756,
             "y2": 400
         },
         "overlap_distance": {
-            "x": 92,
-            "y": 64
+            "x": 504,
+            "y": 240
         },
-        "group_endpoint": "rail_bot",
+        "group_endpoint": "",
         "group_endpoint_bounding_box": {
             "x1": 0,
             "y1": 0,
-            "x2": 576,
+            "x2": 756,
             "y2": 240
         }
     },
     {
         "instance": "Transistor",
         "number_id": 12,
-        "name": "MP3<0>",
+        "name": "MP5",
         "type": "pmos",
-        "cell": "OTA",
-        "named_cell": "U1_OTA",
-        "parent_cell": "JNW_BKLE",
-        "named_parent_cell": "UTOP_JNW_BKLE",
-        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
-        "group": "diff1",
+        "cell": "COMP2",
+        "named_cell": "U1_COMP2",
+        "parent_cell": "LELO_BKLE",
+        "named_parent_cell": "UTOP_LELO_BKLE",
+        "cell_chain": "UTOP_LELO_BKLE--U1_COMP2",
+        "group": "load1",
         "schematic_connections": {
-            "D": "GATE",
-            "G": "IN+",
-            "S": "OTA_SPLIT",
+            "D": "net2",
+            "G": "net2",
+            "S": "VDD",
             "B": "VDD"
         },
-        "layout_name": "JNWATR_PCH_4C5F0",
-        "layout_library": "JNW_ATR_SKY130A",
+        "layout_name": "LELOATR_PCH_4C5F0",
+        "layout_library": "LELO_ATR_IHP13G2",
         "layout_ports": [
             {
                 "type": "G",
-                "layer": "m1",
+                "layer": "metal2",
                 "area": {
-                    "x1": 80,
+                    "x1": 105,
                     "y1": 180,
-                    "x2": 112,
+                    "x2": 147,
                     "y2": 220
                 }
             },
             {
                 "type": "S",
-                "layer": "m1",
+                "layer": "metal2",
                 "area": {
-                    "x1": 144,
+                    "x1": 189,
                     "y1": 300,
-                    "x2": 240,
+                    "x2": 315,
                     "y2": 340
                 }
             },
             {
                 "type": "B",
-                "layer": "locali",
+                "layer": "metal1",
                 "area": {
-                    "x1": -48,
+                    "x1": -63,
                     "y1": 180,
-                    "x2": 48,
+                    "x2": 63,
                     "y2": 220
                 }
             },
             {
                 "type": "D",
-                "layer": "m1",
+                "layer": "metal2",
                 "area": {
-                    "x1": 336,
+                    "x1": 441,
                     "y1": 20,
-                    "x2": 432,
+                    "x2": 567,
                     "y2": 60
                 }
             }
@@ -477,86 +410,86 @@
         "transform_matrix": {
             "a": 1,
             "b": 0,
-            "c": 868,
+            "c": 788,
             "d": 0,
             "e": 1,
-            "f": 1604
+            "f": 2664
         },
         "bounding_box": {
             "x1": 0,
             "y1": 0,
-            "x2": 576,
+            "x2": 756,
             "y2": 400
         },
         "overlap_distance": {
-            "x": 92,
-            "y": 64
+            "x": 588,
+            "y": 324
         },
         "group_endpoint": "rail_bot",
         "group_endpoint_bounding_box": {
             "x1": 0,
             "y1": 0,
-            "x2": 576,
+            "x2": 756,
             "y2": 240
         }
     },
     {
         "instance": "Transistor",
         "number_id": 13,
-        "name": "MP4<3>",
+        "name": "MP6",
         "type": "pmos",
-        "cell": "OTA",
-        "named_cell": "U1_OTA",
-        "parent_cell": "JNW_BKLE",
-        "named_parent_cell": "UTOP_JNW_BKLE",
-        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
-        "group": "diff1",
+        "cell": "COMP2",
+        "named_cell": "U1_COMP2",
+        "parent_cell": "LELO_BKLE",
+        "named_parent_cell": "UTOP_LELO_BKLE",
+        "cell_chain": "UTOP_LELO_BKLE--U1_COMP2",
+        "group": "load1",
         "schematic_connections": {
-            "D": "OUT",
-            "G": "IN-",
-            "S": "OTA_SPLIT",
+            "D": "VO",
+            "G": "net2",
+            "S": "VDD",
             "B": "VDD"
         },
-        "layout_name": "JNWATR_PCH_4C5F0",
-        "layout_library": "JNW_ATR_SKY130A",
+        "layout_name": "LELOATR_PCH_4C5F0",
+        "layout_library": "LELO_ATR_IHP13G2",
         "layout_ports": [
             {
                 "type": "G",
-                "layer": "m1",
+                "layer": "metal2",
                 "area": {
-                    "x1": 80,
+                    "x1": 105,
                     "y1": 180,
-                    "x2": 112,
+                    "x2": 147,
                     "y2": 220
                 }
             },
             {
                 "type": "S",
-                "layer": "m1",
+                "layer": "metal2",
                 "area": {
-                    "x1": 144,
+                    "x1": 189,
                     "y1": 300,
-                    "x2": 240,
+                    "x2": 315,
                     "y2": 340
                 }
             },
             {
                 "type": "B",
-                "layer": "locali",
+                "layer": "metal1",
                 "area": {
-                    "x1": -48,
+                    "x1": -63,
                     "y1": 180,
-                    "x2": 48,
+                    "x2": 63,
                     "y2": 220
                 }
             },
             {
                 "type": "D",
-                "layer": "m1",
+                "layer": "metal2",
                 "area": {
-                    "x1": 336,
+                    "x1": 441,
                     "y1": 20,
-                    "x2": 432,
+                    "x2": 567,
                     "y2": 60
                 }
             }
@@ -564,86 +497,86 @@
         "transform_matrix": {
             "a": 1,
             "b": 0,
-            "c": 292,
+            "c": 1544,
             "d": 0,
             "e": 1,
-            "f": 2804
+            "f": 2664
         },
         "bounding_box": {
             "x1": 0,
             "y1": 0,
-            "x2": 576,
+            "x2": 756,
             "y2": 400
         },
         "overlap_distance": {
-            "x": 92,
-            "y": 64
+            "x": 588,
+            "y": 324
         },
-        "group_endpoint": "",
+        "group_endpoint": "rail_bot",
         "group_endpoint_bounding_box": {
             "x1": 0,
             "y1": 0,
-            "x2": 576,
+            "x2": 756,
             "y2": 240
         }
     },
     {
         "instance": "Transistor",
         "number_id": 14,
-        "name": "MP4<2>",
+        "name": "MP1",
         "type": "pmos",
-        "cell": "OTA",
-        "named_cell": "U1_OTA",
-        "parent_cell": "JNW_BKLE",
-        "named_parent_cell": "UTOP_JNW_BKLE",
-        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
-        "group": "diff1",
+        "cell": "COMP2",
+        "named_cell": "U1_COMP2",
+        "parent_cell": "LELO_BKLE",
+        "named_parent_cell": "UTOP_LELO_BKLE",
+        "cell_chain": "UTOP_LELO_BKLE--U1_COMP2",
+        "group": "load1",
         "schematic_connections": {
-            "D": "OUT",
-            "G": "IN-",
-            "S": "OTA_SPLIT",
+            "D": "net4",
+            "G": "net3",
+            "S": "VDD",
             "B": "VDD"
         },
-        "layout_name": "JNWATR_PCH_4C5F0",
-        "layout_library": "JNW_ATR_SKY130A",
+        "layout_name": "LELOATR_PCH_4C5F0",
+        "layout_library": "LELO_ATR_IHP13G2",
         "layout_ports": [
             {
                 "type": "G",
-                "layer": "m1",
+                "layer": "metal2",
                 "area": {
-                    "x1": 80,
+                    "x1": 105,
                     "y1": 180,
-                    "x2": 112,
+                    "x2": 147,
                     "y2": 220
                 }
             },
             {
                 "type": "S",
-                "layer": "m1",
+                "layer": "metal2",
                 "area": {
-                    "x1": 144,
+                    "x1": 189,
                     "y1": 300,
-                    "x2": 240,
+                    "x2": 315,
                     "y2": 340
                 }
             },
             {
                 "type": "B",
-                "layer": "locali",
+                "layer": "metal1",
                 "area": {
-                    "x1": -48,
+                    "x1": -63,
                     "y1": 180,
-                    "x2": 48,
+                    "x2": 63,
                     "y2": 220
                 }
             },
             {
                 "type": "D",
-                "layer": "m1",
+                "layer": "metal2",
                 "area": {
-                    "x1": 336,
+                    "x1": 441,
                     "y1": 20,
-                    "x2": 432,
+                    "x2": 567,
                     "y2": 60
                 }
             }
@@ -651,86 +584,86 @@
         "transform_matrix": {
             "a": 1,
             "b": 0,
-            "c": 868,
+            "c": 788,
             "d": 0,
             "e": 1,
-            "f": 2804
+            "f": 3064
         },
         "bounding_box": {
             "x1": 0,
             "y1": 0,
-            "x2": 576,
+            "x2": 756,
             "y2": 400
         },
         "overlap_distance": {
-            "x": 92,
-            "y": 64
+            "x": 588,
+            "y": 324
         },
         "group_endpoint": "",
         "group_endpoint_bounding_box": {
             "x1": 0,
             "y1": 0,
-            "x2": 576,
+            "x2": 756,
             "y2": 240
         }
     },
     {
         "instance": "Transistor",
         "number_id": 15,
-        "name": "MP4<1>",
+        "name": "MP2",
         "type": "pmos",
-        "cell": "OTA",
-        "named_cell": "U1_OTA",
-        "parent_cell": "JNW_BKLE",
-        "named_parent_cell": "UTOP_JNW_BKLE",
-        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
-        "group": "diff1",
+        "cell": "COMP2",
+        "named_cell": "U1_COMP2",
+        "parent_cell": "LELO_BKLE",
+        "named_parent_cell": "UTOP_LELO_BKLE",
+        "cell_chain": "UTOP_LELO_BKLE--U1_COMP2",
+        "group": "load1",
         "schematic_connections": {
-            "D": "OUT",
-            "G": "IN-",
-            "S": "OTA_SPLIT",
+            "D": "net3",
+            "G": "net3",
+            "S": "VDD",
             "B": "VDD"
         },
-        "layout_name": "JNWATR_PCH_4C5F0",
-        "layout_library": "JNW_ATR_SKY130A",
+        "layout_name": "LELOATR_PCH_4C5F0",
+        "layout_library": "LELO_ATR_IHP13G2",
         "layout_ports": [
             {
                 "type": "G",
-                "layer": "m1",
+                "layer": "metal2",
                 "area": {
-                    "x1": 80,
+                    "x1": 105,
                     "y1": 180,
-                    "x2": 112,
+                    "x2": 147,
                     "y2": 220
                 }
             },
             {
                 "type": "S",
-                "layer": "m1",
+                "layer": "metal2",
                 "area": {
-                    "x1": 144,
+                    "x1": 189,
                     "y1": 300,
-                    "x2": 240,
+                    "x2": 315,
                     "y2": 340
                 }
             },
             {
                 "type": "B",
-                "layer": "locali",
+                "layer": "metal1",
                 "area": {
-                    "x1": -48,
+                    "x1": -63,
                     "y1": 180,
-                    "x2": 48,
+                    "x2": 63,
                     "y2": 220
                 }
             },
             {
                 "type": "D",
-                "layer": "m1",
+                "layer": "metal2",
                 "area": {
-                    "x1": 336,
+                    "x1": 441,
                     "y1": 20,
-                    "x2": 432,
+                    "x2": 567,
                     "y2": 60
                 }
             }
@@ -738,86 +671,86 @@
         "transform_matrix": {
             "a": 1,
             "b": 0,
-            "c": 868,
+            "c": 1544,
             "d": 0,
             "e": 1,
-            "f": 2404
+            "f": 3064
         },
         "bounding_box": {
             "x1": 0,
             "y1": 0,
-            "x2": 576,
+            "x2": 756,
             "y2": 400
         },
         "overlap_distance": {
-            "x": 92,
-            "y": 64
+            "x": 588,
+            "y": 324
         },
         "group_endpoint": "",
         "group_endpoint_bounding_box": {
             "x1": 0,
             "y1": 0,
-            "x2": 576,
+            "x2": 756,
             "y2": 240
         }
     },
     {
         "instance": "Transistor",
         "number_id": 16,
-        "name": "MP4<0>",
-        "type": "pmos",
-        "cell": "OTA",
-        "named_cell": "U1_OTA",
-        "parent_cell": "JNW_BKLE",
-        "named_parent_cell": "UTOP_JNW_BKLE",
-        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
-        "group": "diff1",
+        "name": "MN4",
+        "type": "nmos",
+        "cell": "COMP2",
+        "named_cell": "U1_COMP2",
+        "parent_cell": "LELO_BKLE",
+        "named_parent_cell": "UTOP_LELO_BKLE",
+        "cell_chain": "UTOP_LELO_BKLE--U1_COMP2",
+        "group": "mirror2",
         "schematic_connections": {
-            "D": "OUT",
-            "G": "IN-",
-            "S": "OTA_SPLIT",
-            "B": "VDD"
+            "D": "net1",
+            "G": "I_BIAS",
+            "S": "VSS",
+            "B": "VSS"
         },
-        "layout_name": "JNWATR_PCH_4C5F0",
-        "layout_library": "JNW_ATR_SKY130A",
+        "layout_name": "LELOATR_NCH_4C5F0",
+        "layout_library": "LELO_ATR_IHP13G2",
         "layout_ports": [
             {
                 "type": "G",
-                "layer": "m1",
+                "layer": "metal2",
                 "area": {
-                    "x1": 80,
+                    "x1": 105,
                     "y1": 180,
-                    "x2": 112,
+                    "x2": 147,
                     "y2": 220
                 }
             },
             {
                 "type": "S",
-                "layer": "m1",
+                "layer": "metal2",
                 "area": {
-                    "x1": 144,
+                    "x1": 189,
                     "y1": 300,
-                    "x2": 240,
+                    "x2": 315,
                     "y2": 340
                 }
             },
             {
                 "type": "B",
-                "layer": "locali",
+                "layer": "metal1",
                 "area": {
-                    "x1": -48,
+                    "x1": -63,
                     "y1": 180,
-                    "x2": 48,
+                    "x2": 63,
                     "y2": 220
                 }
             },
             {
                 "type": "D",
-                "layer": "m1",
+                "layer": "metal2",
                 "area": {
-                    "x1": 336,
+                    "x1": 441,
                     "y1": 20,
-                    "x2": 432,
+                    "x2": 567,
                     "y2": 60
                 }
             }
@@ -825,86 +758,86 @@
         "transform_matrix": {
             "a": 1,
             "b": 0,
-            "c": 292,
+            "c": 788,
             "d": 0,
             "e": 1,
-            "f": 2404
+            "f": 1564
         },
         "bounding_box": {
             "x1": 0,
             "y1": 0,
-            "x2": 576,
+            "x2": 756,
             "y2": 400
         },
         "overlap_distance": {
-            "x": 92,
-            "y": 64
+            "x": 504,
+            "y": 240
         },
-        "group_endpoint": "",
+        "group_endpoint": "rail_top",
         "group_endpoint_bounding_box": {
             "x1": 0,
             "y1": 0,
-            "x2": 576,
+            "x2": 756,
             "y2": 240
         }
     },
     {
         "instance": "Transistor",
         "number_id": 17,
-        "name": "MP2",
-        "type": "pmos",
-        "cell": "OTA",
-        "named_cell": "U1_OTA",
-        "parent_cell": "JNW_BKLE",
-        "named_parent_cell": "UTOP_JNW_BKLE",
-        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
-        "group": "mirror1",
+        "name": "MN3",
+        "type": "nmos",
+        "cell": "COMP2",
+        "named_cell": "U1_COMP2",
+        "parent_cell": "LELO_BKLE",
+        "named_parent_cell": "UTOP_LELO_BKLE",
+        "cell_chain": "UTOP_LELO_BKLE--U1_COMP2",
+        "group": "mirror2",
         "schematic_connections": {
-            "D": "OTA_SPLIT",
-            "G": "IB_GATE",
-            "S": "VDD",
-            "B": "VDD"
+            "D": "I_BIAS",
+            "G": "I_BIAS",
+            "S": "VSS",
+            "B": "VSS"
         },
-        "layout_name": "JNWATR_PCH_4C5F0",
-        "layout_library": "JNW_ATR_SKY130A",
+        "layout_name": "LELOATR_NCH_4C5F0",
+        "layout_library": "LELO_ATR_IHP13G2",
         "layout_ports": [
             {
                 "type": "G",
-                "layer": "m1",
+                "layer": "metal2",
                 "area": {
-                    "x1": 80,
+                    "x1": 105,
                     "y1": 180,
-                    "x2": 112,
+                    "x2": 147,
                     "y2": 220
                 }
             },
             {
                 "type": "S",
-                "layer": "m1",
+                "layer": "metal2",
                 "area": {
-                    "x1": 144,
+                    "x1": 189,
                     "y1": 300,
-                    "x2": 240,
+                    "x2": 315,
                     "y2": 340
                 }
             },
             {
                 "type": "B",
-                "layer": "locali",
+                "layer": "metal1",
                 "area": {
-                    "x1": -48,
+                    "x1": -63,
                     "y1": 180,
-                    "x2": 48,
+                    "x2": 63,
                     "y2": 220
                 }
             },
             {
                 "type": "D",
-                "layer": "m1",
+                "layer": "metal2",
                 "area": {
-                    "x1": 336,
+                    "x1": 441,
                     "y1": 20,
-                    "x2": 432,
+                    "x2": 567,
                     "y2": 60
                 }
             }
@@ -912,86 +845,86 @@
         "transform_matrix": {
             "a": 1,
             "b": 0,
-            "c": 868,
+            "c": 1544,
             "d": 0,
             "e": 1,
-            "f": 3204
+            "f": 1564
         },
         "bounding_box": {
             "x1": 0,
             "y1": 0,
-            "x2": 576,
+            "x2": 756,
             "y2": 400
         },
         "overlap_distance": {
-            "x": 92,
-            "y": 64
+            "x": 504,
+            "y": 240
         },
         "group_endpoint": "rail_top",
         "group_endpoint_bounding_box": {
             "x1": 0,
             "y1": 0,
-            "x2": 576,
+            "x2": 756,
             "y2": 240
         }
     },
     {
         "instance": "Transistor",
         "number_id": 18,
-        "name": "MP1",
-        "type": "pmos",
-        "cell": "OTA",
-        "named_cell": "U1_OTA",
-        "parent_cell": "JNW_BKLE",
-        "named_parent_cell": "UTOP_JNW_BKLE",
-        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
+        "name": "MN5",
+        "type": "nmos",
+        "cell": "COMP2",
+        "named_cell": "U1_COMP2",
+        "parent_cell": "LELO_BKLE",
+        "named_parent_cell": "UTOP_LELO_BKLE",
+        "cell_chain": "UTOP_LELO_BKLE--U1_COMP2",
         "group": "mirror1",
         "schematic_connections": {
-            "D": "IB_GATE",
-            "G": "IB_GATE",
-            "S": "VDD",
-            "B": "VDD"
+            "D": "net4",
+            "G": "net4",
+            "S": "VSS",
+            "B": "VSS"
         },
-        "layout_name": "JNWATR_PCH_4C5F0",
-        "layout_library": "JNW_ATR_SKY130A",
+        "layout_name": "LELOATR_NCH_4C5F0",
+        "layout_library": "LELO_ATR_IHP13G2",
         "layout_ports": [
             {
                 "type": "G",
-                "layer": "m1",
+                "layer": "metal2",
                 "area": {
-                    "x1": 80,
+                    "x1": 105,
                     "y1": 180,
-                    "x2": 112,
+                    "x2": 147,
                     "y2": 220
                 }
             },
             {
                 "type": "S",
-                "layer": "m1",
+                "layer": "metal2",
                 "area": {
-                    "x1": 144,
+                    "x1": 189,
                     "y1": 300,
-                    "x2": 240,
+                    "x2": 315,
                     "y2": 340
                 }
             },
             {
                 "type": "B",
-                "layer": "locali",
+                "layer": "metal1",
                 "area": {
-                    "x1": -48,
+                    "x1": -63,
                     "y1": 180,
-                    "x2": 48,
+                    "x2": 63,
                     "y2": 220
                 }
             },
             {
                 "type": "D",
-                "layer": "m1",
+                "layer": "metal2",
                 "area": {
-                    "x1": 336,
+                    "x1": 441,
                     "y1": 20,
-                    "x2": 432,
+                    "x2": 567,
                     "y2": 60
                 }
             }
@@ -999,86 +932,86 @@
         "transform_matrix": {
             "a": 1,
             "b": 0,
-            "c": 292,
+            "c": 788,
             "d": 0,
             "e": 1,
-            "f": 3204
+            "f": 764
         },
         "bounding_box": {
             "x1": 0,
             "y1": 0,
-            "x2": 576,
+            "x2": 756,
             "y2": 400
         },
         "overlap_distance": {
-            "x": 92,
-            "y": 64
+            "x": 504,
+            "y": 240
         },
-        "group_endpoint": "rail_top",
+        "group_endpoint": "rail_bot",
         "group_endpoint_bounding_box": {
             "x1": 0,
             "y1": 0,
-            "x2": 576,
+            "x2": 756,
             "y2": 240
         }
     },
     {
         "instance": "Transistor",
         "number_id": 19,
-        "name": "MN1",
+        "name": "MN6",
         "type": "nmos",
-        "cell": "OTA",
-        "named_cell": "U1_OTA",
-        "parent_cell": "JNW_BKLE",
-        "named_parent_cell": "UTOP_JNW_BKLE",
-        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
-        "group": "mirror2",
+        "cell": "COMP2",
+        "named_cell": "U1_COMP2",
+        "parent_cell": "LELO_BKLE",
+        "named_parent_cell": "UTOP_LELO_BKLE",
+        "cell_chain": "UTOP_LELO_BKLE--U1_COMP2",
+        "group": "mirror1",
         "schematic_connections": {
-            "D": "GATE",
-            "G": "GATE",
+            "D": "VO",
+            "G": "net4",
             "S": "VSS",
             "B": "VSS"
         },
-        "layout_name": "JNWATR_NCH_4C5F0",
-        "layout_library": "JNW_ATR_SKY130A",
+        "layout_name": "LELOATR_NCH_4C5F0",
+        "layout_library": "LELO_ATR_IHP13G2",
         "layout_ports": [
             {
                 "type": "G",
-                "layer": "m1",
+                "layer": "metal2",
                 "area": {
-                    "x1": 80,
+                    "x1": 105,
                     "y1": 180,
-                    "x2": 112,
+                    "x2": 147,
                     "y2": 220
                 }
             },
             {
                 "type": "S",
-                "layer": "m1",
+                "layer": "metal2",
                 "area": {
-                    "x1": 144,
+                    "x1": 189,
                     "y1": 300,
-                    "x2": 240,
+                    "x2": 315,
                     "y2": 340
                 }
             },
             {
                 "type": "B",
-                "layer": "locali",
+                "layer": "metal1",
                 "area": {
-                    "x1": -48,
+                    "x1": -63,
                     "y1": 180,
-                    "x2": 48,
+                    "x2": 63,
                     "y2": 220
                 }
             },
             {
                 "type": "D",
-                "layer": "m1",
+                "layer": "metal2",
                 "area": {
-                    "x1": 336,
+                    "x1": 441,
                     "y1": 20,
-                    "x2": 432,
+                    "x2": 567,
                     "y2": 60
                 }
             }
@@ -1086,86 +1019,86 @@
         "transform_matrix": {
             "a": 1,
             "b": 0,
-            "c": 292,
+            "c": 1544,
             "d": 0,
             "e": 1,
-            "f": 504
+            "f": 764
         },
         "bounding_box": {
             "x1": 0,
             "y1": 0,
-            "x2": 576,
+            "x2": 756,
             "y2": 400
         },
         "overlap_distance": {
-            "x": 92,
-            "y": 64
+            "x": 504,
+            "y": 240
         },
-        "group_endpoint": "rail_top/bot",
+        "group_endpoint": "rail_bot",
         "group_endpoint_bounding_box": {
             "x1": 0,
             "y1": 0,
-            "x2": 576,
+            "x2": 756,
             "y2": 240
         }
     },
     {
         "instance": "Transistor",
         "number_id": 20,
-        "name": "MN2",
-        "type": "nmos",
-        "cell": "OTA",
-        "named_cell": "U1_OTA",
-        "parent_cell": "JNW_BKLE",
-        "named_parent_cell": "UTOP_JNW_BKLE",
-        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
-        "group": "mirror2",
+        "name": "MP3",
+        "type": "pmos",
+        "cell": "COMP2",
+        "named_cell": "U1_COMP2",
+        "parent_cell": "LELO_BKLE",
+        "named_parent_cell": "UTOP_LELO_BKLE",
+        "cell_chain": "UTOP_LELO_BKLE--U1_COMP2",
+        "group": "load1",
         "schematic_connections": {
-            "D": "OUT",
-            "G": "GATE",
-            "S": "VSS",
-            "B": "VSS"
+            "D": "net3",
+            "G": "net2",
+            "S": "VDD",
+            "B": "VDD"
         },
-        "layout_name": "JNWATR_NCH_4C5F0",
-        "layout_library": "JNW_ATR_SKY130A",
+        "layout_name": "LELOATR_PCH_4C5F0",
+        "layout_library": "LELO_ATR_IHP13G2",
         "layout_ports": [
             {
                 "type": "G",
-                "layer": "m1",
+                "layer": "metal2",
                 "area": {
-                    "x1": 80,
+                    "x1": 105,
                     "y1": 180,
-                    "x2": 112,
+                    "x2": 147,
                     "y2": 220
                 }
             },
             {
                 "type": "S",
-                "layer": "m1",
+                "layer": "metal2",
                 "area": {
-                    "x1": 144,
+                    "x1": 189,
                     "y1": 300,
-                    "x2": 240,
+                    "x2": 315,
                     "y2": 340
                 }
             },
             {
                 "type": "B",
-                "layer": "locali",
+                "layer": "metal1",
                 "area": {
-                    "x1": -48,
+                    "x1": -63,
                     "y1": 180,
-                    "x2": 48,
+                    "x2": 63,
                     "y2": 220
                 }
             },
             {
                 "type": "D",
-                "layer": "m1",
+                "layer": "metal2",
                 "area": {
-                    "x1": 336,
+                    "x1": 441,
                     "y1": 20,
-                    "x2": 432,
+                    "x2": 567,
                     "y2": 60
                 }
             }
@@ -1173,239 +1106,132 @@
         "transform_matrix": {
             "a": 1,
             "b": 0,
-            "c": 868,
+            "c": 788,
             "d": 0,
             "e": 1,
-            "f": 504
+            "f": 3464
         },
         "bounding_box": {
             "x1": 0,
             "y1": 0,
-            "x2": 576,
+            "x2": 756,
             "y2": 400
         },
         "overlap_distance": {
-            "x": 92,
-            "y": 64
+            "x": 588,
+            "y": 324
         },
-        "group_endpoint": "rail_top/bot",
+        "group_endpoint": "rail_top",
         "group_endpoint_bounding_box": {
             "x1": 0,
             "y1": 0,
-            "x2": 576,
+            "x2": 756,
             "y2": 240
         }
     },
     {
-        "instance": "Resistor",
+        "instance": "Transistor",
         "number_id": 21,
-        "name": "RH1",
-        "type": "hpo",
-        "cell": "OTA",
-        "named_cell": "U1_OTA",
-        "parent_cell": "JNW_BKLE",
-        "named_parent_cell": "UTOP_JNW_BKLE",
-        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
-        "group": "bias1",
+        "name": "MP4",
+        "type": "pmos",
+        "cell": "COMP2",
+        "named_cell": "U1_COMP2",
+        "parent_cell": "LELO_BKLE",
+        "named_parent_cell": "UTOP_LELO_BKLE",
+        "cell_chain": "UTOP_LELO_BKLE--U1_COMP2",
+        "group": "load1",
         "schematic_connections": {
-            "N": "AFTER_RESISTOR1",
-            "P": "IB_GATE",
-            "B": "VSS"
+            "D": "net2",
+            "G": "net3",
+            "S": "VDD",
+            "B": "VDD"
         },
-        "layout_name": "JNWTR_RPPO16",
-        "layout_library": "JNW_TR_SKY130A",
+        "layout_name": "LELOATR_PCH_4C5F0",
+        "layout_library": "LELO_ATR_IHP13G2",
         "layout_ports": [
             {
+                "type": "G",
+                "layer": "metal2",
+                "area": {
+                    "x1": 105,
+                    "y1": 180,
+                    "x2": 147,
+                    "y2": 220
+                }
+            },
+            {
+                "type": "S",
+                "layer": "metal2",
+                "area": {
+                    "x1": 189,
+                    "y1": 300,
+                    "x2": 315,
+                    "y2": 340
+                }
+            },
+            {
                 "type": "B",
-                "layer": "locali",
+                "layer": "metal1",
                 "area": {
-                    "x1": 8,
-                    "y1": 8,
-                    "x2": 2228,
-                    "y2": 64
+                    "x1": -63,
+                    "y1": 180,
+                    "x2": 63,
+                    "y2": 220
                 }
             },
             {
-                "type": "P",
-                "layer": "locali",
+                "type": "D",
+                "layer": "metal2",
                 "area": {
-                    "x1": 1910,
-                    "y1": 1460,
-                    "x2": 2054,
-                    "y2": 1580
-                }
-            },
-            {
-                "type": "N",
-                "layer": "locali",
-                "area": {
-                    "x1": 182,
-                    "y1": 1460,
-                    "x2": 326,
-                    "y2": 1580
+                    "x1": 441,
+                    "y1": 20,
+                    "x2": 567,
+                    "y2": 60
                 }
             }
         ],
         "transform_matrix": {
             "a": 1,
             "b": 0,
-            "c": 1644,
+            "c": 1544,
             "d": 0,
             "e": 1,
-            "f": 200
+            "f": 3464
         },
         "bounding_box": {
             "x1": 0,
             "y1": 0,
-            "x2": 2236,
-            "y2": 1720
-        }
-    },
-    {
-        "instance": "Resistor",
-        "number_id": 22,
-        "name": "RH2",
-        "type": "hpo",
-        "cell": "OTA",
-        "named_cell": "U1_OTA",
-        "parent_cell": "JNW_BKLE",
-        "named_parent_cell": "UTOP_JNW_BKLE",
-        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
-        "group": "bias1",
-        "schematic_connections": {
-            "N": "AFTER_RESISTOR2",
-            "P": "AFTER_RESISTOR1",
-            "B": "VSS"
+            "x2": 756,
+            "y2": 400
         },
-        "layout_name": "JNWTR_RPPO16",
-        "layout_library": "JNW_TR_SKY130A",
-        "layout_ports": [
-            {
-                "type": "B",
-                "layer": "locali",
-                "area": {
-                    "x1": 8,
-                    "y1": 8,
-                    "x2": 2228,
-                    "y2": 64
-                }
-            },
-            {
-                "type": "P",
-                "layer": "locali",
-                "area": {
-                    "x1": 1910,
-                    "y1": 1460,
-                    "x2": 2054,
-                    "y2": 1580
-                }
-            },
-            {
-                "type": "N",
-                "layer": "locali",
-                "area": {
-                    "x1": 182,
-                    "y1": 1460,
-                    "x2": 326,
-                    "y2": 1580
-                }
-            }
-        ],
-        "transform_matrix": {
-            "a": 1,
-            "b": 0,
-            "c": 1644,
-            "d": 0,
-            "e": 1,
-            "f": 3740
+        "overlap_distance": {
+            "x": 588,
+            "y": 324
         },
-        "bounding_box": {
+        "group_endpoint": "rail_top",
+        "group_endpoint_bounding_box": {
             "x1": 0,
             "y1": 0,
-            "x2": 2236,
-            "y2": 1720
-        }
-    },
-    {
-        "instance": "Resistor",
-        "number_id": 23,
-        "name": "RH3",
-        "type": "hpo",
-        "cell": "OTA",
-        "named_cell": "U1_OTA",
-        "parent_cell": "JNW_BKLE",
-        "named_parent_cell": "UTOP_JNW_BKLE",
-        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
-        "group": "bias1",
-        "schematic_connections": {
-            "N": "VSS",
-            "P": "AFTER_RESISTOR2",
-            "B": "VSS"
-        },
-        "layout_name": "JNWTR_RPPO16",
-        "layout_library": "JNW_TR_SKY130A",
-        "layout_ports": [
-            {
-                "type": "B",
-                "layer": "locali",
-                "area": {
-                    "x1": 8,
-                    "y1": 8,
-                    "x2": 2228,
-                    "y2": 64
-                }
-            },
-            {
-                "type": "P",
-                "layer": "locali",
-                "area": {
-                    "x1": 1910,
-                    "y1": 1460,
-                    "x2": 2054,
-                    "y2": 1580
-                }
-            },
-            {
-                "type": "N",
-                "layer": "locali",
-                "area": {
-                    "x1": 182,
-                    "y1": 1460,
-                    "x2": 326,
-                    "y2": 1580
-                }
-            }
-        ],
-        "transform_matrix": {
-            "a": 1,
-            "b": 0,
-            "c": 1644,
-            "d": 0,
-            "e": 1,
-            "f": 1970
-        },
-        "bounding_box": {
-            "x1": 0,
-            "y1": 0,
-            "x2": 2236,
-            "y2": 1720
+            "x2": 756,
+            "y2": 240
         }
     },
     {
         "instance": "CircuitCell",
         "number_id": 3,
         "name": "U1",
-        "cell": "OTA",
-        "named_cell": "U1_OTA",
-        "parent_cell": "JNW_BKLE",
-        "named_parent_cell": "UTOP_JNW_BKLE",
-        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
+        "cell": "COMP2",
+        "named_cell": "U1_COMP2",
+        "parent_cell": "LELO_BKLE",
+        "named_parent_cell": "UTOP_LELO_BKLE",
+        "cell_chain": "UTOP_LELO_BKLE--U1_COMP2",
         "group": null,
         "schematic_connections": {
-            "VDD": "VDD",
-            "IN+": "net1",
-            "IN-": "net2",
-            "OUT": "net3",
+            "VDD": "VDD_1V8",
+            "VIN": "net1",
+            "VIP": "net2",
+            "VO": "net3",
+            "I_BIAS": "net4",
             "VSS": "VSS"
         },
         "transform_matrix": {
@@ -1419,1424 +1245,853 @@
         "bounding_box": {
             "x1": 0,
             "y1": 0,
-            "x2": 4130,
-            "y2": 5710
+            "x2": 3138,
+            "y2": 4678
         }
     },
     {
         "instance": "TraceNet",
-        "name": "IN+",
-        "cell": "OTA",
-        "named_cell": "U1_OTA",
-        "parent_cell": "",
-        "named_parent_cell": "",
-        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
+        "name": "VIP",
+        "cell": "COMP2",
+        "named_cell": "U1_COMP2",
+        "parent_cell": "LELO_BKLE",
+        "named_parent_cell": "UTOP_LELO_BKLE",
+        "cell_chain": "UTOP_LELO_BKLE--U1_COMP2",
+        "segments": [],
+        "vias": []
+    },
+    {
+        "instance": "TraceNet",
+        "name": "VIN",
+        "cell": "COMP2",
+        "named_cell": "U1_COMP2",
+        "parent_cell": "LELO_BKLE",
+        "named_parent_cell": "UTOP_LELO_BKLE",
+        "cell_chain": "UTOP_LELO_BKLE--U1_COMP2",
+        "segments": [],
+        "vias": []
+    },
+    {
+        "instance": "TraceNet",
+        "name": "VO",
+        "cell": "COMP2",
+        "named_cell": "U1_COMP2",
+        "parent_cell": "LELO_BKLE",
+        "named_parent_cell": "UTOP_LELO_BKLE",
+        "cell_chain": "UTOP_LELO_BKLE--U1_COMP2",
         "segments": [
             {
-                "layer": "m2",
+                "layer": "metal3",
                 "area": {
-                    "x1": 820,
-                    "y1": 2187,
-                    "x2": 963,
-                    "y2": 2217
+                    "x1": 2048,
+                    "y1": 2685,
+                    "x2": 2207,
+                    "y2": 2715
                 }
             },
             {
-                "layer": "m3",
+                "layer": "metal4",
                 "area": {
-                    "x1": 820,
-                    "y1": 1787,
-                    "x2": 850,
-                    "y2": 2217
+                    "x1": 2177,
+                    "y1": 781,
+                    "x2": 2207,
+                    "y2": 2715
                 }
             },
             {
-                "layer": "m2",
+                "layer": "metal3",
                 "area": {
-                    "x1": 820,
-                    "y1": 1787,
-                    "x2": 978,
-                    "y2": 1817
-                }
-            },
-            {
-                "layer": "m2",
-                "area": {
-                    "x1": 372,
-                    "y1": 1787,
-                    "x2": 978,
-                    "y2": 1817
-                }
-            },
-            {
-                "layer": "m2",
-                "area": {
-                    "x1": 244,
-                    "y1": 1787,
-                    "x2": 402,
-                    "y2": 1817
-                }
-            },
-            {
-                "layer": "m3",
-                "area": {
-                    "x1": 244,
-                    "y1": 1787,
-                    "x2": 274,
-                    "y2": 2217
-                }
-            },
-            {
-                "layer": "m2",
-                "area": {
-                    "x1": 244,
-                    "y1": 2187,
-                    "x2": 387,
-                    "y2": 2217
+                    "x1": 2048,
+                    "y1": 781,
+                    "x2": 2207,
+                    "y2": 811
                 }
             }
         ],
         "vias": [
             {
-                "layer": "m2-m3",
+                "layer": "metal3-metal4",
                 "area": {
-                    "x1": 820,
-                    "y1": 2187,
-                    "x2": 850,
-                    "y2": 2217
+                    "x1": 2177,
+                    "y1": 2685,
+                    "x2": 2207,
+                    "y2": 2715
                 }
             },
             {
-                "layer": "m2-m3",
+                "layer": "metal3-metal4",
                 "area": {
-                    "x1": 820,
-                    "y1": 1787,
-                    "x2": 850,
-                    "y2": 1817
+                    "x1": 2177,
+                    "y1": 781,
+                    "x2": 2207,
+                    "y2": 811
                 }
             },
             {
-                "layer": "m2-m3",
+                "layer": "metal2-metal3",
                 "area": {
-                    "x1": 244,
-                    "y1": 1787,
-                    "x2": 274,
-                    "y2": 1817
+                    "x1": 1985,
+                    "y1": 2684,
+                    "x2": 2111,
+                    "y2": 2724
                 }
             },
             {
-                "layer": "m2-m3",
+                "layer": "metal2-metal3",
                 "area": {
-                    "x1": 244,
-                    "y1": 2187,
-                    "x2": 274,
-                    "y2": 2217
-                }
-            },
-            {
-                "layer": "m1-m2",
-                "area": {
-                    "x1": 372,
-                    "y1": 2184,
-                    "x2": 404,
-                    "y2": 2224
-                }
-            },
-            {
-                "layer": "m1-m2",
-                "area": {
-                    "x1": 948,
-                    "y1": 2184,
-                    "x2": 980,
-                    "y2": 2224
-                }
-            },
-            {
-                "layer": "m1-m2",
-                "area": {
-                    "x1": 372,
-                    "y1": 1784,
-                    "x2": 404,
-                    "y2": 1824
-                }
-            },
-            {
-                "layer": "m1-m2",
-                "area": {
-                    "x1": 372,
-                    "y1": 1784,
-                    "x2": 404,
-                    "y2": 1824
-                }
-            },
-            {
-                "layer": "m1-m2",
-                "area": {
-                    "x1": 948,
-                    "y1": 1784,
-                    "x2": 980,
-                    "y2": 1824
-                }
-            },
-            {
-                "layer": "m1-m2",
-                "area": {
-                    "x1": 948,
-                    "y1": 1784,
-                    "x2": 980,
-                    "y2": 1824
+                    "x1": 1985,
+                    "y1": 784,
+                    "x2": 2111,
+                    "y2": 824
                 }
             }
         ]
     },
     {
         "instance": "TraceNet",
-        "name": "IN-",
-        "cell": "OTA",
-        "named_cell": "U1_OTA",
-        "parent_cell": "",
-        "named_parent_cell": "",
-        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
+        "name": "I_BIAS",
+        "cell": "COMP2",
+        "named_cell": "U1_COMP2",
+        "parent_cell": "LELO_BKLE",
+        "named_parent_cell": "UTOP_LELO_BKLE",
+        "cell_chain": "UTOP_LELO_BKLE--U1_COMP2",
         "segments": [
             {
-                "layer": "m2",
+                "layer": "metal3",
                 "area": {
-                    "x1": 820,
-                    "y1": 2987,
-                    "x2": 963,
-                    "y2": 3017
-                }
-            },
-            {
-                "layer": "m3",
-                "area": {
-                    "x1": 820,
-                    "y1": 2587,
-                    "x2": 850,
-                    "y2": 3017
-                }
-            },
-            {
-                "layer": "m2",
-                "area": {
-                    "x1": 820,
-                    "y1": 2587,
-                    "x2": 978,
-                    "y2": 2617
-                }
-            },
-            {
-                "layer": "m2",
-                "area": {
-                    "x1": 372,
-                    "y1": 2587,
-                    "x2": 978,
-                    "y2": 2617
-                }
-            },
-            {
-                "layer": "m2",
-                "area": {
-                    "x1": 244,
-                    "y1": 2587,
-                    "x2": 402,
-                    "y2": 2617
-                }
-            },
-            {
-                "layer": "m3",
-                "area": {
-                    "x1": 244,
-                    "y1": 2587,
-                    "x2": 274,
-                    "y2": 3017
-                }
-            },
-            {
-                "layer": "m2",
-                "area": {
-                    "x1": 244,
-                    "y1": 2987,
-                    "x2": 387,
-                    "y2": 3017
+                    "x1": 913,
+                    "y1": 1743,
+                    "x2": 1665,
+                    "y2": 1773
                 }
             }
         ],
         "vias": [
             {
-                "layer": "m2-m3",
+                "layer": "metal2-metal3",
                 "area": {
-                    "x1": 820,
-                    "y1": 2987,
-                    "x2": 850,
-                    "y2": 3017
+                    "x1": 893,
+                    "y1": 1744,
+                    "x2": 935,
+                    "y2": 1784
                 }
             },
             {
-                "layer": "m2-m3",
+                "layer": "metal2-metal3",
                 "area": {
-                    "x1": 820,
-                    "y1": 2587,
-                    "x2": 850,
-                    "y2": 2617
-                }
-            },
-            {
-                "layer": "m2-m3",
-                "area": {
-                    "x1": 244,
-                    "y1": 2587,
-                    "x2": 274,
-                    "y2": 2617
-                }
-            },
-            {
-                "layer": "m2-m3",
-                "area": {
-                    "x1": 244,
-                    "y1": 2987,
-                    "x2": 274,
-                    "y2": 3017
-                }
-            },
-            {
-                "layer": "m1-m2",
-                "area": {
-                    "x1": 372,
-                    "y1": 2984,
-                    "x2": 404,
-                    "y2": 3024
-                }
-            },
-            {
-                "layer": "m1-m2",
-                "area": {
-                    "x1": 948,
-                    "y1": 2984,
-                    "x2": 980,
-                    "y2": 3024
-                }
-            },
-            {
-                "layer": "m1-m2",
-                "area": {
-                    "x1": 948,
-                    "y1": 2584,
-                    "x2": 980,
-                    "y2": 2624
-                }
-            },
-            {
-                "layer": "m1-m2",
-                "area": {
-                    "x1": 948,
-                    "y1": 2584,
-                    "x2": 980,
-                    "y2": 2624
-                }
-            },
-            {
-                "layer": "m1-m2",
-                "area": {
-                    "x1": 372,
-                    "y1": 2584,
-                    "x2": 404,
-                    "y2": 2624
-                }
-            },
-            {
-                "layer": "m1-m2",
-                "area": {
-                    "x1": 372,
-                    "y1": 2584,
-                    "x2": 404,
-                    "y2": 2624
+                    "x1": 1649,
+                    "y1": 1744,
+                    "x2": 1691,
+                    "y2": 1784
                 }
             }
         ]
     },
     {
         "instance": "TraceNet",
-        "name": "OUT",
-        "cell": "OTA",
-        "named_cell": "U1_OTA",
-        "parent_cell": "",
-        "named_parent_cell": "",
-        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
+        "name": "net3",
+        "cell": "COMP2",
+        "named_cell": "U1_COMP2",
+        "parent_cell": "LELO_BKLE",
+        "named_parent_cell": "UTOP_LELO_BKLE",
+        "cell_chain": "UTOP_LELO_BKLE--U1_COMP2",
         "segments": [
             {
-                "layer": "m2",
+                "layer": "metal4",
                 "area": {
-                    "x1": 1251,
-                    "y1": 523,
-                    "x2": 1410,
-                    "y2": 553
+                    "x1": 1655,
+                    "y1": 3263,
+                    "x2": 1685,
+                    "y2": 3678
                 }
             },
             {
-                "layer": "m3",
+                "layer": "metal4",
                 "area": {
-                    "x1": 1380,
-                    "y1": 523,
-                    "x2": 1410,
-                    "y2": 2457
+                    "x1": 1655,
+                    "y1": 3488,
+                    "x2": 1685,
+                    "y2": 3678
                 }
             },
             {
-                "layer": "m2",
+                "layer": "metal3",
                 "area": {
-                    "x1": 1236,
-                    "y1": 2427,
-                    "x2": 1410,
-                    "y2": 2457
+                    "x1": 1271,
+                    "y1": 3488,
+                    "x2": 1685,
+                    "y2": 3518
                 }
             },
             {
-                "layer": "m3",
+                "layer": "metal3",
                 "area": {
-                    "x1": 1236,
-                    "y1": 2427,
-                    "x2": 1266,
-                    "y2": 2857
+                    "x1": 903,
+                    "y1": 3488,
+                    "x2": 1301,
+                    "y2": 3518
                 }
             },
             {
-                "layer": "m2",
+                "layer": "metal4",
                 "area": {
-                    "x1": 660,
-                    "y1": 2827,
-                    "x2": 1266,
-                    "y2": 2857
+                    "x1": 903,
+                    "y1": 3248,
+                    "x2": 933,
+                    "y2": 3518
                 }
             },
             {
-                "layer": "m3",
+                "layer": "metal3",
                 "area": {
-                    "x1": 660,
-                    "y1": 2442,
-                    "x2": 690,
-                    "y2": 2857
+                    "x1": 775,
+                    "y1": 3248,
+                    "x2": 933,
+                    "y2": 3278
+                }
+            },
+            {
+                "layer": "metal4",
+                "area": {
+                    "x1": 775,
+                    "y1": 1184,
+                    "x2": 805,
+                    "y2": 3278
+                }
+            },
+            {
+                "layer": "metal3",
+                "area": {
+                    "x1": 775,
+                    "y1": 1184,
+                    "x2": 1286,
+                    "y2": 1214
                 }
             }
         ],
         "vias": [
             {
-                "layer": "m2-m3",
+                "layer": "metal3-metal4",
                 "area": {
-                    "x1": 1380,
-                    "y1": 523,
-                    "x2": 1410,
-                    "y2": 553
+                    "x1": 1655,
+                    "y1": 3488,
+                    "x2": 1685,
+                    "y2": 3518
                 }
             },
             {
-                "layer": "m2-m3",
+                "layer": "metal3-metal4",
                 "area": {
-                    "x1": 1380,
-                    "y1": 2427,
-                    "x2": 1410,
-                    "y2": 2457
+                    "x1": 903,
+                    "y1": 3488,
+                    "x2": 933,
+                    "y2": 3518
                 }
             },
             {
-                "layer": "m2-m3",
+                "layer": "metal3-metal4",
                 "area": {
-                    "x1": 1236,
-                    "y1": 2427,
-                    "x2": 1266,
-                    "y2": 2457
+                    "x1": 903,
+                    "y1": 3248,
+                    "x2": 933,
+                    "y2": 3278
                 }
             },
             {
-                "layer": "m2-m3",
+                "layer": "metal3-metal4",
                 "area": {
-                    "x1": 1236,
-                    "y1": 2827,
-                    "x2": 1266,
-                    "y2": 2857
+                    "x1": 775,
+                    "y1": 3248,
+                    "x2": 805,
+                    "y2": 3278
                 }
             },
             {
-                "layer": "m2-m3",
+                "layer": "metal3-metal4",
                 "area": {
-                    "x1": 660,
-                    "y1": 2827,
-                    "x2": 690,
-                    "y2": 2857
+                    "x1": 775,
+                    "y1": 1184,
+                    "x2": 805,
+                    "y2": 1214
                 }
             },
             {
-                "layer": "m1-m2",
+                "layer": "metal2-metal3",
                 "area": {
-                    "x1": 628,
-                    "y1": 2824,
-                    "x2": 724,
-                    "y2": 2864
+                    "x1": 1229,
+                    "y1": 1184,
+                    "x2": 1355,
+                    "y2": 1224
                 }
             },
             {
-                "layer": "m1-m2",
+                "layer": "metal2-metal3",
                 "area": {
-                    "x1": 628,
-                    "y1": 2824,
-                    "x2": 724,
-                    "y2": 2864
+                    "x1": 893,
+                    "y1": 3244,
+                    "x2": 935,
+                    "y2": 3284
                 }
             },
             {
-                "layer": "m1-m2",
+                "layer": "metal2-metal3",
                 "area": {
-                    "x1": 1204,
-                    "y1": 2824,
-                    "x2": 1300,
-                    "y2": 2864
+                    "x1": 893,
+                    "y1": 3244,
+                    "x2": 935,
+                    "y2": 3284
                 }
             },
             {
-                "layer": "m1-m2",
+                "layer": "metal2-metal3",
                 "area": {
-                    "x1": 1204,
-                    "y1": 2824,
-                    "x2": 1300,
-                    "y2": 2864
+                    "x1": 1649,
+                    "y1": 3244,
+                    "x2": 1691,
+                    "y2": 3284
                 }
             },
             {
-                "layer": "m1-m2",
+                "layer": "metal2-metal3",
                 "area": {
-                    "x1": 1204,
-                    "y1": 2424,
-                    "x2": 1300,
-                    "y2": 2464
+                    "x1": 1229,
+                    "y1": 3484,
+                    "x2": 1355,
+                    "y2": 3524
                 }
             },
             {
-                "layer": "m1-m2",
+                "layer": "metal2-metal3",
                 "area": {
-                    "x1": 1204,
-                    "y1": 2424,
-                    "x2": 1300,
-                    "y2": 2464
+                    "x1": 1229,
+                    "y1": 3484,
+                    "x2": 1355,
+                    "y2": 3524
                 }
             },
             {
-                "layer": "m1-m2",
+                "layer": "metal2-metal3",
                 "area": {
-                    "x1": 628,
-                    "y1": 2424,
-                    "x2": 724,
-                    "y2": 2464
+                    "x1": 1649,
+                    "y1": 3644,
+                    "x2": 1691,
+                    "y2": 3684
                 }
             },
             {
-                "layer": "m1-m2",
+                "layer": "metal2-metal3",
                 "area": {
-                    "x1": 1204,
-                    "y1": 524,
-                    "x2": 1300,
-                    "y2": 564
+                    "x1": 1649,
+                    "y1": 3644,
+                    "x2": 1691,
+                    "y2": 3684
                 }
             }
         ]
     },
     {
         "instance": "TraceNet",
-        "name": "GATE",
-        "cell": "OTA",
-        "named_cell": "U1_OTA",
-        "parent_cell": "",
-        "named_parent_cell": "",
-        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
+        "name": "net1",
+        "cell": "COMP2",
+        "named_cell": "U1_COMP2",
+        "parent_cell": "LELO_BKLE",
+        "named_parent_cell": "UTOP_LELO_BKLE",
+        "cell_chain": "UTOP_LELO_BKLE--U1_COMP2",
         "segments": [
             {
-                "layer": "m2",
+                "layer": "metal4",
                 "area": {
-                    "x1": 387,
-                    "y1": 684,
-                    "x2": 978,
-                    "y2": 714
+                    "x1": 1266,
+                    "y1": 1340,
+                    "x2": 1296,
+                    "y2": 1595
                 }
             },
             {
-                "layer": "m2",
+                "layer": "metal3",
                 "area": {
-                    "x1": 948,
-                    "y1": 684,
-                    "x2": 1266,
-                    "y2": 714
+                    "x1": 1026,
+                    "y1": 1340,
+                    "x2": 1296,
+                    "y2": 1370
                 }
             },
             {
-                "layer": "m3",
+                "layer": "metal4",
                 "area": {
-                    "x1": 1236,
-                    "y1": 684,
-                    "x2": 1266,
-                    "y2": 1658
+                    "x1": 1026,
+                    "y1": 1340,
+                    "x2": 1056,
+                    "y2": 1498
                 }
             },
             {
-                "layer": "m3",
+                "layer": "metal3",
                 "area": {
-                    "x1": 1236,
-                    "y1": 1628,
-                    "x2": 1266,
-                    "y2": 2058
+                    "x1": 1026,
+                    "y1": 1468,
+                    "x2": 1312,
+                    "y2": 1498
                 }
             },
             {
-                "layer": "m2",
+                "layer": "metal3",
                 "area": {
-                    "x1": 660,
-                    "y1": 2028,
-                    "x2": 1266,
-                    "y2": 2058
-                }
-            },
-            {
-                "layer": "m3",
-                "area": {
-                    "x1": 660,
-                    "y1": 1643,
-                    "x2": 690,
-                    "y2": 2058
+                    "x1": 1282,
+                    "y1": 1468,
+                    "x2": 1793,
+                    "y2": 1498
                 }
             }
         ],
         "vias": [
             {
-                "layer": "m2-m3",
+                "layer": "metal3-metal4",
                 "area": {
-                    "x1": 1236,
-                    "y1": 684,
-                    "x2": 1266,
-                    "y2": 714
+                    "x1": 1266,
+                    "y1": 1340,
+                    "x2": 1296,
+                    "y2": 1370
                 }
             },
             {
-                "layer": "m2-m3",
+                "layer": "metal3-metal4",
                 "area": {
-                    "x1": 1236,
-                    "y1": 2028,
-                    "x2": 1266,
-                    "y2": 2058
+                    "x1": 1026,
+                    "y1": 1340,
+                    "x2": 1056,
+                    "y2": 1370
                 }
             },
             {
-                "layer": "m2-m3",
+                "layer": "metal3-metal4",
                 "area": {
-                    "x1": 660,
-                    "y1": 2028,
-                    "x2": 690,
-                    "y2": 2058
+                    "x1": 1026,
+                    "y1": 1468,
+                    "x2": 1056,
+                    "y2": 1498
                 }
             },
             {
-                "layer": "m1-m2",
+                "layer": "metal2-metal3",
                 "area": {
-                    "x1": 628,
-                    "y1": 2024,
-                    "x2": 724,
-                    "y2": 2064
+                    "x1": 977,
+                    "y1": 1464,
+                    "x2": 1103,
+                    "y2": 1504
                 }
             },
             {
-                "layer": "m1-m2",
+                "layer": "metal2-metal3",
                 "area": {
-                    "x1": 628,
-                    "y1": 2024,
-                    "x2": 724,
-                    "y2": 2064
+                    "x1": 977,
+                    "y1": 1464,
+                    "x2": 1103,
+                    "y2": 1504
                 }
             },
             {
-                "layer": "m1-m2",
+                "layer": "metal2-metal3",
                 "area": {
-                    "x1": 1204,
-                    "y1": 2024,
-                    "x2": 1300,
-                    "y2": 2064
+                    "x1": 1733,
+                    "y1": 1464,
+                    "x2": 1859,
+                    "y2": 1504
                 }
             },
             {
-                "layer": "m1-m2",
+                "layer": "metal2-metal3",
                 "area": {
-                    "x1": 1204,
-                    "y1": 2024,
-                    "x2": 1300,
-                    "y2": 2064
-                }
-            },
-            {
-                "layer": "m1-m2",
-                "area": {
-                    "x1": 628,
-                    "y1": 1624,
-                    "x2": 724,
-                    "y2": 1664
-                }
-            },
-            {
-                "layer": "m1-m2",
-                "area": {
-                    "x1": 1204,
-                    "y1": 1624,
-                    "x2": 1300,
-                    "y2": 1664
-                }
-            },
-            {
-                "layer": "m1-m2",
-                "area": {
-                    "x1": 1204,
-                    "y1": 1624,
-                    "x2": 1300,
-                    "y2": 1664
-                }
-            },
-            {
-                "layer": "m1-m2",
-                "area": {
-                    "x1": 372,
-                    "y1": 684,
-                    "x2": 404,
-                    "y2": 724
-                }
-            },
-            {
-                "layer": "m1-m2",
-                "area": {
-                    "x1": 948,
-                    "y1": 684,
-                    "x2": 980,
-                    "y2": 724
-                }
-            },
-            {
-                "layer": "m1-m2",
-                "area": {
-                    "x1": 948,
-                    "y1": 684,
-                    "x2": 980,
-                    "y2": 724
+                    "x1": 1229,
+                    "y1": 1584,
+                    "x2": 1355,
+                    "y2": 1624
                 }
             }
         ]
     },
     {
         "instance": "TraceNet",
-        "name": "OTA_SPLIT",
-        "cell": "OTA",
-        "named_cell": "U1_OTA",
-        "parent_cell": "",
-        "named_parent_cell": "",
-        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
+        "name": "net2",
+        "cell": "COMP2",
+        "named_cell": "U1_COMP2",
+        "parent_cell": "LELO_BKLE",
+        "named_parent_cell": "UTOP_LELO_BKLE",
+        "cell_chain": "UTOP_LELO_BKLE--U1_COMP2",
         "segments": [
             {
-                "layer": "m2",
+                "layer": "metal3",
                 "area": {
-                    "x1": 1252,
-                    "y1": 3221,
-                    "x2": 1411,
-                    "y2": 3251
+                    "x1": 675,
+                    "y1": 3648,
+                    "x2": 914,
+                    "y2": 3678
                 }
             },
             {
-                "layer": "m3",
+                "layer": "metal4",
                 "area": {
-                    "x1": 1381,
-                    "y1": 2709,
-                    "x2": 1411,
-                    "y2": 3251
+                    "x1": 675,
+                    "y1": 2848,
+                    "x2": 705,
+                    "y2": 3678
                 }
             },
             {
-                "layer": "m2",
+                "layer": "metal3",
                 "area": {
-                    "x1": 1045,
-                    "y1": 2709,
-                    "x2": 1411,
-                    "y2": 2739
+                    "x1": 675,
+                    "y1": 2848,
+                    "x2": 929,
+                    "y2": 2878
                 }
             },
             {
-                "layer": "m2",
+                "layer": "metal3",
                 "area": {
-                    "x1": 1045,
-                    "y1": 2709,
-                    "x2": 1411,
-                    "y2": 2739
+                    "x1": 899,
+                    "y1": 2848,
+                    "x2": 1681,
+                    "y2": 2878
                 }
             },
             {
-                "layer": "m3",
+                "layer": "metal4",
                 "area": {
-                    "x1": 1381,
-                    "y1": 2709,
-                    "x2": 1411,
-                    "y2": 3139
+                    "x1": 1651,
+                    "y1": 2848,
+                    "x2": 1681,
+                    "y2": 3102
                 }
             },
             {
-                "layer": "m2",
+                "layer": "metal3",
                 "area": {
-                    "x1": 1045,
-                    "y1": 3109,
-                    "x2": 1411,
-                    "y2": 3139
+                    "x1": 1651,
+                    "y1": 3072,
+                    "x2": 1921,
+                    "y2": 3102
                 }
             },
             {
-                "layer": "m2",
+                "layer": "metal4",
                 "area": {
-                    "x1": 469,
-                    "y1": 3109,
-                    "x2": 1075,
-                    "y2": 3139
+                    "x1": 1891,
+                    "y1": 3072,
+                    "x2": 1921,
+                    "y2": 3230
                 }
             },
             {
-                "layer": "m2",
+                "layer": "metal3",
                 "area": {
-                    "x1": 149,
-                    "y1": 3109,
-                    "x2": 499,
-                    "y2": 3139
+                    "x1": 1891,
+                    "y1": 3200,
+                    "x2": 2065,
+                    "y2": 3230
                 }
             },
             {
-                "layer": "m3",
+                "layer": "metal4",
                 "area": {
-                    "x1": 149,
-                    "y1": 2709,
-                    "x2": 179,
-                    "y2": 3139
+                    "x1": 2035,
+                    "y1": 3200,
+                    "x2": 2065,
+                    "y2": 3518
                 }
             },
             {
-                "layer": "m2",
+                "layer": "metal3",
                 "area": {
-                    "x1": 149,
-                    "y1": 2709,
-                    "x2": 499,
-                    "y2": 2739
+                    "x1": 2035,
+                    "y1": 3488,
+                    "x2": 2305,
+                    "y2": 3518
                 }
             },
             {
-                "layer": "m2",
+                "layer": "metal4",
                 "area": {
-                    "x1": 149,
-                    "y1": 2709,
-                    "x2": 499,
-                    "y2": 2739
+                    "x1": 2275,
+                    "y1": 1184,
+                    "x2": 2305,
+                    "y2": 3518
                 }
             },
             {
-                "layer": "m3",
+                "layer": "metal3",
                 "area": {
-                    "x1": 149,
-                    "y1": 2309,
-                    "x2": 179,
-                    "y2": 2739
-                }
-            },
-            {
-                "layer": "m2",
-                "area": {
-                    "x1": 149,
-                    "y1": 2309,
-                    "x2": 499,
-                    "y2": 2339
-                }
-            },
-            {
-                "layer": "m2",
-                "area": {
-                    "x1": 149,
-                    "y1": 2309,
-                    "x2": 499,
-                    "y2": 2339
-                }
-            },
-            {
-                "layer": "m3",
-                "area": {
-                    "x1": 149,
-                    "y1": 1909,
-                    "x2": 179,
-                    "y2": 2339
-                }
-            },
-            {
-                "layer": "m2",
-                "area": {
-                    "x1": 149,
-                    "y1": 1909,
-                    "x2": 499,
-                    "y2": 1939
-                }
-            },
-            {
-                "layer": "m2",
-                "area": {
-                    "x1": 469,
-                    "y1": 1909,
-                    "x2": 1075,
-                    "y2": 1939
-                }
-            },
-            {
-                "layer": "m2",
-                "area": {
-                    "x1": 1045,
-                    "y1": 1909,
-                    "x2": 1507,
-                    "y2": 1939
-                }
-            },
-            {
-                "layer": "m3",
-                "area": {
-                    "x1": 1477,
-                    "y1": 1909,
-                    "x2": 1507,
-                    "y2": 2339
-                }
-            },
-            {
-                "layer": "m2",
-                "area": {
-                    "x1": 1060,
-                    "y1": 2309,
-                    "x2": 1507,
-                    "y2": 2339
+                    "x1": 2050,
+                    "y1": 1184,
+                    "x2": 2305,
+                    "y2": 1214
                 }
             }
         ],
         "vias": [
             {
-                "layer": "m2-m3",
+                "layer": "metal3-metal4",
                 "area": {
-                    "x1": 1381,
-                    "y1": 3221,
-                    "x2": 1411,
-                    "y2": 3251
+                    "x1": 675,
+                    "y1": 3648,
+                    "x2": 705,
+                    "y2": 3678
                 }
             },
             {
-                "layer": "m2-m3",
+                "layer": "metal3-metal4",
                 "area": {
-                    "x1": 1381,
-                    "y1": 2709,
-                    "x2": 1411,
-                    "y2": 2739
+                    "x1": 675,
+                    "y1": 2848,
+                    "x2": 705,
+                    "y2": 2878
                 }
             },
             {
-                "layer": "m2-m3",
+                "layer": "metal3-metal4",
                 "area": {
-                    "x1": 1381,
-                    "y1": 2709,
-                    "x2": 1411,
-                    "y2": 2739
+                    "x1": 1651,
+                    "y1": 2848,
+                    "x2": 1681,
+                    "y2": 2878
                 }
             },
             {
-                "layer": "m2-m3",
+                "layer": "metal3-metal4",
                 "area": {
-                    "x1": 1381,
-                    "y1": 3109,
-                    "x2": 1411,
-                    "y2": 3139
+                    "x1": 1651,
+                    "y1": 3072,
+                    "x2": 1681,
+                    "y2": 3102
                 }
             },
             {
-                "layer": "m2-m3",
+                "layer": "metal3-metal4",
                 "area": {
-                    "x1": 149,
-                    "y1": 3109,
-                    "x2": 179,
-                    "y2": 3139
+                    "x1": 1891,
+                    "y1": 3072,
+                    "x2": 1921,
+                    "y2": 3102
                 }
             },
             {
-                "layer": "m2-m3",
+                "layer": "metal3-metal4",
                 "area": {
-                    "x1": 149,
-                    "y1": 2709,
-                    "x2": 179,
-                    "y2": 2739
+                    "x1": 1891,
+                    "y1": 3200,
+                    "x2": 1921,
+                    "y2": 3230
                 }
             },
             {
-                "layer": "m2-m3",
+                "layer": "metal3-metal4",
                 "area": {
-                    "x1": 149,
-                    "y1": 2709,
-                    "x2": 179,
-                    "y2": 2739
+                    "x1": 2035,
+                    "y1": 3200,
+                    "x2": 2065,
+                    "y2": 3230
                 }
             },
             {
-                "layer": "m2-m3",
+                "layer": "metal3-metal4",
                 "area": {
-                    "x1": 149,
-                    "y1": 2309,
-                    "x2": 179,
-                    "y2": 2339
+                    "x1": 2035,
+                    "y1": 3488,
+                    "x2": 2065,
+                    "y2": 3518
                 }
             },
             {
-                "layer": "m2-m3",
+                "layer": "metal3-metal4",
                 "area": {
-                    "x1": 149,
-                    "y1": 2309,
-                    "x2": 179,
-                    "y2": 2339
+                    "x1": 2275,
+                    "y1": 3488,
+                    "x2": 2305,
+                    "y2": 3518
                 }
             },
             {
-                "layer": "m2-m3",
+                "layer": "metal3-metal4",
                 "area": {
-                    "x1": 149,
-                    "y1": 1909,
-                    "x2": 179,
-                    "y2": 1939
+                    "x1": 2275,
+                    "y1": 1184,
+                    "x2": 2305,
+                    "y2": 1214
                 }
             },
             {
-                "layer": "m2-m3",
+                "layer": "metal2-metal3",
                 "area": {
-                    "x1": 1477,
-                    "y1": 1909,
-                    "x2": 1507,
-                    "y2": 1939
+                    "x1": 1985,
+                    "y1": 1184,
+                    "x2": 2111,
+                    "y2": 1224
                 }
             },
             {
-                "layer": "m2-m3",
+                "layer": "metal2-metal3",
                 "area": {
-                    "x1": 1477,
-                    "y1": 2309,
-                    "x2": 1507,
-                    "y2": 2339
+                    "x1": 893,
+                    "y1": 2844,
+                    "x2": 935,
+                    "y2": 2884
                 }
             },
             {
-                "layer": "m1-m2",
+                "layer": "metal2-metal3",
                 "area": {
-                    "x1": 436,
-                    "y1": 2304,
-                    "x2": 532,
-                    "y2": 2344
+                    "x1": 893,
+                    "y1": 2844,
+                    "x2": 935,
+                    "y2": 2884
                 }
             },
             {
-                "layer": "m1-m2",
+                "layer": "metal2-metal3",
                 "area": {
-                    "x1": 436,
-                    "y1": 2304,
-                    "x2": 532,
-                    "y2": 2344
+                    "x1": 1649,
+                    "y1": 2844,
+                    "x2": 1691,
+                    "y2": 2884
                 }
             },
             {
-                "layer": "m1-m2",
+                "layer": "metal2-metal3",
                 "area": {
-                    "x1": 1012,
-                    "y1": 2304,
-                    "x2": 1108,
-                    "y2": 2344
+                    "x1": 1649,
+                    "y1": 2844,
+                    "x2": 1691,
+                    "y2": 2884
                 }
             },
             {
-                "layer": "m1-m2",
+                "layer": "metal2-metal3",
                 "area": {
-                    "x1": 436,
-                    "y1": 1904,
-                    "x2": 532,
-                    "y2": 1944
+                    "x1": 893,
+                    "y1": 3644,
+                    "x2": 935,
+                    "y2": 3684
                 }
             },
             {
-                "layer": "m1-m2",
+                "layer": "metal2-metal3",
                 "area": {
-                    "x1": 436,
-                    "y1": 1904,
-                    "x2": 532,
-                    "y2": 1944
+                    "x1": 1985,
+                    "y1": 3484,
+                    "x2": 2111,
+                    "y2": 3524
                 }
             },
             {
-                "layer": "m1-m2",
+                "layer": "metal2-metal3",
                 "area": {
-                    "x1": 1012,
-                    "y1": 1904,
-                    "x2": 1108,
-                    "y2": 1944
-                }
-            },
-            {
-                "layer": "m1-m2",
-                "area": {
-                    "x1": 1012,
-                    "y1": 1904,
-                    "x2": 1108,
-                    "y2": 1944
-                }
-            },
-            {
-                "layer": "m1-m2",
-                "area": {
-                    "x1": 436,
-                    "y1": 3104,
-                    "x2": 532,
-                    "y2": 3144
-                }
-            },
-            {
-                "layer": "m1-m2",
-                "area": {
-                    "x1": 436,
-                    "y1": 3104,
-                    "x2": 532,
-                    "y2": 3144
-                }
-            },
-            {
-                "layer": "m1-m2",
-                "area": {
-                    "x1": 1012,
-                    "y1": 3104,
-                    "x2": 1108,
-                    "y2": 3144
-                }
-            },
-            {
-                "layer": "m1-m2",
-                "area": {
-                    "x1": 1012,
-                    "y1": 3104,
-                    "x2": 1108,
-                    "y2": 3144
-                }
-            },
-            {
-                "layer": "m1-m2",
-                "area": {
-                    "x1": 1012,
-                    "y1": 2704,
-                    "x2": 1108,
-                    "y2": 2744
-                }
-            },
-            {
-                "layer": "m1-m2",
-                "area": {
-                    "x1": 1012,
-                    "y1": 2704,
-                    "x2": 1108,
-                    "y2": 2744
-                }
-            },
-            {
-                "layer": "m1-m2",
-                "area": {
-                    "x1": 436,
-                    "y1": 2704,
-                    "x2": 532,
-                    "y2": 2744
-                }
-            },
-            {
-                "layer": "m1-m2",
-                "area": {
-                    "x1": 436,
-                    "y1": 2704,
-                    "x2": 532,
-                    "y2": 2744
-                }
-            },
-            {
-                "layer": "m1-m2",
-                "area": {
-                    "x1": 1204,
-                    "y1": 3224,
-                    "x2": 1300,
-                    "y2": 3264
+                    "x1": 1985,
+                    "y1": 3484,
+                    "x2": 2111,
+                    "y2": 3524
                 }
             }
         ]
     },
     {
         "instance": "TraceNet",
-        "name": "IB_GATE",
-        "cell": "OTA",
-        "named_cell": "U1_OTA",
-        "parent_cell": "",
-        "named_parent_cell": "",
-        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
+        "name": "net4",
+        "cell": "COMP2",
+        "named_cell": "U1_COMP2",
+        "parent_cell": "LELO_BKLE",
+        "named_parent_cell": "UTOP_LELO_BKLE",
+        "cell_chain": "UTOP_LELO_BKLE--U1_COMP2",
         "segments": [
             {
-                "layer": "m3",
+                "layer": "metal3",
                 "area": {
-                    "x1": 3604,
-                    "y1": 1721,
-                    "x2": 3634,
-                    "y2": 3032
+                    "x1": 902,
+                    "y1": 944,
+                    "x2": 1669,
+                    "y2": 974
                 }
             },
             {
-                "layer": "m2",
+                "layer": "metal3",
                 "area": {
-                    "x1": 1620,
-                    "y1": 3002,
-                    "x2": 3634,
-                    "y2": 3032
+                    "x1": 902,
+                    "y1": 944,
+                    "x2": 1444,
+                    "y2": 974
                 }
             },
             {
-                "layer": "m3",
+                "layer": "metal4",
                 "area": {
-                    "x1": 1620,
-                    "y1": 3002,
-                    "x2": 1650,
-                    "y2": 3416
+                    "x1": 1414,
+                    "y1": 944,
+                    "x2": 1444,
+                    "y2": 3118
                 }
             },
             {
-                "layer": "m2",
+                "layer": "metal3",
                 "area": {
-                    "x1": 948,
-                    "y1": 3386,
-                    "x2": 1650,
-                    "y2": 3416
-                }
-            },
-            {
-                "layer": "m2",
-                "area": {
-                    "x1": 387,
-                    "y1": 3386,
-                    "x2": 978,
-                    "y2": 3416
+                    "x1": 1285,
+                    "y1": 3088,
+                    "x2": 1444,
+                    "y2": 3118
                 }
             }
         ],
         "vias": [
             {
-                "layer": "m2-m3",
+                "layer": "metal3-metal4",
                 "area": {
-                    "x1": 3604,
-                    "y1": 3002,
-                    "x2": 3634,
-                    "y2": 3032
+                    "x1": 1414,
+                    "y1": 944,
+                    "x2": 1444,
+                    "y2": 974
                 }
             },
             {
-                "layer": "m2-m3",
+                "layer": "metal3-metal4",
                 "area": {
-                    "x1": 1620,
-                    "y1": 3002,
-                    "x2": 1650,
-                    "y2": 3032
+                    "x1": 1414,
+                    "y1": 3088,
+                    "x2": 1444,
+                    "y2": 3118
                 }
             },
             {
-                "layer": "m2-m3",
+                "layer": "metal2-metal3",
                 "area": {
-                    "x1": 1620,
-                    "y1": 3386,
-                    "x2": 1650,
-                    "y2": 3416
+                    "x1": 1229,
+                    "y1": 3084,
+                    "x2": 1355,
+                    "y2": 3124
                 }
             },
             {
-                "layer": "m1-m2",
+                "layer": "metal2-metal3",
                 "area": {
-                    "x1": 948,
-                    "y1": 3384,
-                    "x2": 980,
-                    "y2": 3424
+                    "x1": 893,
+                    "y1": 944,
+                    "x2": 935,
+                    "y2": 984
                 }
             },
             {
-                "layer": "m1-m2",
+                "layer": "metal2-metal3",
                 "area": {
-                    "x1": 948,
-                    "y1": 3384,
-                    "x2": 980,
-                    "y2": 3424
+                    "x1": 893,
+                    "y1": 944,
+                    "x2": 935,
+                    "y2": 984
                 }
             },
             {
-                "layer": "m1-m2",
+                "layer": "metal2-metal3",
                 "area": {
-                    "x1": 372,
-                    "y1": 3384,
-                    "x2": 404,
-                    "y2": 3424
-                }
-            },
-            {
-                "layer": "locali-m1",
-                "area": {
-                    "x1": 3554,
-                    "y1": 1660,
-                    "x2": 3698,
-                    "y2": 1780
-                }
-            }
-        ]
-    },
-    {
-        "instance": "TraceNet",
-        "name": "AFTER_RESISTOR1",
-        "cell": "OTA",
-        "named_cell": "U1_OTA",
-        "parent_cell": "",
-        "named_parent_cell": "",
-        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
-        "segments": [
-            {
-                "layer": "m2",
-                "area": {
-                    "x1": 1893,
-                    "y1": 1703,
-                    "x2": 3460,
-                    "y2": 1733
-                }
-            },
-            {
-                "layer": "m3",
-                "area": {
-                    "x1": 3430,
-                    "y1": 1703,
-                    "x2": 3460,
-                    "y2": 5269
-                }
-            },
-            {
-                "layer": "m2",
-                "area": {
-                    "x1": 3430,
-                    "y1": 5239,
-                    "x2": 3621,
-                    "y2": 5269
-                }
-            }
-        ],
-        "vias": [
-            {
-                "layer": "m2-m3",
-                "area": {
-                    "x1": 3430,
-                    "y1": 1703,
-                    "x2": 3460,
-                    "y2": 1733
-                }
-            },
-            {
-                "layer": "m2-m3",
-                "area": {
-                    "x1": 3430,
-                    "y1": 5239,
-                    "x2": 3460,
-                    "y2": 5269
-                }
-            },
-            {
-                "layer": "locali-m1",
-                "area": {
-                    "x1": 1826,
-                    "y1": 1660,
-                    "x2": 1970,
-                    "y2": 1780
-                }
-            },
-            {
-                "layer": "locali-m1",
-                "area": {
-                    "x1": 3554,
-                    "y1": 5200,
-                    "x2": 3698,
-                    "y2": 5320
-                }
-            }
-        ]
-    },
-    {
-        "instance": "TraceNet",
-        "name": "AFTER_RESISTOR2",
-        "cell": "OTA",
-        "named_cell": "U1_OTA",
-        "parent_cell": "",
-        "named_parent_cell": "",
-        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
-        "segments": [
-            {
-                "layer": "m3",
-                "area": {
-                    "x1": 1878,
-                    "y1": 3689,
-                    "x2": 1908,
-                    "y2": 5256
-                }
-            },
-            {
-                "layer": "m2",
-                "area": {
-                    "x1": 1878,
-                    "y1": 3689,
-                    "x2": 3636,
-                    "y2": 3719
-                }
-            },
-            {
-                "layer": "m3",
-                "area": {
-                    "x1": 3606,
-                    "y1": 3480,
-                    "x2": 3636,
-                    "y2": 3719
-                }
-            }
-        ],
-        "vias": [
-            {
-                "layer": "m2-m3",
-                "area": {
-                    "x1": 1878,
-                    "y1": 3689,
-                    "x2": 1908,
-                    "y2": 3719
-                }
-            },
-            {
-                "layer": "m2-m3",
-                "area": {
-                    "x1": 3606,
-                    "y1": 3689,
-                    "x2": 3636,
-                    "y2": 3719
-                }
-            },
-            {
-                "layer": "locali-m1",
-                "area": {
-                    "x1": 1826,
-                    "y1": 5200,
-                    "x2": 1970,
-                    "y2": 5320
-                }
-            },
-            {
-                "layer": "locali-m1",
-                "area": {
-                    "x1": 3554,
-                    "y1": 3430,
-                    "x2": 3698,
-                    "y2": 3550
+                    "x1": 1649,
+                    "y1": 944,
+                    "x2": 1691,
+                    "y2": 984
                 }
             }
         ]
@@ -2844,61 +2099,61 @@
     {
         "instance": "TraceNet",
         "name": "VSS",
-        "cell": "OTA",
-        "named_cell": "U1_OTA",
-        "parent_cell": "JNW_BKLE",
+        "cell": "COMP2",
+        "named_cell": "U1_COMP2",
+        "parent_cell": "LELO_BKLE",
         "named_parent_cell": "",
-        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
+        "cell_chain": "UTOP_LELO_BKLE--U1_COMP2",
         "segments": [
             {
-                "layer": "locali",
+                "layer": "metal1",
                 "area": {
                     "x1": 100,
-                    "y1": 5510,
-                    "x2": 3980,
-                    "y2": 5560
+                    "y1": 4478,
+                    "x2": 2988,
+                    "y2": 4528
                 }
             },
             {
-                "layer": "locali",
+                "layer": "metal1",
                 "area": {
                     "x1": 100,
                     "y1": 100,
-                    "x2": 3980,
+                    "x2": 2988,
                     "y2": 150
                 }
             },
             {
-                "layer": "m1",
+                "layer": "metal2",
                 "area": {
                     "x1": 100,
                     "y1": 150,
                     "x2": 150,
-                    "y2": 5510
+                    "y2": 4478
                 }
             },
             {
-                "layer": "m1",
+                "layer": "metal2",
                 "area": {
-                    "x1": 3930,
+                    "x1": 2938,
                     "y1": 150,
-                    "x2": 3980,
-                    "y2": 5510
+                    "x2": 2988,
+                    "y2": 4478
                 }
             }
         ],
         "vias": [
             {
-                "layer": "locali-m1",
+                "layer": "metal1-metal2",
                 "area": {
                     "x1": 100,
-                    "y1": 5510,
+                    "y1": 4478,
                     "x2": 150,
-                    "y2": 5560
+                    "y2": 4528
                 }
             },
             {
-                "layer": "locali-m1",
+                "layer": "metal1-metal2",
                 "area": {
                     "x1": 100,
                     "y1": 100,
@@ -2907,20 +2162,20 @@
                 }
             },
             {
-                "layer": "locali-m1",
+                "layer": "metal1-metal2",
                 "area": {
-                    "x1": 3930,
-                    "y1": 5510,
-                    "x2": 3980,
-                    "y2": 5560
+                    "x1": 2938,
+                    "y1": 4478,
+                    "x2": 2988,
+                    "y2": 4528
                 }
             },
             {
-                "layer": "locali-m1",
+                "layer": "metal1-metal2",
                 "area": {
-                    "x1": 3930,
+                    "x1": 2938,
                     "y1": 100,
-                    "x2": 3980,
+                    "x2": 2988,
                     "y2": 150
                 }
             }
@@ -2929,61 +2184,61 @@
     {
         "instance": "TraceNet",
         "name": "VDD",
-        "cell": "OTA",
-        "named_cell": "U1_OTA",
-        "parent_cell": "JNW_BKLE",
+        "cell": "COMP2",
+        "named_cell": "U1_COMP2",
+        "parent_cell": "LELO_BKLE",
         "named_parent_cell": "",
-        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
+        "cell_chain": "UTOP_LELO_BKLE--U1_COMP2",
         "segments": [
             {
-                "layer": "locali",
+                "layer": "metal1",
                 "area": {
                     "x1": 0,
-                    "y1": 5610,
-                    "x2": 4080,
-                    "y2": 5660
+                    "y1": 4578,
+                    "x2": 3088,
+                    "y2": 4628
                 }
             },
             {
-                "layer": "locali",
+                "layer": "metal1",
                 "area": {
                     "x1": 0,
                     "y1": 0,
-                    "x2": 4080,
+                    "x2": 3088,
                     "y2": 50
                 }
             },
             {
-                "layer": "m1",
+                "layer": "metal2",
                 "area": {
                     "x1": 0,
                     "y1": 50,
                     "x2": 50,
-                    "y2": 5610
+                    "y2": 4578
                 }
             },
             {
-                "layer": "m1",
+                "layer": "metal2",
                 "area": {
-                    "x1": 4030,
+                    "x1": 3038,
                     "y1": 50,
-                    "x2": 4080,
-                    "y2": 5610
+                    "x2": 3088,
+                    "y2": 4578
                 }
             }
         ],
         "vias": [
             {
-                "layer": "locali-m1",
+                "layer": "metal1-metal2",
                 "area": {
                     "x1": 0,
-                    "y1": 5610,
+                    "y1": 4578,
                     "x2": 50,
-                    "y2": 5660
+                    "y2": 4628
                 }
             },
             {
-                "layer": "locali-m1",
+                "layer": "metal1-metal2",
                 "area": {
                     "x1": 0,
                     "y1": 0,
@@ -2992,20 +2247,20 @@
                 }
             },
             {
-                "layer": "locali-m1",
+                "layer": "metal1-metal2",
                 "area": {
-                    "x1": 4030,
-                    "y1": 5610,
-                    "x2": 4080,
-                    "y2": 5660
+                    "x1": 3038,
+                    "y1": 4578,
+                    "x2": 3088,
+                    "y2": 4628
                 }
             },
             {
-                "layer": "locali-m1",
+                "layer": "metal1-metal2",
                 "area": {
-                    "x1": 4030,
+                    "x1": 3038,
                     "y1": 0,
-                    "x2": 4080,
+                    "x2": 3088,
                     "y2": 50
                 }
             }
@@ -3013,20 +2268,20 @@
     },
     {
         "instance": "TraceNet",
-        "name": "RH3_B_N",
-        "cell": "OTA",
-        "named_cell": "U1_OTA",
-        "parent_cell": "JNW_BKLE",
+        "name": "MP5_B_S",
+        "cell": "COMP2",
+        "named_cell": "U1_COMP2",
+        "parent_cell": "LELO_BKLE",
         "named_parent_cell": "",
-        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
+        "cell_chain": "UTOP_LELO_BKLE--U1_COMP2",
         "segments": [
             {
-                "layer": "locali",
+                "layer": "metal1",
                 "area": {
-                    "x1": 1652,
-                    "y1": 3430,
-                    "x2": 1970,
-                    "y2": 3550
+                    "x1": 725,
+                    "y1": 2964,
+                    "x2": 1103,
+                    "y2": 3004
                 }
             }
         ],
@@ -3034,206 +2289,41 @@
     },
     {
         "instance": "TraceNet",
-        "name": "RH1_B_VSS_RAIL_TOP",
-        "cell": "OTA",
-        "named_cell": "U1_OTA",
-        "parent_cell": "JNW_BKLE",
+        "name": "MP5_G_D",
+        "cell": "COMP2",
+        "named_cell": "U1_COMP2",
+        "parent_cell": "LELO_BKLE",
         "named_parent_cell": "",
-        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
+        "cell_chain": "UTOP_LELO_BKLE--U1_COMP2",
         "segments": [
             {
-                "layer": "locali",
+                "layer": "metal1",
                 "area": {
-                    "x1": 1644,
-                    "y1": 1864,
-                    "x2": 3980,
-                    "y2": 1920
+                    "x1": 1229,
+                    "y1": 2844,
+                    "x2": 1439,
+                    "y2": 2884
                 }
             }
         ],
-        "vias": [
-            {
-                "layer": "locali-m1",
-                "area": {
-                    "x1": 3930,
-                    "y1": 1864,
-                    "x2": 3980,
-                    "y2": 1920
-                }
-            }
-        ]
+        "vias": []
     },
     {
         "instance": "TraceNet",
-        "name": "RH1_B_VSS_RAIL_BOT",
-        "cell": "OTA",
-        "named_cell": "U1_OTA",
-        "parent_cell": "JNW_BKLE",
+        "name": "MP6_B_S",
+        "cell": "COMP2",
+        "named_cell": "U1_COMP2",
+        "parent_cell": "LELO_BKLE",
         "named_parent_cell": "",
-        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
+        "cell_chain": "UTOP_LELO_BKLE--U1_COMP2",
         "segments": [
             {
-                "layer": "locali",
+                "layer": "metal1",
                 "area": {
-                    "x1": 1644,
-                    "y1": 200,
-                    "x2": 3980,
-                    "y2": 256
-                }
-            }
-        ],
-        "vias": [
-            {
-                "layer": "locali-m1",
-                "area": {
-                    "x1": 3930,
-                    "y1": 200,
-                    "x2": 3980,
-                    "y2": 256
-                }
-            }
-        ]
-    },
-    {
-        "instance": "TraceNet",
-        "name": "RH2_B_VSS_RAIL_TOP",
-        "cell": "OTA",
-        "named_cell": "U1_OTA",
-        "parent_cell": "JNW_BKLE",
-        "named_parent_cell": "",
-        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
-        "segments": [
-            {
-                "layer": "locali",
-                "area": {
-                    "x1": 1644,
-                    "y1": 5404,
-                    "x2": 3980,
-                    "y2": 5460
-                }
-            }
-        ],
-        "vias": [
-            {
-                "layer": "locali-m1",
-                "area": {
-                    "x1": 3930,
-                    "y1": 5404,
-                    "x2": 3980,
-                    "y2": 5460
-                }
-            }
-        ]
-    },
-    {
-        "instance": "TraceNet",
-        "name": "RH2_B_VSS_RAIL_BOT",
-        "cell": "OTA",
-        "named_cell": "U1_OTA",
-        "parent_cell": "JNW_BKLE",
-        "named_parent_cell": "",
-        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
-        "segments": [
-            {
-                "layer": "locali",
-                "area": {
-                    "x1": 1644,
-                    "y1": 3740,
-                    "x2": 3980,
-                    "y2": 3796
-                }
-            }
-        ],
-        "vias": [
-            {
-                "layer": "locali-m1",
-                "area": {
-                    "x1": 3930,
-                    "y1": 3740,
-                    "x2": 3980,
-                    "y2": 3796
-                }
-            }
-        ]
-    },
-    {
-        "instance": "TraceNet",
-        "name": "RH3_B_VSS_RAIL_TOP",
-        "cell": "OTA",
-        "named_cell": "U1_OTA",
-        "parent_cell": "JNW_BKLE",
-        "named_parent_cell": "",
-        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
-        "segments": [
-            {
-                "layer": "locali",
-                "area": {
-                    "x1": 1644,
-                    "y1": 3634,
-                    "x2": 3980,
-                    "y2": 3690
-                }
-            }
-        ],
-        "vias": [
-            {
-                "layer": "locali-m1",
-                "area": {
-                    "x1": 3930,
-                    "y1": 3634,
-                    "x2": 3980,
-                    "y2": 3690
-                }
-            }
-        ]
-    },
-    {
-        "instance": "TraceNet",
-        "name": "RH3_B_VSS_RAIL_BOT",
-        "cell": "OTA",
-        "named_cell": "U1_OTA",
-        "parent_cell": "JNW_BKLE",
-        "named_parent_cell": "",
-        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
-        "segments": [
-            {
-                "layer": "locali",
-                "area": {
-                    "x1": 1644,
-                    "y1": 1970,
-                    "x2": 3980,
-                    "y2": 2026
-                }
-            }
-        ],
-        "vias": [
-            {
-                "layer": "locali-m1",
-                "area": {
-                    "x1": 3930,
-                    "y1": 1970,
-                    "x2": 3980,
-                    "y2": 2026
-                }
-            }
-        ]
-    },
-    {
-        "instance": "TraceNet",
-        "name": "MP2_B_S",
-        "cell": "OTA",
-        "named_cell": "U1_OTA",
-        "parent_cell": "JNW_BKLE",
-        "named_parent_cell": "",
-        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
-        "segments": [
-            {
-                "layer": "locali",
-                "area": {
-                    "x1": 820,
-                    "y1": 3504,
-                    "x2": 1108,
-                    "y2": 3544
+                    "x1": 1481,
+                    "y1": 2964,
+                    "x2": 1859,
+                    "y2": 3004
                 }
             }
         ],
@@ -3242,19 +2332,19 @@
     {
         "instance": "TraceNet",
         "name": "MP1_B_S",
-        "cell": "OTA",
-        "named_cell": "U1_OTA",
-        "parent_cell": "JNW_BKLE",
+        "cell": "COMP2",
+        "named_cell": "U1_COMP2",
+        "parent_cell": "LELO_BKLE",
         "named_parent_cell": "",
-        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
+        "cell_chain": "UTOP_LELO_BKLE--U1_COMP2",
         "segments": [
             {
-                "layer": "locali",
+                "layer": "metal1",
                 "area": {
-                    "x1": 244,
-                    "y1": 3504,
-                    "x2": 532,
-                    "y2": 3544
+                    "x1": 725,
+                    "y1": 3364,
+                    "x2": 1103,
+                    "y2": 3404
                 }
             }
         ],
@@ -3262,20 +2352,20 @@
     },
     {
         "instance": "TraceNet",
-        "name": "MP1_G_D",
-        "cell": "OTA",
-        "named_cell": "U1_OTA",
-        "parent_cell": "JNW_BKLE",
+        "name": "MP2_B_S",
+        "cell": "COMP2",
+        "named_cell": "U1_COMP2",
+        "parent_cell": "LELO_BKLE",
         "named_parent_cell": "",
-        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
+        "cell_chain": "UTOP_LELO_BKLE--U1_COMP2",
         "segments": [
             {
-                "layer": "locali",
+                "layer": "metal1",
                 "area": {
-                    "x1": 628,
-                    "y1": 3384,
-                    "x2": 788,
-                    "y2": 3424
+                    "x1": 1481,
+                    "y1": 3364,
+                    "x2": 1859,
+                    "y2": 3404
                 }
             }
         ],
@@ -3283,20 +2373,20 @@
     },
     {
         "instance": "TraceNet",
-        "name": "MN1_B_S",
-        "cell": "OTA",
-        "named_cell": "U1_OTA",
-        "parent_cell": "JNW_BKLE",
+        "name": "MP2_G_D",
+        "cell": "COMP2",
+        "named_cell": "U1_COMP2",
+        "parent_cell": "LELO_BKLE",
         "named_parent_cell": "",
-        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
+        "cell_chain": "UTOP_LELO_BKLE--U1_COMP2",
         "segments": [
             {
-                "layer": "locali",
+                "layer": "metal1",
                 "area": {
-                    "x1": 244,
-                    "y1": 804,
-                    "x2": 532,
-                    "y2": 844
+                    "x1": 1985,
+                    "y1": 3244,
+                    "x2": 2195,
+                    "y2": 3284
                 }
             }
         ],
@@ -3304,20 +2394,20 @@
     },
     {
         "instance": "TraceNet",
-        "name": "MN1_G_D",
-        "cell": "OTA",
-        "named_cell": "U1_OTA",
-        "parent_cell": "JNW_BKLE",
+        "name": "MN4_B_S",
+        "cell": "COMP2",
+        "named_cell": "U1_COMP2",
+        "parent_cell": "LELO_BKLE",
         "named_parent_cell": "",
-        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
+        "cell_chain": "UTOP_LELO_BKLE--U1_COMP2",
         "segments": [
             {
-                "layer": "locali",
+                "layer": "metal1",
                 "area": {
-                    "x1": 628,
-                    "y1": 684,
-                    "x2": 788,
-                    "y2": 724
+                    "x1": 725,
+                    "y1": 1864,
+                    "x2": 1103,
+                    "y2": 1904
                 }
             }
         ],
@@ -3325,20 +2415,20 @@
     },
     {
         "instance": "TraceNet",
-        "name": "MN2_B_S",
-        "cell": "OTA",
-        "named_cell": "U1_OTA",
-        "parent_cell": "JNW_BKLE",
+        "name": "MN3_B_S",
+        "cell": "COMP2",
+        "named_cell": "U1_COMP2",
+        "parent_cell": "LELO_BKLE",
         "named_parent_cell": "",
-        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
+        "cell_chain": "UTOP_LELO_BKLE--U1_COMP2",
         "segments": [
             {
-                "layer": "locali",
+                "layer": "metal1",
                 "area": {
-                    "x1": 820,
-                    "y1": 804,
-                    "x2": 1108,
-                    "y2": 844
+                    "x1": 1481,
+                    "y1": 1864,
+                    "x2": 1859,
+                    "y2": 1904
                 }
             }
         ],
@@ -3346,226 +2436,1376 @@
     },
     {
         "instance": "TraceNet",
-        "name": "MP3<1>_MP3<0>_B_VDD_RAIL_BOT",
-        "cell": "OTA",
-        "named_cell": "U1_OTA",
-        "parent_cell": "JNW_BKLE",
+        "name": "MN3_G_D",
+        "cell": "COMP2",
+        "named_cell": "U1_COMP2",
+        "parent_cell": "LELO_BKLE",
         "named_parent_cell": "",
-        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
+        "cell_chain": "UTOP_LELO_BKLE--U1_COMP2",
         "segments": [
             {
-                "layer": "locali",
+                "layer": "metal1",
+                "area": {
+                    "x1": 1985,
+                    "y1": 1744,
+                    "x2": 2195,
+                    "y2": 1784
+                }
+            }
+        ],
+        "vias": []
+    },
+    {
+        "instance": "TraceNet",
+        "name": "MN5_B_S",
+        "cell": "COMP2",
+        "named_cell": "U1_COMP2",
+        "parent_cell": "LELO_BKLE",
+        "named_parent_cell": "",
+        "cell_chain": "UTOP_LELO_BKLE--U1_COMP2",
+        "segments": [
+            {
+                "layer": "metal1",
+                "area": {
+                    "x1": 725,
+                    "y1": 1064,
+                    "x2": 1103,
+                    "y2": 1104
+                }
+            }
+        ],
+        "vias": []
+    },
+    {
+        "instance": "TraceNet",
+        "name": "MN5_G_D",
+        "cell": "COMP2",
+        "named_cell": "U1_COMP2",
+        "parent_cell": "LELO_BKLE",
+        "named_parent_cell": "",
+        "cell_chain": "UTOP_LELO_BKLE--U1_COMP2",
+        "segments": [
+            {
+                "layer": "metal1",
+                "area": {
+                    "x1": 1229,
+                    "y1": 944,
+                    "x2": 1439,
+                    "y2": 984
+                }
+            }
+        ],
+        "vias": []
+    },
+    {
+        "instance": "TraceNet",
+        "name": "MN6_B_S",
+        "cell": "COMP2",
+        "named_cell": "U1_COMP2",
+        "parent_cell": "LELO_BKLE",
+        "named_parent_cell": "",
+        "cell_chain": "UTOP_LELO_BKLE--U1_COMP2",
+        "segments": [
+            {
+                "layer": "metal1",
+                "area": {
+                    "x1": 1481,
+                    "y1": 1064,
+                    "x2": 1859,
+                    "y2": 1104
+                }
+            }
+        ],
+        "vias": []
+    },
+    {
+        "instance": "TraceNet",
+        "name": "MP3_B_S",
+        "cell": "COMP2",
+        "named_cell": "U1_COMP2",
+        "parent_cell": "LELO_BKLE",
+        "named_parent_cell": "",
+        "cell_chain": "UTOP_LELO_BKLE--U1_COMP2",
+        "segments": [
+            {
+                "layer": "metal1",
+                "area": {
+                    "x1": 725,
+                    "y1": 3764,
+                    "x2": 1103,
+                    "y2": 3804
+                }
+            }
+        ],
+        "vias": []
+    },
+    {
+        "instance": "TraceNet",
+        "name": "MP4_B_S",
+        "cell": "COMP2",
+        "named_cell": "U1_COMP2",
+        "parent_cell": "LELO_BKLE",
+        "named_parent_cell": "",
+        "cell_chain": "UTOP_LELO_BKLE--U1_COMP2",
+        "segments": [
+            {
+                "layer": "metal1",
+                "area": {
+                    "x1": 1481,
+                    "y1": 3764,
+                    "x2": 1859,
+                    "y2": 3804
+                }
+            }
+        ],
+        "vias": []
+    },
+    {
+        "instance": "TraceNet",
+        "name": "MP5_MP6_B_VDD_RAIL_BOT",
+        "cell": "COMP2",
+        "named_cell": "U1_COMP2",
+        "parent_cell": "LELO_BKLE",
+        "named_parent_cell": "",
+        "cell_chain": "UTOP_LELO_BKLE--U1_COMP2",
+        "segments": [
+            {
+                "layer": "metal1",
                 "area": {
                     "x1": 0,
-                    "y1": 1436,
-                    "x2": 1536,
-                    "y2": 1532
+                    "y1": 2481,
+                    "x2": 3088,
+                    "y2": 2607
                 }
             }
         ],
         "vias": [
             {
-                "layer": "locali-m1",
+                "layer": "metal1-metal2",
                 "area": {
                     "x1": 0,
-                    "y1": 1436,
+                    "y1": 2481,
                     "x2": 50,
-                    "y2": 1532
+                    "y2": 2607
+                }
+            },
+            {
+                "layer": "metal1-metal2",
+                "area": {
+                    "x1": 3038,
+                    "y1": 2481,
+                    "x2": 3088,
+                    "y2": 2607
                 }
             }
         ]
     },
     {
         "instance": "TraceNet",
-        "name": "MP2_MP1_B_VDD_RAIL_TOP",
-        "cell": "OTA",
-        "named_cell": "U1_OTA",
-        "parent_cell": "JNW_BKLE",
+        "name": "MN4_MN3_B_VSS_RAIL_TOP",
+        "cell": "COMP2",
+        "named_cell": "U1_COMP2",
+        "parent_cell": "LELO_BKLE",
         "named_parent_cell": "",
-        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
+        "cell_chain": "UTOP_LELO_BKLE--U1_COMP2",
         "segments": [
             {
-                "layer": "locali",
+                "layer": "metal1",
                 "area": {
-                    "x1": 0,
-                    "y1": 3676,
-                    "x2": 1536,
-                    "y2": 3772
+                    "x1": 100,
+                    "y1": 2021,
+                    "x2": 2988,
+                    "y2": 2147
                 }
             }
         ],
         "vias": [
             {
-                "layer": "locali-m1",
+                "layer": "metal1-metal2",
+                "area": {
+                    "x1": 100,
+                    "y1": 2021,
+                    "x2": 150,
+                    "y2": 2147
+                }
+            },
+            {
+                "layer": "metal1-metal2",
+                "area": {
+                    "x1": 2938,
+                    "y1": 2021,
+                    "x2": 2988,
+                    "y2": 2147
+                }
+            }
+        ]
+    },
+    {
+        "instance": "TraceNet",
+        "name": "MN5_MN6_B_VSS_RAIL_BOT",
+        "cell": "COMP2",
+        "named_cell": "U1_COMP2",
+        "parent_cell": "LELO_BKLE",
+        "named_parent_cell": "",
+        "cell_chain": "UTOP_LELO_BKLE--U1_COMP2",
+        "segments": [
+            {
+                "layer": "metal1",
+                "area": {
+                    "x1": 100,
+                    "y1": 581,
+                    "x2": 2988,
+                    "y2": 707
+                }
+            }
+        ],
+        "vias": [
+            {
+                "layer": "metal1-metal2",
+                "area": {
+                    "x1": 100,
+                    "y1": 581,
+                    "x2": 150,
+                    "y2": 707
+                }
+            },
+            {
+                "layer": "metal1-metal2",
+                "area": {
+                    "x1": 2938,
+                    "y1": 581,
+                    "x2": 2988,
+                    "y2": 707
+                }
+            }
+        ]
+    },
+    {
+        "instance": "TraceNet",
+        "name": "MP3_MP4_B_VDD_RAIL_TOP",
+        "cell": "COMP2",
+        "named_cell": "U1_COMP2",
+        "parent_cell": "LELO_BKLE",
+        "named_parent_cell": "",
+        "cell_chain": "UTOP_LELO_BKLE--U1_COMP2",
+        "segments": [
+            {
+                "layer": "metal1",
                 "area": {
                     "x1": 0,
-                    "y1": 3676,
+                    "y1": 3921,
+                    "x2": 3088,
+                    "y2": 4047
+                }
+            }
+        ],
+        "vias": [
+            {
+                "layer": "metal1-metal2",
+                "area": {
+                    "x1": 0,
+                    "y1": 3921,
                     "x2": 50,
-                    "y2": 3772
+                    "y2": 4047
                 }
-            }
-        ]
-    },
-    {
-        "instance": "TraceNet",
-        "name": "MN1_MN2_B_VSS_RAIL_TOP",
-        "cell": "OTA",
-        "named_cell": "U1_OTA",
-        "parent_cell": "JNW_BKLE",
-        "named_parent_cell": "",
-        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
-        "segments": [
+            },
             {
-                "layer": "locali",
+                "layer": "metal1-metal2",
                 "area": {
-                    "x1": 100,
-                    "y1": 976,
-                    "x2": 1536,
-                    "y2": 1072
-                }
-            }
-        ],
-        "vias": [
-            {
-                "layer": "locali-m1",
-                "area": {
-                    "x1": 100,
-                    "y1": 976,
-                    "x2": 150,
-                    "y2": 1072
-                }
-            }
-        ]
-    },
-    {
-        "instance": "TraceNet",
-        "name": "MN1_MN2_B_VSS_RAIL_BOT",
-        "cell": "OTA",
-        "named_cell": "U1_OTA",
-        "parent_cell": "JNW_BKLE",
-        "named_parent_cell": "",
-        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
-        "segments": [
-            {
-                "layer": "locali",
-                "area": {
-                    "x1": 100,
-                    "y1": 336,
-                    "x2": 1536,
-                    "y2": 432
-                }
-            }
-        ],
-        "vias": [
-            {
-                "layer": "locali-m1",
-                "area": {
-                    "x1": 100,
-                    "y1": 336,
-                    "x2": 150,
-                    "y2": 432
+                    "x1": 3038,
+                    "y1": 3921,
+                    "x2": 3088,
+                    "y2": 4047
                 }
             }
         ]
     },
     {
         "instance": "Pin",
-        "number_id": 51,
-        "cell": "JNW_BKLE",
-        "named_cell": "UTOP_JNW_BKLE",
+        "number_id": 23,
+        "cell": "TEST_AND_GATE",
+        "named_cell": "U1_TEST_AND_GATE",
+        "parent_cell": "COMP2",
+        "named_parent_cell": "U1_COMP2",
+        "cell_chain": "UTOP_LELO_BKLE--U1_COMP2--U1_TEST_AND_GATE",
+        "type": "iopin",
+        "name": "A",
+        "layout": {
+            "layer": "metal4",
+            "area": {
+                "x1": 327,
+                "y1": 278,
+                "x2": 357,
+                "y2": 1029
+            }
+        }
+    },
+    {
+        "instance": "Pin",
+        "number_id": 24,
+        "cell": "TEST_AND_GATE",
+        "named_cell": "U1_TEST_AND_GATE",
+        "parent_cell": "COMP2",
+        "named_parent_cell": "U1_COMP2",
+        "cell_chain": "UTOP_LELO_BKLE--U1_COMP2--U1_TEST_AND_GATE",
+        "type": "iopin",
+        "name": "B",
+        "layout": {
+            "layer": "metal4",
+            "area": {
+                "x1": 730,
+                "y1": 278,
+                "x2": 760,
+                "y2": 917
+            }
+        }
+    },
+    {
+        "instance": "Pin",
+        "number_id": 25,
+        "cell": "TEST_AND_GATE",
+        "named_cell": "U1_TEST_AND_GATE",
+        "parent_cell": "COMP2",
+        "named_parent_cell": "U1_COMP2",
+        "cell_chain": "UTOP_LELO_BKLE--U1_COMP2--U1_TEST_AND_GATE",
+        "type": "iopin",
+        "name": "Y",
+        "layout": {
+            "layer": "metal3",
+            "area": {
+                "x1": 169,
+                "y1": 1101,
+                "x2": 312,
+                "y2": 1131
+            }
+        }
+    },
+    {
+        "instance": "Pin",
+        "number_id": 26,
+        "cell": "TEST_AND_GATE",
+        "named_cell": "U1_TEST_AND_GATE",
+        "parent_cell": "COMP2",
+        "named_parent_cell": "U1_COMP2",
+        "cell_chain": "UTOP_LELO_BKLE--U1_COMP2--U1_TEST_AND_GATE",
+        "type": "iopin",
+        "name": "AVDD",
+        "layout": {
+            "layer": "metal1",
+            "area": {
+                "x1": 0,
+                "y1": 1390,
+                "x2": 1214,
+                "y2": 1440
+            }
+        }
+    },
+    {
+        "instance": "Pin",
+        "number_id": 27,
+        "cell": "TEST_AND_GATE",
+        "named_cell": "U1_TEST_AND_GATE",
+        "parent_cell": "COMP2",
+        "named_parent_cell": "U1_COMP2",
+        "cell_chain": "UTOP_LELO_BKLE--U1_COMP2--U1_TEST_AND_GATE",
+        "type": "iopin",
+        "name": "AVSS",
+        "layout": {
+            "layer": "metal1",
+            "area": {
+                "x1": 100,
+                "y1": 1290,
+                "x2": 1114,
+                "y2": 1340
+            }
+        }
+    },
+    {
+        "instance": "Transistor",
+        "number_id": 28,
+        "name": "MN2",
+        "type": "nmos",
+        "cell": "TEST_AND_GATE",
+        "named_cell": "U1_TEST_AND_GATE",
+        "parent_cell": "COMP2",
+        "named_parent_cell": "U1_COMP2",
+        "cell_chain": "UTOP_LELO_BKLE--U1_COMP2--U1_TEST_AND_GATE",
+        "group": null,
+        "schematic_connections": {
+            "D": "N1",
+            "G": "A",
+            "S": "AVSS",
+            "B": "AVSS"
+        },
+        "layout_name": "LELOTR_NCHDL",
+        "layout_library": "LELO_TR_IHP13G2",
+        "layout_ports": [
+            {
+                "type": "G",
+                "layer": "metal1",
+                "area": {
+                    "x1": 99,
+                    "y1": 70,
+                    "x2": 187,
+                    "y2": 90
+                }
+            },
+            {
+                "type": "S",
+                "layer": "metal1",
+                "area": {
+                    "x1": 253,
+                    "y1": 30,
+                    "x2": 341,
+                    "y2": 50
+                }
+            },
+            {
+                "type": "B",
+                "layer": "metal1",
+                "area": {
+                    "x1": -33,
+                    "y1": 70,
+                    "x2": 33,
+                    "y2": 90
+                }
+            },
+            {
+                "type": "D",
+                "layer": "metal1",
+                "area": {
+                    "x1": 253,
+                    "y1": 110,
+                    "x2": 341,
+                    "y2": 130
+                }
+            }
+        ],
+        "transform_matrix": {
+            "a": 1,
+            "b": 0,
+            "c": 200,
+            "d": 0,
+            "e": 1,
+            "f": 200
+        },
+        "bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 407,
+            "y2": 160
+        },
+        "overlap_distance": {
+            "x": 0,
+            "y": 0
+        },
+        "group_endpoint": "",
+        "group_endpoint_bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 0,
+            "y2": 0
+        }
+    },
+    {
+        "instance": "Transistor",
+        "number_id": 29,
+        "name": "MN3",
+        "type": "nmos",
+        "cell": "TEST_AND_GATE",
+        "named_cell": "U1_TEST_AND_GATE",
+        "parent_cell": "COMP2",
+        "named_parent_cell": "U1_COMP2",
+        "cell_chain": "UTOP_LELO_BKLE--U1_COMP2--U1_TEST_AND_GATE",
+        "group": null,
+        "schematic_connections": {
+            "D": "Y",
+            "G": "B",
+            "S": "N1",
+            "B": "AVSS"
+        },
+        "layout_name": "LELOTR_NCHDL",
+        "layout_library": "LELO_TR_IHP13G2",
+        "layout_ports": [
+            {
+                "type": "G",
+                "layer": "metal1",
+                "area": {
+                    "x1": 99,
+                    "y1": 70,
+                    "x2": 187,
+                    "y2": 90
+                }
+            },
+            {
+                "type": "S",
+                "layer": "metal1",
+                "area": {
+                    "x1": 253,
+                    "y1": 30,
+                    "x2": 341,
+                    "y2": 50
+                }
+            },
+            {
+                "type": "B",
+                "layer": "metal1",
+                "area": {
+                    "x1": -33,
+                    "y1": 70,
+                    "x2": 33,
+                    "y2": 90
+                }
+            },
+            {
+                "type": "D",
+                "layer": "metal1",
+                "area": {
+                    "x1": 253,
+                    "y1": 110,
+                    "x2": 341,
+                    "y2": 130
+                }
+            }
+        ],
+        "transform_matrix": {
+            "a": 1,
+            "b": 0,
+            "c": 607,
+            "d": 0,
+            "e": 1,
+            "f": 200
+        },
+        "bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 407,
+            "y2": 160
+        },
+        "overlap_distance": {
+            "x": 0,
+            "y": 0
+        },
+        "group_endpoint": "",
+        "group_endpoint_bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 0,
+            "y2": 0
+        }
+    },
+    {
+        "instance": "Transistor",
+        "number_id": 30,
+        "name": "MP2",
+        "type": "pmos",
+        "cell": "TEST_AND_GATE",
+        "named_cell": "U1_TEST_AND_GATE",
+        "parent_cell": "COMP2",
+        "named_parent_cell": "U1_COMP2",
+        "cell_chain": "UTOP_LELO_BKLE--U1_COMP2--U1_TEST_AND_GATE",
+        "group": null,
+        "schematic_connections": {
+            "D": "Y",
+            "G": "A",
+            "S": "AVDD",
+            "B": "AVDD"
+        },
+        "layout_name": "LELOTR_PCHDL",
+        "layout_library": "LELO_TR_IHP13G2",
+        "layout_ports": [
+            {
+                "type": "G",
+                "layer": "metal1",
+                "area": {
+                    "x1": 220,
+                    "y1": 70,
+                    "x2": 308,
+                    "y2": 90
+                }
+            },
+            {
+                "type": "S",
+                "layer": "metal1",
+                "area": {
+                    "x1": 66,
+                    "y1": 30,
+                    "x2": 154,
+                    "y2": 50
+                }
+            },
+            {
+                "type": "B",
+                "layer": "metal1",
+                "area": {
+                    "x1": 374,
+                    "y1": 70,
+                    "x2": 440,
+                    "y2": 90
+                }
+            },
+            {
+                "type": "D",
+                "layer": "metal1",
+                "area": {
+                    "x1": 66,
+                    "y1": 110,
+                    "x2": 154,
+                    "y2": 130
+                }
+            }
+        ],
+        "transform_matrix": {
+            "a": 1,
+            "b": 0,
+            "c": 607,
+            "d": 0,
+            "e": 1,
+            "f": 1080
+        },
+        "bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 407,
+            "y2": 160
+        },
+        "overlap_distance": {
+            "x": 0,
+            "y": 0
+        },
+        "group_endpoint": "",
+        "group_endpoint_bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 0,
+            "y2": 0
+        }
+    },
+    {
+        "instance": "Transistor",
+        "number_id": 31,
+        "name": "MP3",
+        "type": "pmos",
+        "cell": "TEST_AND_GATE",
+        "named_cell": "U1_TEST_AND_GATE",
+        "parent_cell": "COMP2",
+        "named_parent_cell": "U1_COMP2",
+        "cell_chain": "UTOP_LELO_BKLE--U1_COMP2--U1_TEST_AND_GATE",
+        "group": null,
+        "schematic_connections": {
+            "D": "AVDD",
+            "G": "B",
+            "S": "Y",
+            "B": "AVDD"
+        },
+        "layout_name": "LELOTR_PCHDL",
+        "layout_library": "LELO_TR_IHP13G2",
+        "layout_ports": [
+            {
+                "type": "G",
+                "layer": "metal1",
+                "area": {
+                    "x1": 220,
+                    "y1": 70,
+                    "x2": 308,
+                    "y2": 90
+                }
+            },
+            {
+                "type": "S",
+                "layer": "metal1",
+                "area": {
+                    "x1": 66,
+                    "y1": 30,
+                    "x2": 154,
+                    "y2": 50
+                }
+            },
+            {
+                "type": "B",
+                "layer": "metal1",
+                "area": {
+                    "x1": 374,
+                    "y1": 70,
+                    "x2": 440,
+                    "y2": 90
+                }
+            },
+            {
+                "type": "D",
+                "layer": "metal1",
+                "area": {
+                    "x1": 66,
+                    "y1": 110,
+                    "x2": 154,
+                    "y2": 130
+                }
+            }
+        ],
+        "transform_matrix": {
+            "a": 1,
+            "b": 0,
+            "c": 200,
+            "d": 0,
+            "e": 1,
+            "f": 1080
+        },
+        "bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 407,
+            "y2": 160
+        },
+        "overlap_distance": {
+            "x": 0,
+            "y": 0
+        },
+        "group_endpoint": "",
+        "group_endpoint_bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 0,
+            "y2": 0
+        }
+    },
+    {
+        "instance": "CircuitCell",
+        "number_id": 22,
+        "name": "U1",
+        "cell": "TEST_AND_GATE",
+        "named_cell": "U1_TEST_AND_GATE",
+        "parent_cell": "COMP2",
+        "named_parent_cell": "U1_COMP2",
+        "cell_chain": "UTOP_LELO_BKLE--U1_COMP2--U1_TEST_AND_GATE",
+        "group": null,
+        "schematic_connections": {
+            "A": "net5",
+            "B": "net6",
+            "Y": "net7",
+            "AVDD": "VO",
+            "AVSS": "VO"
+        },
+        "transform_matrix": {
+            "a": 1,
+            "b": 0,
+            "c": 3138,
+            "d": 0,
+            "e": 1,
+            "f": 0
+        },
+        "bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 1264,
+            "y2": 1490
+        }
+    },
+    {
+        "instance": "TraceNet",
+        "name": "A",
+        "cell": "TEST_AND_GATE",
+        "named_cell": "U1_TEST_AND_GATE",
+        "parent_cell": "COMP2",
+        "named_parent_cell": "U1_COMP2",
+        "cell_chain": "UTOP_LELO_BKLE--U1_COMP2--U1_TEST_AND_GATE",
+        "segments": [
+            {
+                "layer": "metal4",
+                "area": {
+                    "x1": 327,
+                    "y1": 278,
+                    "x2": 357,
+                    "y2": 1029
+                }
+            },
+            {
+                "layer": "metal3",
+                "area": {
+                    "x1": 327,
+                    "y1": 999,
+                    "x2": 885,
+                    "y2": 1029
+                }
+            },
+            {
+                "layer": "metal4",
+                "area": {
+                    "x1": 855,
+                    "y1": 999,
+                    "x2": 885,
+                    "y2": 1158
+                }
+            }
+        ],
+        "vias": [
+            {
+                "layer": "metal3-metal4",
+                "area": {
+                    "x1": 327,
+                    "y1": 999,
+                    "x2": 357,
+                    "y2": 1029
+                }
+            },
+            {
+                "layer": "metal3-metal4",
+                "area": {
+                    "x1": 855,
+                    "y1": 999,
+                    "x2": 885,
+                    "y2": 1029
+                }
+            },
+            {
+                "layer": "metal1-metal2",
+                "area": {
+                    "x1": 299,
+                    "y1": 270,
+                    "x2": 387,
+                    "y2": 290
+                }
+            },
+            {
+                "layer": "metal1-metal2",
+                "area": {
+                    "x1": 827,
+                    "y1": 1150,
+                    "x2": 915,
+                    "y2": 1170
+                }
+            }
+        ]
+    },
+    {
+        "instance": "TraceNet",
+        "name": "B",
+        "cell": "TEST_AND_GATE",
+        "named_cell": "U1_TEST_AND_GATE",
+        "parent_cell": "COMP2",
+        "named_parent_cell": "U1_COMP2",
+        "cell_chain": "UTOP_LELO_BKLE--U1_COMP2--U1_TEST_AND_GATE",
+        "segments": [
+            {
+                "layer": "metal4",
+                "area": {
+                    "x1": 730,
+                    "y1": 278,
+                    "x2": 760,
+                    "y2": 917
+                }
+            },
+            {
+                "layer": "metal3",
+                "area": {
+                    "x1": 442,
+                    "y1": 887,
+                    "x2": 760,
+                    "y2": 917
+                }
+            },
+            {
+                "layer": "metal4",
+                "area": {
+                    "x1": 442,
+                    "y1": 887,
+                    "x2": 472,
+                    "y2": 1158
+                }
+            }
+        ],
+        "vias": [
+            {
+                "layer": "metal3-metal4",
+                "area": {
+                    "x1": 730,
+                    "y1": 887,
+                    "x2": 760,
+                    "y2": 917
+                }
+            },
+            {
+                "layer": "metal3-metal4",
+                "area": {
+                    "x1": 442,
+                    "y1": 887,
+                    "x2": 472,
+                    "y2": 917
+                }
+            },
+            {
+                "layer": "metal1-metal2",
+                "area": {
+                    "x1": 706,
+                    "y1": 270,
+                    "x2": 794,
+                    "y2": 290
+                }
+            },
+            {
+                "layer": "metal1-metal2",
+                "area": {
+                    "x1": 420,
+                    "y1": 1150,
+                    "x2": 508,
+                    "y2": 1170
+                }
+            }
+        ]
+    },
+    {
+        "instance": "TraceNet",
+        "name": "Y",
+        "cell": "TEST_AND_GATE",
+        "named_cell": "U1_TEST_AND_GATE",
+        "parent_cell": "COMP2",
+        "named_parent_cell": "U1_COMP2",
+        "cell_chain": "UTOP_LELO_BKLE--U1_COMP2--U1_TEST_AND_GATE",
+        "segments": [
+            {
+                "layer": "metal3",
+                "area": {
+                    "x1": 169,
+                    "y1": 1101,
+                    "x2": 312,
+                    "y2": 1131
+                }
+            },
+            {
+                "layer": "metal4",
+                "area": {
+                    "x1": 169,
+                    "y1": 429,
+                    "x2": 199,
+                    "y2": 1131
+                }
+            },
+            {
+                "layer": "metal3",
+                "area": {
+                    "x1": 169,
+                    "y1": 429,
+                    "x2": 919,
+                    "y2": 459
+                }
+            },
+            {
+                "layer": "metal4",
+                "area": {
+                    "x1": 889,
+                    "y1": 301,
+                    "x2": 919,
+                    "y2": 459
+                }
+            },
+            {
+                "layer": "metal4",
+                "area": {
+                    "x1": 889,
+                    "y1": 301,
+                    "x2": 919,
+                    "y2": 795
+                }
+            },
+            {
+                "layer": "metal3",
+                "area": {
+                    "x1": 569,
+                    "y1": 765,
+                    "x2": 919,
+                    "y2": 795
+                }
+            },
+            {
+                "layer": "metal4",
+                "area": {
+                    "x1": 569,
+                    "y1": 765,
+                    "x2": 599,
+                    "y2": 1211
+                }
+            },
+            {
+                "layer": "metal3",
+                "area": {
+                    "x1": 569,
+                    "y1": 1181,
+                    "x2": 712,
+                    "y2": 1211
+                }
+            }
+        ],
+        "vias": [
+            {
+                "layer": "metal3-metal4",
+                "area": {
+                    "x1": 169,
+                    "y1": 1101,
+                    "x2": 199,
+                    "y2": 1131
+                }
+            },
+            {
+                "layer": "metal3-metal4",
+                "area": {
+                    "x1": 169,
+                    "y1": 429,
+                    "x2": 199,
+                    "y2": 459
+                }
+            },
+            {
+                "layer": "metal3-metal4",
+                "area": {
+                    "x1": 889,
+                    "y1": 429,
+                    "x2": 919,
+                    "y2": 459
+                }
+            },
+            {
+                "layer": "metal3-metal4",
+                "area": {
+                    "x1": 889,
+                    "y1": 765,
+                    "x2": 919,
+                    "y2": 795
+                }
+            },
+            {
+                "layer": "metal3-metal4",
+                "area": {
+                    "x1": 569,
+                    "y1": 765,
+                    "x2": 599,
+                    "y2": 795
+                }
+            },
+            {
+                "layer": "metal3-metal4",
+                "area": {
+                    "x1": 569,
+                    "y1": 1181,
+                    "x2": 599,
+                    "y2": 1211
+                }
+            },
+            {
+                "layer": "metal1-metal2",
+                "area": {
+                    "x1": 860,
+                    "y1": 310,
+                    "x2": 948,
+                    "y2": 330
+                }
+            },
+            {
+                "layer": "metal1-metal2",
+                "area": {
+                    "x1": 860,
+                    "y1": 310,
+                    "x2": 948,
+                    "y2": 330
+                }
+            },
+            {
+                "layer": "metal1-metal2",
+                "area": {
+                    "x1": 673,
+                    "y1": 1190,
+                    "x2": 761,
+                    "y2": 1210
+                }
+            },
+            {
+                "layer": "metal1-metal2",
+                "area": {
+                    "x1": 266,
+                    "y1": 1110,
+                    "x2": 354,
+                    "y2": 1130
+                }
+            }
+        ]
+    },
+    {
+        "instance": "TraceNet",
+        "name": "N1",
+        "cell": "TEST_AND_GATE",
+        "named_cell": "U1_TEST_AND_GATE",
+        "parent_cell": "COMP2",
+        "named_parent_cell": "U1_COMP2",
+        "cell_chain": "UTOP_LELO_BKLE--U1_COMP2--U1_TEST_AND_GATE",
+        "segments": [],
+        "vias": []
+    },
+    {
+        "instance": "TraceNet",
+        "name": "AVSS",
+        "cell": "TEST_AND_GATE",
+        "named_cell": "U1_TEST_AND_GATE",
+        "parent_cell": "COMP2",
+        "named_parent_cell": "",
+        "cell_chain": "UTOP_LELO_BKLE--U1_COMP2--U1_TEST_AND_GATE",
+        "segments": [
+            {
+                "layer": "metal1",
+                "area": {
+                    "x1": 100,
+                    "y1": 1290,
+                    "x2": 1114,
+                    "y2": 1340
+                }
+            },
+            {
+                "layer": "metal1",
+                "area": {
+                    "x1": 100,
+                    "y1": 100,
+                    "x2": 1114,
+                    "y2": 150
+                }
+            },
+            {
+                "layer": "metal2",
+                "area": {
+                    "x1": 100,
+                    "y1": 150,
+                    "x2": 150,
+                    "y2": 1290
+                }
+            },
+            {
+                "layer": "metal2",
+                "area": {
+                    "x1": 1064,
+                    "y1": 150,
+                    "x2": 1114,
+                    "y2": 1290
+                }
+            }
+        ],
+        "vias": [
+            {
+                "layer": "metal1-metal2",
+                "area": {
+                    "x1": 100,
+                    "y1": 1290,
+                    "x2": 150,
+                    "y2": 1340
+                }
+            },
+            {
+                "layer": "metal1-metal2",
+                "area": {
+                    "x1": 100,
+                    "y1": 100,
+                    "x2": 150,
+                    "y2": 150
+                }
+            },
+            {
+                "layer": "metal1-metal2",
+                "area": {
+                    "x1": 1064,
+                    "y1": 1290,
+                    "x2": 1114,
+                    "y2": 1340
+                }
+            },
+            {
+                "layer": "metal1-metal2",
+                "area": {
+                    "x1": 1064,
+                    "y1": 100,
+                    "x2": 1114,
+                    "y2": 150
+                }
+            }
+        ]
+    },
+    {
+        "instance": "TraceNet",
+        "name": "AVDD",
+        "cell": "TEST_AND_GATE",
+        "named_cell": "U1_TEST_AND_GATE",
+        "parent_cell": "COMP2",
+        "named_parent_cell": "",
+        "cell_chain": "UTOP_LELO_BKLE--U1_COMP2--U1_TEST_AND_GATE",
+        "segments": [
+            {
+                "layer": "metal1",
+                "area": {
+                    "x1": 0,
+                    "y1": 1390,
+                    "x2": 1214,
+                    "y2": 1440
+                }
+            },
+            {
+                "layer": "metal1",
+                "area": {
+                    "x1": 0,
+                    "y1": 0,
+                    "x2": 1214,
+                    "y2": 50
+                }
+            },
+            {
+                "layer": "metal2",
+                "area": {
+                    "x1": 0,
+                    "y1": 50,
+                    "x2": 50,
+                    "y2": 1390
+                }
+            },
+            {
+                "layer": "metal2",
+                "area": {
+                    "x1": 1164,
+                    "y1": 50,
+                    "x2": 1214,
+                    "y2": 1390
+                }
+            }
+        ],
+        "vias": [
+            {
+                "layer": "metal1-metal2",
+                "area": {
+                    "x1": 0,
+                    "y1": 1390,
+                    "x2": 50,
+                    "y2": 1440
+                }
+            },
+            {
+                "layer": "metal1-metal2",
+                "area": {
+                    "x1": 0,
+                    "y1": 0,
+                    "x2": 50,
+                    "y2": 50
+                }
+            },
+            {
+                "layer": "metal1-metal2",
+                "area": {
+                    "x1": 1164,
+                    "y1": 1390,
+                    "x2": 1214,
+                    "y2": 1440
+                }
+            },
+            {
+                "layer": "metal1-metal2",
+                "area": {
+                    "x1": 1164,
+                    "y1": 0,
+                    "x2": 1214,
+                    "y2": 50
+                }
+            }
+        ]
+    },
+    {
+        "instance": "Pin",
+        "number_id": 66,
+        "cell": "LELO_BKLE",
+        "named_cell": "UTOP_LELO_BKLE",
         "parent_cell": "ROOT_CELL",
         "named_parent_cell": "UROOT_ROOT_CELL",
-        "cell_chain": "UTOP_JNW_BKLE",
+        "cell_chain": "UTOP_LELO_BKLE",
         "type": "ipin",
-        "name": "VDD",
+        "name": "VDD_1V8",
         "layout": {
-            "layer": "locali",
+            "layer": "metal1",
             "area": {
                 "x1": -200,
-                "y1": 5810,
-                "x2": 4280,
-                "y2": 5860
+                "y1": 4778,
+                "x2": 4552,
+                "y2": 4828
             }
         }
     },
     {
         "instance": "Pin",
-        "number_id": 52,
-        "cell": "JNW_BKLE",
-        "named_cell": "UTOP_JNW_BKLE",
+        "number_id": 67,
+        "cell": "LELO_BKLE",
+        "named_cell": "UTOP_LELO_BKLE",
         "parent_cell": "ROOT_CELL",
         "named_parent_cell": "UROOT_ROOT_CELL",
-        "cell_chain": "UTOP_JNW_BKLE",
+        "cell_chain": "UTOP_LELO_BKLE",
         "type": "ipin",
         "name": "VSS",
         "layout": {
-            "layer": "locali",
+            "layer": "metal1",
             "area": {
                 "x1": -100,
-                "y1": 5710,
-                "x2": 4180,
-                "y2": 5760
+                "y1": 4678,
+                "x2": 4452,
+                "y2": 4728
             }
         }
     },
     {
         "instance": "TraceNet",
         "name": "VSS",
-        "cell": "JNW_BKLE",
-        "named_cell": "UTOP_JNW_BKLE",
+        "cell": "LELO_BKLE",
+        "named_cell": "UTOP_LELO_BKLE",
         "parent_cell": "ROOT_CELL",
         "named_parent_cell": "",
-        "cell_chain": "UTOP_JNW_BKLE",
+        "cell_chain": "UTOP_LELO_BKLE",
         "segments": [
             {
-                "layer": "locali",
+                "layer": "metal1",
                 "area": {
                     "x1": -100,
-                    "y1": 5710,
-                    "x2": 4180,
-                    "y2": 5760
+                    "y1": 4678,
+                    "x2": 4452,
+                    "y2": 4728
                 }
             },
             {
-                "layer": "locali",
+                "layer": "metal1",
                 "area": {
                     "x1": -100,
                     "y1": -100,
-                    "x2": 4180,
+                    "x2": 4452,
                     "y2": -50
                 }
             },
             {
-                "layer": "m1",
+                "layer": "metal2",
                 "area": {
                     "x1": -100,
                     "y1": -50,
                     "x2": -50,
-                    "y2": 5710
+                    "y2": 4678
                 }
             },
             {
-                "layer": "m1",
+                "layer": "metal2",
                 "area": {
-                    "x1": 4130,
+                    "x1": 4402,
                     "y1": -50,
-                    "x2": 4180,
-                    "y2": 5710
+                    "x2": 4452,
+                    "y2": 4678
                 }
             }
         ],
         "vias": [
             {
-                "layer": "locali-m1",
+                "layer": "metal1-metal2",
                 "area": {
                     "x1": -100,
-                    "y1": 5710,
+                    "y1": 4678,
                     "x2": -50,
-                    "y2": 5760
+                    "y2": 4728
                 }
             },
             {
-                "layer": "locali-m1",
+                "layer": "metal1-metal2",
                 "area": {
                     "x1": -100,
                     "y1": -100,
@@ -3574,20 +3814,20 @@
                 }
             },
             {
-                "layer": "locali-m1",
+                "layer": "metal1-metal2",
                 "area": {
-                    "x1": 4130,
-                    "y1": 5710,
-                    "x2": 4180,
-                    "y2": 5760
+                    "x1": 4402,
+                    "y1": 4678,
+                    "x2": 4452,
+                    "y2": 4728
                 }
             },
             {
-                "layer": "locali-m1",
+                "layer": "metal1-metal2",
                 "area": {
-                    "x1": 4130,
+                    "x1": 4402,
                     "y1": -100,
-                    "x2": 4180,
+                    "x2": 4452,
                     "y2": -50
                 }
             }
@@ -3595,62 +3835,62 @@
     },
     {
         "instance": "TraceNet",
-        "name": "VDD",
-        "cell": "JNW_BKLE",
-        "named_cell": "UTOP_JNW_BKLE",
+        "name": "VDD_1V8",
+        "cell": "LELO_BKLE",
+        "named_cell": "UTOP_LELO_BKLE",
         "parent_cell": "ROOT_CELL",
         "named_parent_cell": "",
-        "cell_chain": "UTOP_JNW_BKLE",
+        "cell_chain": "UTOP_LELO_BKLE",
         "segments": [
             {
-                "layer": "locali",
+                "layer": "metal1",
                 "area": {
                     "x1": -200,
-                    "y1": 5810,
-                    "x2": 4280,
-                    "y2": 5860
+                    "y1": 4778,
+                    "x2": 4552,
+                    "y2": 4828
                 }
             },
             {
-                "layer": "locali",
+                "layer": "metal1",
                 "area": {
                     "x1": -200,
                     "y1": -200,
-                    "x2": 4280,
+                    "x2": 4552,
                     "y2": -150
                 }
             },
             {
-                "layer": "m1",
+                "layer": "metal2",
                 "area": {
                     "x1": -200,
                     "y1": -150,
                     "x2": -150,
-                    "y2": 5810
+                    "y2": 4778
                 }
             },
             {
-                "layer": "m1",
+                "layer": "metal2",
                 "area": {
-                    "x1": 4230,
+                    "x1": 4502,
                     "y1": -150,
-                    "x2": 4280,
-                    "y2": 5810
+                    "x2": 4552,
+                    "y2": 4778
                 }
             }
         ],
         "vias": [
             {
-                "layer": "locali-m1",
+                "layer": "metal1-metal2",
                 "area": {
                     "x1": -200,
-                    "y1": 5810,
+                    "y1": 4778,
                     "x2": -150,
-                    "y2": 5860
+                    "y2": 4828
                 }
             },
             {
-                "layer": "locali-m1",
+                "layer": "metal1-metal2",
                 "area": {
                     "x1": -200,
                     "y1": -200,
@@ -3659,20 +3899,20 @@
                 }
             },
             {
-                "layer": "locali-m1",
+                "layer": "metal1-metal2",
                 "area": {
-                    "x1": 4230,
-                    "y1": 5810,
-                    "x2": 4280,
-                    "y2": 5860
+                    "x1": 4502,
+                    "y1": 4778,
+                    "x2": 4552,
+                    "y2": 4828
                 }
             },
             {
-                "layer": "locali-m1",
+                "layer": "metal1-metal2",
                 "area": {
-                    "x1": 4230,
+                    "x1": 4502,
                     "y1": -200,
-                    "x2": 4280,
+                    "x2": 4552,
                     "y2": -150
                 }
             }

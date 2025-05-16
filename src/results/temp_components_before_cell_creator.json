@@ -3,14 +3,14 @@
         "instance": "CircuitCell",
         "number_id": 0,
         "name": "UTOP",
-        "cell": "JNW_BKLE",
-        "named_cell": "UTOP_JNW_BKLE",
+        "cell": "LELO_BKLE",
+        "named_cell": "UTOP_LELO_BKLE",
         "parent_cell": "ROOT_CELL",
         "named_parent_cell": "UROOT_ROOT_CELL",
-        "cell_chain": "UTOP_JNW_BKLE",
+        "cell_chain": "UTOP_LELO_BKLE",
         "group": null,
         "schematic_connections": {
-            "VDD": "VDD",
+            "VDD_1V8": "VDD_1V8",
             "VSS": "VSS"
         },
         "transform_matrix": {
@@ -31,23 +31,23 @@
     {
         "instance": "Pin",
         "number_id": 1,
-        "cell": "JNW_BKLE",
-        "named_cell": "UTOP_JNW_BKLE",
+        "cell": "LELO_BKLE",
+        "named_cell": "UTOP_LELO_BKLE",
         "parent_cell": "ROOT_CELL",
         "named_parent_cell": "UROOT_ROOT_CELL",
-        "cell_chain": "UTOP_JNW_BKLE",
+        "cell_chain": "UTOP_LELO_BKLE",
         "type": "ipin",
-        "name": "VDD",
+        "name": "VDD_1V8",
         "layout": ""
     },
     {
         "instance": "Pin",
         "number_id": 2,
-        "cell": "JNW_BKLE",
-        "named_cell": "UTOP_JNW_BKLE",
+        "cell": "LELO_BKLE",
+        "named_cell": "UTOP_LELO_BKLE",
         "parent_cell": "ROOT_CELL",
         "named_parent_cell": "UROOT_ROOT_CELL",
-        "cell_chain": "UTOP_JNW_BKLE",
+        "cell_chain": "UTOP_LELO_BKLE",
         "type": "ipin",
         "name": "VSS",
         "layout": ""
@@ -56,17 +56,18 @@
         "instance": "CircuitCell",
         "number_id": 3,
         "name": "U1",
-        "cell": "OTA",
-        "named_cell": "U1_OTA",
-        "parent_cell": "JNW_BKLE",
-        "named_parent_cell": "UTOP_JNW_BKLE",
-        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
+        "cell": "COMP2",
+        "named_cell": "U1_COMP2",
+        "parent_cell": "LELO_BKLE",
+        "named_parent_cell": "UTOP_LELO_BKLE",
+        "cell_chain": "UTOP_LELO_BKLE--U1_COMP2",
         "group": null,
         "schematic_connections": {
-            "VDD": "VDD",
-            "IN+": "net1",
-            "IN-": "net2",
-            "OUT": "net3",
+            "VDD": "VDD_1V8",
+            "VIN": "net1",
+            "VIP": "net2",
+            "VO": "net3",
+            "I_BIAS": "net4",
             "VSS": "VSS"
         },
         "transform_matrix": {
@@ -87,207 +88,132 @@
     {
         "instance": "Pin",
         "number_id": 4,
-        "cell": "OTA",
-        "named_cell": "U1_OTA",
-        "parent_cell": "JNW_BKLE",
-        "named_parent_cell": "UTOP_JNW_BKLE",
-        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
-        "type": "ipin",
-        "name": "IN+",
-        "layout": ""
-    },
-    {
-        "instance": "Pin",
-        "number_id": 5,
-        "cell": "OTA",
-        "named_cell": "U1_OTA",
-        "parent_cell": "JNW_BKLE",
-        "named_parent_cell": "UTOP_JNW_BKLE",
-        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
-        "type": "ipin",
-        "name": "IN-",
-        "layout": ""
-    },
-    {
-        "instance": "Pin",
-        "number_id": 6,
-        "cell": "OTA",
-        "named_cell": "U1_OTA",
-        "parent_cell": "JNW_BKLE",
-        "named_parent_cell": "UTOP_JNW_BKLE",
-        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
-        "type": "ipin",
-        "name": "VDD",
-        "layout": ""
-    },
-    {
-        "instance": "Pin",
-        "number_id": 7,
-        "cell": "OTA",
-        "named_cell": "U1_OTA",
-        "parent_cell": "JNW_BKLE",
-        "named_parent_cell": "UTOP_JNW_BKLE",
-        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
+        "cell": "COMP2",
+        "named_cell": "U1_COMP2",
+        "parent_cell": "LELO_BKLE",
+        "named_parent_cell": "UTOP_LELO_BKLE",
+        "cell_chain": "UTOP_LELO_BKLE--U1_COMP2",
         "type": "ipin",
         "name": "VSS",
         "layout": ""
     },
     {
         "instance": "Pin",
+        "number_id": 5,
+        "cell": "COMP2",
+        "named_cell": "U1_COMP2",
+        "parent_cell": "LELO_BKLE",
+        "named_parent_cell": "UTOP_LELO_BKLE",
+        "cell_chain": "UTOP_LELO_BKLE--U1_COMP2",
+        "type": "ipin",
+        "name": "VDD",
+        "layout": ""
+    },
+    {
+        "instance": "Pin",
+        "number_id": 6,
+        "cell": "COMP2",
+        "named_cell": "U1_COMP2",
+        "parent_cell": "LELO_BKLE",
+        "named_parent_cell": "UTOP_LELO_BKLE",
+        "cell_chain": "UTOP_LELO_BKLE--U1_COMP2",
+        "type": "ipin",
+        "name": "VIP",
+        "layout": ""
+    },
+    {
+        "instance": "Pin",
+        "number_id": 7,
+        "cell": "COMP2",
+        "named_cell": "U1_COMP2",
+        "parent_cell": "LELO_BKLE",
+        "named_parent_cell": "UTOP_LELO_BKLE",
+        "cell_chain": "UTOP_LELO_BKLE--U1_COMP2",
+        "type": "ipin",
+        "name": "VIN",
+        "layout": ""
+    },
+    {
+        "instance": "Pin",
         "number_id": 8,
-        "cell": "OTA",
-        "named_cell": "U1_OTA",
-        "parent_cell": "JNW_BKLE",
-        "named_parent_cell": "UTOP_JNW_BKLE",
-        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
+        "cell": "COMP2",
+        "named_cell": "U1_COMP2",
+        "parent_cell": "LELO_BKLE",
+        "named_parent_cell": "UTOP_LELO_BKLE",
+        "cell_chain": "UTOP_LELO_BKLE--U1_COMP2",
         "type": "opin",
-        "name": "OUT",
+        "name": "VO",
+        "layout": ""
+    },
+    {
+        "instance": "Pin",
+        "number_id": 9,
+        "cell": "COMP2",
+        "named_cell": "U1_COMP2",
+        "parent_cell": "LELO_BKLE",
+        "named_parent_cell": "UTOP_LELO_BKLE",
+        "cell_chain": "UTOP_LELO_BKLE--U1_COMP2",
+        "type": "ipin",
+        "name": "I_BIAS",
         "layout": ""
     },
     {
         "instance": "Transistor",
-        "number_id": 9,
-        "name": "MP3<3>",
-        "type": "pmos",
-        "cell": "OTA",
-        "named_cell": "U1_OTA",
-        "parent_cell": "JNW_BKLE",
-        "named_parent_cell": "UTOP_JNW_BKLE",
-        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
-        "group": "diff1",
-        "schematic_connections": {
-            "D": "GATE",
-            "G": "IN+",
-            "S": "OTA_SPLIT",
-            "B": "VDD"
-        },
-        "layout_name": "JNWATR_PCH_4C5F0",
-        "layout_library": "JNW_ATR_SKY130A",
-        "layout_ports": [
-            {
-                "type": "G",
-                "layer": "m1",
-                "area": {
-                    "x1": 80,
-                    "y1": 180,
-                    "x2": 112,
-                    "y2": 220
-                }
-            },
-            {
-                "type": "S",
-                "layer": "m1",
-                "area": {
-                    "x1": 144,
-                    "y1": 300,
-                    "x2": 240,
-                    "y2": 340
-                }
-            },
-            {
-                "type": "B",
-                "layer": "locali",
-                "area": {
-                    "x1": -48,
-                    "y1": 180,
-                    "x2": 48,
-                    "y2": 220
-                }
-            },
-            {
-                "type": "D",
-                "layer": "m1",
-                "area": {
-                    "x1": 336,
-                    "y1": 20,
-                    "x2": 432,
-                    "y2": 60
-                }
-            }
-        ],
-        "transform_matrix": {
-            "a": 0,
-            "b": 0,
-            "c": 0,
-            "d": 0,
-            "e": 0,
-            "f": 0
-        },
-        "bounding_box": {
-            "x1": 0,
-            "y1": 0,
-            "x2": 576,
-            "y2": 400
-        },
-        "overlap_distance": {
-            "x": 92,
-            "y": 64
-        },
-        "group_endpoint": "",
-        "group_endpoint_bounding_box": {
-            "x1": 0,
-            "y1": 0,
-            "x2": 576,
-            "y2": 240
-        }
-    },
-    {
-        "instance": "Transistor",
         "number_id": 10,
-        "name": "MP3<2>",
-        "type": "pmos",
-        "cell": "OTA",
-        "named_cell": "U1_OTA",
-        "parent_cell": "JNW_BKLE",
-        "named_parent_cell": "UTOP_JNW_BKLE",
-        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
+        "name": "MN1",
+        "type": "nmos",
+        "cell": "COMP2",
+        "named_cell": "U1_COMP2",
+        "parent_cell": "LELO_BKLE",
+        "named_parent_cell": "UTOP_LELO_BKLE",
+        "cell_chain": "UTOP_LELO_BKLE--U1_COMP2",
         "group": "diff1",
         "schematic_connections": {
-            "D": "GATE",
-            "G": "IN+",
-            "S": "OTA_SPLIT",
-            "B": "VDD"
+            "D": "net3",
+            "G": "VIP",
+            "S": "net1",
+            "B": "VSS"
         },
-        "layout_name": "JNWATR_PCH_4C5F0",
-        "layout_library": "JNW_ATR_SKY130A",
+        "layout_name": "LELOATR_NCH_4C5F0",
+        "layout_library": "LELO_ATR_IHP13G2",
         "layout_ports": [
             {
                 "type": "G",
-                "layer": "m1",
+                "layer": "metal2",
                 "area": {
-                    "x1": 80,
+                    "x1": 105,
                     "y1": 180,
-                    "x2": 112,
+                    "x2": 147,
                     "y2": 220
                 }
             },
             {
                 "type": "S",
-                "layer": "m1",
+                "layer": "metal2",
                 "area": {
-                    "x1": 144,
+                    "x1": 189,
                     "y1": 300,
-                    "x2": 240,
+                    "x2": 315,
                     "y2": 340
                 }
             },
             {
                 "type": "B",
-                "layer": "locali",
+                "layer": "metal1",
                 "area": {
-                    "x1": -48,
+                    "x1": -63,
                     "y1": 180,
-                    "x2": 48,
+                    "x2": 63,
                     "y2": 220
                 }
             },
             {
                 "type": "D",
-                "layer": "m1",
+                "layer": "metal2",
                 "area": {
-                    "x1": 336,
+                    "x1": 441,
                     "y1": 20,
-                    "x2": 432,
+                    "x2": 567,
                     "y2": 60
                 }
             }
@@ -303,78 +229,78 @@
         "bounding_box": {
             "x1": 0,
             "y1": 0,
-            "x2": 576,
+            "x2": 756,
             "y2": 400
         },
         "overlap_distance": {
-            "x": 92,
-            "y": 64
+            "x": 504,
+            "y": 240
         },
         "group_endpoint": "",
         "group_endpoint_bounding_box": {
             "x1": 0,
             "y1": 0,
-            "x2": 576,
+            "x2": 756,
             "y2": 240
         }
     },
     {
         "instance": "Transistor",
         "number_id": 11,
-        "name": "MP3<1>",
-        "type": "pmos",
-        "cell": "OTA",
-        "named_cell": "U1_OTA",
-        "parent_cell": "JNW_BKLE",
-        "named_parent_cell": "UTOP_JNW_BKLE",
-        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
+        "name": "MN2",
+        "type": "nmos",
+        "cell": "COMP2",
+        "named_cell": "U1_COMP2",
+        "parent_cell": "LELO_BKLE",
+        "named_parent_cell": "UTOP_LELO_BKLE",
+        "cell_chain": "UTOP_LELO_BKLE--U1_COMP2",
         "group": "diff1",
         "schematic_connections": {
-            "D": "GATE",
-            "G": "IN+",
-            "S": "OTA_SPLIT",
-            "B": "VDD"
+            "D": "net2",
+            "G": "VIN",
+            "S": "net1",
+            "B": "VSS"
         },
-        "layout_name": "JNWATR_PCH_4C5F0",
-        "layout_library": "JNW_ATR_SKY130A",
+        "layout_name": "LELOATR_NCH_4C5F0",
+        "layout_library": "LELO_ATR_IHP13G2",
         "layout_ports": [
             {
                 "type": "G",
-                "layer": "m1",
+                "layer": "metal2",
                 "area": {
-                    "x1": 80,
+                    "x1": 105,
                     "y1": 180,
-                    "x2": 112,
+                    "x2": 147,
                     "y2": 220
                 }
             },
             {
                 "type": "S",
-                "layer": "m1",
+                "layer": "metal2",
                 "area": {
-                    "x1": 144,
+                    "x1": 189,
                     "y1": 300,
-                    "x2": 240,
+                    "x2": 315,
                     "y2": 340
                 }
             },
             {
                 "type": "B",
-                "layer": "locali",
+                "layer": "metal1",
                 "area": {
-                    "x1": -48,
+                    "x1": -63,
                     "y1": 180,
-                    "x2": 48,
+                    "x2": 63,
                     "y2": 220
                 }
             },
             {
                 "type": "D",
-                "layer": "m1",
+                "layer": "metal2",
                 "area": {
-                    "x1": 336,
+                    "x1": 441,
                     "y1": 20,
-                    "x2": 432,
+                    "x2": 567,
                     "y2": 60
                 }
             }
@@ -390,78 +316,78 @@
         "bounding_box": {
             "x1": 0,
             "y1": 0,
-            "x2": 576,
+            "x2": 756,
             "y2": 400
         },
         "overlap_distance": {
-            "x": 92,
-            "y": 64
+            "x": 504,
+            "y": 240
         },
         "group_endpoint": "",
         "group_endpoint_bounding_box": {
             "x1": 0,
             "y1": 0,
-            "x2": 576,
+            "x2": 756,
             "y2": 240
         }
     },
     {
         "instance": "Transistor",
         "number_id": 12,
-        "name": "MP3<0>",
+        "name": "MP5",
         "type": "pmos",
-        "cell": "OTA",
-        "named_cell": "U1_OTA",
-        "parent_cell": "JNW_BKLE",
-        "named_parent_cell": "UTOP_JNW_BKLE",
-        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
-        "group": "diff1",
+        "cell": "COMP2",
+        "named_cell": "U1_COMP2",
+        "parent_cell": "LELO_BKLE",
+        "named_parent_cell": "UTOP_LELO_BKLE",
+        "cell_chain": "UTOP_LELO_BKLE--U1_COMP2",
+        "group": "load1",
         "schematic_connections": {
-            "D": "GATE",
-            "G": "IN+",
-            "S": "OTA_SPLIT",
+            "D": "net2",
+            "G": "net2",
+            "S": "VDD",
             "B": "VDD"
         },
-        "layout_name": "JNWATR_PCH_4C5F0",
-        "layout_library": "JNW_ATR_SKY130A",
+        "layout_name": "LELOATR_PCH_4C5F0",
+        "layout_library": "LELO_ATR_IHP13G2",
         "layout_ports": [
             {
                 "type": "G",
-                "layer": "m1",
+                "layer": "metal2",
                 "area": {
-                    "x1": 80,
+                    "x1": 105,
                     "y1": 180,
-                    "x2": 112,
+                    "x2": 147,
                     "y2": 220
                 }
             },
             {
                 "type": "S",
-                "layer": "m1",
+                "layer": "metal2",
                 "area": {
-                    "x1": 144,
+                    "x1": 189,
                     "y1": 300,
-                    "x2": 240,
+                    "x2": 315,
                     "y2": 340
                 }
             },
             {
                 "type": "B",
-                "layer": "locali",
+                "layer": "metal1",
                 "area": {
-                    "x1": -48,
+                    "x1": -63,
                     "y1": 180,
-                    "x2": 48,
+                    "x2": 63,
                     "y2": 220
                 }
             },
             {
                 "type": "D",
-                "layer": "m1",
+                "layer": "metal2",
                 "area": {
-                    "x1": 336,
+                    "x1": 441,
                     "y1": 20,
-                    "x2": 432,
+                    "x2": 567,
                     "y2": 60
                 }
             }
@@ -477,78 +403,78 @@
         "bounding_box": {
             "x1": 0,
             "y1": 0,
-            "x2": 576,
+            "x2": 756,
             "y2": 400
         },
         "overlap_distance": {
-            "x": 92,
-            "y": 64
+            "x": 588,
+            "y": 324
         },
         "group_endpoint": "",
         "group_endpoint_bounding_box": {
             "x1": 0,
             "y1": 0,
-            "x2": 576,
+            "x2": 756,
             "y2": 240
         }
     },
     {
         "instance": "Transistor",
         "number_id": 13,
-        "name": "MP4<3>",
+        "name": "MP6",
         "type": "pmos",
-        "cell": "OTA",
-        "named_cell": "U1_OTA",
-        "parent_cell": "JNW_BKLE",
-        "named_parent_cell": "UTOP_JNW_BKLE",
-        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
-        "group": "diff1",
+        "cell": "COMP2",
+        "named_cell": "U1_COMP2",
+        "parent_cell": "LELO_BKLE",
+        "named_parent_cell": "UTOP_LELO_BKLE",
+        "cell_chain": "UTOP_LELO_BKLE--U1_COMP2",
+        "group": "load1",
         "schematic_connections": {
-            "D": "OUT",
-            "G": "IN-",
-            "S": "OTA_SPLIT",
+            "D": "VO",
+            "G": "net2",
+            "S": "VDD",
             "B": "VDD"
         },
-        "layout_name": "JNWATR_PCH_4C5F0",
-        "layout_library": "JNW_ATR_SKY130A",
+        "layout_name": "LELOATR_PCH_4C5F0",
+        "layout_library": "LELO_ATR_IHP13G2",
         "layout_ports": [
             {
                 "type": "G",
-                "layer": "m1",
+                "layer": "metal2",
                 "area": {
-                    "x1": 80,
+                    "x1": 105,
                     "y1": 180,
-                    "x2": 112,
+                    "x2": 147,
                     "y2": 220
                 }
             },
             {
                 "type": "S",
-                "layer": "m1",
+                "layer": "metal2",
                 "area": {
-                    "x1": 144,
+                    "x1": 189,
                     "y1": 300,
-                    "x2": 240,
+                    "x2": 315,
                     "y2": 340
                 }
             },
             {
                 "type": "B",
-                "layer": "locali",
+                "layer": "metal1",
                 "area": {
-                    "x1": -48,
+                    "x1": -63,
                     "y1": 180,
-                    "x2": 48,
+                    "x2": 63,
                     "y2": 220
                 }
             },
             {
                 "type": "D",
-                "layer": "m1",
+                "layer": "metal2",
                 "area": {
-                    "x1": 336,
+                    "x1": 441,
                     "y1": 20,
-                    "x2": 432,
+                    "x2": 567,
                     "y2": 60
                 }
             }
@@ -564,78 +490,78 @@
         "bounding_box": {
             "x1": 0,
             "y1": 0,
-            "x2": 576,
+            "x2": 756,
             "y2": 400
         },
         "overlap_distance": {
-            "x": 92,
-            "y": 64
+            "x": 588,
+            "y": 324
         },
         "group_endpoint": "",
         "group_endpoint_bounding_box": {
             "x1": 0,
             "y1": 0,
-            "x2": 576,
+            "x2": 756,
             "y2": 240
         }
     },
     {
         "instance": "Transistor",
         "number_id": 14,
-        "name": "MP4<2>",
+        "name": "MP1",
         "type": "pmos",
-        "cell": "OTA",
-        "named_cell": "U1_OTA",
-        "parent_cell": "JNW_BKLE",
-        "named_parent_cell": "UTOP_JNW_BKLE",
-        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
-        "group": "diff1",
+        "cell": "COMP2",
+        "named_cell": "U1_COMP2",
+        "parent_cell": "LELO_BKLE",
+        "named_parent_cell": "UTOP_LELO_BKLE",
+        "cell_chain": "UTOP_LELO_BKLE--U1_COMP2",
+        "group": "load1",
         "schematic_connections": {
-            "D": "OUT",
-            "G": "IN-",
-            "S": "OTA_SPLIT",
+            "D": "net4",
+            "G": "net3",
+            "S": "VDD",
             "B": "VDD"
         },
-        "layout_name": "JNWATR_PCH_4C5F0",
-        "layout_library": "JNW_ATR_SKY130A",
+        "layout_name": "LELOATR_PCH_4C5F0",
+        "layout_library": "LELO_ATR_IHP13G2",
         "layout_ports": [
             {
                 "type": "G",
-                "layer": "m1",
+                "layer": "metal2",
                 "area": {
-                    "x1": 80,
+                    "x1": 105,
                     "y1": 180,
-                    "x2": 112,
+                    "x2": 147,
                     "y2": 220
                 }
             },
             {
                 "type": "S",
-                "layer": "m1",
+                "layer": "metal2",
                 "area": {
-                    "x1": 144,
+                    "x1": 189,
                     "y1": 300,
-                    "x2": 240,
+                    "x2": 315,
                     "y2": 340
                 }
             },
             {
                 "type": "B",
-                "layer": "locali",
+                "layer": "metal1",
                 "area": {
-                    "x1": -48,
+                    "x1": -63,
                     "y1": 180,
-                    "x2": 48,
+                    "x2": 63,
                     "y2": 220
                 }
             },
             {
                 "type": "D",
-                "layer": "m1",
+                "layer": "metal2",
                 "area": {
-                    "x1": 336,
+                    "x1": 441,
                     "y1": 20,
-                    "x2": 432,
+                    "x2": 567,
                     "y2": 60
                 }
             }
@@ -651,78 +577,78 @@
         "bounding_box": {
             "x1": 0,
             "y1": 0,
-            "x2": 576,
+            "x2": 756,
             "y2": 400
         },
         "overlap_distance": {
-            "x": 92,
-            "y": 64
+            "x": 588,
+            "y": 324
         },
         "group_endpoint": "",
         "group_endpoint_bounding_box": {
             "x1": 0,
             "y1": 0,
-            "x2": 576,
+            "x2": 756,
             "y2": 240
         }
     },
     {
         "instance": "Transistor",
         "number_id": 15,
-        "name": "MP4<1>",
+        "name": "MP2",
         "type": "pmos",
-        "cell": "OTA",
-        "named_cell": "U1_OTA",
-        "parent_cell": "JNW_BKLE",
-        "named_parent_cell": "UTOP_JNW_BKLE",
-        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
-        "group": "diff1",
+        "cell": "COMP2",
+        "named_cell": "U1_COMP2",
+        "parent_cell": "LELO_BKLE",
+        "named_parent_cell": "UTOP_LELO_BKLE",
+        "cell_chain": "UTOP_LELO_BKLE--U1_COMP2",
+        "group": "load1",
         "schematic_connections": {
-            "D": "OUT",
-            "G": "IN-",
-            "S": "OTA_SPLIT",
+            "D": "net3",
+            "G": "net3",
+            "S": "VDD",
             "B": "VDD"
         },
-        "layout_name": "JNWATR_PCH_4C5F0",
-        "layout_library": "JNW_ATR_SKY130A",
+        "layout_name": "LELOATR_PCH_4C5F0",
+        "layout_library": "LELO_ATR_IHP13G2",
         "layout_ports": [
             {
                 "type": "G",
-                "layer": "m1",
+                "layer": "metal2",
                 "area": {
-                    "x1": 80,
+                    "x1": 105,
                     "y1": 180,
-                    "x2": 112,
+                    "x2": 147,
                     "y2": 220
                 }
             },
             {
                 "type": "S",
-                "layer": "m1",
+                "layer": "metal2",
                 "area": {
-                    "x1": 144,
+                    "x1": 189,
                     "y1": 300,
-                    "x2": 240,
+                    "x2": 315,
                     "y2": 340
                 }
             },
             {
                 "type": "B",
-                "layer": "locali",
+                "layer": "metal1",
                 "area": {
-                    "x1": -48,
+                    "x1": -63,
                     "y1": 180,
-                    "x2": 48,
+                    "x2": 63,
                     "y2": 220
                 }
             },
             {
                 "type": "D",
-                "layer": "m1",
+                "layer": "metal2",
                 "area": {
-                    "x1": 336,
+                    "x1": 441,
                     "y1": 20,
-                    "x2": 432,
+                    "x2": 567,
                     "y2": 60
                 }
             }
@@ -738,78 +664,78 @@
         "bounding_box": {
             "x1": 0,
             "y1": 0,
-            "x2": 576,
+            "x2": 756,
             "y2": 400
         },
         "overlap_distance": {
-            "x": 92,
-            "y": 64
+            "x": 588,
+            "y": 324
         },
         "group_endpoint": "",
         "group_endpoint_bounding_box": {
             "x1": 0,
             "y1": 0,
-            "x2": 576,
+            "x2": 756,
             "y2": 240
         }
     },
     {
         "instance": "Transistor",
         "number_id": 16,
-        "name": "MP4<0>",
-        "type": "pmos",
-        "cell": "OTA",
-        "named_cell": "U1_OTA",
-        "parent_cell": "JNW_BKLE",
-        "named_parent_cell": "UTOP_JNW_BKLE",
-        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
-        "group": "diff1",
+        "name": "MN4",
+        "type": "nmos",
+        "cell": "COMP2",
+        "named_cell": "U1_COMP2",
+        "parent_cell": "LELO_BKLE",
+        "named_parent_cell": "UTOP_LELO_BKLE",
+        "cell_chain": "UTOP_LELO_BKLE--U1_COMP2",
+        "group": "mirror2",
         "schematic_connections": {
-            "D": "OUT",
-            "G": "IN-",
-            "S": "OTA_SPLIT",
-            "B": "VDD"
+            "D": "net1",
+            "G": "I_BIAS",
+            "S": "VSS",
+            "B": "VSS"
         },
-        "layout_name": "JNWATR_PCH_4C5F0",
-        "layout_library": "JNW_ATR_SKY130A",
+        "layout_name": "LELOATR_NCH_4C5F0",
+        "layout_library": "LELO_ATR_IHP13G2",
         "layout_ports": [
             {
                 "type": "G",
-                "layer": "m1",
+                "layer": "metal2",
                 "area": {
-                    "x1": 80,
+                    "x1": 105,
                     "y1": 180,
-                    "x2": 112,
+                    "x2": 147,
                     "y2": 220
                 }
             },
             {
                 "type": "S",
-                "layer": "m1",
+                "layer": "metal2",
                 "area": {
-                    "x1": 144,
+                    "x1": 189,
                     "y1": 300,
-                    "x2": 240,
+                    "x2": 315,
                     "y2": 340
                 }
             },
             {
                 "type": "B",
-                "layer": "locali",
+                "layer": "metal1",
                 "area": {
-                    "x1": -48,
+                    "x1": -63,
                     "y1": 180,
-                    "x2": 48,
+                    "x2": 63,
                     "y2": 220
                 }
             },
             {
                 "type": "D",
-                "layer": "m1",
+                "layer": "metal2",
                 "area": {
-                    "x1": 336,
+                    "x1": 441,
                     "y1": 20,
-                    "x2": 432,
+                    "x2": 567,
                     "y2": 60
                 }
             }
@@ -825,78 +751,78 @@
         "bounding_box": {
             "x1": 0,
             "y1": 0,
-            "x2": 576,
+            "x2": 756,
             "y2": 400
         },
         "overlap_distance": {
-            "x": 92,
-            "y": 64
+            "x": 504,
+            "y": 240
         },
         "group_endpoint": "",
         "group_endpoint_bounding_box": {
             "x1": 0,
             "y1": 0,
-            "x2": 576,
+            "x2": 756,
             "y2": 240
         }
     },
     {
         "instance": "Transistor",
         "number_id": 17,
-        "name": "MP2",
-        "type": "pmos",
-        "cell": "OTA",
-        "named_cell": "U1_OTA",
-        "parent_cell": "JNW_BKLE",
-        "named_parent_cell": "UTOP_JNW_BKLE",
-        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
-        "group": "mirror1",
+        "name": "MN3",
+        "type": "nmos",
+        "cell": "COMP2",
+        "named_cell": "U1_COMP2",
+        "parent_cell": "LELO_BKLE",
+        "named_parent_cell": "UTOP_LELO_BKLE",
+        "cell_chain": "UTOP_LELO_BKLE--U1_COMP2",
+        "group": "mirror2",
         "schematic_connections": {
-            "D": "OTA_SPLIT",
-            "G": "IB_GATE",
-            "S": "VDD",
-            "B": "VDD"
+            "D": "I_BIAS",
+            "G": "I_BIAS",
+            "S": "VSS",
+            "B": "VSS"
         },
-        "layout_name": "JNWATR_PCH_4C5F0",
-        "layout_library": "JNW_ATR_SKY130A",
+        "layout_name": "LELOATR_NCH_4C5F0",
+        "layout_library": "LELO_ATR_IHP13G2",
         "layout_ports": [
             {
                 "type": "G",
-                "layer": "m1",
+                "layer": "metal2",
                 "area": {
-                    "x1": 80,
+                    "x1": 105,
                     "y1": 180,
-                    "x2": 112,
+                    "x2": 147,
                     "y2": 220
                 }
             },
             {
                 "type": "S",
-                "layer": "m1",
+                "layer": "metal2",
                 "area": {
-                    "x1": 144,
+                    "x1": 189,
                     "y1": 300,
-                    "x2": 240,
+                    "x2": 315,
                     "y2": 340
                 }
             },
             {
                 "type": "B",
-                "layer": "locali",
+                "layer": "metal1",
                 "area": {
-                    "x1": -48,
+                    "x1": -63,
                     "y1": 180,
-                    "x2": 48,
+                    "x2": 63,
                     "y2": 220
                 }
             },
             {
                 "type": "D",
-                "layer": "m1",
+                "layer": "metal2",
                 "area": {
-                    "x1": 336,
+                    "x1": 441,
                     "y1": 20,
-                    "x2": 432,
+                    "x2": 567,
                     "y2": 60
                 }
             }
@@ -912,78 +838,78 @@
         "bounding_box": {
             "x1": 0,
             "y1": 0,
-            "x2": 576,
+            "x2": 756,
             "y2": 400
         },
         "overlap_distance": {
-            "x": 92,
-            "y": 64
+            "x": 504,
+            "y": 240
         },
         "group_endpoint": "",
         "group_endpoint_bounding_box": {
             "x1": 0,
             "y1": 0,
-            "x2": 576,
+            "x2": 756,
             "y2": 240
         }
     },
     {
         "instance": "Transistor",
         "number_id": 18,
-        "name": "MP1",
-        "type": "pmos",
-        "cell": "OTA",
-        "named_cell": "U1_OTA",
-        "parent_cell": "JNW_BKLE",
-        "named_parent_cell": "UTOP_JNW_BKLE",
-        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
+        "name": "MN5",
+        "type": "nmos",
+        "cell": "COMP2",
+        "named_cell": "U1_COMP2",
+        "parent_cell": "LELO_BKLE",
+        "named_parent_cell": "UTOP_LELO_BKLE",
+        "cell_chain": "UTOP_LELO_BKLE--U1_COMP2",
         "group": "mirror1",
         "schematic_connections": {
-            "D": "IB_GATE",
-            "G": "IB_GATE",
-            "S": "VDD",
-            "B": "VDD"
+            "D": "net4",
+            "G": "net4",
+            "S": "VSS",
+            "B": "VSS"
         },
-        "layout_name": "JNWATR_PCH_4C5F0",
-        "layout_library": "JNW_ATR_SKY130A",
+        "layout_name": "LELOATR_NCH_4C5F0",
+        "layout_library": "LELO_ATR_IHP13G2",
         "layout_ports": [
             {
                 "type": "G",
-                "layer": "m1",
+                "layer": "metal2",
                 "area": {
-                    "x1": 80,
+                    "x1": 105,
                     "y1": 180,
-                    "x2": 112,
+                    "x2": 147,
                     "y2": 220
                 }
             },
             {
                 "type": "S",
-                "layer": "m1",
+                "layer": "metal2",
                 "area": {
-                    "x1": 144,
+                    "x1": 189,
                     "y1": 300,
-                    "x2": 240,
+                    "x2": 315,
                     "y2": 340
                 }
             },
             {
                 "type": "B",
-                "layer": "locali",
+                "layer": "metal1",
                 "area": {
-                    "x1": -48,
+                    "x1": -63,
                     "y1": 180,
-                    "x2": 48,
+                    "x2": 63,
                     "y2": 220
                 }
             },
             {
                 "type": "D",
-                "layer": "m1",
+                "layer": "metal2",
                 "area": {
-                    "x1": 336,
+                    "x1": 441,
                     "y1": 20,
-                    "x2": 432,
+                    "x2": 567,
                     "y2": 60
                 }
             }
@@ -999,78 +925,78 @@
         "bounding_box": {
             "x1": 0,
             "y1": 0,
-            "x2": 576,
+            "x2": 756,
             "y2": 400
         },
         "overlap_distance": {
-            "x": 92,
-            "y": 64
+            "x": 504,
+            "y": 240
         },
         "group_endpoint": "",
         "group_endpoint_bounding_box": {
             "x1": 0,
             "y1": 0,
-            "x2": 576,
+            "x2": 756,
             "y2": 240
         }
     },
     {
         "instance": "Transistor",
         "number_id": 19,
-        "name": "MN1",
+        "name": "MN6",
         "type": "nmos",
-        "cell": "OTA",
-        "named_cell": "U1_OTA",
-        "parent_cell": "JNW_BKLE",
-        "named_parent_cell": "UTOP_JNW_BKLE",
-        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
-        "group": "mirror2",
+        "cell": "COMP2",
+        "named_cell": "U1_COMP2",
+        "parent_cell": "LELO_BKLE",
+        "named_parent_cell": "UTOP_LELO_BKLE",
+        "cell_chain": "UTOP_LELO_BKLE--U1_COMP2",
+        "group": "mirror1",
         "schematic_connections": {
-            "D": "GATE",
-            "G": "GATE",
+            "D": "VO",
+            "G": "net4",
             "S": "VSS",
             "B": "VSS"
         },
-        "layout_name": "JNWATR_NCH_4C5F0",
-        "layout_library": "JNW_ATR_SKY130A",
+        "layout_name": "LELOATR_NCH_4C5F0",
+        "layout_library": "LELO_ATR_IHP13G2",
         "layout_ports": [
             {
                 "type": "G",
-                "layer": "m1",
+                "layer": "metal2",
                 "area": {
-                    "x1": 80,
+                    "x1": 105,
                     "y1": 180,
-                    "x2": 112,
+                    "x2": 147,
                     "y2": 220
                 }
             },
             {
                 "type": "S",
-                "layer": "m1",
+                "layer": "metal2",
                 "area": {
-                    "x1": 144,
+                    "x1": 189,
                     "y1": 300,
-                    "x2": 240,
+                    "x2": 315,
                     "y2": 340
                 }
             },
             {
                 "type": "B",
-                "layer": "locali",
+                "layer": "metal1",
                 "area": {
-                    "x1": -48,
+                    "x1": -63,
                     "y1": 180,
-                    "x2": 48,
+                    "x2": 63,
                     "y2": 220
                 }
             },
             {
                 "type": "D",
-                "layer": "m1",
+                "layer": "metal2",
                 "area": {
-                    "x1": 336,
+                    "x1": 441,
                     "y1": 20,
-                    "x2": 432,
+                    "x2": 567,
                     "y2": 60
                 }
             }
@@ -1086,78 +1012,78 @@
         "bounding_box": {
             "x1": 0,
             "y1": 0,
-            "x2": 576,
+            "x2": 756,
             "y2": 400
         },
         "overlap_distance": {
-            "x": 92,
-            "y": 64
+            "x": 504,
+            "y": 240
         },
         "group_endpoint": "",
         "group_endpoint_bounding_box": {
             "x1": 0,
             "y1": 0,
-            "x2": 576,
+            "x2": 756,
             "y2": 240
         }
     },
     {
         "instance": "Transistor",
         "number_id": 20,
-        "name": "MN2",
-        "type": "nmos",
-        "cell": "OTA",
-        "named_cell": "U1_OTA",
-        "parent_cell": "JNW_BKLE",
-        "named_parent_cell": "UTOP_JNW_BKLE",
-        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
-        "group": "mirror2",
+        "name": "MP3",
+        "type": "pmos",
+        "cell": "COMP2",
+        "named_cell": "U1_COMP2",
+        "parent_cell": "LELO_BKLE",
+        "named_parent_cell": "UTOP_LELO_BKLE",
+        "cell_chain": "UTOP_LELO_BKLE--U1_COMP2",
+        "group": "load1",
         "schematic_connections": {
-            "D": "OUT",
-            "G": "GATE",
-            "S": "VSS",
-            "B": "VSS"
+            "D": "net3",
+            "G": "net2",
+            "S": "VDD",
+            "B": "VDD"
         },
-        "layout_name": "JNWATR_NCH_4C5F0",
-        "layout_library": "JNW_ATR_SKY130A",
+        "layout_name": "LELOATR_PCH_4C5F0",
+        "layout_library": "LELO_ATR_IHP13G2",
         "layout_ports": [
             {
                 "type": "G",
-                "layer": "m1",
+                "layer": "metal2",
                 "area": {
-                    "x1": 80,
+                    "x1": 105,
                     "y1": 180,
-                    "x2": 112,
+                    "x2": 147,
                     "y2": 220
                 }
             },
             {
                 "type": "S",
-                "layer": "m1",
+                "layer": "metal2",
                 "area": {
-                    "x1": 144,
+                    "x1": 189,
                     "y1": 300,
-                    "x2": 240,
+                    "x2": 315,
                     "y2": 340
                 }
             },
             {
                 "type": "B",
-                "layer": "locali",
+                "layer": "metal1",
                 "area": {
-                    "x1": -48,
+                    "x1": -63,
                     "y1": 180,
-                    "x2": 48,
+                    "x2": 63,
                     "y2": 220
                 }
             },
             {
                 "type": "D",
-                "layer": "m1",
+                "layer": "metal2",
                 "area": {
-                    "x1": 336,
+                    "x1": 441,
                     "y1": 20,
-                    "x2": 432,
+                    "x2": 567,
                     "y2": 60
                 }
             }
@@ -1173,68 +1099,79 @@
         "bounding_box": {
             "x1": 0,
             "y1": 0,
-            "x2": 576,
+            "x2": 756,
             "y2": 400
         },
         "overlap_distance": {
-            "x": 92,
-            "y": 64
+            "x": 588,
+            "y": 324
         },
         "group_endpoint": "",
         "group_endpoint_bounding_box": {
             "x1": 0,
             "y1": 0,
-            "x2": 576,
+            "x2": 756,
             "y2": 240
         }
     },
     {
-        "instance": "Resistor",
+        "instance": "Transistor",
         "number_id": 21,
-        "name": "RH1",
-        "type": "hpo",
-        "cell": "OTA",
-        "named_cell": "U1_OTA",
-        "parent_cell": "JNW_BKLE",
-        "named_parent_cell": "UTOP_JNW_BKLE",
-        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
-        "group": "bias1",
+        "name": "MP4",
+        "type": "pmos",
+        "cell": "COMP2",
+        "named_cell": "U1_COMP2",
+        "parent_cell": "LELO_BKLE",
+        "named_parent_cell": "UTOP_LELO_BKLE",
+        "cell_chain": "UTOP_LELO_BKLE--U1_COMP2",
+        "group": "load1",
         "schematic_connections": {
-            "N": "AFTER_RESISTOR1",
-            "P": "IB_GATE",
-            "B": "VSS"
+            "D": "net2",
+            "G": "net3",
+            "S": "VDD",
+            "B": "VDD"
         },
-        "layout_name": "JNWTR_RPPO16",
-        "layout_library": "JNW_TR_SKY130A",
+        "layout_name": "LELOATR_PCH_4C5F0",
+        "layout_library": "LELO_ATR_IHP13G2",
         "layout_ports": [
             {
+                "type": "G",
+                "layer": "metal2",
+                "area": {
+                    "x1": 105,
+                    "y1": 180,
+                    "x2": 147,
+                    "y2": 220
+                }
+            },
+            {
+                "type": "S",
+                "layer": "metal2",
+                "area": {
+                    "x1": 189,
+                    "y1": 300,
+                    "x2": 315,
+                    "y2": 340
+                }
+            },
+            {
                 "type": "B",
-                "layer": "locali",
+                "layer": "metal1",
                 "area": {
-                    "x1": 8,
-                    "y1": 8,
-                    "x2": 2228,
-                    "y2": 64
+                    "x1": -63,
+                    "y1": 180,
+                    "x2": 63,
+                    "y2": 220
                 }
             },
             {
-                "type": "P",
-                "layer": "locali",
+                "type": "D",
+                "layer": "metal2",
                 "area": {
-                    "x1": 1910,
-                    "y1": 1460,
-                    "x2": 2054,
-                    "y2": 1580
-                }
-            },
-            {
-                "type": "N",
-                "layer": "locali",
-                "area": {
-                    "x1": 182,
-                    "y1": 1460,
-                    "x2": 326,
-                    "y2": 1580
+                    "x1": 441,
+                    "y1": 20,
+                    "x2": 567,
+                    "y2": 60
                 }
             }
         ],
@@ -1249,60 +1186,38 @@
         "bounding_box": {
             "x1": 0,
             "y1": 0,
-            "x2": 2236,
-            "y2": 1720
+            "x2": 756,
+            "y2": 400
+        },
+        "overlap_distance": {
+            "x": 588,
+            "y": 324
+        },
+        "group_endpoint": "",
+        "group_endpoint_bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 756,
+            "y2": 240
         }
     },
     {
-        "instance": "Resistor",
+        "instance": "CircuitCell",
         "number_id": 22,
-        "name": "RH2",
-        "type": "hpo",
-        "cell": "OTA",
-        "named_cell": "U1_OTA",
-        "parent_cell": "JNW_BKLE",
-        "named_parent_cell": "UTOP_JNW_BKLE",
-        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
-        "group": "bias1",
+        "name": "U1",
+        "cell": "TEST_AND_GATE",
+        "named_cell": "U1_TEST_AND_GATE",
+        "parent_cell": "COMP2",
+        "named_parent_cell": "U1_COMP2",
+        "cell_chain": "UTOP_LELO_BKLE--U1_COMP2--U1_TEST_AND_GATE",
+        "group": null,
         "schematic_connections": {
-            "N": "AFTER_RESISTOR2",
-            "P": "AFTER_RESISTOR1",
-            "B": "VSS"
+            "A": "net5",
+            "B": "net6",
+            "Y": "net7",
+            "AVDD": "VO",
+            "AVSS": "VO"
         },
-        "layout_name": "JNWTR_RPPO16",
-        "layout_library": "JNW_TR_SKY130A",
-        "layout_ports": [
-            {
-                "type": "B",
-                "layer": "locali",
-                "area": {
-                    "x1": 8,
-                    "y1": 8,
-                    "x2": 2228,
-                    "y2": 64
-                }
-            },
-            {
-                "type": "P",
-                "layer": "locali",
-                "area": {
-                    "x1": 1910,
-                    "y1": 1460,
-                    "x2": 2054,
-                    "y2": 1580
-                }
-            },
-            {
-                "type": "N",
-                "layer": "locali",
-                "area": {
-                    "x1": 182,
-                    "y1": 1460,
-                    "x2": 326,
-                    "y2": 1580
-                }
-            }
-        ],
         "transform_matrix": {
             "a": 0,
             "b": 0,
@@ -1314,57 +1229,128 @@
         "bounding_box": {
             "x1": 0,
             "y1": 0,
-            "x2": 2236,
-            "y2": 1720
+            "x2": 0,
+            "y2": 0
         }
     },
     {
-        "instance": "Resistor",
+        "instance": "Pin",
         "number_id": 23,
-        "name": "RH3",
-        "type": "hpo",
-        "cell": "OTA",
-        "named_cell": "U1_OTA",
-        "parent_cell": "JNW_BKLE",
-        "named_parent_cell": "UTOP_JNW_BKLE",
-        "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
-        "group": "bias1",
+        "cell": "TEST_AND_GATE",
+        "named_cell": "U1_TEST_AND_GATE",
+        "parent_cell": "COMP2",
+        "named_parent_cell": "U1_COMP2",
+        "cell_chain": "UTOP_LELO_BKLE--U1_COMP2--U1_TEST_AND_GATE",
+        "type": "iopin",
+        "name": "A",
+        "layout": ""
+    },
+    {
+        "instance": "Pin",
+        "number_id": 24,
+        "cell": "TEST_AND_GATE",
+        "named_cell": "U1_TEST_AND_GATE",
+        "parent_cell": "COMP2",
+        "named_parent_cell": "U1_COMP2",
+        "cell_chain": "UTOP_LELO_BKLE--U1_COMP2--U1_TEST_AND_GATE",
+        "type": "iopin",
+        "name": "B",
+        "layout": ""
+    },
+    {
+        "instance": "Pin",
+        "number_id": 25,
+        "cell": "TEST_AND_GATE",
+        "named_cell": "U1_TEST_AND_GATE",
+        "parent_cell": "COMP2",
+        "named_parent_cell": "U1_COMP2",
+        "cell_chain": "UTOP_LELO_BKLE--U1_COMP2--U1_TEST_AND_GATE",
+        "type": "iopin",
+        "name": "Y",
+        "layout": ""
+    },
+    {
+        "instance": "Pin",
+        "number_id": 26,
+        "cell": "TEST_AND_GATE",
+        "named_cell": "U1_TEST_AND_GATE",
+        "parent_cell": "COMP2",
+        "named_parent_cell": "U1_COMP2",
+        "cell_chain": "UTOP_LELO_BKLE--U1_COMP2--U1_TEST_AND_GATE",
+        "type": "iopin",
+        "name": "AVDD",
+        "layout": ""
+    },
+    {
+        "instance": "Pin",
+        "number_id": 27,
+        "cell": "TEST_AND_GATE",
+        "named_cell": "U1_TEST_AND_GATE",
+        "parent_cell": "COMP2",
+        "named_parent_cell": "U1_COMP2",
+        "cell_chain": "UTOP_LELO_BKLE--U1_COMP2--U1_TEST_AND_GATE",
+        "type": "iopin",
+        "name": "AVSS",
+        "layout": ""
+    },
+    {
+        "instance": "Transistor",
+        "number_id": 28,
+        "name": "MN2",
+        "type": "nmos",
+        "cell": "TEST_AND_GATE",
+        "named_cell": "U1_TEST_AND_GATE",
+        "parent_cell": "COMP2",
+        "named_parent_cell": "U1_COMP2",
+        "cell_chain": "UTOP_LELO_BKLE--U1_COMP2--U1_TEST_AND_GATE",
+        "group": null,
         "schematic_connections": {
-            "N": "VSS",
-            "P": "AFTER_RESISTOR2",
-            "B": "VSS"
+            "D": "N1",
+            "G": "A",
+            "S": "AVSS",
+            "B": "AVSS"
         },
-        "layout_name": "JNWTR_RPPO16",
-        "layout_library": "JNW_TR_SKY130A",
+        "layout_name": "LELOTR_NCHDL",
+        "layout_library": "LELO_TR_IHP13G2",
         "layout_ports": [
             {
+                "type": "G",
+                "layer": "metal1",
+                "area": {
+                    "x1": 99,
+                    "y1": 70,
+                    "x2": 187,
+                    "y2": 90
+                }
+            },
+            {
+                "type": "S",
+                "layer": "metal1",
+                "area": {
+                    "x1": 253,
+                    "y1": 30,
+                    "x2": 341,
+                    "y2": 50
+                }
+            },
+            {
                 "type": "B",
-                "layer": "locali",
+                "layer": "metal1",
                 "area": {
-                    "x1": 8,
-                    "y1": 8,
-                    "x2": 2228,
-                    "y2": 64
+                    "x1": -33,
+                    "y1": 70,
+                    "x2": 33,
+                    "y2": 90
                 }
             },
             {
-                "type": "P",
-                "layer": "locali",
+                "type": "D",
+                "layer": "metal1",
                 "area": {
-                    "x1": 1910,
-                    "y1": 1460,
-                    "x2": 2054,
-                    "y2": 1580
-                }
-            },
-            {
-                "type": "N",
-                "layer": "locali",
-                "area": {
-                    "x1": 182,
-                    "y1": 1460,
-                    "x2": 326,
-                    "y2": 1580
+                    "x1": 253,
+                    "y1": 110,
+                    "x2": 341,
+                    "y2": 130
                 }
             }
         ],
@@ -1379,8 +1365,280 @@
         "bounding_box": {
             "x1": 0,
             "y1": 0,
-            "x2": 2236,
-            "y2": 1720
+            "x2": 407,
+            "y2": 160
+        },
+        "overlap_distance": {
+            "x": 0,
+            "y": 0
+        },
+        "group_endpoint": "",
+        "group_endpoint_bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 0,
+            "y2": 0
+        }
+    },
+    {
+        "instance": "Transistor",
+        "number_id": 29,
+        "name": "MN3",
+        "type": "nmos",
+        "cell": "TEST_AND_GATE",
+        "named_cell": "U1_TEST_AND_GATE",
+        "parent_cell": "COMP2",
+        "named_parent_cell": "U1_COMP2",
+        "cell_chain": "UTOP_LELO_BKLE--U1_COMP2--U1_TEST_AND_GATE",
+        "group": null,
+        "schematic_connections": {
+            "D": "Y",
+            "G": "B",
+            "S": "N1",
+            "B": "AVSS"
+        },
+        "layout_name": "LELOTR_NCHDL",
+        "layout_library": "LELO_TR_IHP13G2",
+        "layout_ports": [
+            {
+                "type": "G",
+                "layer": "metal1",
+                "area": {
+                    "x1": 99,
+                    "y1": 70,
+                    "x2": 187,
+                    "y2": 90
+                }
+            },
+            {
+                "type": "S",
+                "layer": "metal1",
+                "area": {
+                    "x1": 253,
+                    "y1": 30,
+                    "x2": 341,
+                    "y2": 50
+                }
+            },
+            {
+                "type": "B",
+                "layer": "metal1",
+                "area": {
+                    "x1": -33,
+                    "y1": 70,
+                    "x2": 33,
+                    "y2": 90
+                }
+            },
+            {
+                "type": "D",
+                "layer": "metal1",
+                "area": {
+                    "x1": 253,
+                    "y1": 110,
+                    "x2": 341,
+                    "y2": 130
+                }
+            }
+        ],
+        "transform_matrix": {
+            "a": 0,
+            "b": 0,
+            "c": 0,
+            "d": 0,
+            "e": 0,
+            "f": 0
+        },
+        "bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 407,
+            "y2": 160
+        },
+        "overlap_distance": {
+            "x": 0,
+            "y": 0
+        },
+        "group_endpoint": "",
+        "group_endpoint_bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 0,
+            "y2": 0
+        }
+    },
+    {
+        "instance": "Transistor",
+        "number_id": 30,
+        "name": "MP2",
+        "type": "pmos",
+        "cell": "TEST_AND_GATE",
+        "named_cell": "U1_TEST_AND_GATE",
+        "parent_cell": "COMP2",
+        "named_parent_cell": "U1_COMP2",
+        "cell_chain": "UTOP_LELO_BKLE--U1_COMP2--U1_TEST_AND_GATE",
+        "group": null,
+        "schematic_connections": {
+            "D": "Y",
+            "G": "A",
+            "S": "AVDD",
+            "B": "AVDD"
+        },
+        "layout_name": "LELOTR_PCHDL",
+        "layout_library": "LELO_TR_IHP13G2",
+        "layout_ports": [
+            {
+                "type": "G",
+                "layer": "metal1",
+                "area": {
+                    "x1": 220,
+                    "y1": 70,
+                    "x2": 308,
+                    "y2": 90
+                }
+            },
+            {
+                "type": "S",
+                "layer": "metal1",
+                "area": {
+                    "x1": 66,
+                    "y1": 30,
+                    "x2": 154,
+                    "y2": 50
+                }
+            },
+            {
+                "type": "B",
+                "layer": "metal1",
+                "area": {
+                    "x1": 374,
+                    "y1": 70,
+                    "x2": 440,
+                    "y2": 90
+                }
+            },
+            {
+                "type": "D",
+                "layer": "metal1",
+                "area": {
+                    "x1": 66,
+                    "y1": 110,
+                    "x2": 154,
+                    "y2": 130
+                }
+            }
+        ],
+        "transform_matrix": {
+            "a": 0,
+            "b": 0,
+            "c": 0,
+            "d": 0,
+            "e": 0,
+            "f": 0
+        },
+        "bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 407,
+            "y2": 160
+        },
+        "overlap_distance": {
+            "x": 0,
+            "y": 0
+        },
+        "group_endpoint": "",
+        "group_endpoint_bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 0,
+            "y2": 0
+        }
+    },
+    {
+        "instance": "Transistor",
+        "number_id": 31,
+        "name": "MP3",
+        "type": "pmos",
+        "cell": "TEST_AND_GATE",
+        "named_cell": "U1_TEST_AND_GATE",
+        "parent_cell": "COMP2",
+        "named_parent_cell": "U1_COMP2",
+        "cell_chain": "UTOP_LELO_BKLE--U1_COMP2--U1_TEST_AND_GATE",
+        "group": null,
+        "schematic_connections": {
+            "D": "AVDD",
+            "G": "B",
+            "S": "Y",
+            "B": "AVDD"
+        },
+        "layout_name": "LELOTR_PCHDL",
+        "layout_library": "LELO_TR_IHP13G2",
+        "layout_ports": [
+            {
+                "type": "G",
+                "layer": "metal1",
+                "area": {
+                    "x1": 220,
+                    "y1": 70,
+                    "x2": 308,
+                    "y2": 90
+                }
+            },
+            {
+                "type": "S",
+                "layer": "metal1",
+                "area": {
+                    "x1": 66,
+                    "y1": 30,
+                    "x2": 154,
+                    "y2": 50
+                }
+            },
+            {
+                "type": "B",
+                "layer": "metal1",
+                "area": {
+                    "x1": 374,
+                    "y1": 70,
+                    "x2": 440,
+                    "y2": 90
+                }
+            },
+            {
+                "type": "D",
+                "layer": "metal1",
+                "area": {
+                    "x1": 66,
+                    "y1": 110,
+                    "x2": 154,
+                    "y2": 130
+                }
+            }
+        ],
+        "transform_matrix": {
+            "a": 0,
+            "b": 0,
+            "c": 0,
+            "d": 0,
+            "e": 0,
+            "f": 0
+        },
+        "bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 407,
+            "y2": 160
+        },
+        "overlap_distance": {
+            "x": 0,
+            "y": 0
+        },
+        "group_endpoint": "",
+        "group_endpoint_bounding_box": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 0,
+            "y2": 0
         }
     }
 ]

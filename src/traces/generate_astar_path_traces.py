@@ -50,6 +50,7 @@ class GenerateAstarPathTraces:
         self.SCALE_FACTOR = self.config["generate_grid"]["SCALE_FACTOR"]
         self.GRID_LEEWAY_X = self.config["generate_grid"]["GRID_LEEWAY_X"]
         self.GRID_LEEWAY_Y = self.config["generate_grid"]["GRID_LEEWAY_Y"]
+        self.METAL_LAYERS = self.config["magic_layout_creator"]["METAL_LAYERS"]
 
         for component in self.components:
             # There should only be one CircuitCell when generating A* paths traces
@@ -127,6 +128,8 @@ class GenerateAstarPathTraces:
         trace.named_cell = self.circuit_cell.named_cell
         trace.cell_chain = self.circuit_cell.cell_chain
         trace.cell = self.circuit_cell.cell
+        trace.parent_cell = self.circuit_cell.parent_cell
+        trace.named_parent_cell = self.circuit_cell.named_parent_cell
         trace.name = net
 
         for index, rectangle in enumerate(self.mapped_rectangles):
@@ -144,7 +147,7 @@ class GenerateAstarPathTraces:
                 stretch_start, stretch_end = self.__trace_stretch(switch_start=switch_start, index=index)
 
                 trace.segments.append(RectAreaLayer(
-                    layer="m3",
+                    layer=self.METAL_LAYERS[3],
                     area=RectArea(
                         x1=int(rectangle.area.x1) - self.TRACE_WIDTH // 2,  # Adding width to trace
                         y1=int(rectangle.area.y1 + stretch_start),
@@ -161,9 +164,8 @@ class GenerateAstarPathTraces:
                     switch_start = False
                 stretch_start, stretch_end = self.__trace_stretch(switch_start=switch_start, index=index)
 
-
                 trace.segments.append(RectAreaLayer(
-                    layer="m2",
+                    layer=self.METAL_LAYERS[2],
                     area=RectArea(
                         x1=int(rectangle.area.x1) + stretch_start,  # Adding width to trace
                         y1=int(rectangle.area.y1 - self.TRACE_WIDTH // 2),
@@ -183,7 +185,7 @@ class GenerateAstarPathTraces:
             for obj in self.components:
                 if isinstance(obj, Pin) and obj.name == net:
 
-                    if len(self.components[-1].segments) > 1:
+                    if len(self.components[-1].segments) >= 1:
                         obj.layout = RectAreaLayer(layer=self.components[-1].segments[0].layer,
                                                    area=self.components[-1].segments[0].area)
 

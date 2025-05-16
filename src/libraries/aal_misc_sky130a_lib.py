@@ -116,10 +116,11 @@ def __local_base_to_collector_connection(self, component):
     collector_y1 = next((port.area.y1 for port in component.layout_ports if port.type == 'C'))
     base_y2 = next((port.area.y2 for port in component.layout_ports if port.type == 'B'))
 
-    trace.segments = [RectAreaLayer(layer='locali', area=RectArea(x1=collector_x1 + component.transform_matrix.c,
-                                                                  y1=base_y2 + component.transform_matrix.f,
-                                                                  x2=collector_x2 + component.transform_matrix.c,
-                                                                  y2=collector_y1 + component.transform_matrix.f))]
+    trace.segments = [RectAreaLayer(layer=self.METAL_LAYERS[0], area=RectArea(
+        x1=collector_x1 + component.transform_matrix.c,
+        y1=base_y2 + component.transform_matrix.f,
+        x2=collector_x2 + component.transform_matrix.c,
+        y2=collector_y1 + component.transform_matrix.f))]
     self.components.append(trace)
 
 
@@ -344,7 +345,7 @@ def __generate_capacitor_port_to_rail_connection(
                                        y1=y_params[0] + comp.transform_matrix.f - width * y_params[1],
                                        x2=via_connect_x2 + comp.transform_matrix.c,
                                        y2=y_params[0] + comp.transform_matrix.f + width * y_params[2])
-                trace.vias.append(RectAreaLayer(layer='locali-m3', area=via_connect))
+                trace.vias.append(RectAreaLayer(layer=f'{self.METAL_LAYERS[0]}-{self.METAL_LAYERS[3]}', area=via_connect))
 
             __create_port_to_rail_connection_based_on_component_placement_order(
                 self=self,
@@ -388,9 +389,9 @@ def __create_port_to_rail_connection_based_on_component_placement_order(
                              y1=y_params[0] + component.transform_matrix.f - connection_width * y_params[1],
                              x2=x2, y2=y_params[0] + component.transform_matrix.f + connection_width * y_params[2])
 
-        trace.vias.append(RectAreaLayer(layer='locali-m1', area=via_left))
-        trace.vias.append(RectAreaLayer(layer='locali-m1', area=via_right))
-        trace.segments.append(RectAreaLayer(layer='locali', area=segment))
+        trace.vias.append(RectAreaLayer(layer=f'{self.METAL_LAYERS[0]}-{self.METAL_LAYERS[1]}', area=via_left))
+        trace.vias.append(RectAreaLayer(layer=f'{self.METAL_LAYERS[0]}-{self.METAL_LAYERS[1]}', area=via_right))
+        trace.segments.append(RectAreaLayer(layer=self.METAL_LAYERS[0], area=segment))
 
     elif self.RELATIVE_COMPONENT_PLACEMENT == "H":
 
@@ -407,8 +408,8 @@ def __create_port_to_rail_connection_based_on_component_placement_order(
                                 y1=y_params[0] + component.transform_matrix.f - connection_width * y_params[1],
                                 x2=x1 + self.RAIL_RING_WIDTH,
                                 y2=y_params[0] + component.transform_matrix.f + connection_width * y_params[2])
-            trace.vias.append(RectAreaLayer(layer='locali-m1', area=via_left))
-            trace.segments.append(RectAreaLayer(layer='locali', area=segment))
+            trace.vias.append(RectAreaLayer(layer=f'{self.METAL_LAYERS[0]}-{self.METAL_LAYERS[1]}', area=via_left))
+            trace.segments.append(RectAreaLayer(layer=self.METAL_LAYERS[0], area=segment))
 
         elif self.functional_component_order[-1] == component_type:
             x1 = pin.layout.area.x2 - total_length + pin.layout.area.x1
@@ -423,8 +424,8 @@ def __create_port_to_rail_connection_based_on_component_placement_order(
                                  y1=y_params[0] + component.transform_matrix.f - connection_width * y_params[1],
                                  x2=x2,
                                  y2=y_params[0] + component.transform_matrix.f + connection_width * y_params[2])
-            trace.vias.append(RectAreaLayer(layer='locali-m1', area=via_right))
-            trace.segments.append(RectAreaLayer(layer='locali', area=segment))
+            trace.vias.append(RectAreaLayer(layer=f'{self.METAL_LAYER[0]}-{self.METAL_LAYER[1]}', area=via_right))
+            trace.segments.append(RectAreaLayer(layer=self.METAL_LAYER[0], area=segment))
 
         elif (self.functional_component_order[1] == component_type and len(self.functional_component_order) > 2
               or self.functional_component_order[2] == component_type and len(self.functional_component_order) > 3):
@@ -446,9 +447,9 @@ def __create_port_to_rail_connection_based_on_component_placement_order(
                                  x2=x2,
                                  y2=y_params[0] + component.transform_matrix.f + connection_width * y_params[2])
 
-            trace.vias.append(RectAreaLayer(layer='locali-m1', area=via_left))
-            trace.vias.append(RectAreaLayer(layer='locali-m1', area=via_right))
-            trace.segments.append(RectAreaLayer(layer='locali', area=segment))
+            trace.vias.append(RectAreaLayer(layer=f'{self.METAL_LAYERS[0]}-{self.METAL_LAYERS[1]}', area=via_left))
+            trace.vias.append(RectAreaLayer(layer=f'{self.METAL_LAYERS[0]}-{self.METAL_LAYERS[1]}', area=via_right))
+            trace.segments.append(RectAreaLayer(layer=self.METAL_LAYERS[0], area=segment))
 
 
 def __add_connections_for_middle_placed_components(self, pin: Pin, group_components: list, trace: TraceNet,
@@ -512,9 +513,9 @@ def __add_connections_for_middle_placed_components(self, pin: Pin, group_compone
                                     + total_length,
                                     y2=pin.layout.area.y2)
 
-            trace.vias.append(RectAreaLayer(layer='locali-m1', area=via_left_top))
-            trace.vias.append(RectAreaLayer(layer='locali-m1', area=via_left_bot))
-            trace.vias.append(RectAreaLayer(layer='locali-m1', area=via_right_top))
-            trace.vias.append(RectAreaLayer(layer='locali-m1', area=via_right_bot))
-            trace.segments.append(RectAreaLayer(layer='m1', area=segment_left))
-            trace.segments.append(RectAreaLayer(layer='m1', area=segment_right))
+            trace.vias.append(RectAreaLayer(layer=f'{self.METAL_LAYERS[0]}-{self.METAL_LAYERS[1]}', area=via_left_top))
+            trace.vias.append(RectAreaLayer(layer=f'{self.METAL_LAYERS[0]}-{self.METAL_LAYERS[1]}', area=via_left_bot))
+            trace.vias.append(RectAreaLayer(layer=f'{self.METAL_LAYERS[0]}-{self.METAL_LAYERS[1]}', area=via_right_top))
+            trace.vias.append(RectAreaLayer(layer=f'{self.METAL_LAYERS[0]}-{self.METAL_LAYERS[1]}', area=via_right_bot))
+            trace.segments.append(RectAreaLayer(layer=self.METAL_LAYERS[1], area=segment_left))
+            trace.segments.append(RectAreaLayer(layer=self.METAL_LAYERS[1], area=segment_right))

@@ -208,10 +208,11 @@ def __local_bulk_to_source_connection(self, component):
     source_x2 = next((port.area.x2 for port in component.layout_ports if port.type == 'S'))
     source_y2 = next((port.area.y2 for port in component.layout_ports if port.type == 'S'))
 
-    trace.segments = [RectAreaLayer(layer='locali', area=RectArea(x1=bulk_x1 + component.transform_matrix.c,
-                                                                  y1=source_y1 + component.transform_matrix.f,
-                                                                  x2=source_x2 + component.transform_matrix.c,
-                                                                  y2=source_y2 + component.transform_matrix.f))]
+    trace.segments = [RectAreaLayer(layer=self.METAL_LAYERS[0], area=RectArea(
+        x1=bulk_x1 + component.transform_matrix.c,
+        y1=source_y1 + component.transform_matrix.f,
+        x2=source_x2 + component.transform_matrix.c,
+        y2=source_y2 + component.transform_matrix.f))]
     self.components.append(trace)
 
 
@@ -228,10 +229,11 @@ def __local_gate_to_drain_connection(self, component: Transistor):
     gate_y2 = next((port.area.y2 for port in component.layout_ports if port.type == 'G'))
     gate_mirrored_x2 = component.bounding_box.x2 - gate_x1
 
-    trace.segments = [RectAreaLayer(layer='locali', area=RectArea(x1=drain_x1 + component.transform_matrix.c,
-                                                                  y1=gate_y1 + component.transform_matrix.f,
-                                                                  x2=gate_mirrored_x2 + component.transform_matrix.c,
-                                                                  y2=gate_y2 + component.transform_matrix.f))]
+    trace.segments = [RectAreaLayer(layer=self.METAL_LAYERS[0], area=RectArea(
+        x1=drain_x1 + component.transform_matrix.c,
+        y1=gate_y1 + component.transform_matrix.f,
+        x2=gate_mirrored_x2 + component.transform_matrix.c,
+        y2=gate_y2 + component.transform_matrix.f))]
     self.components.append(trace)
 
 
@@ -317,9 +319,9 @@ def __create_bulk_to_rail_based_on_component_placement_order(
                              y1=y_params[0] + component.transform_matrix.f - bulk_width // 2 + y_params[1],
                              x2=x2, y2=y_params[0] + component.transform_matrix.f + (bulk_width // 2) + y_params[1])
 
-        trace.vias.append(RectAreaLayer(layer='locali-m1', area=via_left))
-        trace.vias.append(RectAreaLayer(layer='locali-m1', area=via_right))
-        trace.segments.append(RectAreaLayer(layer='locali', area=segment))
+        trace.vias.append(RectAreaLayer(layer=f'{self.METAL_LAYERS[0]}-{self.METAL_LAYERS[1]}', area=via_left))
+        trace.vias.append(RectAreaLayer(layer=f'{self.METAL_LAYERS[0]}-{self.METAL_LAYERS[1]}', area=via_right))
+        trace.segments.append(RectAreaLayer(layer=self.METAL_LAYERS[0], area=segment))
 
     elif self.RELATIVE_COMPONENT_PLACEMENT == "H":
 
@@ -333,8 +335,8 @@ def __create_bulk_to_rail_based_on_component_placement_order(
             via_left = RectArea(x1=x1, y1=y_params[0] + component.transform_matrix.f - bulk_width // 2 + y_params[1],
                                 x2=x1 + self.RAIL_RING_WIDTH,
                                 y2=y_params[0] + component.transform_matrix.f + (bulk_width // 2) + y_params[1])
-            trace.vias.append(RectAreaLayer(layer='locali-m1', area=via_left))
-            trace.segments.append(RectAreaLayer(layer='locali', area=segment))
+            trace.vias.append(RectAreaLayer(layer=f'{self.METAL_LAYERS[0]}-{self.METAL_LAYERS[1]}', area=via_left))
+            trace.segments.append(RectAreaLayer(layer=self.METAL_LAYERS[0], area=segment))
 
         elif self.functional_component_order[-1] == "T":
             x1 = pin.layout.area.x2 - total_length + pin.layout.area.x1
@@ -346,8 +348,8 @@ def __create_bulk_to_rail_based_on_component_placement_order(
             via_right = RectArea(x1=x2 - self.RAIL_RING_WIDTH,
                                  y1=y_params[0] + component.transform_matrix.f - bulk_width // 2 + y_params[1],
                                  x2=x2, y2=y_params[0] + component.transform_matrix.f + (bulk_width // 2) + y_params[1])
-            trace.vias.append(RectAreaLayer(layer='locali-m1', area=via_right))
-            trace.segments.append(RectAreaLayer(layer='locali', area=segment))
+            trace.vias.append(RectAreaLayer(layer=f'{self.METAL_LAYERS[0]}-{self.METAL_LAYERS[1]}', area=via_right))
+            trace.segments.append(RectAreaLayer(layer=self.METAL_LAYERS[0], area=segment))
 
         elif (self.functional_component_order[1] == "T" and len(self.functional_component_order) > 2
               or self.functional_component_order[2] == "T" and len(self.functional_component_order) > 3):
@@ -365,9 +367,9 @@ def __create_bulk_to_rail_based_on_component_placement_order(
                                  y1=y_params[0] + component.transform_matrix.f - bulk_width // 2 + y_params[1],
                                  x2=x2, y2=y_params[0] + component.transform_matrix.f + (bulk_width // 2) + y_params[1])
 
-            trace.vias.append(RectAreaLayer(layer='locali-m1', area=via_left))
-            trace.vias.append(RectAreaLayer(layer='locali-m1', area=via_right))
-            trace.segments.append(RectAreaLayer(layer='locali', area=segment))
+            trace.vias.append(RectAreaLayer(layer=f'{self.METAL_LAYERS[0]}-{self.METAL_LAYERS[1]}', area=via_left))
+            trace.vias.append(RectAreaLayer(layer=f'{self.METAL_LAYERS[0]}-{self.METAL_LAYERS[1]}', area=via_right))
+            trace.segments.append(RectAreaLayer(layer=self.METAL_LAYERS[0], area=segment))
 
 
 def __add_connections_for_middle_placed_components(self, pin, group_components, trace):
@@ -427,12 +429,12 @@ def __add_connections_for_middle_placed_components(self, pin, group_components, 
                                     + total_length,
                                     y2=pin.layout.area.y2)
 
-            trace.vias.append(RectAreaLayer(layer='locali-m1', area=via_left_top))
-            trace.vias.append(RectAreaLayer(layer='locali-m1', area=via_left_bot))
-            trace.vias.append(RectAreaLayer(layer='locali-m1', area=via_right_top))
-            trace.vias.append(RectAreaLayer(layer='locali-m1', area=via_right_bot))
-            trace.segments.append(RectAreaLayer(layer='m1', area=segment_left))
-            trace.segments.append(RectAreaLayer(layer='m1', area=segment_right))
+            trace.vias.append(RectAreaLayer(layer=f'{self.METAL_LAYERS[0]}-{self.METAL_LAYERS[1]}', area=via_left_top))
+            trace.vias.append(RectAreaLayer(layer=f'{self.METAL_LAYERS[0]}-{self.METAL_LAYERS[1]}', area=via_left_bot))
+            trace.vias.append(RectAreaLayer(layer=f'{self.METAL_LAYERS[0]}-{self.METAL_LAYERS[1]}', area=via_right_top))
+            trace.vias.append(RectAreaLayer(layer=f'{self.METAL_LAYERS[0]}-{self.METAL_LAYERS[1]}', area=via_right_bot))
+            trace.segments.append(RectAreaLayer(layer=self.METAL_LAYERS[1], area=segment_left))
+            trace.segments.append(RectAreaLayer(layer=self.METAL_LAYERS[1], area=segment_right))
 
 
 def get_component_group_endpoints_for_atr_sky130a_lib(self):
