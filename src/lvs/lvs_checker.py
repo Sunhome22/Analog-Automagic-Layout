@@ -36,9 +36,9 @@ class LVSchecking:
 
         # Runs LVS command from work directory of project
         try:
-            output = subprocess.run(['make lvsall'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True,
+            output = subprocess.run(['make cdl lvsall'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True,
                                     check=True, shell=True, cwd=work_directory)
             self.logger.info(output.stdout)
 
         except subprocess.CalledProcessError as e:
-            self.logger.error(f"'make lvsall' command had problems: {e.stderr}")
+            self.logger.error(f"'make cdl lvsall' command had problems: {e.stderr}")

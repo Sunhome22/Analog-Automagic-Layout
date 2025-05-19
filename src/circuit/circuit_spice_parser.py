@@ -15,11 +15,12 @@
 # ==================================================== Notes ===========================================================
 """
     Naming conversions for circuit components:
-    - RH/RX HPO/XHPO Resistors
-    - CM/CV MIM/VPP Capacitors
-    - QN/QP	NPN/PNP Bipolar transistor
-    - MN/MP NMOS/PMOS transistor
-    - U	Circuit cells/Integrated circuits
+    - xRH#/xRX#   HPO/XHPO Resistors
+    - xCM#/xCV#   MIM/VPP Capacitors
+    - xQN#/xQP#	  NPN/PNP Bipolar transistor
+    - xMN#/xMP#   NMOS/PMOS transistor
+    - xD#         Precompiled digital blocks (not implemented)
+    - xU#	      Circuit cells/Integrated circuits
 """
 
 # ================================================== Libraries =========================================================
@@ -373,12 +374,12 @@ class SPICEparser:
             except IndexError as e:
                 self.logger.error(f"Incorrect naming of component on spice line: '{spice_line}'")
                 self.logger.error(f"Naming conversions for circuit components: ")
-                self.logger.error(f"- xRH?/xRX? HPO/XHPO Resistors")
-                self.logger.error(f"- xCM?/xCV? MIM/VPP Capacitors")
-                self.logger.error(f"- xQN?/xQP? NPN/PNP")
-                self.logger.error(f"- xMN?/xMP? NMOS/PMOS")
-                self.logger.error(f"- xD? Digital Blocks (NOT HANDLED)")
-                self.logger.error(f"- xU? Circuit Cells")
+                self.logger.error(f"- xRH#/xRX# HPO/XHPO Resistors")
+                self.logger.error(f"- xCM#/xCV# MIM/VPP Capacitors")
+                self.logger.error(f"- xQN#/xQP# NPN/PNP")
+                self.logger.error(f"- xMN#/xMP# NMOS/PMOS")
+                self.logger.error(f"- xD# Digital Blocks (NOT HANDLED)")
+                self.logger.error(f"- xU# Circuit Cells")
                 sys.exit()
 
             #  --- Circuit cells ---
