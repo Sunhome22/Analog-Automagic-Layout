@@ -116,7 +116,7 @@ class SPICEparser:
         subcircuit = SubCircuit(layout_name=line_words[1], ports=line_words[2:])
         self.subcircuits.append(subcircuit)
 
-        self.logger.info(f"SPICE subcircuit port info found for '{subcircuit.layout_name}'")
+        self.logger.info(f"SPICE sub-circuit port info found for '{subcircuit.layout_name}'")
 
     def __remove_expanded_subcircuits_for_component_libraries(self):
         in_expanded_symbol = False
@@ -170,7 +170,7 @@ class SPICEparser:
                 subcircuit = SubCircuit(layout_name=line_words[1], ports=line_words[2:])
                 self.subcircuits.append(subcircuit)
 
-                self.logger.info(f"SPICE subcircuit port info found for '{subcircuit.layout_name}'")
+                self.logger.info(f"SPICE sub-circuit port info found for '{subcircuit.layout_name}'")
 
     def __get_current_circuit_cell_name(self, spice_file_line: str):
         # Update cell information (Any symbol or the schematic itself)
@@ -392,10 +392,10 @@ class SPICEparser:
                                            cell=line_words[-1],
                                            named_cell=f"{line_words[0]}_{line_words[-1]}",
                                            parent_cell=current_cell,
-                                           named_parent_cell=f"", # not added yet
-                                           cell_chain=f"", # not added yet
+                                           named_parent_cell=f"",  # not added here
+                                           cell_chain=f"",  # not added here
                                            group=filtered_group,
-                                           number_id=0, # not added yet
+                                           number_id=0,  # not added here
                                            schematic_connections={port_definitions[i]: line_words[i + 1] for i in
                                                                   range(min(len(port_definitions), len(line_words) - 1)
                                                                         )})
@@ -439,6 +439,7 @@ class SPICEparser:
                         break
 
                 circuit_cell.cell_chain = '--'.join(self.cell_chain_list)
+
                 circuit_cell.named_parent_cell = "UROOT_ROOT_CELL" if circuit_cell.parent_cell == "ROOT_CELL" \
                     else self.cell_chain_list[-2]
                 circuit_cell.number_id = len(self.components)

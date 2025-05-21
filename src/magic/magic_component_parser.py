@@ -89,20 +89,6 @@ class MagicComponentsParser:
 
         return self.components
 
-    @staticmethod
-    def __get_port_metal_layer(input_value):
-        if input_value in ['locali', 'm1', 'm2', 'm3', 'm4', 'm5']:
-            return input_value
-
-        metal_mapping = {
-            'metal1': 'm1',
-            'metal2': 'm2',
-            'metal3': 'm3',
-            'metal4': 'm4',
-            'metal5.': 'm5'
-        }
-        return metal_mapping.get(input_value, "Invalid metal")
-
     def __get_scale_factor(self, text_line: str):
         if re.search(r'magscale', text_line):
             text_line_words = text_line.split()

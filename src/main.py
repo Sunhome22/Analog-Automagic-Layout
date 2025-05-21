@@ -72,7 +72,6 @@ def main():
     components = SPICEparser(project_properties=project_properties).get()
     components = MagicComponentsParser(project_properties=project_properties, components=components).get()
     save_to_json(components, file_name="src/results/temp_components_before_cell_creator.json")
-
     components = CellCreator(project_properties=project_properties, components=components).get()
     MagicLayoutCreator(project_properties=project_properties, components=components)
     save_to_json(components, file_name="src/results/complete_component_info.json")
@@ -80,7 +79,7 @@ def main():
     DRCchecking(project_properties=project_properties)
     LVSchecking(project_properties=project_properties)
 
-    #LayoutToSVG(project_properties=project_properties).create_custom_svg_from_layout_cell(cell="OTA")
+    LayoutToSVG(project_properties=project_properties).create_custom_svg_from_layout_cell(cell="OTA")
 
 
 if __name__ == '__main__':
