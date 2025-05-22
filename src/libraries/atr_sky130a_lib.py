@@ -65,26 +65,33 @@ def offset_components_by_group_endpoint_and_overlap_distance_for_atr_sky130a_lib
                     comp.bounding_box.x2 += offset_x
 
         elif self.functional_component_order[0] == "T":
-            offset = 0
+            offset_x = []
+            offset_y = []
             for component in atr_transistor_components:
                 component.transform_matrix.f += (component.group_endpoint_bounding_box.y2 -
-                                                 component.group_endpoint_bounding_box.y1) + component.overlap_distance.y
-                offset = component.overlap_distance.x
+                                                 component.group_endpoint_bounding_box.y1)
+
+                offset_x.append(component.overlap_distance.x)
+                offset_y.append(component.group_endpoint_bounding_box.y2 - component.group_endpoint_bounding_box.y1)
 
             for comp in self.components:
                 if isinstance(comp, CircuitCell):
-                    comp.bounding_box.x1 -= offset
+                    comp.bounding_box.x1 -= min(offset_x)
+                    comp.bounding_box.y2 += min(offset_y)
 
         elif self.functional_component_order[-1] == "T":
-            offset = 0
+            offset_x = []
+            offset_y = []
             for component in atr_transistor_components:
                 component.transform_matrix.f += (component.group_endpoint_bounding_box.y2 -
                                                  component.group_endpoint_bounding_box.y1) + component.overlap_distance.y
-                offset = component.overlap_distance.x
+                offset_x.append(component.overlap_distance.x)
+                offset_y.append(component.group_endpoint_bounding_box.y2 - component.group_endpoint_bounding_box.y1)
 
             for comp in self.components:
                 if isinstance(comp, CircuitCell):
-                    comp.bounding_box.x2 += offset
+                    comp.bounding_box.x1 += min(offset_x)
+                    comp.bounding_box.y2 += min(offset_y)
 
         elif (self.functional_component_order[1] == "T" and len(self.functional_component_order) > 2
               or self.functional_component_order[2] == "T" and len(self.functional_component_order) > 3):
@@ -300,7 +307,8 @@ def generate_bulk_to_rail_segments(self, rail: str, component: Transistor, y_par
 def __create_bulk_to_rail_based_on_component_placement_order(
         self, pin, y_params, component, bulk_width, group_components, trace):
 
-    total_length = sum((comp.bounding_box.x2 - comp.bounding_box.x1) for comp in group_components) + sum(comp.overlap_distance.x for comp in group_components)
+    total_length = (sum((comp.bounding_box.x2 - comp.bounding_box.x1) for comp in group_components))
+                    #+ sum(comp.overlap_distance.x for comp in group_components))
 
     smallest_x_component = min(group_components, key=lambda comp: comp.transform_matrix.c)
 
@@ -654,13 +662,14 @@ def get_overlap_difference_for_atr_sky130a_lib(self, text_line: str, component: 
     # Calculate overlap difference after bounding box has been set
     elif self.found_bounding_box:
 
-        x_difference = int((abs(self.transistor_well_size.x1) + abs(self.transistor_well_size.x2)
-                            - (abs(component.bounding_box.x1) + abs(component.bounding_box.x2))) / 2)
-        y_difference = int((abs(self.transistor_well_size.y1) + abs(self.transistor_well_size.y2)
-                            - (abs(component.bounding_box.y1) + abs(component.bounding_box.y2))) / 2)
-
-        component.overlap_distance.x = x_difference
-        component.overlap_distance.y = y_difference
+        well = self.transistor_well_size
+        box = component.bounding_box
+        x_dist_left = box.x1 - well.x1
+        x_dist_right = well.x2 - box.x2
+        y_dist_bottom = box.y1 - well.y1
+        y_dist_top = well.y2 - box.y2
+        component.overlap_distance.x = min(y_dist_bottom, y_dist_top)
+        component.overlap_distance.y = min(x_dist_left, x_dist_right)
 
 
 def get_component_bounding_box_for_atr_sky130a_lib(self, text_line: str, component):
