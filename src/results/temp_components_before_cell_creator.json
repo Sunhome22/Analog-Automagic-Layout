@@ -220,8 +220,8 @@
             "y2": 400
         },
         "overlap_distance": {
-            "x": 124,
-            "y": 210
+            "x": 105,
+            "y": 62
         },
         "group_endpoint": "",
         "group_endpoint_bounding_box": {
@@ -307,8 +307,8 @@
             "y2": 400
         },
         "overlap_distance": {
-            "x": 124,
-            "y": 210
+            "x": 105,
+            "y": 62
         },
         "group_endpoint": "",
         "group_endpoint_bounding_box": {
@@ -394,8 +394,8 @@
             "y2": 400
         },
         "overlap_distance": {
-            "x": 124,
-            "y": 210
+            "x": 105,
+            "y": 62
         },
         "group_endpoint": "",
         "group_endpoint_bounding_box": {
@@ -481,8 +481,8 @@
             "y2": 400
         },
         "overlap_distance": {
-            "x": 124,
-            "y": 210
+            "x": 105,
+            "y": 62
         },
         "group_endpoint": "",
         "group_endpoint_bounding_box": {
@@ -568,8 +568,8 @@
             "y2": 400
         },
         "overlap_distance": {
-            "x": 124,
-            "y": 210
+            "x": 105,
+            "y": 62
         },
         "group_endpoint": "",
         "group_endpoint_bounding_box": {
@@ -655,8 +655,8 @@
             "y2": 400
         },
         "overlap_distance": {
-            "x": 124,
-            "y": 210
+            "x": 105,
+            "y": 62
         },
         "group_endpoint": "",
         "group_endpoint_bounding_box": {
@@ -742,8 +742,8 @@
             "y2": 400
         },
         "overlap_distance": {
-            "x": 124,
-            "y": 210
+            "x": 105,
+            "y": 62
         },
         "group_endpoint": "",
         "group_endpoint_bounding_box": {
@@ -829,8 +829,8 @@
             "y2": 400
         },
         "overlap_distance": {
-            "x": 124,
-            "y": 210
+            "x": 105,
+            "y": 62
         },
         "group_endpoint": "",
         "group_endpoint_bounding_box": {
@@ -916,8 +916,8 @@
             "y2": 400
         },
         "overlap_distance": {
-            "x": 124,
-            "y": 210
+            "x": 105,
+            "y": 62
         },
         "group_endpoint": "",
         "group_endpoint_bounding_box": {
@@ -1003,8 +1003,8 @@
             "y2": 400
         },
         "overlap_distance": {
-            "x": 124,
-            "y": 210
+            "x": 105,
+            "y": 62
         },
         "group_endpoint": "",
         "group_endpoint_bounding_box": {
@@ -1090,8 +1090,8 @@
             "y2": 400
         },
         "overlap_distance": {
-            "x": 40,
-            "y": 126
+            "x": 63,
+            "y": 20
         },
         "group_endpoint": "",
         "group_endpoint_bounding_box": {
@@ -1177,8 +1177,8 @@
             "y2": 400
         },
         "overlap_distance": {
-            "x": 40,
-            "y": 126
+            "x": 63,
+            "y": 20
         },
         "group_endpoint": "",
         "group_endpoint_bounding_box": {

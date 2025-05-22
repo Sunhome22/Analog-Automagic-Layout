@@ -84,13 +84,13 @@ def offset_components_by_group_endpoint_and_overlap_distance_for_atr_sky130a_lib
             offset_y = []
             for component in atr_transistor_components:
                 component.transform_matrix.f += (component.group_endpoint_bounding_box.y2 -
-                                                 component.group_endpoint_bounding_box.y1) + component.overlap_distance.y
+                                                 component.group_endpoint_bounding_box.y1)
                 offset_x.append(component.overlap_distance.x)
                 offset_y.append(component.group_endpoint_bounding_box.y2 - component.group_endpoint_bounding_box.y1)
 
             for comp in self.components:
                 if isinstance(comp, CircuitCell):
-                    comp.bounding_box.x1 += min(offset_x)
+                    comp.bounding_box.x2 += min(offset_x)
                     comp.bounding_box.y2 += min(offset_y)
 
         elif (self.functional_component_order[1] == "T" and len(self.functional_component_order) > 2
@@ -307,8 +307,8 @@ def generate_bulk_to_rail_segments(self, rail: str, component: Transistor, y_par
 def __create_bulk_to_rail_based_on_component_placement_order(
         self, pin, y_params, component, bulk_width, group_components, trace):
 
-    total_length = (sum((comp.bounding_box.x2 - comp.bounding_box.x1) for comp in group_components))
-                    #+ sum(comp.overlap_distance.x for comp in group_components))
+    total_length = (sum((comp.bounding_box.x2 - comp.bounding_box.x1) for comp in group_components)
+                    + sum(comp.overlap_distance.x for comp in group_components))
 
     smallest_x_component = min(group_components, key=lambda comp: comp.transform_matrix.c)
 
@@ -651,8 +651,10 @@ def get_overlap_difference_for_atr_sky130a_lib(self, text_line: str, component: 
     if self.found_transistor_well_line_label:
         line_words = text_line.split()
 
-        self.transistor_well_size = RectArea(x1=int(line_words[1]), y1=int(line_words[2]), x2=int(line_words[3]),
-                                             y2=int(line_words[4]))
+        self.transistor_well_size = RectArea(x1=int(line_words[1]) // self.scale_factor,
+                                             y1=int(line_words[2]) // self.scale_factor,
+                                             x2=int(line_words[3]) // self.scale_factor,
+                                             y2=int(line_words[4]) // self.scale_factor)
         self.found_transistor_well_line_label = False
 
     elif re.search(r'<< nwell >>', text_line) or re.search(r'<< pwell >>', text_line):
@@ -661,15 +663,23 @@ def get_overlap_difference_for_atr_sky130a_lib(self, text_line: str, component: 
 
     # Calculate overlap difference after bounding box has been set
     elif self.found_bounding_box:
+        x_difference = int((abs(self.transistor_well_size.x2 - self.transistor_well_size.x1)
+                            - abs(component.bounding_box.x2 - component.bounding_box.x1)) / 2)
 
-        well = self.transistor_well_size
-        box = component.bounding_box
-        x_dist_left = box.x1 - well.x1
-        x_dist_right = well.x2 - box.x2
-        y_dist_bottom = box.y1 - well.y1
-        y_dist_top = well.y2 - box.y2
-        component.overlap_distance.x = min(y_dist_bottom, y_dist_top)
-        component.overlap_distance.y = min(x_dist_left, x_dist_right)
+        y_difference = int((abs(self.transistor_well_size.y2 - self.transistor_well_size.y1)
+                            - abs(component.bounding_box.y2 - component.bounding_box.y1)) / 2)
+
+        # well = self.transistor_well_size
+        # print(well, component.name)
+        #
+        # box = component.bounding_box
+        # print(f"box: {box}")
+        # x_dist_left = box.x1 - well.x1
+        # x_dist_right = well.x2 - box.x2
+        # y_dist_bottom = box.y1 - well.y1
+        # y_dist_top = well.y2 - box.y2
+        component.overlap_distance.x = x_difference # min(y_dist_bottom, y_dist_top)
+        component.overlap_distance.y = y_difference # min(x_dist_left, x_dist_right)
 
 
 def get_component_bounding_box_for_atr_sky130a_lib(self, text_line: str, component):
