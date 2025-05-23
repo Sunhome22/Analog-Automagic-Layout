@@ -19,9 +19,9 @@ from circuit.circuit_components import LayoutPort, RectArea, Transistor, Capacit
 from logger.logger import get_a_logger
 from dataclasses import fields
 import math
-import libraries.atr_sky130a_lib as atr
-import libraries.tr_sky130a_lib as tr
-import libraries.aal_misc_sky130a_lib as aal_misc
+import libraries.atr_lib as atr
+import libraries.tr_lib as tr
+import libraries.aal_misc_lib as aal_misc
 
 # ============================================= Magic component parser =================================================
 
@@ -69,19 +69,18 @@ class MagicComponentsParser:
                 except FileNotFoundError:
                     self.logger.error(f"The file {layout_file_path} was not found.")
 
-                # ATR SKY130A LIB component handling
+                # ATR LIB component handling
                 if re.search(r'_ATR_', component.layout_library):
-                    atr.magic_component_parsing_for_atr_sky130a_lib(self=self, layout_file_path=layout_file_path,
-                                                                    component=component)
-                # TR SKY130A LIB component handling
+                    atr.magic_component_parsing_for_atr_lib(self=self, layout_file_path=layout_file_path,
+                                                            component=component)
+                # TR LIB component handling
                 if re.search(r'_TR_', component.layout_library):
-                    tr.magic_component_parsing_for_tr_sky130a_lib(self=self, layout_file_path=layout_file_path,
-                                                                  component=component)
-                # AAL MISC SKY130A LIB component handling
+                    tr.magic_component_parsing_for_tr_lib(self=self, layout_file_path=layout_file_path,
+                                                          component=component)
+                # AAL MISC LIB component handling
                 if re.search(r'AAL_MISC', component.layout_library):
-                    aal_misc.magic_component_parsing_for_aal_misc_sky130a_lib(self=self,
-                                                                              layout_file_path=layout_file_path,
-                                                                              component=component)
+                    aal_misc.magic_component_parsing_for_aal_misc_lib(self=self, layout_file_path=layout_file_path,
+                                                                      component=component)
                 self.__check_component_is_valid(component=component)
 
         # Process complete

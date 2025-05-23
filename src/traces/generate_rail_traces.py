@@ -18,7 +18,7 @@ from circuit.circuit_components import RectArea, Transistor, Capacitor, Resistor
 from logger.logger import get_a_logger
 import tomllib
 import re
-import libraries.atr_sky130a_lib as atr
+import libraries.atr_lib as atr
 
 # =============================================== Trace Generator ======================================================
 

@@ -23,100 +23,210 @@ from dataclasses import dataclass, field
 from typing import List, Dict
 from collections import defaultdict
 from logger.logger import get_a_logger
-import gdspy
 
-# ================================================= LVS checker ========================================================
+import html
+import sys, os, re
+from klayout import db
 
+# =============================================== Layout to svg ========================================================
 
 class LayoutToSVG:
     logger = get_a_logger(__name__)
 
     def __init__(self, project_properties):
-        self.current_file_directory = os.path.dirname(os.path.abspath(__file__))
         self.project_directory = project_properties.directory
         self.project_top_lib_name = project_properties.top_lib_name
         self.project_cell_name = project_properties.top_cell_name
 
     def create_custom_svg_from_layout_cell(self, cell):
-        """This function is not general in the slightest, and was just created to make pretty pictures"""
+        """Generate SVG with user instance names on boxes"""
 
         work_directory = os.path.expanduser(f"{self.project_directory}/work/")
 
         # Runs GDS command from work directory of project
         try:
-            output = subprocess.run([f'make gds CELL={cell}'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True,
-                                    check=True, shell=True, cwd=work_directory)
+            output = subprocess.run(['make', 'gds', f'CELL={cell}'],
+                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                                    text=True, check=True, shell=False, cwd=work_directory)
             self.logger.info(output.stdout)
-
         except subprocess.CalledProcessError as e:
             self.logger.error(f"'make gds CELL={cell}' command had problems: {e.stderr}")
 
-        lib = gdspy.GdsLibrary()
-        lib.read_gds(f'{work_directory}gds/{cell}.gds')
-        top_cell = lib.top_level()[0]
-        visual_cell = gdspy.Cell("VISUAL_TOP")
+        # Load the GDSII file
+        layout = db.Layout()
+        layout.read(f"{work_directory}gds/{cell}.gds")
+        top_cell = layout.cell(cell)
 
-        # Add top-level polygons
-        for polygon in top_cell.polygons:
-            visual_cell.add(polygon)
+        # Create a (temporary) SVG file
+        svg_path = f"src/utils/{cell}.svg"
 
-        # Replace sub-cells with bounding box and label
-        for ref in top_cell.references:
-            bbox = ref.get_bounding_box()
-            if bbox is not None:
-                x0, y0 = bbox[0]
-                x1, y1 = bbox[1]
+        svg_elements = []
+        pad = 1100
 
-                rect = gdspy.Rectangle((x0, y0), (x1, y1), layer=999, datatype=0)
-                visual_cell.add(rect)
+        # Collect all polygons
+        for layer_index in range(layout.layers()):
+            layer_info = layout.get_info(layer_index)
+            ly = top_cell.layout().layer(layer_info)
+            for s in top_cell.shapes(ly):
+                if s.is_text():
+                    self.logger.info(f"Labels: '{s.text}' is on layer={layer_info.layer}, datatype={layer_info.datatype}")
 
-                label = gdspy.Label(
-                    ref.ref_cell.name,
-                    position=((x0 + x1) / 2, (y0 + y1) / 2),
-                    anchor='lower center',
-                    layer=998,
-                    texttype=0,
-                    magnification=0.28
-                )
-                visual_cell.add(label)
+                if s.is_box() or s.is_path() or s.is_polygon():
 
-        for label in top_cell.labels:
-            # Specific port layers
-            if label.layer == 69 or label.layer == 67:
-                visual_cell.add(gdspy.Label(
-                    label.text,
-                    position=label.position,
-                    layer=997,
-                    texttype=0,
-                    anchor='middle center',
-                    magnification=0.4
-                ))
+                    if s.is_polygon():
+                        region = db.Region(s.polygon)
+                    elif s.is_box():
+                        region = db.Region(s.box)
+                    elif s.is_path():
+                        region = db.Region(s.path)
+                    else:
+                        self.logger.warning(f"Cannot convert this Shape to a Region: {s}")
+                        continue
 
-        visual_cell.write_svg(f"src/utils/{cell}.svg", background='#ffffff', pad=10)
+                    for p in region.each():
+                        pts = extract_points(p)
+                        if not pts:
+                            continue  # skip if empty
+                        svg_path_str = "M " + " L ".join(f"{x},{-y}" for x, y in pts) + " Z"
+                        self.logger.info(f"Found box '{svg_path_str}' in layer='{layer_info.layer}' with datatype='{layer_info.datatype}'")
+                        svg_elements.append(f'<path d="{svg_path_str}" class="l{layer_info.layer}d{layer_info.datatype}" />')
 
-        with open(f"src/utils/{cell}.svg", "r") as f:
-            svg_content = f.read()
+        # Draw component bounding boxes and label them with user defined instance name
+        for ref in top_cell.each_inst():
+            bbox = ref.bbox()
+            if bbox is None:
+                continue
+            x0, y0, x1, y1 = bbox.left, bbox.bottom, bbox.right, bbox.top
+            svg_elements.append(
+                f'<rect x="{x0}" y="{-y1}" width="{x1-x0}" height="{y1-y0}" class="l999d0" />'
+            )
+            props = ref.properties()
+            raw_name = props.get(61, None) or ref.cell.name
+            inst_name = html.escape(str(raw_name) if raw_name is not None else "")
+            svg_elements.append(
+                f'<text x="{(x0 + x1) / 2}" y="{- (y0 + y1) / 2}" class="l998t0" text-anchor="middle" alignment-baseline="middle">{inst_name}</text>'
+            )
 
-        # Regex pattern to match the unwanted <style> block
-        svg_content = re.sub(
-            r'<style\s+type="text/css">\s*\.l94d20\s*\{[^}]*\}.*?</style>',
-            '',
-            svg_content,
-            flags=re.DOTALL
-        )
+        # Draw labels for connection port
+        for layer_index in range(layout.layers()):
+            layer_info = layout.get_info(layer_index)
+            if layer_info.layer not in (69, 67, 8, 30):
+                continue  # Only show specified layers as labels
+            ly = top_cell.layout().layer(layer_info)
+            for shape in top_cell.shapes(ly):
+                if shape.is_text():
+                    disp = shape.text_trans.disp
+                    x = disp.x
+                    y = disp.y
+                    label_text = next(iter(re.findall(r"'([^']+)'", str(shape.text))), str(shape.text))
+                    svg_elements.append(
+                        f'<text x="{x}" y="{-y}" class="l997t0" text-anchor="middle" alignment-baseline="middle">{label_text}</text>'
+                    )
 
-        # Custom CSS color format
+        # Compute cell bbox for scaling/padding
+        bbox = top_cell.bbox()
+        width, height = bbox.width(), bbox.height()
+        min_x, min_y, max_x, max_y = bbox.left, bbox.bottom, bbox.right, bbox.top
+        svg_width = width + 2*pad
+        svg_height = height + 2*pad
+
+        metal_colors = {
+            "Metal1": "#56423e",
+            "Metal2": "#bea6a1",
+            "Metal3": "#d62728",
+            "Metal4": "#1f77b4",
+            "Via1": "#e09a8e",
+            "Via2": "#e39024",
+            "Via3": "#70b512",
+        }
+
+        # Starting position inside your big box
+        start_x = min_x + 800
+        start_y = -min_y + 350  # vertical position for text and boxes
+
+        # Horizontal spacing between each metal-color pair
+        spacing = 4000
+
+        # Size of the color box
+        box_size = 400
+
+        for i, (metal, color) in enumerate(metal_colors.items()):
+            x = start_x + i * spacing
+
+            # Metal name text
+            svg_elements.append(
+                f'<text x="{x}" y="{start_y + box_size / 2}" font-size="500" fill="black" alignment-baseline="middle">{metal}</text>')
+
+            # Color box next to the metal name (with a small gap)
+            box_x = x - 700
+            box_y = start_y - 50  # align top of box with text baseline - box will be centered vertically
+            svg_elements.append(
+                f'<rect x="{box_x}" y="{box_y}" width="{box_size}" height="{box_size}" fill="{color}" stroke="black" stroke-width="2" />')
+
+        horizontal_arrow_y_offset = 40300  # how far above min_y to place horizontal arrow
+        horizontal_text_y_offset = 40400  # how far above min_y to place horizontal text
+
+        vertical_arrow_x_offset = 57300  # how far right of max_x to place vertical arrow
+        vertical_text_x_offset = 57300  # how far right of max_x to place vertical text
+        length_x = max_x - min_x
+        length_y = max_y - min_y
+
+        arrow_defs = """
+        <defs>
+          <marker id="arrowhead" markerWidth="20" markerHeight="30" 
+                  refX="10" refY="3.5" orient="auto" markerUnits="strokeWidth">
+            <path d="M0,0 L0,7 L10,3.5 z" fill="black" />
+          </marker>
+
+          <marker id="arrowhead_reversed" markerWidth="20" markerHeight="30" 
+                  refX="0" refY="3.5" orient="auto" markerUnits="strokeWidth">
+            <path d="M10,0 L10,7 L0,3.5 z" fill="black" />
+          </marker>
+        </defs>
+        """
+
+        arrow_elements = [
+            # Horizontal arrow line
+            f'<line x1="{min_x}" y1="{min_y - horizontal_arrow_y_offset}" x2="{max_x}" y2="{min_y - horizontal_arrow_y_offset}" '
+            'stroke="black" stroke-width="50" marker-start="url(#arrowhead_reversed)" marker-end="url(#arrowhead)" />',
+
+            # Horizontal length text
+            f'<text x="{(min_x + max_x) / 2}" y="{min_y - horizontal_text_y_offset}" font-size="400" fill="black" text-anchor="middle">'
+            f'{length_x/1000} μm</text>',
+
+            # Vertical arrow line
+            f'<line x1="{min_x + vertical_arrow_x_offset}" y1="{min_y}" x2="{min_x + vertical_arrow_x_offset}" y2="{min_y - horizontal_arrow_y_offset}" '
+            'stroke="black" stroke-width="50" marker-start="url(#arrowhead_reversed)" marker-end="url(#arrowhead)" />',
+
+            # Vertical length text (rotated)
+            f'<text x="{min_x + vertical_text_x_offset}" y="{(min_y + max_y) / 2}" font-size="400" fill="black" text-anchor="middle" '
+            f'transform="rotate(90 {min_x + vertical_text_x_offset},{(min_y + max_y) / 2})">{length_y} units</text>'
+        ]
+
+        svg_elements.extend(arrow_elements)
+
+
+        # Custom colors. Needs manual updating
         new_style = """
         <defs>
         <style type="text/css">
-          /* Highlighted layers */
-          .l70d20 { fill: #1f77b4; fill-opacity: 0.7; }    /* Metal2 (blue) */
-          .l69d20 { fill: #d62728; fill-opacity: 0.7; }    /* Metal3 (red) */
-          .l67d20 { fill: #56423e; fill-opacity: 0.7; }    /* Metal1 (brown) */
-          .l68d20 { fill: #bea6a1; fill-opacity: 0.7; }    /* Locali (light brown) */
-          .l68d44 { fill: #0077ff;}                        /* via1 (bright blue) */
-          .l67d44 { fill: #e09a8e;}                        /* viali (red shade) */
-          .l69d44 { fill: #70b512;}                        /* via2 (green) */
+          .l70d20 { fill: #1f77b4; fill-opacity: 0.7; }
+          .l69d20 { fill: #d62728; fill-opacity: 0.7; }
+          .l67d20 { fill: #56423e; fill-opacity: 0.7; }
+          .l68d20 { fill: #bea6a1; fill-opacity: 0.7; }
+          .l68d44 { fill: #0077ff;}
+          .l67d44 { fill: #e09a8e;}
+          .l69d44 { fill: #70b512;}
+          
+          .l50d0 { fill: #1f77b4; fill-opacity: 0.7; } /* Metal 4 in IHP */
+          .l49d0{ fill: #70b512;}                      /* Via 3 in IHP */
+          .l30d0 { fill: #d62728; fill-opacity: 0.7; } /* Metal 3 in IHP */
+          .l29d0 { fill: #e39024;}                     /* Via 2 in IHP */
+          .l10d0 { fill: #bea6a1; fill-opacity: 0.7; } /* Metal 2 in IHP */
+          .l19d0 { fill: #e09a8e;}                     /* Via 1 in IHP */
+          .l8d0 { fill: #56423e; fill-opacity: 0.7; }  /* Metal 1 in IHP */
+        
+          
           /* Not dealt with */
           .l64d20,
           .l65d20,
@@ -131,58 +241,38 @@ class LayoutToSVG:
           .l93d44,
           .l94d20,
           .l95d20,
+          .l8d2,
+          .l8d25,
+          .l30d2,
+          .l30d25,
+          .l14d0
           .l235d4 {
             fill: #000000;
             fill-opacity: 0.0;
           }
-          /* Subcell box */
-          .l998t0 { fill: #F5F5F5; font-size: 16px;}
-          .l997t0 { fill: #000000; font-size: 16px;}
-          .l999d0 { stroke: #000000; stroke-width: 0.7; fill: #000000; fill-opacity: 0.2; }
+          
+          .l998t0 { fill: #F5F5F5; font-size: 500px; }
+          .l997t0 { fill: #000000; font-size: 500px;}
+          .l999d0 { stroke: #000000; stroke-width: 50; fill: #000000; fill-opacity: 0.2; }
         </style>
         </defs>
         """
-        # Insert the new style inside <svg> tag after it opens
-        if "<defs>" in svg_content:
-            # Replace existing <defs> contents or just add at start of <defs>
-            svg_content = re.sub(r'(<defs[^>]*>)', r'\1' +
-                                 new_style.replace('<defs>', '').replace('</defs>', ''),
-                                 svg_content, count=1)
-        else:
-            pos = svg_content.find('>')
-            if pos != -1:
-                svg_content = svg_content[:pos + 1] + new_style + svg_content[pos + 1:]
+        new_style = arrow_defs + new_style
+        svg_background = f'<rect x="{min_x - pad}" y="{-max_y - pad}" width="{svg_width}" height="{svg_height}" fill="#ffffff" />'
+        svg_content = f"""<svg xmlns="http://www.w3.org/2000/svg" width="{svg_width}" height="{svg_height}"
+            viewBox="{min_x - pad} {-max_y - pad} {svg_width} {svg_height}">
+            {new_style}
+            {svg_background}
+            {' '.join(svg_elements)}
+        </svg>
+        """
 
-        with open(f"src/utils/{cell}.svg", "w") as f:
+        os.makedirs(os.path.dirname(svg_path), exist_ok=True)
+        with open(svg_path, "w") as f:
             f.write(svg_content)
 
-        self.logger.info(f"Created '{cell}.svg' in folder 'src/utils/{cell}.svg'")
 
-
-def recursive_bbox(cell, visited=None):
-    if visited is None:
-        visited = set()
-    if cell in visited:
-        return None
-    visited.add(cell)
-
-    bboxes = []
-
-    if cell.get_bounding_box() is not None:
-        bboxes.append(cell.get_bounding_box())
-
-    for ref in cell.references:
-        sub_bbox = recursive_bbox(ref.ref_cell, visited)
-        if sub_bbox is not None:
-            ref_matrix = ref.get_transform()
-            transformed_bbox = gdspy.rectangle(*sub_bbox).apply_transform(ref_matrix).get_bounding_box()
-            bboxes.append(transformed_bbox)
-
-    if not bboxes:
-        return None
-    else:
-        all_x0 = min(b[0][0] for b in bboxes)
-        all_y0 = min(b[0][1] for b in bboxes)
-        all_x1 = max(b[1][0] for b in bboxes)
-        all_y1 = max(b[1][1] for b in bboxes)
-        return [(all_x0, all_y0), (all_x1, all_y1)]
+def extract_points(poly):
+    # Handles both Polygon and PolygonWithProperties
+    base = poly.polygon if hasattr(poly, "polygon") else poly
+    return [ (pt.x, pt.y) for pt in base.each_point_hull() ]

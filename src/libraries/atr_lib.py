@@ -29,15 +29,15 @@ from circuit.circuit_components import (RectArea, RectAreaLayer, Transistor, Cap
                                         TraceNet, RectAreaLayer, DigitalBlock)
 
 # ======================================================================================================================
-# ================================================ ATR SKY130A handling ================================================
+# ==================================================== ATR handling ====================================================
 # ======================================================================================================================
 
 
 # ================================================= Update positioning  ================================================
 
-def offset_components_by_group_endpoint_and_overlap_distance_for_atr_sky130a_lib(self):
+def offset_components_by_group_endpoint_and_overlap_distance_for_atr_lib(self):
     """Updates position of components taking offset and group endpoint areas into account.
-    This is a somewhat hacky solution and there are still likely edge cases"""
+    This is a VERY hacky solution and there are still likely edge cases"""
 
     atr_transistor_components = []
     for component in self.components:
@@ -76,8 +76,18 @@ def offset_components_by_group_endpoint_and_overlap_distance_for_atr_sky130a_lib
 
             for comp in self.components:
                 if isinstance(comp, CircuitCell):
-                    comp.bounding_box.x1 -= min(offset_x)
-                    comp.bounding_box.y2 += min(offset_y)
+                    comp.bounding_box.x1 -= max(offset_x)
+
+            # Adjust cell height if group of atr transistors is the highest structure
+            atr_is_highest_structure = False
+            for comp in self.functional_components:
+                for component in atr_transistor_components:
+                    if comp.transform_matrix.f < component.transform_matrix.f and comp != component:
+                        atr_is_highest_structure = True
+                        break
+            for c in self.components:
+                if isinstance(c, CircuitCell) and atr_is_highest_structure:
+                    c.bounding_box.y2 += min(offset_y)
 
         elif self.functional_component_order[-1] == "T":
             offset_x = []
@@ -91,13 +101,36 @@ def offset_components_by_group_endpoint_and_overlap_distance_for_atr_sky130a_lib
             for comp in self.components:
                 if isinstance(comp, CircuitCell):
                     comp.bounding_box.x2 += min(offset_x)
-                    comp.bounding_box.y2 += min(offset_y)
+
+            # Adjust cell height if group of atr transistors is the highest structure
+            atr_is_highest_structure = False
+            for comp in self.functional_components:
+                for component in atr_transistor_components:
+                    if comp.transform_matrix.f < component.transform_matrix.f and comp != component:
+                        atr_is_highest_structure = True
+                        break
+            for c in self.components:
+                if isinstance(c, CircuitCell) and atr_is_highest_structure:
+                    c.bounding_box.y2 += min(offset_y)
 
         elif (self.functional_component_order[1] == "T" and len(self.functional_component_order) > 2
               or self.functional_component_order[2] == "T" and len(self.functional_component_order) > 3):
+            offset_y = []
             for component in atr_transistor_components:
                 component.transform_matrix.f += (component.group_endpoint_bounding_box.y2 -
-                                                 component.group_endpoint_bounding_box.y1) + component.overlap_distance.y
+                                                 component.group_endpoint_bounding_box.y1)
+                offset_y.append(component.group_endpoint_bounding_box.y2 - component.group_endpoint_bounding_box.y1)
+
+            # Adjust cell height if group of atr transistors is the highest structure
+            atr_is_highest_structure = False
+            for comp in self.functional_components:
+                for component in atr_transistor_components:
+                    if comp.transform_matrix.f < component.transform_matrix.f and comp != component:
+                        atr_is_highest_structure = True
+                        break
+            for c in self.components:
+                if isinstance(c, CircuitCell) and atr_is_highest_structure:
+                    c.bounding_box.y2 += min(offset_y)
 
     if self.RELATIVE_COMPONENT_PLACEMENT == "V":
         if len(self.functional_component_order) == 1:
@@ -145,7 +178,7 @@ def offset_components_by_group_endpoint_and_overlap_distance_for_atr_sky130a_lib
 # ============================================= Trace generation functions =============================================
 
 
-def generate_local_traces_for_atr_sky130a_lib(self):
+def generate_local_traces_for_atr_lib(self):
     atr_transistor_components = []
 
     for component in self.components:
@@ -445,7 +478,7 @@ def __add_connections_for_middle_placed_components(self, pin, group_components, 
             trace.segments.append(RectAreaLayer(layer=self.METAL_LAYERS[1], area=segment_right))
 
 
-def get_component_group_endpoints_for_atr_sky130a_lib(self):
+def get_component_group_endpoints_for_atr_lib(self):
     components_and_positions = []
     atr_transistor_components = []
 
@@ -613,7 +646,7 @@ def find_min_y_components(possible_y_min_components: list) -> dict:
 # ========================================== Magic layout creator functions ============================================
 
 
-def place_transistor_endpoints_for_atr_sky130a_lib(self, component: Transistor):
+def place_transistor_endpoints_for_atr_lib(self, component: Transistor):
     if isinstance(component, Transistor):
         layout_name_top = re.sub(r".{3}$", "TAPTOP", component.layout_name)
         layout_name_bot = re.sub(r".{3}$", "TAPBOT", component.layout_name)
@@ -647,7 +680,7 @@ def place_transistor_endpoints_for_atr_sky130a_lib(self, component: Transistor):
 # ========================================== Magic component parser functions ==========================================
 
 
-def get_overlap_difference_for_atr_sky130a_lib(self, text_line: str, component: Transistor):
+def get_overlap_difference_for_atr_lib(self, text_line: str, component: Transistor):
     if self.found_transistor_well_line_label:
         line_words = text_line.split()
 
@@ -668,21 +701,11 @@ def get_overlap_difference_for_atr_sky130a_lib(self, text_line: str, component: 
 
         y_difference = int((abs(self.transistor_well_size.y2 - self.transistor_well_size.y1)
                             - abs(component.bounding_box.y2 - component.bounding_box.y1)) / 2)
-
-        # well = self.transistor_well_size
-        # print(well, component.name)
-        #
-        # box = component.bounding_box
-        # print(f"box: {box}")
-        # x_dist_left = box.x1 - well.x1
-        # x_dist_right = well.x2 - box.x2
-        # y_dist_bottom = box.y1 - well.y1
-        # y_dist_top = well.y2 - box.y2
-        component.overlap_distance.x = x_difference # min(y_dist_bottom, y_dist_top)
-        component.overlap_distance.y = y_difference # min(x_dist_left, x_dist_right)
+        component.overlap_distance.x = x_difference
+        component.overlap_distance.y = y_difference
 
 
-def get_component_bounding_box_for_atr_sky130a_lib(self, text_line: str, component):
+def get_component_bounding_box_for_atr_lib(self, text_line: str, component):
 
     if re.search(r'string FIXED_BBOX', text_line):
         text_line_words = text_line.split()
@@ -690,19 +713,19 @@ def get_component_bounding_box_for_atr_sky130a_lib(self, text_line: str, compone
         self.found_bounding_box = True
 
 
-def get_component_endpoint_bounding_box_for_atr_sky130a_lib(self, text_line: str, component):
+def get_component_endpoint_bounding_box_for_atr_lib(self, text_line: str, component):
 
     if re.search(r'string FIXED_BBOX', text_line):
         text_line_words = text_line.split()
         component.group_endpoint_bounding_box.set([int(val) // self.scale_factor for val in text_line_words[2:6]])
 
 
-def magic_component_parsing_for_atr_sky130a_lib(self, layout_file_path: str, component):
+def magic_component_parsing_for_atr_lib(self, layout_file_path: str, component):
     try:
         with open(layout_file_path, "r") as magic_file:
             for text_line in magic_file:
-                get_overlap_difference_for_atr_sky130a_lib(text_line=text_line, component=component, self=self)
-                get_component_bounding_box_for_atr_sky130a_lib(text_line=text_line, component=component, self=self)
+                get_overlap_difference_for_atr_lib(text_line=text_line, component=component, self=self)
+                get_component_bounding_box_for_atr_lib(text_line=text_line, component=component, self=self)
     except FileNotFoundError:
         self.logger.error(f"The file {layout_file_path} was not found.")
 
@@ -713,8 +736,7 @@ def magic_component_parsing_for_atr_sky130a_lib(self, layout_file_path: str, com
     try:
         with open(layout_file_path, "r") as magic_file:
             for text_line in magic_file:
-                get_component_endpoint_bounding_box_for_atr_sky130a_lib(self=self, text_line=text_line,
-                                                                        component=component)
+                get_component_endpoint_bounding_box_for_atr_lib(self=self, text_line=text_line, component=component)
 
     except FileNotFoundError:
         self.logger.error(f"The file {layout_file_path} was not found.")

@@ -18,11 +18,11 @@ from circuit.circuit_components import RectArea, Transistor, Capacitor, Resistor
 from logger.logger import get_a_logger
 import tomllib
 import re
-import libraries.atr_sky130a_lib as atr
-import libraries.tr_sky130a_lib as tr
-import libraries.aal_misc_sky130a_lib as aal_misc
+import libraries.atr_lib as atr
+import libraries.tr_lib as tr
+import libraries.aal_misc_lib as aal_misc
 
-# ============================================ ATR SKY130A Handling ====================================================
+# ============================================== Library Handling ======================================================
 
 
 class LibraryHandling:
@@ -70,15 +70,15 @@ class LibraryHandling:
                 self.circuit_cell = component
 
     def pre_trace_generation(self):
-        atr.get_component_group_endpoints_for_atr_sky130a_lib(self=self)
-        atr.offset_components_by_group_endpoint_and_overlap_distance_for_atr_sky130a_lib(self=self)
+        atr.get_component_group_endpoints_for_atr_lib(self=self)
+        atr.offset_components_by_group_endpoint_and_overlap_distance_for_atr_lib(self=self)
         return self.components
 
     def post_rail_generation(self):
-        tr.generate_local_traces_for_tr_sky130a_lib_resistors(self=self)
-        atr.generate_local_traces_for_atr_sky130a_lib(self=self)
-        aal_misc.generate_local_traces_for_aal_misc_sky130a_lib_pnp_bipolars(self=self)
-        aal_misc.generate_local_traces_for_aal_misc_sky130a_lib_mim_capacitors(self=self)
+        tr.generate_local_traces_for_tr_lib_resistors(self=self)
+        atr.generate_local_traces_for_atr_lib(self=self)
+        aal_misc.generate_local_traces_for_aal_misc_lib_pnp_bipolars(self=self)
+        aal_misc.generate_local_traces_for_aal_misc_lib_mim_capacitors(self=self)
         return self.components
 
     def __load_config(self, path="pyproject.toml"):

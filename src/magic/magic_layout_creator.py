@@ -21,7 +21,7 @@ from logger.logger import get_a_logger
 from collections import deque
 import tomllib
 import re
-import libraries.atr_sky130a_lib as atr
+import libraries.atr_lib as atr
 import copy
 
 # ============================================== Magic layout creator ==================================================
@@ -283,7 +283,7 @@ class MagicLayoutCreator:
 
         # ATR SKY130A LIB component handling
         if any(lib for lib in self.component_libraries if re.search(r"ATR", lib.name)):
-            atr.place_transistor_endpoints_for_atr_sky130a_lib(self=self, component=component)
+            atr.place_transistor_endpoints_for_atr_lib(self=self, component=component)
 
     def __pin_component_creator(self, component):
         # Check that layout type is valid
