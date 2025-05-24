@@ -62,7 +62,7 @@ class LayoutToSVG:
         svg_path = f"src/utils/{cell}.svg"
 
         svg_elements = []
-        pad = 1100
+        pad = 1400
 
         # Collect all polygons
         for layer_index in range(layout.layers()):
@@ -112,7 +112,7 @@ class LayoutToSVG:
         for layer_index in range(layout.layers()):
             layer_info = layout.get_info(layer_index)
 
-            if layer_info.layer not in (69, 67, 8, 30):  # Needs manual updating
+            if layer_info.layer not in (69, 67, 8, 30, 50, 10):  # Needs manual updating
                 continue
             ly = top_cell.layout().layer(layer_info)
             for shape in top_cell.shapes(ly):
@@ -122,7 +122,7 @@ class LayoutToSVG:
                     y = disp.y
                     label_text = next(iter(re.findall(r"'([^']+)'", str(shape.text))), str(shape.text))
                     svg_elements.append(
-                        f'<text x="{x}" y="{-y + 180}" class="l997t0" text-anchor="middle" alignment-baseline="central">{label_text}</text>'
+                        f'<text x="{x}" y="{-y + 240}" class="l997t0" text-anchor="middle" alignment-baseline="central">{label_text}</text>'
                     )
 
         bbox = top_cell.bbox()
@@ -144,7 +144,7 @@ class LayoutToSVG:
         # Needs manual updating
         start_x = min_x + 800
         start_y = -min_y + 350
-        spacing = 4000
+        spacing = 5500
         box_size = 400
 
         for i, (metal, color) in enumerate(metal_colors.items()):
@@ -152,7 +152,7 @@ class LayoutToSVG:
 
             # Metal name text
             svg_elements.append(
-                f'<text x="{x}" y="{start_y + box_size / 2 + 160}" font-size="500" fill="black" alignment-baseline="middle">{metal}</text>')
+                f'<text x="{x}" y="{start_y + box_size / 2 + 165}" font-size="700" fill="black" alignment-baseline="middle">{metal}</text>')
 
             # Color box next to the metal name
             box_x = x - 700
@@ -161,10 +161,10 @@ class LayoutToSVG:
                 f'<rect x="{box_x}" y="{box_y}" width="{box_size}" height="{box_size}" fill="{color}" stroke="black" stroke-width="2" />')
 
         # Needs manual updating
-        horizontal_arrow_y_offset = 40300
-        horizontal_text_y_offset = 40480
-        vertical_arrow_x_offset = 57300
-        vertical_text_x_offset = 57480
+        horizontal_arrow_y_offset = 33600
+        horizontal_text_y_offset = 33780
+        vertical_arrow_x_offset = 37100
+        vertical_text_x_offset = 37280
 
         length_x = max_x - min_x
         length_y = max_y - min_y
@@ -191,7 +191,7 @@ class LayoutToSVG:
 
             # Horizontal length text
             f'<text x="{(min_x + max_x) / 2}" y="{min_y - horizontal_text_y_offset}" '
-            f'font-size="500" fill="black" text-anchor="middle">'
+            f'font-size="700" fill="black" text-anchor="middle">'
             f'{length_x/1000} μm</text>',
 
             # Vertical arrow line
@@ -201,7 +201,7 @@ class LayoutToSVG:
 
             # Vertical length text (rotated)
             f'<text x="{min_x + vertical_text_x_offset}" y="{-(min_y + max_y) / 2}" '
-            f'font-size="500" fill="black" text-anchor="middle" '
+            f'font-size="700" fill="black" text-anchor="middle" '
             f'transform="rotate(90 {min_x + vertical_text_x_offset},{-(min_y + max_y) / 2})">{length_y/1000} μm</text>'
         ]
         svg_elements.extend(arrow_elements)
@@ -241,18 +241,23 @@ class LayoutToSVG:
           .l93d44,
           .l94d20,
           .l95d20,
+          .l70d5
           .l8d2,
           .l8d25,
           .l30d2,
+          .l50d25,
+          .l10d2,
           .l30d25,
+          .l30d2,
+          .l50d2,
           .l14d0
           .l235d4 {
             fill: #000000;
             fill-opacity: 0.0;
           }
           
-          .l998t0 { fill: #000000; font-size: 500px; }
-          .l997t0 { fill: #F5F5F5; font-size: 500px;}
+          .l998t0 { fill: #000000; font-size: 700px; }
+          .l997t0 { fill: #5C4033; font-size: 700px; }
           .l999d0 { stroke: #000000; stroke-width: 50; fill: #000000; fill-opacity: 0.2; }
         </style>
         </defs>

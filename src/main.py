@@ -45,24 +45,24 @@ class ProjectProperties:
 
 
 # Component libraries
-# atr_lib = ComponentLibrary(name="JNWATR", path="~/aicex/ip/jnw_bkle_sky130a/design/JNW_ATR_SKY130A")
-# tr_lib = ComponentLibrary(name="JNWTR", path="~/aicex/ip/jnw_bkle_sky130a/design/JNW_TR_SKY130A")
-# misc_lib = ComponentLibrary(name="AALMISC", path="~/aicex/ip/jnw_bkle_sky130a/design/AAL_MISC_SKY130A")
+atr_lib = ComponentLibrary(name="JNWATR", path="~/aicex/ip/jnw_bkle_sky130a/design/JNW_ATR_SKY130A")
+tr_lib = ComponentLibrary(name="JNWTR", path="~/aicex/ip/jnw_bkle_sky130a/design/JNW_TR_SKY130A")
+misc_lib = ComponentLibrary(name="AALMISC", path="~/aicex/ip/jnw_bkle_sky130a/design/AAL_MISC_SKY130A")
+
+
+project_properties = ProjectProperties(directory="~/aicex/ip/jnw_bkle_sky130a",
+                                       top_cell_name="JNW_BKLE",
+                                       top_lib_name="JNW_BKLE_SKY130A",
+                                       component_libraries=[atr_lib, tr_lib, misc_lib])
+
+# atr_lib = ComponentLibrary(name="LELOATR", path="~/aicex/ip/lelo_bkle_ihp13g2/design/LELO_ATR_IHP13G2")
+# tr_lib = ComponentLibrary(name="LELOTR", path="~/aicex/ip/lelo_bkle_ihp13g2/design/LELO_TR_IHP13G2")
 #
 #
-# project_properties = ProjectProperties(directory="~/aicex/ip/jnw_bkle_sky130a",
-#                                        top_cell_name="JNW_BKLE",
-#                                        top_lib_name="JNW_BKLE_SKY130A",
-#                                        component_libraries=[atr_lib, tr_lib, misc_lib])
-
-atr_lib = ComponentLibrary(name="LELOATR", path="~/aicex/ip/lelo_bkle_ihp13g2/design/LELO_ATR_IHP13G2")
-tr_lib = ComponentLibrary(name="LELOTR", path="~/aicex/ip/lelo_bkle_ihp13g2/design/LELO_TR_IHP13G2")
-
-
-project_properties = ProjectProperties(directory="~/aicex/ip/lelo_bkle_ihp13g2",
-                                       top_cell_name="LELO_BKLE",
-                                       top_lib_name="LELO_BKLE_IHP13G2",
-                                       component_libraries=[atr_lib, tr_lib])
+# project_properties = ProjectProperties(directory="~/aicex/ip/lelo_bkle_ihp13g2",
+#                                        top_cell_name="LELO_BKLE",
+#                                        top_lib_name="LELO_BKLE_IHP13G2",
+#                                        component_libraries=[atr_lib, tr_lib])
 
 
 # ===================================================== Main ===========================================================
@@ -79,7 +79,7 @@ def main():
     # DRCchecking(project_properties=project_properties)
     # LVSchecking(project_properties=project_properties)
 
-    LayoutToSVG(project_properties=project_properties).create_custom_svg_from_layout_cell(cell="OTA")
+    LayoutToSVG(project_properties=project_properties).create_custom_svg_from_layout_cell(cell="COMP2")
 
 
 if __name__ == '__main__':
