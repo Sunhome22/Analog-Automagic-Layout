@@ -115,6 +115,7 @@ class LinearOptimizationSolver:
 
         if self.MIRROR:
             self.mirrored_components = self.__check_mirrored_components()
+            self.logger.info(self.mirrored_components)
         # Debugging
 
     def __load_config(self, path="pyproject.toml"):

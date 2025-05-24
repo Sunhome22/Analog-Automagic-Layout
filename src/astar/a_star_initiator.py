@@ -93,7 +93,7 @@ class AstarInitiator:
                         "single_connection": [start is not None, con.end_comp_id == ""]
                     }
                     if all(break_condition["component_connection"]):
-
+                        #
                         # if len(con.start_area) >= 2 or len(con.end_area) >= 2:
                         #
                         #     start, real_start, end, real_end = check_start_end_port(con, self.scaled_port_coordinates,
@@ -248,7 +248,6 @@ class AstarInitiator:
                 self.net_list.pin_nets + self.net_list.applicable_nets)
 
         for net in local_net_order:
-
             # Skipping these nets, that are handled by other routing algorithm
             if self.__check_vdd_vss(net):
                 continue

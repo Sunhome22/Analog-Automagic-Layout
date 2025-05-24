@@ -645,17 +645,17 @@ class CellCreator:
 
                                                     parent_port_coordinates = temp_parent_port_coordinates
                                                     child_port_coordinates = temp_child_port_coordinates
-        print("CONNECTION")
-        print(connection)
-        print("PARENT COMP")
-        print(min_parent_comp)
-        print("CHILD COMP")
-        print(min_child_comp)
-
-        print(f"offset {child_offset_x}, {child_offset_y}")
-        print(f"PARENT PORT COORDINATES {parent_port_coordinates}")
-        print(f"CHILD PORT COORDINATES {child_port_coordinates}")
-        self.__stupid_routing(connection, parent_port_coordinates, child_port_coordinates, circuit_cells)
+        # print("CONNECTION")
+        # print(connection)
+        # print("PARENT COMP")
+        # print(min_parent_comp)
+        # print("CHILD COMP")
+        # print(min_child_comp)
+        #
+        # print(f"offset {child_offset_x}, {child_offset_y}")
+        # print(f"PARENT PORT COORDINATES {parent_port_coordinates}")
+        # print(f"CHILD PORT COORDINATES {child_port_coordinates}")
+        # self.__stupid_routing(connection, parent_port_coordinates, child_port_coordinates, circuit_cells)
 
     def __get_cell_to_cell_connections(self):
         circuit_cells = list()

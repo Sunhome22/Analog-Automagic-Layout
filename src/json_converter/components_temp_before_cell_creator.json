@@ -1024,7 +1024,7 @@
         "parent_cell": "JNW_BKLE",
         "named_parent_cell": "UTOP_JNW_BKLE",
         "cell_chain": "UTOP_JNW_BKLE--U1_OTA",
-        "group": "mirror3",
+        "group": "mirror2",
         "schematic_connections": {
             "D": "GATE",
             "G": "GATE",
