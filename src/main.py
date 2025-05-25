@@ -79,7 +79,7 @@ def main():
     DRCchecking(project_properties=project_properties)
     LVSchecking(project_properties=project_properties)
 
-    LayoutToSVG(project_properties=project_properties).create_custom_svg_from_layout_cell(cell="OTA")
+    LayoutToSVG(project_properties=project_properties).create_custom_svg_from_layout_cell(cell="COMP4")
 
 
 if __name__ == '__main__':

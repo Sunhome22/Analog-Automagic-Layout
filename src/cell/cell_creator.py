@@ -84,7 +84,7 @@ class CellCreator:
                     if isinstance(solved_component, CircuitCell):
                         new_component.bounding_box = solved_component.bounding_box
 
-            # Transistors
+            # Functional components
             if isinstance(new_component, (Transistor, Resistor, Capacitor)):
                 for solved_component in solved_circuit_cells[cell]:
                     if (isinstance(solved_component, (Transistor, Resistor, Capacitor)) and
@@ -318,6 +318,7 @@ class CellCreator:
 
                 # Update trackers
                 x_offset_map[current_depth] += current_width
+
                 prev_depth = current_depth
                 prev_width = current_width
 
@@ -342,9 +343,11 @@ class CellCreator:
         cells_y2 = []
         for component in self.updated_components:
             if isinstance(component, CircuitCell):
-                cells_x2.append(component.bounding_box.x2 + component.transform_matrix.c)
+
+                cells_x2.append(component.bounding_box.x2)
                 cells_y2.append(component.bounding_box.y2 + component.transform_matrix.f)
-        root_cell_x2 = max(cells_x2)
+
+        root_cell_x2 = sum(cells_x2)
         root_cell_y2 = max(cells_y2)
 
         # Creates a root cell with bounding box covering all cells but with all other attributes of the top cell
