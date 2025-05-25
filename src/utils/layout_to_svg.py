@@ -30,6 +30,8 @@ from klayout import db
 
 # =============================================== Layout to SVG ========================================================
 
+# Note: This script needs tuning for every different cell
+
 
 class LayoutToSVG:
     logger = get_a_logger(__name__)
@@ -62,9 +64,29 @@ class LayoutToSVG:
         svg_path = f"src/utils/{cell}.svg"
 
         svg_elements = []
-        pad = 1400
 
-        # Collect all polygons
+        # Update these:
+        pad = 1400
+        legend_start_x = 800
+        legend_start_y = 350
+        legend_spacing = 4400
+        legend_box_size = 400
+        horizontal_arrow_y_offset = 400
+        horizontal_text_y_offset = 600
+        vertical_arrow_x_offset = 600
+        vertical_text_x_offset = 800
+
+        metal_colors = {
+            "Locali": "#56423e",
+            "M1": "#bea6a1",
+            "M2": "#d62728",
+            "M3": "#1f77b4",
+            "Viali": "#e09a8e",
+            "Via1": "#e39024",
+            "Via2": "#70b512",
+        }
+
+        # Get all polygons
         for layer_index in range(layout.layers()):
             layer_info = layout.get_info(layer_index)
             ly = top_cell.layout().layer(layer_info)
@@ -89,8 +111,10 @@ class LayoutToSVG:
                         if not pts:
                             continue  # skip if empty
                         svg_path_str = "M " + " L ".join(f"{x},{-y}" for x, y in pts) + " Z"
-                        self.logger.info(f"Found box '{svg_path_str}' in layer='{layer_info.layer}' with datatype='{layer_info.datatype}'")
-                        svg_elements.append(f'<path d="{svg_path_str}" class="l{layer_info.layer}d{layer_info.datatype}" />')
+                        self.logger.info(f"Found box '{svg_path_str}' in layer='{layer_info.layer}' "
+                                         f"with datatype='{layer_info.datatype}'")
+                        svg_elements.append(f'<path d="{svg_path_str}" '
+                                            f'class="l{layer_info.layer}d{layer_info.datatype}" />')
 
         # Draw component bounding boxes and label them with user defined instance name
         for ref in top_cell.each_inst():
@@ -105,14 +129,15 @@ class LayoutToSVG:
             raw_name = props.get(61, None) or ref.cell.name  # Needs manual updating
             inst_name = html.escape(str(raw_name) if raw_name is not None else "")
             svg_elements.append(
-                f'<text x="{(x0 + x1) / 2}" y="{- (y0 + y1) / 2}" class="l998t0" text-anchor="middle" alignment-baseline="middle">{inst_name}</text>'
+                f'<text x="{(x0 + x1) / 2}" y="{- (y0 + y1) / 2}" '
+                f'class="l998t0" text-anchor="middle" alignment-baseline="middle">{inst_name}</text>'
             )
 
         # Draw labels for connection port
         for layer_index in range(layout.layers()):
             layer_info = layout.get_info(layer_index)
 
-            if layer_info.layer not in (69, 67, 8, 30, 50, 10):  # Needs manual updating
+            if layer_info.layer not in (69, 70, 67, 68, 8, 30, 50, 10):  # Needs manual updating
                 continue
             ly = top_cell.layout().layer(layer_info)
             for shape in top_cell.shapes(ly):
@@ -122,7 +147,8 @@ class LayoutToSVG:
                     y = disp.y
                     label_text = next(iter(re.findall(r"'([^']+)'", str(shape.text))), str(shape.text))
                     svg_elements.append(
-                        f'<text x="{x}" y="{-y + 240}" class="l997t0" text-anchor="middle" alignment-baseline="central">{label_text}</text>'
+                        f'<text x="{x}" y="{-y + 240}" class="l997t0" text-anchor="middle" '
+                        f'alignment-baseline="central">{label_text}</text>'
                     )
 
         bbox = top_cell.bbox()
@@ -131,40 +157,20 @@ class LayoutToSVG:
         svg_width = width + 2*pad
         svg_height = height + 2*pad
 
-        metal_colors = {
-            "Metal1": "#56423e",
-            "Metal2": "#bea6a1",
-            "Metal3": "#d62728",
-            "Metal4": "#1f77b4",
-            "Via1": "#e09a8e",
-            "Via2": "#e39024",
-            "Via3": "#70b512",
-        }
-
-        # Needs manual updating
-        start_x = min_x + 800
-        start_y = -min_y + 350
-        spacing = 5500
-        box_size = 400
-
         for i, (metal, color) in enumerate(metal_colors.items()):
-            x = start_x + i * spacing
+            x = (min_x + legend_start_x) + i * legend_spacing
 
             # Metal name text
             svg_elements.append(
-                f'<text x="{x}" y="{start_y + box_size / 2 + 165}" font-size="700" fill="black" alignment-baseline="middle">{metal}</text>')
+                f'<text x="{x}" y="{(-min_y + legend_start_y) + legend_box_size / 2 + 165}" '
+                f'font-size="700" fill="black" alignment-baseline="middle">{metal}</text>')
 
             # Color box next to the metal name
             box_x = x - 700
-            box_y = start_y - 50
+            box_y = (-min_y + legend_start_y) - 50
             svg_elements.append(
-                f'<rect x="{box_x}" y="{box_y}" width="{box_size}" height="{box_size}" fill="{color}" stroke="black" stroke-width="2" />')
-
-        # Needs manual updating
-        horizontal_arrow_y_offset = 33600
-        horizontal_text_y_offset = 33780
-        vertical_arrow_x_offset = 37100
-        vertical_text_x_offset = 37280
+                f'<rect x="{box_x}" y="{box_y}" width="{legend_box_size}" height="{legend_box_size}" fill="{color}" '
+                f'stroke="black" stroke-width="2" />')
 
         length_x = max_x - min_x
         length_y = max_y - min_y
@@ -185,28 +191,28 @@ class LayoutToSVG:
 
         arrow_elements = [
             # Horizontal arrow line
-            f'<line x1="{min_x}" y1="{min_y - horizontal_arrow_y_offset}" x2="{max_x}" '
-            f'y2="{min_y - horizontal_arrow_y_offset}" '
+            f'<line x1="{min_x}" y1="{min_y - horizontal_arrow_y_offset - max_y}" x2="{max_x}" '
+            f'y2="{min_y - horizontal_arrow_y_offset - max_y}" '
             'stroke="black" stroke-width="50" marker-start="url(#arrowhead_reversed)" marker-end="url(#arrowhead)" />',
 
             # Horizontal length text
-            f'<text x="{(min_x + max_x) / 2}" y="{min_y - horizontal_text_y_offset}" '
+            f'<text x="{(min_x + max_x) / 2}" y="{min_y - horizontal_text_y_offset - max_y}" '
             f'font-size="700" fill="black" text-anchor="middle">'
             f'{length_x/1000} μm</text>',
 
             # Vertical arrow line
-            f'<line x1="{min_x + vertical_arrow_x_offset}" y1="{min_y}" x2="{min_x + vertical_arrow_x_offset}" '
+            f'<line x1="{min_x + vertical_arrow_x_offset + max_x}" y1="{min_y}" x2="{min_x + vertical_arrow_x_offset + max_x}" '
             f'y2="{-max_y}" '
             'stroke="black" stroke-width="50" marker-start="url(#arrowhead_reversed)" marker-end="url(#arrowhead)" />',
 
             # Vertical length text (rotated)
-            f'<text x="{min_x + vertical_text_x_offset}" y="{-(min_y + max_y) / 2}" '
+            f'<text x="{min_x + vertical_text_x_offset + max_x}" y="{-(min_y + max_y) / 2}" '
             f'font-size="700" fill="black" text-anchor="middle" '
-            f'transform="rotate(90 {min_x + vertical_text_x_offset},{-(min_y + max_y) / 2})">{length_y/1000} μm</text>'
+            f'transform="rotate(90 {min_x + vertical_text_x_offset + max_x},{-(min_y + max_y) / 2})">{length_y/1000} μm</text>'
         ]
         svg_elements.extend(arrow_elements)
 
-        # Custom colors. Needs manual updating
+        # Custom colors and ignores. Needs manual updating
         new_style = """
         <defs>
         <style type="text/css">
@@ -236,6 +242,7 @@ class LayoutToSVG:
           .l66d44,
           .l67d16,
           .l68d16,
+          .l70d16,
           .l69d16,
           .l86d20,
           .l93d44,
@@ -256,7 +263,7 @@ class LayoutToSVG:
             fill-opacity: 0.0;
           }
           
-          .l998t0 { fill: #000000; font-size: 700px; }
+          .l998t0 { fill: #000000; font-size: 520px; }
           .l997t0 { fill: #5C4033; font-size: 700px; }
           .l999d0 { stroke: #000000; stroke-width: 50; fill: #000000; fill-opacity: 0.2; }
         </style>

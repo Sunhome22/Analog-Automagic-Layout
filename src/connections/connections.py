@@ -233,7 +233,7 @@ class ConnectionLists:
                                           "top": cap_top}
 
     def __get_net_list(self):
-        self.logger.info("running get_net_list")
+        self.logger.info("Getting net list")
         for obj in self.pins:
             if obj.name not in self.net_list.pin_nets:
                 self.net_list.pin_nets.append(obj.name)

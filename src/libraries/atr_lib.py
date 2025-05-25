@@ -82,8 +82,11 @@ def offset_components_by_group_endpoint_and_overlap_distance_for_atr_lib(self):
             atr_is_highest_structure = False
             for comp in self.functional_components:
                 for component in atr_transistor_components:
-                    if comp.transform_matrix.f < component.transform_matrix.f and comp != component:
+                    if comp.transform_matrix.f < component.transform_matrix.f and comp.instance != component.instance:
                         atr_is_highest_structure = True
+                        break
+                    elif comp.transform_matrix.f > component.transform_matrix.f and comp.instance != component.instance:
+                        atr_is_highest_structure = False
                         break
             for c in self.components:
                 if isinstance(c, CircuitCell) and atr_is_highest_structure:
@@ -106,8 +109,11 @@ def offset_components_by_group_endpoint_and_overlap_distance_for_atr_lib(self):
             atr_is_highest_structure = False
             for comp in self.functional_components:
                 for component in atr_transistor_components:
-                    if comp.transform_matrix.f < component.transform_matrix.f and comp != component:
+                    if comp.transform_matrix.f < component.transform_matrix.f and comp.instance != component.instance:
                         atr_is_highest_structure = True
+                        break
+                    elif comp.transform_matrix.f > component.transform_matrix.f and comp.instance != component.instance:
+                        atr_is_highest_structure = False
                         break
             for c in self.components:
                 if isinstance(c, CircuitCell) and atr_is_highest_structure:
