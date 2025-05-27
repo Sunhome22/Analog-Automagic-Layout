@@ -72,6 +72,7 @@ class GenerateRailTraces:
         trace = TraceNet(name=pin.name, cell=self.circuit_cell.cell, named_cell=self.circuit_cell.named_cell)
         trace.instance = trace.__class__.__name__
         trace.parent_cell = self.circuit_cell.parent_cell
+        trace.named_parent_cell = self.circuit_cell.named_parent_cell
         trace.cell_chain = self.circuit_cell.cell_chain
 
         left_segment = RectArea(x1=self.circuit_cell.bounding_box.x1 - offset_x - width,

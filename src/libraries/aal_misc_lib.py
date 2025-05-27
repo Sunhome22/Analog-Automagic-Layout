@@ -109,8 +109,9 @@ def __local_base_to_collector_connection(self, component):
     trace.instance = trace.__class__.__name__
     trace.cell = self.circuit_cell.cell
     trace.parent_cell = self.circuit_cell.parent_cell
+    trace.named_parent_cell = self.circuit_cell.parent_cell
     trace.cell_chain = self.circuit_cell.cell_chain
-    print("yo")
+
     collector_x1 = next((port.area.x1 for port in component.layout_ports if port.type == 'C'))
     collector_x2 = next((port.area.x2 for port in component.layout_ports if port.type == 'C'))
     collector_y1 = next((port.area.y1 for port in component.layout_ports if port.type == 'C'))
@@ -145,6 +146,7 @@ def generate_collector_to_rail_connection(self, rail: str, component, y_params: 
     trace.instance = trace.__class__.__name__
     trace.cell = self.circuit_cell.cell
     trace.parent_cell = self.circuit_cell.parent_cell
+    trace.named_parent_cell = self.circuit_cell.parent_cell
     trace.cell_chain = self.circuit_cell.cell_chain
 
     collector_y1 = next((port.area.y1 for port in component.layout_ports if port.type == 'C'))
@@ -328,6 +330,7 @@ def __generate_capacitor_port_to_rail_connection(
     trace.instance = trace.__class__.__name__
     trace.cell = self.circuit_cell.cell
     trace.parent_cell = self.circuit_cell.parent_cell
+    trace.named_parent_cell = self.circuit_cell.parent_cell
     trace.cell_chain = self.circuit_cell.cell_chain
 
     y1 = next((port.area.y1 for port in component.layout_ports if port.type == port_name))

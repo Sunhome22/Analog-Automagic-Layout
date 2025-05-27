@@ -111,6 +111,7 @@ def __local_bulk_to_negative_connection(self, component):
     trace.instance = trace.__class__.__name__
     trace.cell = self.circuit_cell.cell
     trace.parent_cell = self.circuit_cell.parent_cell
+    trace.named_parent_cell = self.circuit_cell.parent_cell
     trace.cell_chain = self.circuit_cell.cell_chain
 
     bulk_x1 = next((port.area.x1 for port in component.layout_ports if port.type == 'B'))
@@ -131,6 +132,7 @@ def __local_bulk_to_positive_connection(self, component):
     trace.instance = trace.__class__.__name__
     trace.cell = self.circuit_cell.cell
     trace.parent_cell = self.circuit_cell.parent_cell
+    trace.named_parent_cell = self.circuit_cell.parent_cell
     trace.cell_chain = self.circuit_cell.cell_chain
 
     bulk_x2 = next((port.area.x2 for port in component.layout_ports if port.type == 'B'))
@@ -166,6 +168,8 @@ def generate_bulk_to_rail_connection(self, rail: str, component, y_params: tuple
     trace.instance = trace.__class__.__name__
     trace.cell = self.circuit_cell.cell
     trace.parent_cell = self.circuit_cell.parent_cell
+    trace.named_parent_cell = self.circuit_cell.parent_cell
+
     trace.cell_chain = self.circuit_cell.cell_chain
 
     bulk_y1 = next((port.area.y1 for port in component.layout_ports if port.type == 'B'))

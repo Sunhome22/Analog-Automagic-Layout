@@ -247,6 +247,7 @@ def __local_bulk_to_source_connection(self, component):
     trace.instance = trace.__class__.__name__
     trace.cell = self.circuit_cell.cell
     trace.parent_cell = self.circuit_cell.parent_cell
+    trace.named_parent_cell = self.circuit_cell.parent_cell
     trace.cell_chain = self.circuit_cell.cell_chain
 
     bulk_x1 = next((port.area.x1 for port in component.layout_ports if port.type == 'B'))
@@ -267,6 +268,7 @@ def __local_gate_to_drain_connection(self, component: Transistor):
     trace.instance = trace.__class__.__name__
     trace.cell = self.circuit_cell.cell
     trace.parent_cell = self.circuit_cell.parent_cell
+    trace.named_parent_cell = self.circuit_cell.parent_cell
     trace.cell_chain = self.circuit_cell.cell_chain
 
     gate_x1 = next((port.area.x1 for port in component.layout_ports if port.type == 'G'))
@@ -319,6 +321,7 @@ def generate_bulk_to_rail_segments(self, rail: str, component: Transistor, y_par
     trace.instance = trace.__class__.__name__
     trace.cell = self.circuit_cell.cell
     trace.parent_cell = self.circuit_cell.parent_cell
+    trace.named_parent_cell = self.circuit_cell.parent_cell
     trace.cell_chain = self.circuit_cell.cell_chain
 
     bulk_x1 = next((port.area.x1 for port in component.layout_ports if port.type == 'B'))

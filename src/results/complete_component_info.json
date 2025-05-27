@@ -2057,7 +2057,7 @@
         "cell": "COMP4",
         "named_cell": "U2_COMP4",
         "parent_cell": "JNW_BKLE",
-        "named_parent_cell": "",
+        "named_parent_cell": "UTOP_JNW_BKLE",
         "cell_chain": "UTOP_JNW_BKLE--U2_COMP4",
         "segments": [
             {
@@ -2142,7 +2142,7 @@
         "cell": "COMP4",
         "named_cell": "U2_COMP4",
         "parent_cell": "JNW_BKLE",
-        "named_parent_cell": "",
+        "named_parent_cell": "UTOP_JNW_BKLE",
         "cell_chain": "UTOP_JNW_BKLE--U2_COMP4",
         "segments": [
             {
@@ -2227,7 +2227,7 @@
         "cell": "COMP4",
         "named_cell": "U2_COMP4",
         "parent_cell": "JNW_BKLE",
-        "named_parent_cell": "",
+        "named_parent_cell": "JNW_BKLE",
         "cell_chain": "UTOP_JNW_BKLE--U2_COMP4",
         "segments": [
             {
@@ -2248,7 +2248,7 @@
         "cell": "COMP4",
         "named_cell": "U2_COMP4",
         "parent_cell": "JNW_BKLE",
-        "named_parent_cell": "",
+        "named_parent_cell": "JNW_BKLE",
         "cell_chain": "UTOP_JNW_BKLE--U2_COMP4",
         "segments": [
             {
@@ -2269,7 +2269,7 @@
         "cell": "COMP4",
         "named_cell": "U2_COMP4",
         "parent_cell": "JNW_BKLE",
-        "named_parent_cell": "",
+        "named_parent_cell": "JNW_BKLE",
         "cell_chain": "UTOP_JNW_BKLE--U2_COMP4",
         "segments": [
             {
@@ -2290,7 +2290,7 @@
         "cell": "COMP4",
         "named_cell": "U2_COMP4",
         "parent_cell": "JNW_BKLE",
-        "named_parent_cell": "",
+        "named_parent_cell": "JNW_BKLE",
         "cell_chain": "UTOP_JNW_BKLE--U2_COMP4",
         "segments": [
             {
@@ -2311,7 +2311,7 @@
         "cell": "COMP4",
         "named_cell": "U2_COMP4",
         "parent_cell": "JNW_BKLE",
-        "named_parent_cell": "",
+        "named_parent_cell": "JNW_BKLE",
         "cell_chain": "UTOP_JNW_BKLE--U2_COMP4",
         "segments": [
             {
@@ -2332,7 +2332,7 @@
         "cell": "COMP4",
         "named_cell": "U2_COMP4",
         "parent_cell": "JNW_BKLE",
-        "named_parent_cell": "",
+        "named_parent_cell": "JNW_BKLE",
         "cell_chain": "UTOP_JNW_BKLE--U2_COMP4",
         "segments": [
             {
@@ -2353,7 +2353,7 @@
         "cell": "COMP4",
         "named_cell": "U2_COMP4",
         "parent_cell": "JNW_BKLE",
-        "named_parent_cell": "",
+        "named_parent_cell": "JNW_BKLE",
         "cell_chain": "UTOP_JNW_BKLE--U2_COMP4",
         "segments": [
             {
@@ -2374,7 +2374,7 @@
         "cell": "COMP4",
         "named_cell": "U2_COMP4",
         "parent_cell": "JNW_BKLE",
-        "named_parent_cell": "",
+        "named_parent_cell": "JNW_BKLE",
         "cell_chain": "UTOP_JNW_BKLE--U2_COMP4",
         "segments": [
             {
@@ -2395,7 +2395,7 @@
         "cell": "COMP4",
         "named_cell": "U2_COMP4",
         "parent_cell": "JNW_BKLE",
-        "named_parent_cell": "",
+        "named_parent_cell": "JNW_BKLE",
         "cell_chain": "UTOP_JNW_BKLE--U2_COMP4",
         "segments": [
             {
@@ -2416,7 +2416,7 @@
         "cell": "COMP4",
         "named_cell": "U2_COMP4",
         "parent_cell": "JNW_BKLE",
-        "named_parent_cell": "",
+        "named_parent_cell": "JNW_BKLE",
         "cell_chain": "UTOP_JNW_BKLE--U2_COMP4",
         "segments": [
             {
@@ -2437,7 +2437,7 @@
         "cell": "COMP4",
         "named_cell": "U2_COMP4",
         "parent_cell": "JNW_BKLE",
-        "named_parent_cell": "",
+        "named_parent_cell": "JNW_BKLE",
         "cell_chain": "UTOP_JNW_BKLE--U2_COMP4",
         "segments": [
             {
@@ -2458,7 +2458,7 @@
         "cell": "COMP4",
         "named_cell": "U2_COMP4",
         "parent_cell": "JNW_BKLE",
-        "named_parent_cell": "",
+        "named_parent_cell": "JNW_BKLE",
         "cell_chain": "UTOP_JNW_BKLE--U2_COMP4",
         "segments": [
             {
@@ -2479,7 +2479,7 @@
         "cell": "COMP4",
         "named_cell": "U2_COMP4",
         "parent_cell": "JNW_BKLE",
-        "named_parent_cell": "",
+        "named_parent_cell": "JNW_BKLE",
         "cell_chain": "UTOP_JNW_BKLE--U2_COMP4",
         "segments": [
             {
@@ -2500,7 +2500,7 @@
         "cell": "COMP4",
         "named_cell": "U2_COMP4",
         "parent_cell": "JNW_BKLE",
-        "named_parent_cell": "",
+        "named_parent_cell": "JNW_BKLE",
         "cell_chain": "UTOP_JNW_BKLE--U2_COMP4",
         "segments": [
             {
@@ -2521,7 +2521,7 @@
         "cell": "COMP4",
         "named_cell": "U2_COMP4",
         "parent_cell": "JNW_BKLE",
-        "named_parent_cell": "",
+        "named_parent_cell": "JNW_BKLE",
         "cell_chain": "UTOP_JNW_BKLE--U2_COMP4",
         "segments": [
             {
@@ -2561,7 +2561,7 @@
         "cell": "COMP4",
         "named_cell": "U2_COMP4",
         "parent_cell": "JNW_BKLE",
-        "named_parent_cell": "",
+        "named_parent_cell": "JNW_BKLE",
         "cell_chain": "UTOP_JNW_BKLE--U2_COMP4",
         "segments": [
             {
@@ -2601,7 +2601,7 @@
         "cell": "COMP4",
         "named_cell": "U2_COMP4",
         "parent_cell": "JNW_BKLE",
-        "named_parent_cell": "",
+        "named_parent_cell": "JNW_BKLE",
         "cell_chain": "UTOP_JNW_BKLE--U2_COMP4",
         "segments": [
             {
@@ -2641,7 +2641,7 @@
         "cell": "COMP4",
         "named_cell": "U2_COMP4",
         "parent_cell": "JNW_BKLE",
-        "named_parent_cell": "",
+        "named_parent_cell": "JNW_BKLE",
         "cell_chain": "UTOP_JNW_BKLE--U2_COMP4",
         "segments": [
             {
@@ -4680,7 +4680,7 @@
         "cell": "COMP2",
         "named_cell": "U1_COMP2",
         "parent_cell": "COMP4",
-        "named_parent_cell": "",
+        "named_parent_cell": "U2_COMP4",
         "cell_chain": "UTOP_JNW_BKLE--U2_COMP4--U1_COMP2",
         "segments": [
             {
@@ -4765,7 +4765,7 @@
         "cell": "COMP2",
         "named_cell": "U1_COMP2",
         "parent_cell": "COMP4",
-        "named_parent_cell": "",
+        "named_parent_cell": "U2_COMP4",
         "cell_chain": "UTOP_JNW_BKLE--U2_COMP4--U1_COMP2",
         "segments": [
             {
@@ -4850,7 +4850,7 @@
         "cell": "COMP2",
         "named_cell": "U1_COMP2",
         "parent_cell": "COMP4",
-        "named_parent_cell": "",
+        "named_parent_cell": "COMP4",
         "cell_chain": "UTOP_JNW_BKLE--U2_COMP4--U1_COMP2",
         "segments": [
             {
@@ -4871,7 +4871,7 @@
         "cell": "COMP2",
         "named_cell": "U1_COMP2",
         "parent_cell": "COMP4",
-        "named_parent_cell": "",
+        "named_parent_cell": "COMP4",
         "cell_chain": "UTOP_JNW_BKLE--U2_COMP4--U1_COMP2",
         "segments": [
             {
@@ -4892,7 +4892,7 @@
         "cell": "COMP2",
         "named_cell": "U1_COMP2",
         "parent_cell": "COMP4",
-        "named_parent_cell": "",
+        "named_parent_cell": "COMP4",
         "cell_chain": "UTOP_JNW_BKLE--U2_COMP4--U1_COMP2",
         "segments": [
             {
@@ -4913,7 +4913,7 @@
         "cell": "COMP2",
         "named_cell": "U1_COMP2",
         "parent_cell": "COMP4",
-        "named_parent_cell": "",
+        "named_parent_cell": "COMP4",
         "cell_chain": "UTOP_JNW_BKLE--U2_COMP4--U1_COMP2",
         "segments": [
             {
@@ -4934,7 +4934,7 @@
         "cell": "COMP2",
         "named_cell": "U1_COMP2",
         "parent_cell": "COMP4",
-        "named_parent_cell": "",
+        "named_parent_cell": "COMP4",
         "cell_chain": "UTOP_JNW_BKLE--U2_COMP4--U1_COMP2",
         "segments": [
             {
@@ -4955,7 +4955,7 @@
         "cell": "COMP2",
         "named_cell": "U1_COMP2",
         "parent_cell": "COMP4",
-        "named_parent_cell": "",
+        "named_parent_cell": "COMP4",
         "cell_chain": "UTOP_JNW_BKLE--U2_COMP4--U1_COMP2",
         "segments": [
             {
@@ -4976,7 +4976,7 @@
         "cell": "COMP2",
         "named_cell": "U1_COMP2",
         "parent_cell": "COMP4",
-        "named_parent_cell": "",
+        "named_parent_cell": "COMP4",
         "cell_chain": "UTOP_JNW_BKLE--U2_COMP4--U1_COMP2",
         "segments": [
             {
@@ -4997,7 +4997,7 @@
         "cell": "COMP2",
         "named_cell": "U1_COMP2",
         "parent_cell": "COMP4",
-        "named_parent_cell": "",
+        "named_parent_cell": "COMP4",
         "cell_chain": "UTOP_JNW_BKLE--U2_COMP4--U1_COMP2",
         "segments": [
             {
@@ -5018,7 +5018,7 @@
         "cell": "COMP2",
         "named_cell": "U1_COMP2",
         "parent_cell": "COMP4",
-        "named_parent_cell": "",
+        "named_parent_cell": "COMP4",
         "cell_chain": "UTOP_JNW_BKLE--U2_COMP4--U1_COMP2",
         "segments": [
             {
@@ -5039,7 +5039,7 @@
         "cell": "COMP2",
         "named_cell": "U1_COMP2",
         "parent_cell": "COMP4",
-        "named_parent_cell": "",
+        "named_parent_cell": "COMP4",
         "cell_chain": "UTOP_JNW_BKLE--U2_COMP4--U1_COMP2",
         "segments": [
             {
@@ -5060,7 +5060,7 @@
         "cell": "COMP2",
         "named_cell": "U1_COMP2",
         "parent_cell": "COMP4",
-        "named_parent_cell": "",
+        "named_parent_cell": "COMP4",
         "cell_chain": "UTOP_JNW_BKLE--U2_COMP4--U1_COMP2",
         "segments": [
             {
@@ -5081,7 +5081,7 @@
         "cell": "COMP2",
         "named_cell": "U1_COMP2",
         "parent_cell": "COMP4",
-        "named_parent_cell": "",
+        "named_parent_cell": "COMP4",
         "cell_chain": "UTOP_JNW_BKLE--U2_COMP4--U1_COMP2",
         "segments": [
             {
@@ -5102,7 +5102,7 @@
         "cell": "COMP2",
         "named_cell": "U1_COMP2",
         "parent_cell": "COMP4",
-        "named_parent_cell": "",
+        "named_parent_cell": "COMP4",
         "cell_chain": "UTOP_JNW_BKLE--U2_COMP4--U1_COMP2",
         "segments": [
             {
@@ -5123,7 +5123,7 @@
         "cell": "COMP2",
         "named_cell": "U1_COMP2",
         "parent_cell": "COMP4",
-        "named_parent_cell": "",
+        "named_parent_cell": "COMP4",
         "cell_chain": "UTOP_JNW_BKLE--U2_COMP4--U1_COMP2",
         "segments": [
             {
@@ -5144,7 +5144,7 @@
         "cell": "COMP2",
         "named_cell": "U1_COMP2",
         "parent_cell": "COMP4",
-        "named_parent_cell": "",
+        "named_parent_cell": "COMP4",
         "cell_chain": "UTOP_JNW_BKLE--U2_COMP4--U1_COMP2",
         "segments": [
             {
@@ -5184,7 +5184,7 @@
         "cell": "COMP2",
         "named_cell": "U1_COMP2",
         "parent_cell": "COMP4",
-        "named_parent_cell": "",
+        "named_parent_cell": "COMP4",
         "cell_chain": "UTOP_JNW_BKLE--U2_COMP4--U1_COMP2",
         "segments": [
             {
@@ -5224,7 +5224,7 @@
         "cell": "COMP2",
         "named_cell": "U1_COMP2",
         "parent_cell": "COMP4",
-        "named_parent_cell": "",
+        "named_parent_cell": "COMP4",
         "cell_chain": "UTOP_JNW_BKLE--U2_COMP4--U1_COMP2",
         "segments": [
             {
@@ -5264,7 +5264,7 @@
         "cell": "COMP2",
         "named_cell": "U1_COMP2",
         "parent_cell": "COMP4",
-        "named_parent_cell": "",
+        "named_parent_cell": "COMP4",
         "cell_chain": "UTOP_JNW_BKLE--U2_COMP4--U1_COMP2",
         "segments": [
             {
@@ -7303,7 +7303,7 @@
         "cell": "COMP3",
         "named_cell": "U2_COMP3",
         "parent_cell": "COMP4",
-        "named_parent_cell": "",
+        "named_parent_cell": "U2_COMP4",
         "cell_chain": "UTOP_JNW_BKLE--U2_COMP4--U2_COMP3",
         "segments": [
             {
@@ -7388,7 +7388,7 @@
         "cell": "COMP3",
         "named_cell": "U2_COMP3",
         "parent_cell": "COMP4",
-        "named_parent_cell": "",
+        "named_parent_cell": "U2_COMP4",
         "cell_chain": "UTOP_JNW_BKLE--U2_COMP4--U2_COMP3",
         "segments": [
             {
@@ -7473,7 +7473,7 @@
         "cell": "COMP3",
         "named_cell": "U2_COMP3",
         "parent_cell": "COMP4",
-        "named_parent_cell": "",
+        "named_parent_cell": "COMP4",
         "cell_chain": "UTOP_JNW_BKLE--U2_COMP4--U2_COMP3",
         "segments": [
             {
@@ -7494,7 +7494,7 @@
         "cell": "COMP3",
         "named_cell": "U2_COMP3",
         "parent_cell": "COMP4",
-        "named_parent_cell": "",
+        "named_parent_cell": "COMP4",
         "cell_chain": "UTOP_JNW_BKLE--U2_COMP4--U2_COMP3",
         "segments": [
             {
@@ -7515,7 +7515,7 @@
         "cell": "COMP3",
         "named_cell": "U2_COMP3",
         "parent_cell": "COMP4",
-        "named_parent_cell": "",
+        "named_parent_cell": "COMP4",
         "cell_chain": "UTOP_JNW_BKLE--U2_COMP4--U2_COMP3",
         "segments": [
             {
@@ -7536,7 +7536,7 @@
         "cell": "COMP3",
         "named_cell": "U2_COMP3",
         "parent_cell": "COMP4",
-        "named_parent_cell": "",
+        "named_parent_cell": "COMP4",
         "cell_chain": "UTOP_JNW_BKLE--U2_COMP4--U2_COMP3",
         "segments": [
             {
@@ -7557,7 +7557,7 @@
         "cell": "COMP3",
         "named_cell": "U2_COMP3",
         "parent_cell": "COMP4",
-        "named_parent_cell": "",
+        "named_parent_cell": "COMP4",
         "cell_chain": "UTOP_JNW_BKLE--U2_COMP4--U2_COMP3",
         "segments": [
             {
@@ -7578,7 +7578,7 @@
         "cell": "COMP3",
         "named_cell": "U2_COMP3",
         "parent_cell": "COMP4",
-        "named_parent_cell": "",
+        "named_parent_cell": "COMP4",
         "cell_chain": "UTOP_JNW_BKLE--U2_COMP4--U2_COMP3",
         "segments": [
             {
@@ -7599,7 +7599,7 @@
         "cell": "COMP3",
         "named_cell": "U2_COMP3",
         "parent_cell": "COMP4",
-        "named_parent_cell": "",
+        "named_parent_cell": "COMP4",
         "cell_chain": "UTOP_JNW_BKLE--U2_COMP4--U2_COMP3",
         "segments": [
             {
@@ -7620,7 +7620,7 @@
         "cell": "COMP3",
         "named_cell": "U2_COMP3",
         "parent_cell": "COMP4",
-        "named_parent_cell": "",
+        "named_parent_cell": "COMP4",
         "cell_chain": "UTOP_JNW_BKLE--U2_COMP4--U2_COMP3",
         "segments": [
             {
@@ -7641,7 +7641,7 @@
         "cell": "COMP3",
         "named_cell": "U2_COMP3",
         "parent_cell": "COMP4",
-        "named_parent_cell": "",
+        "named_parent_cell": "COMP4",
         "cell_chain": "UTOP_JNW_BKLE--U2_COMP4--U2_COMP3",
         "segments": [
             {
@@ -7662,7 +7662,7 @@
         "cell": "COMP3",
         "named_cell": "U2_COMP3",
         "parent_cell": "COMP4",
-        "named_parent_cell": "",
+        "named_parent_cell": "COMP4",
         "cell_chain": "UTOP_JNW_BKLE--U2_COMP4--U2_COMP3",
         "segments": [
             {
@@ -7683,7 +7683,7 @@
         "cell": "COMP3",
         "named_cell": "U2_COMP3",
         "parent_cell": "COMP4",
-        "named_parent_cell": "",
+        "named_parent_cell": "COMP4",
         "cell_chain": "UTOP_JNW_BKLE--U2_COMP4--U2_COMP3",
         "segments": [
             {
@@ -7704,7 +7704,7 @@
         "cell": "COMP3",
         "named_cell": "U2_COMP3",
         "parent_cell": "COMP4",
-        "named_parent_cell": "",
+        "named_parent_cell": "COMP4",
         "cell_chain": "UTOP_JNW_BKLE--U2_COMP4--U2_COMP3",
         "segments": [
             {
@@ -7725,7 +7725,7 @@
         "cell": "COMP3",
         "named_cell": "U2_COMP3",
         "parent_cell": "COMP4",
-        "named_parent_cell": "",
+        "named_parent_cell": "COMP4",
         "cell_chain": "UTOP_JNW_BKLE--U2_COMP4--U2_COMP3",
         "segments": [
             {
@@ -7746,7 +7746,7 @@
         "cell": "COMP3",
         "named_cell": "U2_COMP3",
         "parent_cell": "COMP4",
-        "named_parent_cell": "",
+        "named_parent_cell": "COMP4",
         "cell_chain": "UTOP_JNW_BKLE--U2_COMP4--U2_COMP3",
         "segments": [
             {
@@ -7767,7 +7767,7 @@
         "cell": "COMP3",
         "named_cell": "U2_COMP3",
         "parent_cell": "COMP4",
-        "named_parent_cell": "",
+        "named_parent_cell": "COMP4",
         "cell_chain": "UTOP_JNW_BKLE--U2_COMP4--U2_COMP3",
         "segments": [
             {
@@ -7807,7 +7807,7 @@
         "cell": "COMP3",
         "named_cell": "U2_COMP3",
         "parent_cell": "COMP4",
-        "named_parent_cell": "",
+        "named_parent_cell": "COMP4",
         "cell_chain": "UTOP_JNW_BKLE--U2_COMP4--U2_COMP3",
         "segments": [
             {
@@ -7847,7 +7847,7 @@
         "cell": "COMP3",
         "named_cell": "U2_COMP3",
         "parent_cell": "COMP4",
-        "named_parent_cell": "",
+        "named_parent_cell": "COMP4",
         "cell_chain": "UTOP_JNW_BKLE--U2_COMP4--U2_COMP3",
         "segments": [
             {
@@ -7887,7 +7887,7 @@
         "cell": "COMP3",
         "named_cell": "U2_COMP3",
         "parent_cell": "COMP4",
-        "named_parent_cell": "",
+        "named_parent_cell": "COMP4",
         "cell_chain": "UTOP_JNW_BKLE--U2_COMP4--U2_COMP3",
         "segments": [
             {
@@ -9926,7 +9926,7 @@
         "cell": "COMP2",
         "named_cell": "U3_COMP2",
         "parent_cell": "COMP4",
-        "named_parent_cell": "",
+        "named_parent_cell": "U2_COMP4",
         "cell_chain": "UTOP_JNW_BKLE--U2_COMP4--U2_COMP3--U3_COMP2",
         "segments": [
             {
@@ -10011,7 +10011,7 @@
         "cell": "COMP2",
         "named_cell": "U3_COMP2",
         "parent_cell": "COMP4",
-        "named_parent_cell": "",
+        "named_parent_cell": "U2_COMP4",
         "cell_chain": "UTOP_JNW_BKLE--U2_COMP4--U2_COMP3--U3_COMP2",
         "segments": [
             {
@@ -10096,7 +10096,7 @@
         "cell": "COMP2",
         "named_cell": "U3_COMP2",
         "parent_cell": "COMP4",
-        "named_parent_cell": "",
+        "named_parent_cell": "COMP4",
         "cell_chain": "UTOP_JNW_BKLE--U2_COMP4--U2_COMP3--U3_COMP2",
         "segments": [
             {
@@ -10117,7 +10117,7 @@
         "cell": "COMP2",
         "named_cell": "U3_COMP2",
         "parent_cell": "COMP4",
-        "named_parent_cell": "",
+        "named_parent_cell": "COMP4",
         "cell_chain": "UTOP_JNW_BKLE--U2_COMP4--U2_COMP3--U3_COMP2",
         "segments": [
             {
@@ -10138,7 +10138,7 @@
         "cell": "COMP2",
         "named_cell": "U3_COMP2",
         "parent_cell": "COMP4",
-        "named_parent_cell": "",
+        "named_parent_cell": "COMP4",
         "cell_chain": "UTOP_JNW_BKLE--U2_COMP4--U2_COMP3--U3_COMP2",
         "segments": [
             {
@@ -10159,7 +10159,7 @@
         "cell": "COMP2",
         "named_cell": "U3_COMP2",
         "parent_cell": "COMP4",
-        "named_parent_cell": "",
+        "named_parent_cell": "COMP4",
         "cell_chain": "UTOP_JNW_BKLE--U2_COMP4--U2_COMP3--U3_COMP2",
         "segments": [
             {
@@ -10180,7 +10180,7 @@
         "cell": "COMP2",
         "named_cell": "U3_COMP2",
         "parent_cell": "COMP4",
-        "named_parent_cell": "",
+        "named_parent_cell": "COMP4",
         "cell_chain": "UTOP_JNW_BKLE--U2_COMP4--U2_COMP3--U3_COMP2",
         "segments": [
             {
@@ -10201,7 +10201,7 @@
         "cell": "COMP2",
         "named_cell": "U3_COMP2",
         "parent_cell": "COMP4",
-        "named_parent_cell": "",
+        "named_parent_cell": "COMP4",
         "cell_chain": "UTOP_JNW_BKLE--U2_COMP4--U2_COMP3--U3_COMP2",
         "segments": [
             {
@@ -10222,7 +10222,7 @@
         "cell": "COMP2",
         "named_cell": "U3_COMP2",
         "parent_cell": "COMP4",
-        "named_parent_cell": "",
+        "named_parent_cell": "COMP4",
         "cell_chain": "UTOP_JNW_BKLE--U2_COMP4--U2_COMP3--U3_COMP2",
         "segments": [
             {
@@ -10243,7 +10243,7 @@
         "cell": "COMP2",
         "named_cell": "U3_COMP2",
         "parent_cell": "COMP4",
-        "named_parent_cell": "",
+        "named_parent_cell": "COMP4",
         "cell_chain": "UTOP_JNW_BKLE--U2_COMP4--U2_COMP3--U3_COMP2",
         "segments": [
             {
@@ -10264,7 +10264,7 @@
         "cell": "COMP2",
         "named_cell": "U3_COMP2",
         "parent_cell": "COMP4",
-        "named_parent_cell": "",
+        "named_parent_cell": "COMP4",
         "cell_chain": "UTOP_JNW_BKLE--U2_COMP4--U2_COMP3--U3_COMP2",
         "segments": [
             {
@@ -10285,7 +10285,7 @@
         "cell": "COMP2",
         "named_cell": "U3_COMP2",
         "parent_cell": "COMP4",
-        "named_parent_cell": "",
+        "named_parent_cell": "COMP4",
         "cell_chain": "UTOP_JNW_BKLE--U2_COMP4--U2_COMP3--U3_COMP2",
         "segments": [
             {
@@ -10306,7 +10306,7 @@
         "cell": "COMP2",
         "named_cell": "U3_COMP2",
         "parent_cell": "COMP4",
-        "named_parent_cell": "",
+        "named_parent_cell": "COMP4",
         "cell_chain": "UTOP_JNW_BKLE--U2_COMP4--U2_COMP3--U3_COMP2",
         "segments": [
             {
@@ -10327,7 +10327,7 @@
         "cell": "COMP2",
         "named_cell": "U3_COMP2",
         "parent_cell": "COMP4",
-        "named_parent_cell": "",
+        "named_parent_cell": "COMP4",
         "cell_chain": "UTOP_JNW_BKLE--U2_COMP4--U2_COMP3--U3_COMP2",
         "segments": [
             {
@@ -10348,7 +10348,7 @@
         "cell": "COMP2",
         "named_cell": "U3_COMP2",
         "parent_cell": "COMP4",
-        "named_parent_cell": "",
+        "named_parent_cell": "COMP4",
         "cell_chain": "UTOP_JNW_BKLE--U2_COMP4--U2_COMP3--U3_COMP2",
         "segments": [
             {
@@ -10369,7 +10369,7 @@
         "cell": "COMP2",
         "named_cell": "U3_COMP2",
         "parent_cell": "COMP4",
-        "named_parent_cell": "",
+        "named_parent_cell": "COMP4",
         "cell_chain": "UTOP_JNW_BKLE--U2_COMP4--U2_COMP3--U3_COMP2",
         "segments": [
             {
@@ -10390,7 +10390,7 @@
         "cell": "COMP2",
         "named_cell": "U3_COMP2",
         "parent_cell": "COMP4",
-        "named_parent_cell": "",
+        "named_parent_cell": "COMP4",
         "cell_chain": "UTOP_JNW_BKLE--U2_COMP4--U2_COMP3--U3_COMP2",
         "segments": [
             {
@@ -10430,7 +10430,7 @@
         "cell": "COMP2",
         "named_cell": "U3_COMP2",
         "parent_cell": "COMP4",
-        "named_parent_cell": "",
+        "named_parent_cell": "COMP4",
         "cell_chain": "UTOP_JNW_BKLE--U2_COMP4--U2_COMP3--U3_COMP2",
         "segments": [
             {
@@ -10470,7 +10470,7 @@
         "cell": "COMP2",
         "named_cell": "U3_COMP2",
         "parent_cell": "COMP4",
-        "named_parent_cell": "",
+        "named_parent_cell": "COMP4",
         "cell_chain": "UTOP_JNW_BKLE--U2_COMP4--U2_COMP3--U3_COMP2",
         "segments": [
             {
@@ -10510,7 +10510,7 @@
         "cell": "COMP2",
         "named_cell": "U3_COMP2",
         "parent_cell": "COMP4",
-        "named_parent_cell": "",
+        "named_parent_cell": "COMP4",
         "cell_chain": "UTOP_JNW_BKLE--U2_COMP4--U2_COMP3--U3_COMP2",
         "segments": [
             {

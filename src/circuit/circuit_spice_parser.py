@@ -439,7 +439,6 @@ class SPICEparser:
                         break
 
                 circuit_cell.cell_chain = '--'.join(self.cell_chain_list)
-
                 circuit_cell.named_parent_cell = "UROOT_ROOT_CELL" if circuit_cell.parent_cell == "ROOT_CELL" \
                     else self.cell_chain_list[-2]
                 circuit_cell.number_id = len(self.components)
