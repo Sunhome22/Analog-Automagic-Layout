@@ -64,7 +64,7 @@ class CellCreator:
         self.__create_cells()
         self.__set_cells_positions()
         self.__add_root_cell_rails()
-        #self.__add_top_cell_rail_to_rail_connections()
+        # self.__add_top_cell_rail_to_rail_connections()
 
     def __load_config(self, path="pyproject.toml"):
         try:
@@ -129,7 +129,8 @@ class CellCreator:
 
         # Cell creation process
         for cell_nr, grouped_components in enumerate(components_grouped_by_circuit_cell):
-            """With every iteration there is a set of components along with their associated circuit cell"""
+            """With every iteration there is a set of functional components and pins along 
+            with their associated circuit cell"""
 
             # Step 1: Check if current circuit cell already has been solved
             cell = components_grouped_by_circuit_cell[grouped_components][0].cell
@@ -220,10 +221,10 @@ class CellCreator:
                 LibraryHandling(project_properties=self.project_properties, components=components,
                                 functional_component_order=self.functional_component_order).post_rail_generation())
 
-            # Step 8: Move all components to the origin based on the updated cell bounding box from rail generation
+            # Step 10: Move all components to the origin based on the updated cell bounding box from rail generation
             components = self.__move_all_components_to_origin_based_on_rail_offsets(components=components)
 
-            # Step 9: Create an update list of components
+            # Step 11: Create an updated list of components
             for component in components:
                 self.updated_components.append(component)
                 solved_circuit_cells[cell].append(component)
@@ -379,6 +380,10 @@ class CellCreator:
             if not isinstance(component, CircuitCell):
                 self.updated_components.append(component)
 
+    def __add_top_cell_rail_to_rail_connections(self):
+        pass
+        # NOT IMPLEMENTED
+
         # Adding of VDD/VSS connection between circuit cells
 
         # Step 1:
@@ -419,71 +424,71 @@ class CellCreator:
         #                     self.updated_components.append(trace)
         #
 
-        components_grouped_by_circuit_cell = defaultdict(list)
-        components_grouped_by_circuit_cell_with_children_cells_and_pins = defaultdict(list)
-        circuit_cells = list()
-
-        for component in self.updated_components:
-            if isinstance(component, CircuitCell):
-                circuit_cells.append(component)
-            else:
-                components_grouped_by_circuit_cell[component.cell_chain].append(component)
-
-        for circuit_cell in circuit_cells:
-            for grouped_components in components_grouped_by_circuit_cell:
-                if (re.search(r"^(?:.*--)?(.*)$", grouped_components).group(1)
-                        == f"{circuit_cell.name}_{circuit_cell.cell}"):
-                    components_grouped_by_circuit_cell[grouped_components].append(circuit_cell)
-
-        # For every set of grouped components append children cells and their pins
-        for cell_nr, grouped_components in enumerate(components_grouped_by_circuit_cell):
-            for component in components_grouped_by_circuit_cell[grouped_components]:
-                (components_grouped_by_circuit_cell_with_children_cells_and_pins[grouped_components]
-                 .append(copy.deepcopy(component)))
-                if isinstance(component, CircuitCell):
-
-                    for circuit_cell in circuit_cells:
-                        if circuit_cell.parent_cell == component.cell:
-                            (components_grouped_by_circuit_cell_with_children_cells_and_pins[grouped_components]
-                             .append(copy.deepcopy(circuit_cell)))
-
-                            for comp in self.updated_components:
-                                if isinstance(comp, Pin):
-                                    if comp.cell_chain == circuit_cell.cell_chain:
-                                        (components_grouped_by_circuit_cell_with_children_cells_and_pins
-                                         [grouped_components]
-                                         .append(copy.deepcopy(comp)))
-
-        cell_to_cell_connections = list()
-
-        for cell_nr, grouped_components in enumerate(components_grouped_by_circuit_cell_with_children_cells_and_pins):
-
-            #print("===================")
-            for component in components_grouped_by_circuit_cell_with_children_cells_and_pins[grouped_components]:
-
-                if isinstance(component, CircuitCell):
-                    if component.cell_chain != grouped_components:
-                        cell_to_cell_connection = list()
-
-                        for inside_connection, outside_connection in component.schematic_connections.items():
-                            for comp in components_grouped_by_circuit_cell_with_children_cells_and_pins[grouped_components]:
-                                if isinstance(comp, Pin):
-
-                                    if comp.cell_chain != grouped_components:
-                                        if outside_connection == comp.name and comp.layout:
-                                            # Valid pins that are connected to something and have layout
-                                            cell_to_cell_connection.append(comp)
-                                            #print(f"others: {comp.name, comp.layout}")
-                                            for c in components_grouped_by_circuit_cell_with_children_cells_and_pins[
-                                                grouped_components]:
-                                                if isinstance(c, Pin):
-                                                    if c.cell_chain == grouped_components:
-                                                        if inside_connection == c.name and c.layout:
-                                                            # Valid pins that are connected to something and have layout
-                                                            cell_to_cell_connection.append(c)
-                                                            #print(f"others: {c.name, c.layout}")
-
-                        cell_to_cell_connections.append(cell_to_cell_connection)
+        # components_grouped_by_circuit_cell = defaultdict(list)
+        # components_grouped_by_circuit_cell_with_children_cells_and_pins = defaultdict(list)
+        # circuit_cells = list()
+        #
+        # for component in self.updated_components:
+        #     if isinstance(component, CircuitCell):
+        #         circuit_cells.append(component)
+        #     else:
+        #         components_grouped_by_circuit_cell[component.cell_chain].append(component)
+        #
+        # for circuit_cell in circuit_cells:
+        #     for grouped_components in components_grouped_by_circuit_cell:
+        #         if (re.search(r"^(?:.*--)?(.*)$", grouped_components).group(1)
+        #                 == f"{circuit_cell.name}_{circuit_cell.cell}"):
+        #             components_grouped_by_circuit_cell[grouped_components].append(circuit_cell)
+        #
+        # # For every set of grouped components append children cells and their pins
+        # for cell_nr, grouped_components in enumerate(components_grouped_by_circuit_cell):
+        #     for component in components_grouped_by_circuit_cell[grouped_components]:
+        #         (components_grouped_by_circuit_cell_with_children_cells_and_pins[grouped_components]
+        #          .append(copy.deepcopy(component)))
+        #         if isinstance(component, CircuitCell):
+        #
+        #             for circuit_cell in circuit_cells:
+        #                 if circuit_cell.parent_cell == component.cell:
+        #                     (components_grouped_by_circuit_cell_with_children_cells_and_pins[grouped_components]
+        #                      .append(copy.deepcopy(circuit_cell)))
+        #
+        #                     for comp in self.updated_components:
+        #                         if isinstance(comp, Pin):
+        #                             if comp.cell_chain == circuit_cell.cell_chain:
+        #                                 (components_grouped_by_circuit_cell_with_children_cells_and_pins
+        #                                  [grouped_components]
+        #                                  .append(copy.deepcopy(comp)))
+        #
+        # cell_to_cell_connections = list()
+        #
+        # for cell_nr, grouped_components in enumerate(components_grouped_by_circuit_cell_with_children_cells_and_pins):
+        #
+        #     #print("===================")
+        #     for component in components_grouped_by_circuit_cell_with_children_cells_and_pins[grouped_components]:
+        #
+        #         if isinstance(component, CircuitCell):
+        #             if component.cell_chain != grouped_components:
+        #                 cell_to_cell_connection = list()
+        #
+        #                 for inside_connection, outside_connection in component.schematic_connections.items():
+        #                     for comp in components_grouped_by_circuit_cell_with_children_cells_and_pins[grouped_components]:
+        #                         if isinstance(comp, Pin):
+        #
+        #                             if comp.cell_chain != grouped_components:
+        #                                 if outside_connection == comp.name and comp.layout:
+        #                                     # Valid pins that are connected to something and have layout
+        #                                     cell_to_cell_connection.append(comp)
+        #                                     #print(f"others: {comp.name, comp.layout}")
+        #                                     for c in components_grouped_by_circuit_cell_with_children_cells_and_pins[
+        #                                         grouped_components]:
+        #                                         if isinstance(c, Pin):
+        #                                             if c.cell_chain == grouped_components:
+        #                                                 if inside_connection == c.name and c.layout:
+        #                                                     # Valid pins that are connected to something and have layout
+        #                                                     cell_to_cell_connection.append(c)
+        #                                                     #print(f"others: {c.name, c.layout}")
+        #
+        #                 cell_to_cell_connections.append(cell_to_cell_connection)
 
         # Update vertical and horizontal grids to include both cells that are being routed between
         # unfinished stuff here
@@ -500,34 +505,31 @@ class CellCreator:
         #
         #     print(p1, p2)
 
-            # grid, scaled_port_coordinates, used_area, port_coordinates, routing_parameters, component_ports \
-            #     = GridGeneration(components=self.updated_components).initialize_grid_generation()
-            #
-            # path, length = (astar_start(copy.deepcopy(grid), copy.deepcopy(grid), p1, [p2],
-            #                                routing_parameters.minimum_segment_length).a_star())
-            # print(path)
-            # self.updated_components = TraceGenerator(project_properties=self.project_properties,
-            #                                          components=self.updated_components,
-            #                                          paths=path,
-            #                                          net_list=None,
-            #                                          used_area=used_area
-            #                                          ).get()
+        # grid, scaled_port_coordinates, used_area, port_coordinates, routing_parameters, component_ports \
+        #     = GridGeneration(components=self.updated_components).initialize_grid_generation()
+        #
+        # path, length = (astar_start(copy.deepcopy(grid), copy.deepcopy(grid), p1, [p2],
+        #                                routing_parameters.minimum_segment_length).a_star())
+        # print(path)
+        # self.updated_components = TraceGenerator(project_properties=self.project_properties,
+        #                                          components=self.updated_components,
+        #                                          paths=path,
+        #                                          net_list=None,
+        #                                          used_area=used_area
+        #                                          ).get()
 
-            # functional_components = list()
-            # for component in self.updated_components:
-            #     if isinstance(component, (Transistor, Capacitor, Resistor)):
-            #         functional_components.append(component)
-            #
+        # functional_components = list()
+        # for component in self.updated_components:
+        #     if isinstance(component, (Transistor, Capacitor, Resistor)):
+        #         functional_components.append(component)
+        #
 
-            # print(cell_to_cell_connections, path, length)
+        # print(cell_to_cell_connections, path, length)
 
         # print(grouped_components)
         # for cell_nr_1, grouped_components_1 in enumerate(components_grouped_by_circuit_cell):
         #     for component_1 in components_grouped_by_circuit_cell[grouped_components_1]:
         #         if isinstance(component_1, CircuitCell):
-
-    def __add_top_cell_rail_to_rail_connections(self):
-        pass
 
     def get(self):
         return self.updated_components

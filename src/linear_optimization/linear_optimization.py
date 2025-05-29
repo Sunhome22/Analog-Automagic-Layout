@@ -47,7 +47,7 @@ class LinearOptimizationSolver:
 
         self.ALPHA = self.config["linear_optimization"][self.LOAD_NAME]["ALPHA"]
         self.BETA = self.config["linear_optimization"][self.LOAD_NAME]["BETA"]
-        self.THETA = self.config["linear_optimization"][self.LOAD_NAME]["THETA"]
+        self.GAMMA= self.config["linear_optimization"][self.LOAD_NAME]["GAMMA"]
         self.UNIT_HEIGHT = self.config["linear_optimization"][self.LOAD_NAME]["UNIT_HEIGHT"]
         self.UNIT_WIDTH = self.config["linear_optimization"][self.LOAD_NAME]["UNIT_WIDTH"]
         self.STOP_TOLERANCE = self.config["linear_optimization"][self.LOAD_NAME]["STOP_TOLERANCE"]
@@ -377,7 +377,7 @@ class LinearOptimizationSolver:
         self.problem_space += (pulp.lpSum([self.d_x[(c1.start_comp_id, c1.end_comp_id)] +
                                            self.d_y[(c1.start_comp_id, c1.end_comp_id)] for c1 in self.connections])
                                * self.ALPHA + (self.x_max - self.x_min)
-                               * self.BETA + (self.y_max - self.y_min) * self.THETA, "totalWireLength")
+                               * self.BETA + (self.y_max - self.y_min) * self.GAMMA, "totalWireLength")
         # Warm start
         placement_solution_file = f"{self.current_file_directory}/previous_placement_solution.pkl"
         # self.__warm_start(file=placement_solution_file)

@@ -44,7 +44,7 @@ SUB_CELL_OFFSET_3 = 200
 # -> ALPHA - Constant for weighing the importance of total Manhattan distance between
 #            components in the objective function
 # -> BETA - Constant for weighing the importance of perimeter along the x-axis in the objective function
-# -> THETA - Constant for weighing the importance of perimeter along the y-axis in the objective function
+# -> GAMMA - Constant for weighing the importance of perimeter along the y-axis in the objective function
 # -> UNIT_WIDTH, UNIT_HEIGHT - Additional intervals of allowable placements along the x- and y-axis
 # -> OFFSET_Y, OFFSET_Y - Minimum offset along the x- and y-axis between components that can not overlap
 # -> MIRROR - Boolean used for debugging. Turns on or off the mirroring constraint
@@ -66,7 +66,7 @@ OFFSET_X = 184
 OFFSET_Y = 700
 ALPHA = 0.001
 BETA = 100
-THETA = 5
+GAMMA = 5
 GRID_SIZE = 8000
 
 [linear_optimization.transistor]
@@ -80,7 +80,7 @@ VERTICAL_SYMMETRY = true
 HORIZONTAL_SYMMETRY = false
 ALPHA = 0.01
 BETA = 1000
-THETA = 5
+GAMMA = 5
 GRID_SIZE = 8000
 
 [linear_optimization.resistor]
@@ -94,7 +94,7 @@ VERTICAL_SYMMETRY = false
 HORIZONTAL_SYMMETRY = true
 ALPHA = 0.001
 BETA = 1000
-THETA = 50
+GAMMA = 50
 GRID_SIZE = 8000
 
 [linear_optimization.capacitor]
@@ -108,7 +108,7 @@ VERTICAL_SYMMETRY = true
 HORIZONTAL_SYMMETRY = false
 ALPHA = 0.001
 BETA = 100
-THETA = 5
+GAMMA = 5
 GRID_SIZE = 6000
 
 [linear_optimization.bipolar_transistors]
@@ -122,7 +122,7 @@ VERTICAL_SYMMETRY = true
 HORIZONTAL_SYMMETRY = false
 ALPHA = 0.1
 BETA = 100
-THETA = 5
+GAMMA = 5
 GRID_SIZE = 8000
 
 # Magic layout creator config options
