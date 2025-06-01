@@ -56,7 +56,7 @@ SUB_CELL_OFFSET_3 = 200
 
 [linear_optimization]
 RUN = true
-SOLVER_MSG = false
+SOLVER_MSG = true
 CUSTOM_PARAMETERS = true
 
 [linear_optimization.standard]

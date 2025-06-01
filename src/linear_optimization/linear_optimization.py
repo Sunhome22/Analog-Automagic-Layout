@@ -28,7 +28,7 @@ class LinearOptimizationSolver:
 
     def __init__(self, components, component_connections, overlap_components, object_type, overlap):
         self.current_file_directory = os.path.dirname(os.path.abspath(__file__))
-
+        print(object_type)
         # Load config
         self.config = self.__load_config()
         self.CUSTOM_PARAMETERS = self.config["linear_optimization"]["CUSTOM_PARAMETERS"]
@@ -115,9 +115,8 @@ class LinearOptimizationSolver:
 
         if self.MIRROR:
             self.mirrored_components = self.__check_mirrored_components()
+
         # Debugging
-
-
 
     def __load_config(self, path="pyproject.toml"):
         try:
@@ -134,11 +133,14 @@ class LinearOptimizationSolver:
         for component in self.functional_components:
             group = []
             for component2 in components2:
-                if (component.group == component2.group and component != component2 and component.group is not None
+                if (component.group == component2.group and component.number_id != component2.number_id
+                        and component.group is not None
                         and component.type == component2.type and component.bounding_box == component2.bounding_box):
                     group.append([component, component2])
+                    break
 
-            if len(group) == 1 and ([group[0][1], group[0][0]]) not in mirrored_objects:
+
+            if len(group) == 1 and not any(group[0][1] in item or group[0][0] in item for item in mirrored_objects):
                 mirrored_objects.append([group[0][0], group[0][1]])
                 components2.remove(group[0][0])
                 components2.remove(group[0][1])
@@ -370,6 +372,7 @@ class LinearOptimizationSolver:
             component_list.remove(c1)
 
     def __solve_linear_optimization_problem(self):
+        print("Number of constraints:", len(self.problem_space.constraints))
         with open("constraints.txt", "w") as f:
             f.write("Constraints in the model:\n")
             for name, constraint in self.problem_space.constraints.items():

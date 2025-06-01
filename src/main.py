@@ -25,7 +25,7 @@ from lvs.lvs_checker import LVSchecking
 from traces.generate_astar_path_traces import *
 from utils.layout_to_svg import LayoutToSVG
 from cell.cell_creator import CellCreator
-
+import timeit
 
 # ========================================== Set-up classes and constants ==============================================
 
@@ -45,45 +45,52 @@ class ProjectProperties:
 
 
 # Component libraries
-# atr_lib = ComponentLibrary(name="JNWATR", path="~/aicex/ip/jnw_bkle_sky130a/design/JNW_ATR_SKY130A")
-# tr_lib = ComponentLibrary(name="JNWTR", path="~/aicex/ip/jnw_bkle_sky130a/design/JNW_TR_SKY130A")
-# misc_lib = ComponentLibrary(name="AALMISC", path="~/aicex/ip/jnw_bkle_sky130a/design/AAL_MISC_SKY130A")
-#
-#
-# project_properties = ProjectProperties(directory="~/aicex/ip/jnw_bkle_sky130a",
-#                                        top_cell_name="JNW_BKLE",
-#                                        top_lib_name="JNW_BKLE_SKY130A",
-#                                        component_libraries=[atr_lib, tr_lib, misc_lib])
-
-atr_lib = ComponentLibrary(name="LELOATR", path="~/aicex/ip/lelo_bkle_ihp13g2/design/LELO_ATR_IHP13G2")
-tr_lib = ComponentLibrary(name="LELOTR", path="~/aicex/ip/lelo_bkle_ihp13g2/design/LELO_TR_IHP13G2")
+atr_lib = ComponentLibrary(name="JNWATR", path="~/aicex/ip/jnw_bkle_sky130a/design/JNW_ATR_SKY130A")
+tr_lib = ComponentLibrary(name="JNWTR", path="~/aicex/ip/jnw_bkle_sky130a/design/JNW_TR_SKY130A")
+misc_lib = ComponentLibrary(name="AALMISC", path="~/aicex/ip/jnw_bkle_sky130a/design/AAL_MISC_SKY130A")
 
 
-project_properties = ProjectProperties(directory="~/aicex/ip/lelo_bkle_ihp13g2",
-                                       top_cell_name="LELO_BKLE",
-                                       top_lib_name="LELO_BKLE_IHP13G2",
-                                       component_libraries=[atr_lib, tr_lib])
+project_properties = ProjectProperties(directory="~/aicex/ip/jnw_bkle_sky130a",
+                                         top_cell_name="JNW_BKLE",
+                                         top_lib_name="JNW_BKLE_SKY130A",
+                                         component_libraries=[atr_lib, tr_lib, misc_lib])
+
+#atr_lib = ComponentLibrary(name="LELOATR", path="~/aicex/ip/lelo_bkle_ihp13g2/design/LELO_ATR_IHP13G2")
+#tr_lib = ComponentLibrary(name="LELOTR", path="~/aicex/ip/lelo_bkle_ihp13g2/design/LELO_TR_IHP13G2")
+
+
+#project_properties = ProjectProperties(directory="~/aicex/ip/lelo_bkle_ihp13g2",
+#                                      top_cell_name="LELO_BKLE",
+#                                      top_lib_name="LELO_BKLE_IHP13G2",
+#                                      component_libraries=[atr_lib, tr_lib])
 
 
 # ===================================================== Main ===========================================================
 
 
 def main():
-    # components = SPICEparser(project_properties=project_properties).get()
-    # components = MagicComponentsParser(project_properties=project_properties, components=components).get()
-    # save_to_json(components, file_name="src/results/temp_components_before_cell_creator.json")
-    # components = CellCreator(project_properties=project_properties, components=components).get()
-    # MagicLayoutCreator(project_properties=project_properties, components=components)
-    # save_to_json(components, file_name="src/results/complete_component_info.json")
-    #
-    # DRCchecking(project_properties=project_properties)
-    # LVSchecking(project_properties=project_properties)
+    components = SPICEparser(project_properties=project_properties).get()
+    components = MagicComponentsParser(project_properties=project_properties, components=components).get()
+    save_to_json(components, file_name="src/results/temp_components_before_cell_creator.json")
+    components = CellCreator(project_properties=project_properties, components=components).get()
 
-    LayoutToSVG(project_properties=project_properties).create_custom_svg_from_layout_cell(cell="OTA")
+    MagicLayoutCreator(project_properties=project_properties, components=components)
+    save_to_json(components, file_name="src/results/complete_component_info.json")
 
+    DRCchecking(project_properties=project_properties)
+    LVSchecking(project_properties=project_properties)
 
-if __name__ == '__main__':
-    main()
+    #LayoutToSVG(project_properties=project_properties).create_custom_svg_from_layout_cell(cell="OTA")
+
+time_list = []
+for i in range(0, 20):
+    print("Run number: "+str(i))
+    execution_time = timeit.timeit(main, number=1)
+    time_list.append(execution_time)
+print(time_list)
+
+#if __name__ == '__main__':
+#   main()
 
 
 

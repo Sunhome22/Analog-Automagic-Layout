@@ -26,6 +26,7 @@ from collections import defaultdict
 import copy
 import tomllib
 
+
 from astar.a_star_initiator import AstarInitiator
 from connections.connections import ConnectionLists
 from grid.generate_grid import GridGeneration
@@ -61,10 +62,16 @@ class CellCreator:
         self.config = self.__load_config()
         self.CELLS_PER_ROW_IN_TOP_CELL = self.config["cell_creator"]["CELLS_PER_ROW_IN_TOP_CELL"]
 
+
+
         self.__create_cells()
         self.__set_cells_positions()
         self.__add_root_cell_rails()
         #self.__add_top_cell_rail_to_rail_connections()
+
+
+
+
 
     def __load_config(self, path="pyproject.toml"):
         try:
@@ -197,6 +204,7 @@ class CellCreator:
                 = GridGeneration(components=components).initialize_grid_generation()
 
             # Step 6: A star path routing between component ports
+
             paths, grid_vertical, grid_horizontal = (
                 AstarInitiator(grid=grid,
                                connections=connections,
@@ -207,6 +215,7 @@ class CellCreator:
                                routing_parameters=routing_parameters,
                                component_ports=component_ports
                                ).get())
+
 
             # Step 7: Generate A* traces
             components = GenerateAstarPathTraces(components=components, paths=paths, net_list=net_list,
@@ -342,9 +351,9 @@ class CellCreator:
         cells_y2 = []
         for component in self.updated_components:
             if isinstance(component, CircuitCell):
-                cells_x2.append(component.bounding_box.x2 + component.transform_matrix.c)
+                cells_x2.append(component.bounding_box.x2)
                 cells_y2.append(component.bounding_box.y2 + component.transform_matrix.f)
-        root_cell_x2 = max(cells_x2)
+        root_cell_x2 = sum(cells_x2)
         root_cell_y2 = max(cells_y2)
 
         # Creates a root cell with bounding box covering all cells but with all other attributes of the top cell
