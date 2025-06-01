@@ -66,15 +66,15 @@ class LayoutToSVG:
         svg_elements = []
 
         # Update these:
-        pad = 1400
-        legend_start_x = 800
-        legend_start_y = 350
-        legend_spacing = 4400
-        legend_box_size = 400
-        horizontal_arrow_y_offset = 400
-        horizontal_text_y_offset = 600
-        vertical_arrow_x_offset = 600
-        vertical_text_x_offset = 800
+        pad = 2400
+        legend_start_x = 1200
+        legend_start_y = 1050
+        legend_spacing = 7400
+        legend_box_size = 600
+        horizontal_arrow_y_offset = 800
+        horizontal_text_y_offset = 1200
+        vertical_arrow_x_offset = 1000
+        vertical_text_x_offset = 1400
 
         metal_colors = {
             "Locali": "#56423e",
@@ -163,11 +163,11 @@ class LayoutToSVG:
             # Metal name text
             svg_elements.append(
                 f'<text x="{x}" y="{(-min_y + legend_start_y) + legend_box_size / 2 + 165}" '
-                f'font-size="700" fill="black" alignment-baseline="middle">{metal}</text>')
+                f'font-size="1500" fill="black" alignment-baseline="middle">{metal}</text>')
 
             # Color box next to the metal name
-            box_x = x - 700
-            box_y = (-min_y + legend_start_y) - 50
+            box_x = x - 1200
+            box_y = (-min_y + legend_start_y) - 150
             svg_elements.append(
                 f'<rect x="{box_x}" y="{box_y}" width="{legend_box_size}" height="{legend_box_size}" fill="{color}" '
                 f'stroke="black" stroke-width="2" />')
@@ -193,21 +193,21 @@ class LayoutToSVG:
             # Horizontal arrow line
             f'<line x1="{min_x}" y1="{min_y - horizontal_arrow_y_offset - max_y}" x2="{max_x}" '
             f'y2="{min_y - horizontal_arrow_y_offset - max_y}" '
-            'stroke="black" stroke-width="50" marker-start="url(#arrowhead_reversed)" marker-end="url(#arrowhead)" />',
+            'stroke="black" stroke-width="90" marker-start="url(#arrowhead_reversed)" marker-end="url(#arrowhead)" />',
 
             # Horizontal length text
             f'<text x="{(min_x + max_x) / 2}" y="{min_y - horizontal_text_y_offset - max_y}" '
-            f'font-size="700" fill="black" text-anchor="middle">'
+            f'font-size="1500" fill="black" text-anchor="middle">'
             f'{length_x/1000} μm</text>',
 
             # Vertical arrow line
             f'<line x1="{min_x + vertical_arrow_x_offset + max_x}" y1="{min_y}" x2="{min_x + vertical_arrow_x_offset + max_x}" '
             f'y2="{-max_y}" '
-            'stroke="black" stroke-width="50" marker-start="url(#arrowhead_reversed)" marker-end="url(#arrowhead)" />',
+            'stroke="black" stroke-width="90" marker-start="url(#arrowhead_reversed)" marker-end="url(#arrowhead)" />',
 
             # Vertical length text (rotated)
             f'<text x="{min_x + vertical_text_x_offset + max_x}" y="{-(min_y + max_y) / 2}" '
-            f'font-size="700" fill="black" text-anchor="middle" '
+            f'font-size="1500" fill="black" text-anchor="middle" '
             f'transform="rotate(90 {min_x + vertical_text_x_offset + max_x},{-(min_y + max_y) / 2})">{length_y/1000} μm</text>'
         ]
         svg_elements.extend(arrow_elements)
@@ -263,8 +263,8 @@ class LayoutToSVG:
             fill-opacity: 0.0;
           }
           
-          .l998t0 { fill: #000000; font-size: 520px; }
-          .l997t0 { fill: #5C4033; font-size: 700px; }
+          .l998t0 { fill: #000000; font-size: 1500px; }
+          .l997t0 { fill: #5C4033; font-size: 1300px; }
           .l999d0 { stroke: #000000; stroke-width: 50; fill: #000000; fill-opacity: 0.2; }
         </style>
         </defs>

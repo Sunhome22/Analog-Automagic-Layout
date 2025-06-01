@@ -370,10 +370,10 @@ class LinearOptimizationSolver:
             component_list.remove(c1)
 
     def __solve_linear_optimization_problem(self):
-        with open("constraints.txt", "w") as f:
-            f.write("Constraints in the model:\n")
-            for name, constraint in self.problem_space.constraints.items():
-                f.write(f"{name}: {constraint}\n")
+        # with open("constraints.txt", "w") as f:
+        #     f.write("Constraints in the model:\n")
+        #     for name, constraint in self.problem_space.constraints.items():
+        #         f.write(f"{name}: {constraint}\n")
         self.problem_space += (pulp.lpSum([self.d_x[(c1.start_comp_id, c1.end_comp_id)] +
                                            self.d_y[(c1.start_comp_id, c1.end_comp_id)] for c1 in self.connections])
                                * self.ALPHA + (self.x_max - self.x_min)
