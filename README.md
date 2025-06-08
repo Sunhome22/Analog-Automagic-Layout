@@ -4,7 +4,7 @@ ___
 ### A Framework for Automated Layout Generation of Analog Circuits Utilizing Open Source EDA Tools
 ___
 ### About
-This repository is part of a master thesis in Electronic System Design at the Norwegian University of Science and Technology (NTNU).
+This repository is part of a master's thesis in Electronic System Design at the Norwegian University of Science and Technology (NTNU).
 
 The source code provided here, which integrates with Carsten Wulff's Aicex repository, 
 https://github.com/wulffern/aicex, is capable of taking in a hierarchy of schematics and generating an 
