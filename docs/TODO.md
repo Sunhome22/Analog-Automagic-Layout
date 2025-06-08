@@ -1,5 +1,4 @@
 ## Future improvements needed:
-- [ ] Add support for digital cells. This will require special handling throughout most of the program.
 - [ ] Implement a post-processing procedure that reduce the number magic file lines. 
       Rectangles in the same layer can be grouped together 
 - [ ] Use Pytest to create basic end-to-end tests for different circuits and configurations
